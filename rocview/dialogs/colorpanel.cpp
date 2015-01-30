@@ -128,7 +128,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       start = val;
     }
 
-    dc.SetPen( *wxBLUE_PEN );
+    dc.SetPen( wxColour(0,0,255) );
     pen = dc.GetPen();
     pen.SetWidth(3);
     dc.SetPen(pen);
