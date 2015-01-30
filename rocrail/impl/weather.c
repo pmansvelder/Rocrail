@@ -412,7 +412,7 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
           lampBri = 0;
         }
 
-        if( !wWeather.isslidingdaylight(data->props) ) {
+        if( !wWeather.isslidingdaylight(data->props) || LAMPS < 2 ) {
           lampBri = brightness;
           if( lampBri < minbri )
             lampBri = minbri;
