@@ -2608,8 +2608,9 @@ static int _version( obj inst ) {
 static void __initLocoSlots( iOLocoNet loconet ) {
   iOLocoNetData data = Data(loconet);
   int i = 0;
-  for( i = 0; i < 256; i++ ) {
+  for( i = 0; i < 128; i++ ) {
     data->locoslot[i] = 0;
+    data->locothrottle[i] = 0;
   }
 }
 
