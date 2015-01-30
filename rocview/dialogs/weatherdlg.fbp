@@ -3720,7 +3720,7 @@
                                                     <property name="id">wxID_ANY</property>
                                                     <property name="include">#include &quot;rocview/dialogs/colorpanel.h&quot;</property>
                                                     <property name="maximum_size"></property>
-                                                    <property name="minimum_size"></property>
+                                                    <property name="minimum_size">-1,200</property>
                                                     <property name="name">m_RGBWPanel</property>
                                                     <property name="permission">protected</property>
                                                     <property name="pos"></property>
