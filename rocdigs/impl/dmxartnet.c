@@ -256,6 +256,28 @@ static void __setChannel(iODMXArtNet inst, int addr, int red, int green, int blu
       data->dmxchannel[addr+blueChannel-1] = blue;
     if( whiteChannel > 0 )
       data->dmxchannel[addr+whiteChannel-1] = white;
+    else if( white > 0 && redChannel > 0 && greenChannel > 0 && blueChannel > 0 ) {
+      /* add it to the other channels */
+      if( red + white > 255 )
+        data->dmxchannel[addr+redChannel-1] = 255;
+      else
+        data->dmxchannel[addr+redChannel-1] = red + white;
+
+      if( green + white > 255 )
+        data->dmxchannel[addr+greenChannel-1] = 255;
+      else
+        data->dmxchannel[addr+greenChannel-1] = green + white;
+
+      if( blue + white > 255 )
+        data->dmxchannel[addr+blueChannel-1] = 255;
+      else
+        data->dmxchannel[addr+blueChannel-1] = blue + white;
+
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
+          "device %d does not support white; adjust other colors RGB=%d,%d,%d (base=%d,%d,%d)",
+          addr, data->dmxchannel[addr+redChannel-1], data->dmxchannel[addr+greenChannel-1], data->dmxchannel[addr+blueChannel-1],
+          red, green, blue );
+    }
 
 
     MutexOp.post(data->mux);
