@@ -187,24 +187,47 @@ static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, floa
   }
 
   if( color[fromHour] != NULL && color[toHour] != NULL ) {
-    if( fromHour < 12 ) {
-      float dif = wWeatherColor.getred(color[fromHour]) - wWeatherColor.getred(color[toHour]);
+    if( wWeatherColor.getred(color[fromHour]) <= wWeatherColor.getred(color[toHour]) ) {
+      /* increase */
+      float dif = wWeatherColor.getred(color[toHour]) - wWeatherColor.getred(color[fromHour]);
       *r = wWeatherColor.getred(color[fromHour]) + (dif * min) / 60;
-      dif = wWeatherColor.getgreen(color[fromHour]) - wWeatherColor.getgreen(color[toHour]);
+    }
+    else {
+      /* decrease */
+      float dif = wWeatherColor.getred(color[fromHour]) - wWeatherColor.getred(color[toHour]);
+      *r = wWeatherColor.getred(color[fromHour]) - (dif * min) / 60;
+    }
+
+    if( wWeatherColor.getgreen(color[fromHour]) <= wWeatherColor.getgreen(color[toHour]) ) {
+      /* increase */
+      float dif = wWeatherColor.getgreen(color[toHour]) - wWeatherColor.getgreen(color[fromHour]);
       *g = wWeatherColor.getgreen(color[fromHour]) + (dif * min) / 60;
-      dif = wWeatherColor.getblue(color[fromHour]) - wWeatherColor.getblue(color[toHour]);
+    }
+    else {
+      /* decrease */
+      float dif = wWeatherColor.getgreen(color[fromHour]) - wWeatherColor.getgreen(color[toHour]);
+      *g = wWeatherColor.getgreen(color[fromHour]) - (dif * min) / 60;
+    }
+
+    if( wWeatherColor.getblue(color[fromHour]) <= wWeatherColor.getblue(color[toHour]) ) {
+      /* increase */
+      float dif = wWeatherColor.getblue(color[toHour]) - wWeatherColor.getblue(color[fromHour]);
       *b = wWeatherColor.getblue(color[fromHour]) + (dif * min) / 60;
-      dif = wWeatherColor.getwhite(color[fromHour]) - wWeatherColor.getwhite(color[toHour]);
+    }
+    else {
+      /* decrease */
+      float dif = wWeatherColor.getblue(color[fromHour]) - wWeatherColor.getblue(color[toHour]);
+      *b = wWeatherColor.getblue(color[fromHour]) - (dif * min) / 60;
+    }
+
+    if( wWeatherColor.getwhite(color[fromHour]) <= wWeatherColor.getwhite(color[toHour]) ) {
+      /* increase */
+      float dif = wWeatherColor.getwhite(color[toHour]) - wWeatherColor.getwhite(color[fromHour]);
       *w = wWeatherColor.getwhite(color[fromHour]) + (dif * min) / 60;
     }
     else {
-      float dif = wWeatherColor.getred(color[fromHour]) - wWeatherColor.getred(color[toHour]);
-      *r = wWeatherColor.getred(color[fromHour]) - (dif * min) / 60;
-      dif = wWeatherColor.getgreen(color[fromHour]) - wWeatherColor.getgreen(color[toHour]);
-      *g = wWeatherColor.getgreen(color[fromHour]) - (dif * min) / 60;
-      dif = wWeatherColor.getblue(color[fromHour]) - wWeatherColor.getblue(color[toHour]);
-      *b = wWeatherColor.getblue(color[fromHour]) - (dif * min) / 60;
-      dif = wWeatherColor.getwhite(color[fromHour]) - wWeatherColor.getwhite(color[toHour]);
+      /* decrease */
+      float dif = wWeatherColor.getwhite(color[fromHour]) - wWeatherColor.getwhite(color[toHour]);
       *w = wWeatherColor.getwhite(color[fromHour]) - (dif * min) / 60;
     }
 
