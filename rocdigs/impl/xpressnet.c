@@ -726,8 +726,22 @@ static iONode __translate( iOXpressNet xpressnet, iONode node ) {
         else {
           byte* outa = allocMem(32);
           outa[0] = 0x22;
-          outa[1] = 0x15;
-          outa[2] = cv & 0xFF;
+          if( cv < 256 ) {
+            outa[1] = 0x15;
+            outa[2] = cv & 0xFF;
+          }
+          else if( cv < 512 ) {
+            outa[1] = 0x19;
+            outa[2] = (cv % 256) & 0xFF;
+          }
+          else if( cv < 768 ) {
+            outa[1] = 0x1A;
+            outa[2] = (cv % 256) & 0xFF;
+          }
+          else {
+            outa[1] = 0x1B;
+            outa[2] = (cv % 256) & 0xFF;
+          }
           ThreadOp.post( data->transactor, (obj)outa );
           /*ThreadOp.sleep(50);*/
         }
@@ -789,8 +803,22 @@ static iONode __translate( iOXpressNet xpressnet, iONode node ) {
         else {
           byte* outa = allocMem(32);
           outa[0] = 0x23;
-          outa[1] = 0x16;
-          outa[2] = cv & 0xFF;
+          if( cv < 256 ) {
+            outa[1] = 0x16;
+            outa[2] = cv & 0xFF;
+          }
+          if( cv < 512 ) {
+            outa[1] = 0x1D;
+            outa[2] = (cv % 256) & 0xFF;
+          }
+          if( cv < 768 ) {
+            outa[1] = 0x1E;
+            outa[2] = (cv % 256) & 0xFF;
+          }
+          else {
+            outa[1] = 0x1F;
+            outa[2] = (cv % 256) & 0xFF;
+          }
           outa[3] = value & 0xFF;
           ThreadOp.post( data->transactor, (obj)outa );
         }
@@ -1033,10 +1061,17 @@ static void __evaluateResponse( iOXpressNet xpressnet, byte* in ) {
   }
 
   /* SM response Direct CV mode: */
-  if( in[0] == 0x63 && in[1] == 0x14 ) {
+  if( in[0] == 0x63 && (in[1] == 0x14 || in[1] == 0x15 || in[1] == 0x16 || in[1] == 0x17 ) ) {
     int cv = in[2];
     int value = in[3];
     iONode node = NULL;
+
+    if( in[1] == 0x15 )
+      cv += 256;
+    else if( in[1] == 0x16 )
+      cv += 512;
+    else if( in[1] == 0x17 )
+      cv += 768;
 
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "cv %d has a value of %d", cv, value );
 
