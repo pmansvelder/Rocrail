@@ -32,7 +32,7 @@
 
 #include "rocs/public/trace.h"
 
-ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultPosition, wxSize( 200,-1 ) )
+ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultPosition, wxSize( 200,-1 ), wxGROW|wxFULL_REPAINT_ON_RESIZE )
 {
   m_Weather = NULL;
   m_Selection = -1;
