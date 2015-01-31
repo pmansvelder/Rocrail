@@ -69,8 +69,10 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
   for( int i = 1; i < 10; i++) {
     dc.DrawLine( 0, i*h10, w, i*h10 );
   }
+
+  float w23 = (float)w / 23.0;
   for( int i = 1; i < 23; i++) {
-    dc.DrawLine( i * (w/23), 0, i * (w/23), h );
+    dc.DrawLine( i * w23, 0, i * w23, h );
   }
 
   TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "width=%d height=%d", w, h );
@@ -102,7 +104,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     int start = wWeatherColor.getwhite(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getwhite(colorProps[i]);
-      dc.DrawLine( (i-1) * (w/23), (255-start) * ystep, i * (w/23), (255-val) * ystep );
+      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
@@ -113,7 +115,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     start = wWeatherColor.getred(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getred(colorProps[i]);
-      dc.DrawLine( (i-1) * (w/23), (255-start) * ystep, i * (w/23), (255-val) * ystep );
+      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
@@ -124,7 +126,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     start = wWeatherColor.getgreen(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getgreen(colorProps[i]);
-      dc.DrawLine( (i-1) * (w/23), (255-start) * ystep, i * (w/23), (255-val) * ystep );
+      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
@@ -135,7 +137,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     start = wWeatherColor.getblue(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getblue(colorProps[i]);
-      dc.DrawLine( (i-1) * (w/23), (255-start) * ystep, i * (w/23), (255-val) * ystep );
+      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
