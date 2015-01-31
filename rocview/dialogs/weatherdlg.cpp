@@ -715,6 +715,8 @@ void WeatherDlg::onColorImport( wxCommandEvent& event ) {
           m_ColorGrid->SetCellValue(hour, 3, wxString( StrTokOp.nextToken(tok), wxConvUTF8 ) );
         if( StrTokOp.hasMoreTokens(tok) )
           m_ColorGrid->SetCellValue(hour, 4, wxString( StrTokOp.nextToken(tok), wxConvUTF8 ) );
+        else
+          m_ColorGrid->SetCellValue(hour, 4, wxT("255") );
         StrTokOp.base.del(tok);
         hour++;
       }
