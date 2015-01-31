@@ -178,7 +178,7 @@ static void __doInitialize(iOWeather weather, Boolean day, Boolean night) {
 }
 
 
-static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, float* g, float* b, float* w) {
+static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, float* g, float* b, float* w, float* bri) {
   int fromHour = hour;
   int toHour   = hour + 1;
 
@@ -231,8 +231,20 @@ static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, floa
       *w = wWeatherColor.getwhite(color[fromHour]) - (dif * min) / 60;
     }
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "color4Time fromHour=%d toHour=%d red=%d green=%d blue=%d white=%d",
-        fromHour, toHour, (int)*r, (int)*g, (int)*b, (int)*w);
+    if( wWeatherColor.getbri(color[fromHour]) <= wWeatherColor.getbri(color[toHour]) ) {
+      /* increase */
+      float dif = wWeatherColor.getbri(color[toHour]) - wWeatherColor.getbri(color[fromHour]);
+      *bri = wWeatherColor.getbri(color[fromHour]) + (dif * min) / 60;
+    }
+    else {
+      /* decrease */
+      float dif = wWeatherColor.getbri(color[fromHour]) - wWeatherColor.getbri(color[toHour]);
+      *bri = wWeatherColor.getbri(color[fromHour]) - (dif * min) / 60;
+    }
+
+
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "color4Time fromHour=%d toHour=%d red=%d green=%d blue=%d white=%d bri=%d",
+        fromHour, toHour, (int)*r, (int)*g, (int)*b, (int)*w, (int)*bri);
     return True;
   }
 
@@ -345,9 +357,10 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
     Boolean color4time = False;
 
     if( wWeather.iscolortable(data->props) ) {
-      color4time = __getColor4Time(colorProps, hour, min, &red, &green, &blue, &white);
+      float bri = 0.0;
+      color4time = __getColor4Time(colorProps, hour, min, &red, &green, &blue, &white, &bri);
       if(color4time) {
-        brightness = maxbri;
+        brightness = bri;
         adjustBri = True;
       }
     }

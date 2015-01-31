@@ -158,6 +158,17 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       start = val;
     }
 
+    dc.SetPen( wxColour(255,255,0) );
+    pen = dc.GetPen();
+    pen.SetWidth(1);
+    dc.SetPen(pen);
+    start = wWeatherColor.getbri(colorProps[0]);
+    for( int i = 1; i < 24; i++ ) {
+      int val = wWeatherColor.getbri(colorProps[i]);
+      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+      start = val;
+    }
+
   }
   else {
     TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "No weather selected..." );
