@@ -35,6 +35,7 @@
 ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultPosition, wxSize( 200,-1 ) )
 {
   m_Weather = NULL;
+  m_Selection = -1;
   this->Connect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
 }
 
@@ -44,8 +45,9 @@ ColorPanel::~ColorPanel()
 }
 
 
-void ColorPanel::setWeather(iONode weather) {
+void ColorPanel::setWeather(iONode weather, int selection) {
   m_Weather = weather;
+  m_Selection = selection;
   Refresh();
 }
 
@@ -72,7 +74,22 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
 
   float w23 = (float)w / 23.0;
   for( int i = 1; i < 23; i++) {
-    dc.DrawLine( i * w23, 0, i * w23, h );
+    if( i == m_Selection ) {
+      dc.SetPen( *wxLIGHT_GREY_PEN );
+      wxPen pen = dc.GetPen();
+      pen.SetWidth(3);
+      pen.SetStyle(wxDOT);
+      dc.SetPen(pen);
+      dc.DrawLine( i * w23, 0, i * w23, h );
+    }
+    else {
+      dc.SetPen( *wxLIGHT_GREY_PEN );
+      wxPen pen = dc.GetPen();
+      pen.SetWidth(1);
+      pen.SetStyle(wxDOT);
+      dc.SetPen(pen);
+      dc.DrawLine( i * w23, 0, i * w23, h );
+    }
   }
 
   TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "width=%d height=%d", w, h );

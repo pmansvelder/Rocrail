@@ -60,6 +60,8 @@ class WeatherDlg : public WeatherDlgGen
     void onDeleteWeather( wxCommandEvent& event );
     void onActions( wxCommandEvent& event );
     void onColorCellChanged( wxGridEvent& event );
+    void onColorCellSelect( wxGridEvent& event );
+    void onColorLabelClick( wxGridEvent& event );
     void onColorImport( wxCommandEvent& event );
     void onColorExport( wxCommandEvent& event );
 

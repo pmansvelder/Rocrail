@@ -650,10 +650,16 @@ void WeatherDlg::onActions( wxCommandEvent& event ) {
   dlg->Destroy();
 }
 
-
+void WeatherDlg::onColorCellSelect( wxGridEvent& event ) {
+  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  event.Skip();
+}
+void WeatherDlg::onColorLabelClick( wxGridEvent& event ) {
+  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  event.Skip();
+}
 void WeatherDlg::onColorCellChanged( wxGridEvent& event ) {
-  m_RGBWPanel->Refresh();
-
+  m_RGBWPanel->setWeather(m_Props, event.GetRow());
   event.Skip();
 }
 

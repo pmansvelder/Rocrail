@@ -37,11 +37,12 @@
 class ColorPanel : public wxPanel
 {
   iONode m_Weather;
+  int    m_Selection;
 public:
   ColorPanel(wxWindow* parent);
   ~ColorPanel();
   void OnPaint(wxPaintEvent& event);
-  void setWeather(iONode booster);
+  void setWeather(iONode booster, int selection=-1);
 };
 
 #endif /* COLORPANEL_H_ */

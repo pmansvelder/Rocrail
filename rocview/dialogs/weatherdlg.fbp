@@ -3849,13 +3849,13 @@
                                             <event name="OnGridEditorCreated"></event>
                                             <event name="OnGridEditorHidden"></event>
                                             <event name="OnGridEditorShown"></event>
-                                            <event name="OnGridLabelLeftClick"></event>
+                                            <event name="OnGridLabelLeftClick">onColorLabelClick</event>
                                             <event name="OnGridLabelLeftDClick"></event>
                                             <event name="OnGridLabelRightClick"></event>
                                             <event name="OnGridLabelRightDClick"></event>
                                             <event name="OnGridRangeSelect"></event>
                                             <event name="OnGridRowSize"></event>
-                                            <event name="OnGridSelectCell"></event>
+                                            <event name="OnGridSelectCell">onColorCellSelect</event>
                                             <event name="OnKeyDown"></event>
                                             <event name="OnKeyUp"></event>
                                             <event name="OnKillFocus"></event>
