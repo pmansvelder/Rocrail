@@ -73,7 +73,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
   }
 
   float w23 = (float)w / 23.0;
-  for( int i = 1; i < 23; i++) {
+  for( int i = 0; i < 24; i++) {
     if( i == m_Selection ) {
       dc.SetPen( *wxLIGHT_GREY_PEN );
       wxPen pen = dc.GetPen();
@@ -82,7 +82,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       dc.SetPen(pen);
       dc.DrawLine( i * w23, 0, i * w23, h );
     }
-    else {
+    else if( i > 0 && i < 23 ){
       dc.SetPen( *wxLIGHT_GREY_PEN );
       wxPen pen = dc.GetPen();
       pen.SetWidth(1);
