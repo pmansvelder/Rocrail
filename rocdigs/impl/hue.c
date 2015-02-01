@@ -1,7 +1,7 @@
 /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
 #include "rocrail/wrapper/public/Output.h"
 #include "rocrail/wrapper/public/Program.h"
 #include "rocrail/wrapper/public/Color.h"
+#include "rocrail/wrapper/public/HUEConfig.h"
 
 #include <math.h>
 
@@ -99,17 +100,93 @@ static void* __event( void* inst, const void* evt ) {
 "text":"","notify": false},"linkbutton": false,"portalservices": true,"portalconnection": "connected","portalstate":{"signedon": true,
 "incoming": true,"outgoing": true,"communication": "disconnected"}}
  */
+#define GET_CONFIG 1
 
-static iONode __parseJSON(const char* json) {
-  iONode node = NULL;
+
+static char* __getValue(const char* keyvalue, char* key) {
+  int len = StrOp.len(keyvalue);
+  if( len > 0 ) {
+    char* val = StrOp.dup(keyvalue);
+    int keyIdx = 0;
+    int valIdx = 0;
+    Boolean gotKey = False;
+    Boolean startKey = False;
+    Boolean gotVal = False;
+    Boolean startVal = False;
+    int i = 0;
+    val[0] = '\0';
+    for( i = 0; i < len; i++ ) {
+      if( keyvalue[i] == '\"' && !gotKey && !startKey ) {
+        startKey = True;
+      }
+      else if( startKey && !gotKey ) {
+        if( keyvalue[i] == '\"' )
+          gotKey = True;
+        else {
+          key[keyIdx] = keyvalue[i];
+          keyIdx++;
+          key[keyIdx] = '\0';
+        }
+      }
+      else if( keyvalue[i] == '\"' && gotKey && !gotVal && !startVal ) {
+        startVal = True;
+      }
+      else if( startVal && !gotVal ) {
+        if( keyvalue[i] == '\"' )
+          gotVal = True;
+        else {
+          val[valIdx] = keyvalue[i];
+          valIdx++;
+          val[valIdx] = '\0';
+        }
+      }
+    }
+
+    return val;
+  }
+  return NULL;
+}
+
+static void __updateConfig(iOHUE inst, const char* keyvalue) {
+  iOHUEData data = Data(inst);
+  char* key = StrOp.dup(keyvalue);
+  char* val = __getValue(keyvalue, key);
+  if( val != NULL ) {
+    if( StrOp.equals("name", key) && StrOp.len(wHUEConfig.getbridgename(data->config)) == 0 ) {
+      wHUEConfig.setbridgename(data->config, val);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s=%s", key, val );
+    }
+    else if( StrOp.equals("swversion", key) ) {
+      wHUEConfig.setbridgeversion(data->config, val);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s=%s", key, val );
+    }
+    else if( StrOp.equals("apiversion", key) ) {
+      wHUEConfig.setbridgeAPIversion(data->config, val);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s=%s", key, val );
+    }
+
+    StrOp.free(val);
+  }
+  StrOp.free(key);
+}
+
+static void __parseJSON(iOHUE inst, const char* json, const char* url) {
+  iOHUEData data = Data(inst);
+  int cmd  = 0;
   iOStrTok tok = StrTokOp.inst( json, ',' );
+
+  if( StrOp.endsWith(url, "/config") ) {
+    cmd = GET_CONFIG;
+  }
+
   while( StrTokOp.hasMoreTokens(tok) ) {
     const char* keyvalue = StrTokOp.nextToken(tok);
     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "%s", keyvalue );
+    if( cmd == GET_CONFIG )
+      __updateConfig(inst, keyvalue);
   };
   StrTokOp.base.del(tok);
 
-  return node;
 }
 
 
@@ -160,7 +237,7 @@ static char* __httpRequest( iOHUE inst, const char* method, const char* request 
           TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "contlen = %d", contlen );
         }
 
-        TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, str );
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, str );
       };
 
       if( OK && contlen > 0 ) {
@@ -380,7 +457,7 @@ static void __transactor( void* threadinst ) {
     if (cmd != NULL) {
       char* reply = __httpRequest(hue, cmd->methode, cmd->request);
       if( reply != NULL && StrOp.len(reply) > 0 ) {
-        iONode node = __parseJSON(reply);
+        __parseJSON(hue, reply, cmd->methode);
         if( StrOp.find(reply, "error") )
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "error: %s", reply );
         else
@@ -409,6 +486,7 @@ static struct OHUE* _inst( const iONode ini ,const iOTrace trc ) {
   /* Initialize data->xxx members... */
   data->ini     = ini;
   data->iid     = StrOp.dup( wDigInt.getiid( ini ) );
+  data->config  = NodeOp.inst(wHUEConfig.name(), NULL, ELEMENT_NODE);
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "----------------------------------------" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Philips HUE %d.%d.%d", vmajor, vminor, patch );

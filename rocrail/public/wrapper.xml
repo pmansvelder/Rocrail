@@ -540,6 +540,11 @@
       <var name="asciiprotocol" vt="bool" defval="false" remark="Use an ASCII protocol."/>
       <var name="reportstate" vt="bool" defval="true"/>
       
+      <hueconfig remark="Philips HUE" wrappername="HUEConfig">
+        <var name="bridgename" vt="string" defval="" range="*"/>
+        <var name="bridgeversion" vt="string" defval="" range="*"/>
+        <var name="bridgeAPIversion" vt="string" defval="" range="*"/>
+      </hueconfig>
 
       <!-- HSI88 -->
       <hsi88 remark="HSI88 init" wrappername="HSI88">
