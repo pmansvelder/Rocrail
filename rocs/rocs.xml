@@ -2089,4 +2089,13 @@
       </data>
   </object>
   
+  <object name="JSon" use="node" remark="JSon converter">
+    <fun name="toXML" vt="iONode" remark="Convert a JSon string to XML.">
+      <param name="json" vt="const char*"/>
+    </fun>
+    <fun name="toJSon" vt="char*" remark="Convert XML to a JSon string.">
+      <param name="xml" vt="iONode"/>
+    </fun>
+  </object>
+  
 </Project>
