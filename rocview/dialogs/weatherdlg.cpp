@@ -75,7 +75,8 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
       initValues();
       initThemeIndex();
       int hour = wxGetApp().getFrame()->GetHour();
-      m_RGBWPanel->setWeather(m_Props, hour);
+      m_RGBWPanel->setWeather(m_Props);
+      m_RGBWPanel->setDayTime(hour);
     }
   }
 

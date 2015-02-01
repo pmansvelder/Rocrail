@@ -27,6 +27,8 @@
 #include "wx/defs.h"
 #endif
 
+#include "rocview/public/base.h"
+
 #include "rocrail/wrapper/public/Weather.h"
 #include "rocrail/wrapper/public/WeatherColor.h"
 
@@ -36,6 +38,7 @@ ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultP
 {
   m_Weather = NULL;
   m_Selection = -1;
+  m_Hour = -1;
   this->Connect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
 }
 
@@ -44,6 +47,10 @@ ColorPanel::~ColorPanel()
   this->Disconnect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
 }
 
+void ColorPanel::setDayTime(int hour) {
+  m_Hour = hour;
+  Refresh();
+}
 
 void ColorPanel::setWeather(iONode weather, int selection) {
   m_Weather = weather;
@@ -74,6 +81,16 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
 
   float w23 = (float)w / 23.0;
   for( int i = 0; i < 24; i++) {
+    if( m_Hour != -1 && m_Hour == i ) {
+      dc.SetPen( wxPen(wxColor( 0, 50, 0 )) );
+      wxPen pen = dc.GetPen();
+      pen.SetWidth(1);
+      pen.SetStyle(wxSOLID);
+      dc.SetPen(pen);
+      dc.SetBrush( wxBrush(wxColor( 0, 50, 0 )));
+      dc.DrawRectangle(i * w23 + 1, 0, w23, h);
+    }
+
     if( i == m_Selection ) {
       dc.SetPen( *wxLIGHT_GREY_PEN );
       wxPen pen = dc.GetPen();
@@ -90,6 +107,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       dc.SetPen(pen);
       dc.DrawLine( i * w23, 0, i * w23, h );
     }
+
   }
 
   TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "width=%d height=%d", w, h );
