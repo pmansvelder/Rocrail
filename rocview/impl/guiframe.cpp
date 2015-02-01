@@ -2543,6 +2543,11 @@ void RocGuiFrame::SyncClock( iONode node ) {
   m_LC->SyncClock(node);
 }
 
+int RocGuiFrame::GetHour() {
+  return m_LC->GetHour();
+}
+
+
 
 void RocGuiFrame::create() {
   int iX = wWindow.getx( wGui.getwindow( m_Ini ) );

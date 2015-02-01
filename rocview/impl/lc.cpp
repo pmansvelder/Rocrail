@@ -84,6 +84,16 @@ void LC::SyncClock( iONode node ) {
 }
 
 
+int LC::GetHour() {
+  if(m_Clock != NULL)
+    return m_Clock->GetHour();
+  if(m_Meter != NULL)
+    return m_Meter->GetHour();
+
+  return 0;
+}
+
+
 void LC::stopTimer() {
   if(m_Clock != NULL)
     m_Clock->stopTimer();

@@ -96,6 +96,7 @@ public:
 
   void setOnline( bool online );
   void SyncClock( iONode node );
+  int GetHour();
 
   void OnTrace(wxCommandEvent& event);
   void OnOpenWorkspace(wxCommandEvent& event);

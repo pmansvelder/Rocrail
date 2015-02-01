@@ -52,6 +52,7 @@ public:
     bool updateLoc( iONode node );
     bool setFX( iONode loco, iONode node );
     void SyncClock( iONode node );
+    int GetHour();
     void stopTimer();
     iONode getLocProps();
     void showTooltip(bool p_bTooltip);

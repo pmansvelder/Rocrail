@@ -447,6 +447,10 @@ void Meter::SetTime(long p_time) {
   }
 }
 
+int Meter::GetHour() {
+  return hours;
+}
+
 void Meter::calculate() {
   if( 1 ) {
     ltime++;

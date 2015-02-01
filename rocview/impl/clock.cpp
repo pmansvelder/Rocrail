@@ -229,6 +229,14 @@ void Clock::SetTime(long p_time) {
   }
 }
 
+long Clock::GetTime() {
+  return ltime;
+}
+
+int Clock::GetHour() {
+  return hours;
+}
+
 void Clock::calculate() {
   if( 1 ) {
     ltime++;

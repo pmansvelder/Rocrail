@@ -39,6 +39,7 @@ class Meter : public wxPanel{
     void Timer(wxTimerEvent& event);
     void OnMenu( wxCommandEvent& event );
     void SyncClock( iONode node );
+    int GetHour();
     void SetDevider(int devider);
     void SetTime(long rocrailtime);
     void stopTimer();

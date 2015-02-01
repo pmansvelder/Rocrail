@@ -41,6 +41,8 @@ class Clock : public wxPanel{
     void Timer(wxTimerEvent& event);
     void SetDevider(int devider);
     void SetTime(long rocrailtime);
+    long GetTime();
+    int GetHour();
     void OnPopup(wxMouseEvent& event);
     void OnAdjustTime(wxCommandEvent& event);
     void OnFreezeTime(wxCommandEvent& event);
