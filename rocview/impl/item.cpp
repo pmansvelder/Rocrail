@@ -124,6 +124,7 @@ enum {
     ME_West,
     ME_Delete,
     ME_Copy,
+    ME_Type,
     ME_CmdStraight,
     ME_CmdTurnout,
     ME_CmdLeft,
@@ -208,6 +209,7 @@ BEGIN_EVENT_TABLE(Symbol, wxWindow)
   EVT_MENU     (ME_West , Symbol::OnRotate )
   EVT_MENU     (ME_Delete , Symbol::OnDelete )
   EVT_MENU     (ME_Copy , Symbol::OnCopy )
+  EVT_MENU     (ME_Type, Symbol::OnType)
   EVT_MENU     (ME_LocGoTo, Symbol::OnLocGoTo)
   EVT_MENU     (ME_LocSchedule, Symbol::OnLocSchedule)
   EVT_MENU     (ME_LocTour, Symbol::OnLocTour)
@@ -407,13 +409,19 @@ Symbol::Symbol( PlanPanel *parent, iONode props, int itemsize, int z, double sca
 
   // define accelerator keys for some frequently used functions
 
-  wxAcceleratorEntry acc_entries[8];
-  acc_entries[0].Set(wxACCEL_ALT, (int) 'R', ME_Rotate);
-  acc_entries[1].Set(wxACCEL_ALT, (int) 'r', ME_Rotate);
-  acc_entries[2].Set(wxACCEL_ALT, (int) 'D', ME_Delete);
-  acc_entries[3].Set(wxACCEL_ALT, (int) 'd', ME_Delete);
-  acc_entries[4].Set(wxACCEL_NORMAL, WXK_DELETE, ME_Delete);
-  wxAcceleratorTable m_accel(5, acc_entries);
+  wxAcceleratorEntry acc_entries[11];
+  acc_entries[ 0].Set(wxACCEL_ALT, (int) 'R', ME_Rotate);
+  acc_entries[ 1].Set(wxACCEL_ALT, (int) 'r', ME_Rotate);
+  acc_entries[ 2].Set(wxACCEL_ALT, (int) 'D', ME_Delete);
+  acc_entries[ 3].Set(wxACCEL_ALT, (int) 'd', ME_Delete);
+  acc_entries[ 4].Set(wxACCEL_ALT, (int) 't', ME_Type);
+  acc_entries[ 5].Set(wxACCEL_ALT, (int) 'T', ME_Type);
+  acc_entries[ 6].Set(wxACCEL_NORMAL, (int) 't', ME_Type);
+  acc_entries[ 7].Set(wxACCEL_NORMAL, (int) 'T', ME_Type);
+  acc_entries[ 8].Set(wxACCEL_NORMAL, WXK_RIGHT, ME_Rotate);
+  acc_entries[ 9].Set(wxACCEL_NORMAL, WXK_LEFT, ME_Rotate);
+  acc_entries[10].Set(wxACCEL_NORMAL, WXK_DELETE, ME_Delete);
+  wxAcceleratorTable m_accel(11, acc_entries);
   this->SetAcceleratorTable(m_accel);
 
 }
