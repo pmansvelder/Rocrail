@@ -755,3 +755,24 @@ void WeatherDlg::onColorExport( wxCommandEvent& event ) {
   }
   fdlg->Destroy();
 }
+
+
+void WeatherDlg::onColorCellLeftDClick( wxGridEvent& event ) {
+  int col = event.GetCol();
+  int row = event.GetRow();
+  int val = atoi(m_ColorGrid->GetCellValue(row, col).mb_str(wxConvUTF8));
+
+  if( event.AltDown())
+    val--;
+  else
+    val++;
+
+  if( val > 255 )
+    val = 255;
+  if( val < 0 )
+    val = 0;
+  m_ColorGrid->SetCellValue(row, col, wxString::Format(wxT("%d"), val));
+
+  evaluate();
+  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+}

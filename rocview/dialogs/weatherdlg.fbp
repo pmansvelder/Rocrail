@@ -3815,7 +3815,7 @@
                                             <event name="OnEraseBackground"></event>
                                             <event name="OnGridCellChange">onColorCellChanged</event>
                                             <event name="OnGridCellLeftClick"></event>
-                                            <event name="OnGridCellLeftDClick"></event>
+                                            <event name="OnGridCellLeftDClick">onColorCellLeftDClick</event>
                                             <event name="OnGridCellRightClick"></event>
                                             <event name="OnGridCellRightDClick"></event>
                                             <event name="OnGridCmdCellChange"></event>
