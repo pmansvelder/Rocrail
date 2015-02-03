@@ -23,6 +23,7 @@
 
 #include "rocs/public/mem.h"
 #include "rocs/public/strtok.h"
+#include "rocs/public/json.h"
 
 #include "rocrail/wrapper/public/DigInt.h"
 #include "rocrail/wrapper/public/SysCmd.h"
@@ -99,94 +100,53 @@ static void* __event( void* inst, const void* evt ) {
 "2014-12-04T16:13:46","name": "rocrail"}},"swversion": "01010854","apiversion": "1.2.1","swupdate":{"updatestate":0,"url":"",
 "text":"","notify": false},"linkbutton": false,"portalservices": true,"portalconnection": "connected","portalstate":{"signedon": true,
 "incoming": true,"outgoing": true,"communication": "disconnected"}}
+
+lights response:
+<json>
+  <1 type="Dimmable light" name="Lux Lamp" modelid="LWB004" uniqueid="0017880100de2419-0b" swversion="66012040">
+    <state on="false" bri="0" alert="none" reachable="false"/>
+    <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
+  </1>
+  <2 type="Dimmable light" name="Lux Lamp 1" modelid="LWB004" uniqueid="0017880100de29c0-0b" swversion="66012040">
+    <state on="false" bri="0" alert="none" reachable="false"/>
+    <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
+  </2>
+  <3 type="Color light" name="LivingColors 1" modelid="LLC010" uniqueid="0017880100112e87-0b" swversion="66013452">
+    <state on="false" bri="230" hue="8024" sat="199" effect="none" xy="0.56960.3889" alert="none" colormode="xy" reachable="true"/>
+    <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
+  </3>
+</json>
  */
-#define GET_CONFIG 1
 
 
-static char* __getValue(const char* keyvalue, char* key) {
-  int len = StrOp.len(keyvalue);
-  if( len > 0 ) {
-    char* val = StrOp.dup(keyvalue);
-    int keyIdx = 0;
-    int valIdx = 0;
-    Boolean gotKey = False;
-    Boolean startKey = False;
-    Boolean gotVal = False;
-    Boolean startVal = False;
-    int i = 0;
-    val[0] = '\0';
-    for( i = 0; i < len; i++ ) {
-      if( keyvalue[i] == '\"' && !gotKey && !startKey ) {
-        startKey = True;
-      }
-      else if( startKey && !gotKey ) {
-        if( keyvalue[i] == '\"' )
-          gotKey = True;
-        else {
-          key[keyIdx] = keyvalue[i];
-          keyIdx++;
-          key[keyIdx] = '\0';
-        }
-      }
-      else if( keyvalue[i] == '\"' && gotKey && !gotVal && !startVal ) {
-        startVal = True;
-      }
-      else if( startVal && !gotVal ) {
-        if( keyvalue[i] == '\"' )
-          gotVal = True;
-        else {
-          val[valIdx] = keyvalue[i];
-          valIdx++;
-          val[valIdx] = '\0';
-        }
-      }
-    }
-
-    return val;
-  }
-  return NULL;
-}
-
-static void __updateConfig(iOHUE inst, const char* keyvalue) {
-  iOHUEData data = Data(inst);
-  char* key = StrOp.dup(keyvalue);
-  char* val = __getValue(keyvalue, key);
-  if( val != NULL ) {
-    if( StrOp.equals("name", key) && StrOp.len(wHUEConfig.getbridgename(data->config)) == 0 ) {
-      wHUEConfig.setbridgename(data->config, val);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s=%s", key, val );
-    }
-    else if( StrOp.equals("swversion", key) ) {
-      wHUEConfig.setbridgeversion(data->config, val);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s=%s", key, val );
-    }
-    else if( StrOp.equals("apiversion", key) ) {
-      wHUEConfig.setbridgeAPIversion(data->config, val);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s=%s", key, val );
-    }
-
-    StrOp.free(val);
-  }
-  StrOp.free(key);
-}
-
-static void __parseJSON(iOHUE inst, const char* json, const char* url) {
+static void __evaluate(iOHUE inst, const char* json, const char* url) {
   iOHUEData data = Data(inst);
   int cmd  = 0;
-  iOStrTok tok = StrTokOp.inst( json, ',' );
+  iONode xml = JSonOp.toXML(json);
 
-  if( StrOp.endsWith(url, "/config") ) {
-    cmd = GET_CONFIG;
+  if( StrOp.endsWith(url, "/config") && xml != NULL ) {
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "bridge=[%s] firmware=%s API=%s",
+        NodeOp.getStr(xml, "name", "?"), NodeOp.getStr(xml, "swversion", "?"), NodeOp.getStr(xml, "apiversion", "?"));
+  }
+  else if( StrOp.startsWith(url, "GET") && StrOp.endsWith(url, "/lights") && xml != NULL ) {
+    int cnt = NodeOp.getChildCnt(xml);
+    int i = 0;
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "nrlights=%d", cnt);
+    for( i = 0; i < cnt; i++ ) {
+      iONode light = NodeOp.getChild(xml, i);
+      iONode state = NodeOp.findNode(light, "state");
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "  nr=%s name=[%s] type=[%s] firmware=[%s] online=%s",
+          NodeOp.getName(light), NodeOp.getStr(light, "name", "?"), NodeOp.getStr(light, "type", "?"), NodeOp.getStr(light, "swversion", "?"),
+          state!=NULL?NodeOp.getStr(state, "reachable", "?"):"??");
+    }
   }
 
-  while( StrTokOp.hasMoreTokens(tok) ) {
-    const char* keyvalue = StrTokOp.nextToken(tok);
-    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "%s", keyvalue );
-    if( cmd == GET_CONFIG )
-      __updateConfig(inst, keyvalue);
-  };
-  StrTokOp.base.del(tok);
-
+  if(xml != NULL ) {
+    char* s = NodeOp.base.toString(xml);
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "\n%s", s);
+    StrOp.free(s);
+    NodeOp.base.del(xml);
+  }
 }
 
 
@@ -457,7 +417,7 @@ static void __transactor( void* threadinst ) {
     if (cmd != NULL) {
       char* reply = __httpRequest(hue, cmd->methode, cmd->request);
       if( reply != NULL && StrOp.len(reply) > 0 ) {
-        __parseJSON(hue, reply, cmd->methode);
+        __evaluate(hue, reply, cmd->methode);
         if( StrOp.find(reply, "error") )
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "error: %s", reply );
         else
@@ -501,6 +461,16 @@ static struct OHUE* _inst( const iONode ini ,const iOTrace trc ) {
 
   iHueCmd cmd = allocMem(sizeof(struct HueCmd));
   cmd->methode = StrOp.fmt("GET /api/%s/config", wDigInt.getuserid(data->ini));
+  cmd->request = StrOp.dup("");
+  ThreadOp.post( data->transactor, (obj)cmd );
+
+  cmd = allocMem(sizeof(struct HueCmd));
+  cmd->methode = StrOp.fmt("GET /api/%s/lights", wDigInt.getuserid(data->ini));
+  cmd->request = StrOp.dup("");
+  ThreadOp.post( data->transactor, (obj)cmd );
+
+  cmd = allocMem(sizeof(struct HueCmd));
+  cmd->methode = StrOp.fmt("POST /api/%s/lights", wDigInt.getuserid(data->ini));
   cmd->request = StrOp.dup("");
   ThreadOp.post( data->transactor, (obj)cmd );
 
