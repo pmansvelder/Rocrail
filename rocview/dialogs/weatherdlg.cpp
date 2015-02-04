@@ -43,6 +43,7 @@
 #include "actionsctrldlg.h"
 
 #include <wx/filedlg.h>
+#include <wx/colordlg.h>
 
 
 WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
@@ -788,3 +789,27 @@ void WeatherDlg::onColorCellLeftDClick( wxGridEvent& event ) {
   evaluate();
   m_RGBWPanel->setWeather(m_Props, event.GetRow());
 }
+
+
+void WeatherDlg::onColorLabelDClick( wxGridEvent& event ) {
+  int row = event.GetRow();
+  int r = atoi(m_ColorGrid->GetCellValue(row, 0).mb_str(wxConvUTF8));
+  int g = atoi(m_ColorGrid->GetCellValue(row, 1).mb_str(wxConvUTF8));
+  int b = atoi(m_ColorGrid->GetCellValue(row, 2).mb_str(wxConvUTF8));
+
+  wxColourData ColourData;
+  ColourData.SetColour(wxColour(r,g,b));
+
+  wxColourDialog* dlg = new wxColourDialog(this, &ColourData);
+  if( wxID_OK == dlg->ShowModal() ) {
+    wxColour &colour = dlg->GetColourData().GetColour();
+
+    m_ColorGrid->SetCellValue(row, 0, wxString::Format(wxT("%d"), (int)colour.Red()) );
+    m_ColorGrid->SetCellValue(row, 1, wxString::Format(wxT("%d"), (int)colour.Green()) );
+    m_ColorGrid->SetCellValue(row, 2, wxString::Format(wxT("%d"), (int)colour.Blue()) );
+    evaluate();
+    m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  }
+  dlg->Destroy();
+}
+

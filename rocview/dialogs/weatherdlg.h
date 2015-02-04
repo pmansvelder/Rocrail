@@ -65,6 +65,7 @@ class WeatherDlg : public WeatherDlgGen
     void onColorImport( wxCommandEvent& event );
     void onColorExport( wxCommandEvent& event );
     void onColorCellLeftDClick( wxGridEvent& event );
+    void onColorLabelDClick( wxGridEvent& event );
 
 	public:
 		/** Constructor */

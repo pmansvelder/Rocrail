@@ -3839,7 +3839,7 @@
                                             <event name="OnGridEditorHidden"></event>
                                             <event name="OnGridEditorShown"></event>
                                             <event name="OnGridLabelLeftClick">onColorLabelClick</event>
-                                            <event name="OnGridLabelLeftDClick"></event>
+                                            <event name="OnGridLabelLeftDClick">onColorLabelDClick</event>
                                             <event name="OnGridLabelRightClick"></event>
                                             <event name="OnGridLabelRightDClick"></event>
                                             <event name="OnGridRangeSelect"></event>
