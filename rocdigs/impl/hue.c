@@ -356,8 +356,8 @@ static iONode __translate( iOHUE inst, iONode node ) {
       __RGBtoXY(wColor.getred(color), wColor.getgreen(color), wColor.getblue(color), &x, &y );
       useXY = True;
     }
-    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output addr=%d active=%d cmd=%s bri=%d RGB=%d,%d,%d xy=%f,%f hue=%d",
-        addr, active, wOutput.getcmd( node ), val, r, g, b, x, y, hue );
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output addr=%d active=%d cmd=%s bri=%d RGB=%d,%d,%d xy=%f,%f hue=%d sat=%d",
+        addr, active, wOutput.getcmd( node ), val, r, g, b, x, y, hue, sat );
 
     iHueCmd cmd = allocMem(sizeof(struct HueCmd));
     cmd->methode = StrOp.fmt("PUT /api/%s/lights/%d/state", wDigInt.getuserid(data->ini), addr);

@@ -178,7 +178,7 @@ static void __doInitialize(iOWeather weather, Boolean day, Boolean night) {
 }
 
 
-static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, float* g, float* b, float* w, float* bri) {
+static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, float* g, float* b, float* w, float* bri, float* sat) {
   int fromHour = hour;
   int toHour   = hour + 1;
 
@@ -242,9 +242,20 @@ static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, floa
       *bri = wWeatherColor.getbri(color[fromHour]) - (dif * min) / 60;
     }
 
+    if( wWeatherColor.getsat(color[fromHour]) <= wWeatherColor.getsat(color[toHour]) ) {
+      /* increase */
+      float dif = wWeatherColor.getsat(color[toHour]) - wWeatherColor.getsat(color[fromHour]);
+      *sat = wWeatherColor.getsat(color[fromHour]) + (dif * min) / 60;
+    }
+    else {
+      /* decrease */
+      float dif = wWeatherColor.getsat(color[fromHour]) - wWeatherColor.getsat(color[toHour]);
+      *sat = wWeatherColor.getsat(color[fromHour]) - (dif * min) / 60;
+    }
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "color4Time fromHour=%d toHour=%d red=%d green=%d blue=%d white=%d bri=%d",
-        fromHour, toHour, (int)*r, (int)*g, (int)*b, (int)*w, (int)*bri);
+
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "color4Time fromHour=%d toHour=%d red=%d green=%d blue=%d white=%d bri=%d sat=%d",
+        fromHour, toHour, (int)*r, (int)*g, (int)*b, (int)*w, (int)*bri, (int)*sat);
     return True;
   }
 
@@ -341,6 +352,7 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
     int   minbri       = wWeather.getminbri(data->props);
     float percent      = 0.0;
     float brightness   = 0.0;
+    float saturation   = 250.0;
     float red          = wNoon.getred(noonProps);
     float green        = wNoon.getgreen(noonProps);
     float blue         = wNoon.getblue(noonProps);
@@ -358,9 +370,11 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
 
     if( wWeather.iscolortable(data->props) ) {
       float bri = 0.0;
-      color4time = __getColor4Time(colorProps, hour, min, &red, &green, &blue, &white, &bri);
+      float sat = 0.0;
+      color4time = __getColor4Time(colorProps, hour, min, &red, &green, &blue, &white, &bri, &sat);
       if(color4time) {
         brightness = bri;
+        saturation = sat;
         adjustBri = True;
       }
     }
@@ -461,6 +475,7 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
         wColor.setgreen(color, green);
         wColor.setblue(color, blue);
         wColor.setwhite(color, white);
+        wColor.setsaturation(color, saturation);
         wOutput.setaddr(cmd, wOutput.getaddr(OutputOp.base.properties(output)));
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
             "lamp %s brightness=%d(of %.2f), lampAngle=%.2f sunAngle=%.2f dayminutes=%d sunrise=%d sunset=%d",

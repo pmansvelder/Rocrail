@@ -200,8 +200,9 @@ static Boolean __doCmd( struct OOutput* inst ,iONode nodeA ,Boolean update ) {
   if( color != NULL ) {
     iONode ocolor = wOutput.getcolor(o->props);
     color = (iONode)NodeOp.base.clone(color);
-    if( ocolor != NULL )
+    if( ocolor != NULL && NodeOp.findAttr(color, "saturation") == NULL ) {
       wColor.setsaturation(color, wColor.getsaturation(ocolor));
+    }
   }
 
   if( StrOp.equals( wOutput.flip, state ) ) {

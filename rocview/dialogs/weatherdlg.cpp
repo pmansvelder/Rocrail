@@ -273,12 +273,12 @@ void WeatherDlg::initColorGrid() {
   m_ColorGrid->AppendRows(24);
   for( int i = 0; i < 24; i++ ) {
     m_ColorGrid->SetRowLabelValue(i, wxString::Format(wxT("%02d:%02d"), i, 0) );
-    for( int n = 0; n < 5; n++) {
+    for( int n = 0; n < 6; n++) {
       m_ColorGrid->SetCellAlignment(wxALIGN_CENTRE, i, n);
       m_ColorGrid->SetCellValue(i, n, wxT("0"));
     }
   }
-  for( int n = 0; n < 5; n++)
+  for( int n = 0; n < 6; n++)
     m_ColorGrid->SetColFormatNumber(n);
 }
 
@@ -356,6 +356,7 @@ void WeatherDlg::initLabels() {
   m_ColorGrid->SetColLabelValue(2, wxGetApp().getMsg("blue") );
   m_ColorGrid->SetColLabelValue(3, wxGetApp().getMsg("white") );
   m_ColorGrid->SetColLabelValue(4, wxGetApp().getMsg("brightness") );
+  m_ColorGrid->SetColLabelValue(5, wxGetApp().getMsg("saturation") );
   m_ColorImport->SetLabel( wxGetApp().getMsg( "import" ) + wxT("...") );
   m_ColorExport->SetLabel( wxGetApp().getMsg( "export" ) + wxT("...") );
 
@@ -432,6 +433,7 @@ void WeatherDlg::initValues() {
     m_ColorGrid->SetCellValue(hour, 2, wxString::Format(wxT("%d"), wWeatherColor.getblue(color)));
     m_ColorGrid->SetCellValue(hour, 3, wxString::Format(wxT("%d"), wWeatherColor.getwhite(color)));
     m_ColorGrid->SetCellValue(hour, 4, wxString::Format(wxT("%d"), wWeatherColor.getbri(color)));
+    m_ColorGrid->SetCellValue(hour, 5, wxString::Format(wxT("%d"), wWeatherColor.getsat(color)));
     color = wWeather.nextweathercolor(m_Props, color);
   }
 
@@ -501,6 +503,7 @@ bool WeatherDlg::evaluate() {
     wWeatherColor.setblue (color, atoi(m_ColorGrid->GetCellValue(i, 2).mb_str(wxConvUTF8)));
     wWeatherColor.setwhite(color, atoi(m_ColorGrid->GetCellValue(i, 3).mb_str(wxConvUTF8)));
     wWeatherColor.setbri  (color, atoi(m_ColorGrid->GetCellValue(i, 4).mb_str(wxConvUTF8)));
+    wWeatherColor.setsat  (color, atoi(m_ColorGrid->GetCellValue(i, 5).mb_str(wxConvUTF8)));
   }
 
   return true;
@@ -721,6 +724,10 @@ void WeatherDlg::onColorImport( wxCommandEvent& event ) {
           m_ColorGrid->SetCellValue(hour, 4, wxString( StrTokOp.nextToken(tok), wxConvUTF8 ) );
         else
           m_ColorGrid->SetCellValue(hour, 4, wxT("255") );
+        if( StrTokOp.hasMoreTokens(tok) )
+          m_ColorGrid->SetCellValue(hour, 5, wxString( StrTokOp.nextToken(tok), wxConvUTF8 ) );
+        else
+          m_ColorGrid->SetCellValue(hour, 5, wxT("250") );
         StrTokOp.base.del(tok);
         hour++;
       }
@@ -746,12 +753,13 @@ void WeatherDlg::onColorExport( wxCommandEvent& event ) {
     iOFile f = FileOp.inst( path.mb_str(wxConvUTF8), OPEN_WRITE );
     if( f != NULL ) {
       for( int hour = 0; hour < 24; hour++) {
-        FileOp.fmt( f, "%d,%d,%d,%d,%d\n",
+        FileOp.fmt( f, "%d,%d,%d,%d,%d,%d\n",
             atoi(m_ColorGrid->GetCellValue(hour, 0).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 1).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 2).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 3).mb_str(wxConvUTF8)),
-            atoi(m_ColorGrid->GetCellValue(hour, 4).mb_str(wxConvUTF8))
+            atoi(m_ColorGrid->GetCellValue(hour, 4).mb_str(wxConvUTF8)),
+            atoi(m_ColorGrid->GetCellValue(hour, 5).mb_str(wxConvUTF8))
             );
       }
       FileOp.base.del( f );

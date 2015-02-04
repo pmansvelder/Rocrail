@@ -1631,6 +1631,7 @@
           <var name="blue" vt="int" defval="255" range="0-255"/>
           <var name="white" vt="int" defval="0" range="0-255"/>
           <var name="bri" vt="int" defval="255" range="0-255"/>
+          <var name="sat" vt="int" defval="200" range="0-255"/>
         </weathercolor>
         <weathertheme cardinality="n" wrappername="WeatherTheme">
           <var name="id" vt="string" defval="" range="*"/>
