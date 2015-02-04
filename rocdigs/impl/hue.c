@@ -128,7 +128,31 @@ static void __evaluate(iOHUE inst, const char* json, const char* url, iHueCmd cm
   }
 
   if( cmd->cmd > 0 ) {
-    if( cmd->cmd == HUE_GETLIGHTSTATE ) {
+    if( cmd->cmd == HUE_GETLIGHTS ) {
+      /*
+      <json>
+        <1 type="Dimmable light" name="Lux Lamp" modelid="LWB004" uniqueid="0017880100de2419-0b" swversion="66012040">
+          <state on="false" bri="0" alert="none" reachable="false"/>
+          <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
+        </1>
+      </json>
+       */
+      char* s = NodeOp.base.toString(xml);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "\n%s", s);
+      StrOp.free(s);
+
+      iONode node = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+      wProgram.setcmd( node, wProgram.datarsp );
+      wProgram.setlntype( node, wProgram.lntype_hue );
+      NodeOp.addChild( node, (iONode)NodeOp.base.clone(xml));
+      if( data->iid != NULL )
+        wProgram.setiid( node, data->iid );
+
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "lights %d", NodeOp.getChildCnt(xml) );
+      if( data->listenerFun != NULL && data->listenerObj != NULL )
+        data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
+    }
+    else if( cmd->cmd == HUE_GETLIGHTSTATE ) {
       /*
       <json type="Color light" name="LivingColors 1" modelid="LLC010" uniqueid="0017880100112e87-0b" swversion="66013452">
         <state on="true" bri="253" hue="30506" sat="14" effect="none" xy="0.42200.4159" alert="none" colormode="xy" reachable="true"/>
@@ -292,6 +316,16 @@ void __RGBtoXY(int R, int G, int B, float* x, float* y) {
 }
 
 
+static void __queryLights(iOHUE inst) {
+  iOHUEData data = Data(inst);
+  iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+  cmd->methode = StrOp.fmt("GET /api/%s/lights", wDigInt.getuserid(data->ini));
+  cmd->request = StrOp.dup("");
+  cmd->cmd = HUE_GETLIGHTS;
+  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "get lights");
+  ThreadOp.post( data->transactor, (obj)cmd );
+}
+
 
 static iONode __translate( iOHUE inst, iONode node ) {
   iOHUEData data = Data(inst);
@@ -317,6 +351,7 @@ static iONode __translate( iOHUE inst, iONode node ) {
     int cv    = wProgram.getcv( node );
     int value = wProgram.getvalue( node );
     int addr  = wProgram.getaddr( node );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "program cmd=%d", wProgram.getcmd( node ) );
     if( wProgram.getcmd( node ) == wProgram.get ) {
       iHueCmd cmd = allocMem(sizeof(struct HueCmd));
       cmd->methode = StrOp.fmt("GET /api/%s/lights/%d", wDigInt.getuserid(data->ini), cv);
@@ -325,6 +360,15 @@ static iONode __translate( iOHUE inst, iONode node ) {
       cmd->addr = cv;
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "get light state of %d", cv);
       ThreadOp.post( data->transactor, (obj)cmd );
+    }
+    else if( wProgram.getcmd( node ) == wProgram.query ) {
+      __queryLights(inst);
+    }
+    if( wProgram.getlntype(node) == wProgram.lntype_sv && wProgram.getcmd( node ) == wProgram.lncvget &&
+        wProgram.getcv(node) == 0 && wProgram.getmodid(node) == 0 && wProgram.getaddr(node) == 0 )
+    {
+      /* This construct is used to to query all LocoIOs, but is here recycled for query all lights. */
+      __queryLights(inst);
     }
   }
 

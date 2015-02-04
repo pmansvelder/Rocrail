@@ -2059,7 +2059,7 @@
   </object>
 
   <object name="HUE" interface="$../rocint/rocint.xml:DigInt" use="node,trace,thread,socket,map,mutex" include="$rocint/public/digint" remark="Philips HUE">
-    <typedef def="enum {HUE_GETBRIDGECONFIG=1, HUE_GETLIGHTSTATE } huecmd"/>
+    <typedef def="enum {HUE_GETBRIDGECONFIG=1, HUE_GETLIGHTSTATE, HUE_GETLIGHTS } huecmd"/>
     <fun name="inst" vt="this">
       <param name="ini" vt="const iONode" remark="Ini node"/>
       <param name="trc" vt="const iOTrace" remark="Trace instance"/>
