@@ -1562,6 +1562,7 @@
 		<var name="blue" vt="int" defval="0" range="0-255" remark="Blue value"/>
     <var name="white" vt="int" defval="0" range="0-255" remark="White value"/>
 		<var name="brightness" vt="int" defval="0" range="0-255" remark="Brightness"/>
+    <var name="saturation" vt="int" defval="254" range="0-254" remark="Brightness"/>
   </color>
 
   <plan structname="RRP" wrappername="Plan" remark="Root node of the planfile.">

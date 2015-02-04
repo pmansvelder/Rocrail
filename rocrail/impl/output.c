@@ -42,6 +42,7 @@
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/ModelCmd.h"
 #include "rocrail/wrapper/public/Item.h"
+#include "rocrail/wrapper/public/Color.h"
 
 
 static int instCnt = 0;
@@ -197,7 +198,10 @@ static Boolean __doCmd( struct OOutput* inst ,iONode nodeA ,Boolean update ) {
   iONode color = wOutput.getcolor(nodeA);
 
   if( color != NULL ) {
+    iONode ocolor = wOutput.getcolor(o->props);
     color = (iONode)NodeOp.base.clone(color);
+    if( ocolor != NULL )
+      wColor.setsaturation(color, wColor.getsaturation(ocolor));
   }
 
   if( StrOp.equals( wOutput.flip, state ) ) {

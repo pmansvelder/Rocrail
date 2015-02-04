@@ -265,6 +265,8 @@ public:
     wxSpinCtrl* m_BlueColor;
     wxStaticText* m_labWhiteColor;
     wxSpinCtrl* m_WhiteColor;
+    wxStaticText* m_labSaturationColor;
+    wxSpinCtrl* m_SaturationColor;
     wxPanel* m_LocationPanel;
     wxStaticText* m_LabelX;
     wxTextCtrl* m_x;

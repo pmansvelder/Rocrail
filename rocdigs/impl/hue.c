@@ -119,12 +119,46 @@ lights response:
  */
 
 
-static void __evaluate(iOHUE inst, const char* json, const char* url) {
+static void __evaluate(iOHUE inst, const char* json, const char* url, iHueCmd cmd) {
   iOHUEData data = Data(inst);
-  int cmd  = 0;
   iONode xml = JSonOp.toXML(json);
 
-  if( StrOp.endsWith(url, "/config") && xml != NULL ) {
+  if( xml == NULL ) {
+    return;
+  }
+
+  if( cmd->cmd > 0 ) {
+    if( cmd->cmd == HUE_GETLIGHTSTATE ) {
+      /*
+      <json type="Color light" name="LivingColors 1" modelid="LLC010" uniqueid="0017880100112e87-0b" swversion="66013452">
+        <state on="true" bri="253" hue="30506" sat="14" effect="none" xy="0.42200.4159" alert="none" colormode="xy" reachable="true"/>
+        <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
+      </json>
+       */
+      char* s = NodeOp.base.toString(xml);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "\n%s", s);
+      StrOp.free(s);
+
+      iONode state = NodeOp.findNode(xml, "state");
+      if( state != NULL ) {
+        iONode node = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+        wProgram.setcv( node, cmd->addr );
+        wProgram.setvalue( node, NodeOp.getInt(state, "bri", 0) );
+        wProgram.setval1( node, NodeOp.getInt(state, "sat", 0) );
+        wProgram.setval2( node, NodeOp.getInt(state, "hue", 0) );
+        wProgram.setval3( node, NodeOp.getBool(state, "reachable", False) );
+        wProgram.setval4( node, NodeOp.getBool(state, "on", False) );
+        wProgram.setcmd( node, wProgram.datarsp );
+        if( data->iid != NULL )
+          wProgram.setiid( node, data->iid );
+
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "light %d bri=%d", cmd->addr, wProgram.getvalue(node) );
+        if( data->listenerFun != NULL && data->listenerObj != NULL )
+          data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
+      }
+    }
+  }
+  else if( StrOp.endsWith(url, "/config") && xml != NULL ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "bridge=[%s] firmware=%s API=%s",
         NodeOp.getStr(xml, "name", "?"), NodeOp.getStr(xml, "swversion", "?"), NodeOp.getStr(xml, "apiversion", "?"));
   }
@@ -156,17 +190,19 @@ static void __evaluate(iOHUE inst, const char* json, const char* url) {
  * request: {"bri":42}
  */
 #define RSPSIZE 4096
-static char* __httpRequest( iOHUE inst, const char* method, const char* request ) {
+static char* __httpRequest( iOHUE inst, const char* method, const char* request, const char* host ) {
   iOHUEData data = Data(inst);
   char* reply = NULL;
   Boolean OK = True;
 
-  TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "trying to connected to %s:80", wDigInt.gethost(data->ini) );
-  iOSocket sh = SocketOp.inst( wDigInt.gethost(data->ini), 80, False, False, False );
+  TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "trying to connected to %s:80", host!=NULL?host:wDigInt.gethost(data->ini) );
+  iOSocket sh = SocketOp.inst( host!=NULL?host:wDigInt.gethost(data->ini), 80, False, False, False );
   if( SocketOp.connect( sh ) ) {
-    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "Connected to %s", wDigInt.gethost(data->ini) );
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "Connected to %s", host!=NULL?host:wDigInt.gethost(data->ini) );
 
-    char* httpReq = StrOp.fmt("%s HTTP/1.1\nHost: %s\nContent-Type: application/json\nContent-Length: %d\n\n%s", method, wDigInt.gethost(data->ini), StrOp.len(request), request );
+    char* httpReq = StrOp.fmt("%s HTTP/1.1\nHost: %s\nContent-Type: application/json\nContent-Length: %d\n\n%s",
+          method, host!=NULL?host:wDigInt.gethost(data->ini), StrOp.len(request), request );
+
     TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "length=%d\n%s", StrOp.len(httpReq), httpReq );
     SocketOp.write( sh, httpReq, StrOp.len(httpReq) );
     StrOp.free(httpReq);
@@ -277,6 +313,21 @@ static iONode __translate( iOHUE inst, iONode node ) {
     }
   }
 
+  else if( StrOp.equals( NodeOp.getName( node ), wProgram.name() ) ) {
+    int cv    = wProgram.getcv( node );
+    int value = wProgram.getvalue( node );
+    int addr  = wProgram.getaddr( node );
+    if( wProgram.getcmd( node ) == wProgram.get ) {
+      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+      cmd->methode = StrOp.fmt("GET /api/%s/lights/%d", wDigInt.getuserid(data->ini), cv);
+      cmd->request = StrOp.dup("");
+      cmd->cmd = HUE_GETLIGHTSTATE;
+      cmd->addr = cv;
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "get light state of %d", cv);
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
+  }
+
   /* Output command. */
   else if( StrOp.equals( NodeOp.getName( node ), wOutput.name() ) ) {
     int addr = wOutput.getaddr( node );
@@ -291,6 +342,7 @@ static iONode __translate( iOHUE inst, iONode node ) {
     int r = 0;
     int g = 0;
     int b = 0;
+    int sat = 254;
     Boolean useXY = False;
 
     if( StrOp.equals( wOutput.getcmd( node ), wOutput.on ) || StrOp.equals( wOutput.getcmd( node ), wOutput.value ) )
@@ -300,6 +352,7 @@ static iONode __translate( iOHUE inst, iONode node ) {
       r = wColor.getred(color);
       g = wColor.getgreen(color);
       b = wColor.getblue(color);
+      sat = wColor.getsaturation(color);
       __RGBtoXY(wColor.getred(color), wColor.getgreen(color), wColor.getblue(color), &x, &y );
       useXY = True;
     }
@@ -309,10 +362,12 @@ static iONode __translate( iOHUE inst, iONode node ) {
     iHueCmd cmd = allocMem(sizeof(struct HueCmd));
     cmd->methode = StrOp.fmt("PUT /api/%s/lights/%d/state", wDigInt.getuserid(data->ini), addr);
     if( active && useXY && colortype) {
-      cmd->request = StrOp.fmt("{\"on\":%s, \"bri\":%d, \"alert\":\"%s\", \"xy\":[%f,%f]}", active?"true":"false", val, blink?"lselect":"none", x, y);
+      cmd->request = StrOp.fmt("{\"on\":%s, \"bri\":%d, \"alert\":\"%s\", \"xy\":[%f,%f], \"sat\":%d}",
+          active?"true":"false", val, blink?"lselect":"none", x, y, sat);
     }
     else if( active && hue > 0 && colortype)
-      cmd->request = StrOp.fmt("{\"on\":%s, \"bri\":%d, \"alert\":\"%s\", \"hue\":%d}", active?"true":"false", val, blink?"lselect":"none", hue);
+      cmd->request = StrOp.fmt("{\"on\":%s, \"bri\":%d, \"alert\":\"%s\", \"hue\":%d, \"sat\":%d}",
+          active?"true":"false", val, blink?"lselect":"none", hue, sat);
     else if( active )
       cmd->request = StrOp.fmt("{\"on\":%s, \"bri\":%d, \"alert\":\"%s\"}", active?"true":"false", val, blink?"lselect":"none");
     else
@@ -404,7 +459,6 @@ static int _version( obj inst ) {
   return vmajor*10000 + vminor*100 + patch;
 }
 
-
 static void __transactor( void* threadinst ) {
   iOThread  th   = (iOThread)threadinst;
   iOHUE     hue  = (iOHUE)ThreadOp.getParm(th);
@@ -412,12 +466,31 @@ static void __transactor( void* threadinst ) {
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Transactor is started.");
 
+  /*
+    Host: www.meethue.com
+    User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:34.0) Gecko/20100101 Firefox/34.0
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,
+    Accept-Language: en-US,en;q=0.5
+    Accept-Encoding: gzip, deflate
+    Referer: https://www.meethue.com/api/nupnp
+    Connection: keep-alive
+   */
+  /*
+  iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+  cmd->methode = StrOp.fmt("GET /api/nupnp");
+  cmd->request = StrOp.dup("");
+  char* reply = __httpRequest(hue, cmd->methode, cmd->request, "meethue.com");
+  if( reply != NULL )
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s", reply );
+  freeMem(cmd);
+  */
+
   do {
     iHueCmd cmd = (iHueCmd)ThreadOp.getPost( th );
     if (cmd != NULL) {
-      char* reply = __httpRequest(hue, cmd->methode, cmd->request);
+      char* reply = __httpRequest(hue, cmd->methode, cmd->request, NULL);
       if( reply != NULL && StrOp.len(reply) > 0 ) {
-        __evaluate(hue, reply, cmd->methode);
+        __evaluate(hue, reply, cmd->methode, cmd);
         if( StrOp.find(reply, "error") )
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "error: %s", reply );
         else

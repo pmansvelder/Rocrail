@@ -7727,3 +7727,9 @@ msgstr ""
 msgid "Color table"
 msgstr ""
 
+#. 
+# id="saturation"
+#, c-format
+msgid "Saturation"
+msgstr ""
+

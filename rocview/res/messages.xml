@@ -29599,4 +29599,7 @@
   <Msg id="colortable">
     <en txt="Color table"/>
   </Msg>
+  <Msg id="saturation">
+    <en txt="Saturation"/>
+  </Msg>
 </Messages>
