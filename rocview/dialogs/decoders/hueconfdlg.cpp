@@ -182,6 +182,7 @@ void HueConfDlg::onLightSet( wxCommandEvent& event ) {
     cmd->base.del(cmd);
 
     wxCommandEvent cevent;
+    m_labChangedLight->SetLabel(wxT("..."));
     onGetLights(cevent);
   }
 }
@@ -190,5 +191,6 @@ void HueConfDlg::onLightCellChange( wxGridEvent& event ) {
   m_Row = event.GetRow();
   m_Col = event.GetCol();
   TraceOp.trc( "hueconf", TRCLEVEL_INFO, __LINE__, 9999, "cell changed: %d,%d", m_Row, m_Col );
+  m_labChangedLight->SetLabel(wxString::Format(wxT("%s: \"%s\""), m_LightsGrid->GetCellValue(m_Row, 0), m_LightsGrid->GetCellValue(m_Row, 1)));
 }
 
