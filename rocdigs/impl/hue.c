@@ -475,6 +475,8 @@ static iONode __translate( iOHUE inst, iONode node ) {
       cmd->request = StrOp.fmt("{\"on\":%s}", active?"true":"false");
     ThreadOp.post( data->transactor, (obj)cmd );
 
+    data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(node), TRCLEVEL_INFO );
+
   }
 
   return NULL;

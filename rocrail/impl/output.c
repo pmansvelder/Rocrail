@@ -336,6 +336,20 @@ static void _event( iOOutput inst, iONode nodeC ) {
   Boolean inv = wOutput.isinv(data->props);
 
   const char* state = wOutput.getstate( nodeC );
+  iONode color = wOutput.getcolor(nodeC);
+
+  if( color != NULL ) {
+    iONode mycolor = wOutput.getcolor(data->props);
+    if( mycolor == NULL ) {
+      NodeOp.addChild( data->props, (iONode)NodeOp.base.clone(color));
+    }
+    else {
+      NodeOp.mergeNode(mycolor, color, True, False, False);
+    }
+  }
+  else {
+    color = wOutput.getcolor(data->props);
+  }
 
   if( StrOp.equals( state, wOutput.on ) )
     wOutput.setstate( data->props, inv?wOutput.off:wOutput.on );
@@ -355,6 +369,9 @@ static void _event( iOOutput inst, iONode nodeC ) {
       wOutput.setvalue( nodeD, wOutput.getvalue( nodeC ) );
     else
       wOutput.setvalue( nodeD, wOutput.getvalue( data->props ) );
+    if( color != NULL ) {
+      NodeOp.addChild( nodeD, (iONode)NodeOp.base.clone(color));
+    }
     AppOp.broadcastEvent( nodeD );
   }
 

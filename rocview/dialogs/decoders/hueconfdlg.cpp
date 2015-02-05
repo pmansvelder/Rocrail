@@ -139,8 +139,6 @@ void HueConfDlg::initLabels() {
 }
 
 void HueConfDlg::event(iONode node) {
-  if( m_LightsGrid->GetNumberRows() > 0 )
-    m_LightsGrid->DeleteRows( 0, m_LightsGrid->GetNumberRows() );
   m_Row = -1;
   m_Col = -1;
 
@@ -190,6 +188,8 @@ void HueConfDlg::event(iONode node) {
 
   // Lights
   else if( json != NULL && cv == 1024 ) {
+    if( m_LightsGrid->GetNumberRows() > 0 )
+      m_LightsGrid->DeleteRows( 0, m_LightsGrid->GetNumberRows() );
     /*
     <program cmd="7" cv="1024" lntype="9" iid="hue-1">
       <json>
@@ -271,6 +271,7 @@ void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
     iONode color = NodeOp.inst( wColor.name(), NULL, ELEMENT_NODE);
     NodeOp.addChild(cmd, color);
     wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+    wOutput.setporttype( cmd, wProgram.porttype_light );
     wOutput.setcolortype( cmd, True );
     wColor.setred(color, (int)colour.Red());
     wColor.setgreen(color, (int)colour.Green());
@@ -278,6 +279,7 @@ void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
     wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
     wOutput.setvalue(cmd, 255);
     wOutput.setcmd(cmd, wOutput.value);
+    wOutput.setstate( cmd, wOutput.on );
     wxGetApp().sendToRocrail( cmd );
     cmd->base.del(cmd);
   }
