@@ -29602,4 +29602,7 @@
   <Msg id="saturation">
     <en txt="Saturation"/>
   </Msg>
+  <Msg id="available">
+    <en txt="Available"/>
+  </Msg>
 </Messages>

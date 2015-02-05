@@ -364,6 +364,12 @@ static iONode __translate( iOHUE inst, iONode node ) {
     else if( wProgram.getcmd( node ) == wProgram.query ) {
       __queryLights(inst);
     }
+    else if( wProgram.getcmd( node ) == wProgram.update ) {
+      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+      cmd->methode = StrOp.fmt("POST /api/%s/lights", wDigInt.getuserid(data->ini));
+      cmd->request = StrOp.dup("");
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
     if( wProgram.getlntype(node) == wProgram.lntype_sv && wProgram.getcmd( node ) == wProgram.lncvget &&
         wProgram.getcv(node) == 0 && wProgram.getmodid(node) == 0 && wProgram.getaddr(node) == 0 )
     {

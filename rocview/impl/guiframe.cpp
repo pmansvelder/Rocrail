@@ -364,6 +364,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( ME_BiDiB          , RocGuiFrame::OnBiDiB)
     EVT_MENU( ME_RocNet         , RocGuiFrame::OnRocNet)
     EVT_MENU( ME_RocNetShutdown , RocGuiFrame::OnRocNetShutdown)
+    EVT_MENU( ME_HueConf        , RocGuiFrame::OnHueConf)
     EVT_MENU( ME_RocPro         , RocGuiFrame::OnRocPro)
     EVT_MENU( ME_ZoomX          , RocGuiFrame::OnZoomX)
     EVT_MENU( ME_Zoom25         , RocGuiFrame::OnZoom25)
@@ -1533,6 +1534,10 @@ void RocGuiFrame::CVevent( wxCommandEvent& event ) {
       m_RocnetNodeDlg->Show(true);
     }
   }
+  else if( wProgram.getlntype(node) == wProgram.lntype_hue ) {
+    if( m_HueConfDlg != NULL )
+      m_HueConfDlg->event( node );
+  }
   else if( wProgram.getlntype(node) == wProgram.lntype_cs ) {
     if( m_RocrailIniDlg != NULL )
       m_RocrailIniDlg->event( node );
@@ -1883,6 +1888,7 @@ RocGuiFrame::RocGuiFrame(const wxString& title, const wxPoint& pos, const wxSize
   m_BidibIdentDlg      = NULL;
   m_TraceDlg           = NULL;
   m_RocnetNodeDlg      = NULL;
+  m_HueConfDlg         = NULL;
   m_MGV141             = NULL;
   m_DTOpSw             = NULL;
   m_RocrailIniDlg      = NULL;
@@ -2277,6 +2283,7 @@ void RocGuiFrame::initFrame() {
 
   menuProgramming->Append( ME_CBusNode, _T("CBUS..."), _T("CBUS Nodes") );
   menuProgramming->Append( ME_BiDiB, _T("BiDiB..."), _T("BiDiB Nodes") );
+  menuProgramming->Append( ME_HueConf, _T("HUE..."), _T("HUE Configuration") );
   wxMenu *menuRocnet = new wxMenu();
   menuRocnet->Append( ME_RocNet, wxGetApp().getMenu("setup") + wxT("..."), wxGetApp().getTip("setup") );
   menuRocnet->Append( ME_RocNetShutdown, wxGetApp().getMenu("shutdownall"), wxGetApp().getTip("shutdownall") );
@@ -4159,6 +4166,16 @@ void RocGuiFrame::OnBiDiB( wxCommandEvent& event ) {
     wSysCmd.setcmd( cmd, wSysCmd.getini );
     wxGetApp().sendToRocrail( cmd, false );
     cmd->base.del(cmd);
+  }
+}
+
+void RocGuiFrame::OnHueConf( wxCommandEvent& event ) {
+  if( m_HueConfDlg == NULL) {
+    m_HueConfDlg = new HueConfDlg(this);
+    m_HueConfDlg->Show(true);
+  }
+  else if( m_HueConfDlg != NULL ) {
+    m_HueConfDlg->Raise();
   }
 }
 

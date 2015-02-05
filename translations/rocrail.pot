@@ -7733,3 +7733,9 @@ msgstr ""
 msgid "Saturation"
 msgstr ""
 
+#. 
+# id="available"
+#, c-format
+msgid "Available"
+msgstr ""
+

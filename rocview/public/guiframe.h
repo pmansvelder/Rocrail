@@ -50,6 +50,8 @@
 #include "rocview/dialogs/decoders/cbusnodedlg.h"
 #include "rocview/dialogs/decoders/bidibidentdlg.h"
 #include "rocview/dialogs/decoders/rocnetnodedlg.h"
+#include "rocview/dialogs/decoders/hueconfdlg.h"
+
 #include "rocview/dialogs/rocprodlg.h"
 #include "rocview/dialogs/decoders/mgvdlg.h"
 #include "rocview/dialogs/decoders/mgv141dlg.h"
@@ -333,6 +335,7 @@ public:
   void OnCBusNode(wxCommandEvent& event);
   void OnBiDiB(wxCommandEvent& event);
   void OnRocNet(wxCommandEvent& event);
+  void OnHueConf(wxCommandEvent& event);
   void OnRocNetShutdown(wxCommandEvent& event);
   void OnRocPro(wxCommandEvent& event);
 
@@ -391,6 +394,7 @@ public:
   void resetPowerCtrlRef() {m_PowerCtrl=NULL;}
   void resetSensorMonitorRef() {m_SensorMonitor=NULL;}
   void resetRocNetNodeRef() {m_RocnetNodeDlg=NULL;}
+  void resetHueConfRef() {m_HueConfDlg=NULL;}
   void resetBidibIdentRef() {m_BidibIdentDlg=NULL;}
   void resetTrackPickerRef() {m_TrackPickerDlg=NULL;}
   bool isPendingOpenWorkspace() {return m_bPendingOpenWorkspace;}
@@ -432,6 +436,7 @@ private:
   CBusNodeDlg* m_CBusNodeDlg;
   BidibIdentDlg* m_BidibIdentDlg;
   RocnetNodeDlg* m_RocnetNodeDlg;
+  HueConfDlg* m_HueConfDlg;
   RocProDlg* m_RocProDlg;
   DTOpSwDlg* m_DTOpSw;
   RocrailIniDialog* m_RocrailIniDlg;
@@ -690,6 +695,7 @@ enum
     ME_BiDiB,
     ME_RocNet,
     ME_RocNetShutdown,
+    ME_HueConf,
     ME_RocPro,
     ME_DTOpSw,
     ME_Uhlenbrock,
