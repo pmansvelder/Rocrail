@@ -39,6 +39,10 @@ ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultP
   m_Weather = NULL;
   m_Selection = -1;
   m_Hour = -1;
+  m_White = true;
+  m_Brightness = true;
+  m_Saturation = true;
+
   this->Connect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
 }
 
@@ -52,9 +56,12 @@ void ColorPanel::setDayTime(int hour) {
   Refresh();
 }
 
-void ColorPanel::setWeather(iONode weather, int selection) {
+void ColorPanel::setWeather(iONode weather, int selection, bool white, bool bri, bool sat) {
   m_Weather = weather;
   m_Selection = selection;
+  m_White = white;
+  m_Brightness = bri;
+  m_Saturation = sat;
   Refresh();
 }
 
@@ -131,23 +138,27 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
         return;
     }
 
-    dc.SetPen( *wxWHITE_PEN );
     wxPen pen = dc.GetPen();
-    pen.SetWidth(3);
-    dc.SetPen(pen);
     float ystep = (float)h / 255.0;
-    int start = wWeatherColor.getwhite(colorProps[0]);
-    for( int i = 1; i < 24; i++ ) {
-      int val = wWeatherColor.getwhite(colorProps[i]);
-      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
-      start = val;
+
+    if( m_White ) {
+      dc.SetPen( *wxWHITE_PEN );
+      pen = dc.GetPen();
+      pen.SetWidth(3);
+      dc.SetPen(pen);
+      int start = wWeatherColor.getwhite(colorProps[0]);
+      for( int i = 1; i < 24; i++ ) {
+        int val = wWeatherColor.getwhite(colorProps[i]);
+        dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        start = val;
+      }
     }
 
     dc.SetPen( *wxRED_PEN );
     pen = dc.GetPen();
     pen.SetWidth(3);
     dc.SetPen(pen);
-    start = wWeatherColor.getred(colorProps[0]);
+    int start = wWeatherColor.getred(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getred(colorProps[i]);
       dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
@@ -176,26 +187,30 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       start = val;
     }
 
-    dc.SetPen( wxColour(255,255,0) );
-    pen = dc.GetPen();
-    pen.SetWidth(1);
-    dc.SetPen(pen);
-    start = wWeatherColor.getbri(colorProps[0]);
-    for( int i = 1; i < 24; i++ ) {
-      int val = wWeatherColor.getbri(colorProps[i]);
-      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
-      start = val;
+    if( m_Brightness ) {
+      dc.SetPen( wxColour(255,255,0) );
+      pen = dc.GetPen();
+      pen.SetWidth(1);
+      dc.SetPen(pen);
+      start = wWeatherColor.getbri(colorProps[0]);
+      for( int i = 1; i < 24; i++ ) {
+        int val = wWeatherColor.getbri(colorProps[i]);
+        dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        start = val;
+      }
     }
 
-    dc.SetPen( wxColour(0,255,255) );
-    pen = dc.GetPen();
-    pen.SetWidth(1);
-    dc.SetPen(pen);
-    start = wWeatherColor.getsat(colorProps[0]);
-    for( int i = 1; i < 24; i++ ) {
-      int val = wWeatherColor.getsat(colorProps[i]);
-      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
-      start = val;
+    if( m_Saturation ) {
+      dc.SetPen( wxColour(0,255,255) );
+      pen = dc.GetPen();
+      pen.SetWidth(1);
+      dc.SetPen(pen);
+      start = wWeatherColor.getsat(colorProps[0]);
+      for( int i = 1; i < 24; i++ ) {
+        int val = wWeatherColor.getsat(colorProps[i]);
+        dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        start = val;
+      }
     }
 
   }

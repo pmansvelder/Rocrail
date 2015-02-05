@@ -35,6 +35,7 @@ class WeatherDlg : public WeatherDlgGen
 {
   iONode m_PropsList;
   iONode m_Props;
+  int m_SelectedRow;
   void initLabels();
   void initIndex();
   void initValues();
@@ -66,6 +67,9 @@ class WeatherDlg : public WeatherDlgGen
     void onColorExport( wxCommandEvent& event );
     void onColorCellLeftDClick( wxGridEvent& event );
     void onColorLabelDClick( wxGridEvent& event );
+    void onColorWhite( wxCommandEvent& event );
+    void onColorBrightness( wxCommandEvent& event );
+    void onColorSaturation( wxCommandEvent& event );
 
 	public:
 		/** Constructor */

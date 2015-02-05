@@ -50,6 +50,7 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
 {
   m_PropsList = props;
   m_Props = NULL;
+  m_SelectedRow = -1;
   initLabels();
 
 
@@ -75,11 +76,11 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
     if( m_Props != NULL ) {
       initValues();
       initThemeIndex();
-      int hour = wxGetApp().getFrame()->GetHour();
-      m_RGBWPanel->setWeather(m_Props, hour);
-      m_RGBWPanel->setDayTime(hour);
-      m_ColorGrid->SelectRow(hour);
-      m_ColorGrid->MakeCellVisible(hour, 0);
+      m_SelectedRow = wxGetApp().getFrame()->GetHour();
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+      m_RGBWPanel->setDayTime(m_SelectedRow);
+      m_ColorGrid->SelectRow(m_SelectedRow);
+      m_ColorGrid->MakeCellVisible(m_SelectedRow, 0);
     }
   }
 
@@ -148,7 +149,7 @@ void WeatherDlg::onIndexList( wxCommandEvent& event ) {
     if( m_Props != NULL ) {
       initValues();
       initThemeIndex();
-      m_RGBWPanel->setWeather(m_Props);
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked() );
     }
     else
       TraceOp.trc( "weatherdlg", TRCLEVEL_INFO, __LINE__, 9999, "no selection..." );
@@ -173,7 +174,7 @@ void WeatherDlg::onAddWeather( wxCommandEvent& event ) {
         NodeOp.addChild( weatherlist, weather );
         wWeather.setid( weather, "NEW" );
         m_Props = weather;
-        m_RGBWPanel->setWeather(m_Props);
+        m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
 
       }
     }
@@ -208,7 +209,7 @@ void WeatherDlg::onDeleteWeather( wxCommandEvent& event ) {
     if( weatherlist != NULL ) {
       NodeOp.removeChild( weatherlist, m_Props );
       m_Props = NULL;
-      m_RGBWPanel->setWeather(m_Props);
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
 
     }
   }
@@ -361,6 +362,10 @@ void WeatherDlg::initLabels() {
   m_ColorImport->SetLabel( wxGetApp().getMsg( "import" ) + wxT("...") );
   m_ColorExport->SetLabel( wxGetApp().getMsg( "export" ) + wxT("...") );
 
+  m_ColorWhite->SetLabel(wxGetApp().getMsg("white"));
+  m_ColorBrightness->SetLabel(wxGetApp().getMsg("brightness"));
+  m_ColorSaturation->SetLabel(wxGetApp().getMsg("saturation"));
+
   // Buttons
   m_StdButtonsOK->SetLabel( wxGetApp().getMsg( "ok" ) );
   m_StdButtonsApply->SetLabel( wxGetApp().getMsg( "apply" ) );
@@ -437,6 +442,17 @@ void WeatherDlg::initValues() {
     m_ColorGrid->SetCellValue(hour, 5, wxString::Format(wxT("%d"), wWeatherColor.getsat(color)));
     color = wWeather.nextweathercolor(m_Props, color);
   }
+
+  m_ColorWhite->SetValue( wWeather.isusewhite(m_Props)?true:false);
+  m_ColorBrightness->SetValue( wWeather.isusebri(m_Props)?true:false);
+  m_ColorSaturation->SetValue( wWeather.isusesat(m_Props)?true:false);
+
+  if( m_ColorWhite->IsChecked() ) m_ColorGrid->ShowCol(3);
+  else m_ColorGrid->HideCol(3);
+  if( m_ColorBrightness->IsChecked() ) m_ColorGrid->ShowCol(4);
+  else m_ColorGrid->HideCol(4);
+  if( m_ColorSaturation->IsChecked() ) m_ColorGrid->ShowCol(5);
+  else m_ColorGrid->HideCol(5);
 
 }
 
@@ -662,16 +678,16 @@ void WeatherDlg::onActions( wxCommandEvent& event ) {
 }
 
 void WeatherDlg::onColorCellSelect( wxGridEvent& event ) {
-  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
   event.Skip();
 }
 void WeatherDlg::onColorLabelClick( wxGridEvent& event ) {
-  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
   event.Skip();
 }
 void WeatherDlg::onColorCellChanged( wxGridEvent& event ) {
   evaluate();
-  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
   event.Skip();
 }
 
@@ -787,11 +803,94 @@ void WeatherDlg::onColorCellLeftDClick( wxGridEvent& event ) {
   m_ColorGrid->SetCellValue(row, col, wxString::Format(wxT("%d"), val));
 
   evaluate();
-  m_RGBWPanel->setWeather(m_Props, event.GetRow());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
 }
 
 
+/*
+ * https://forums.wxwidgets.org/viewtopic.php?f=1&t=27501&p=117842&hilit=saturation#p117842
+//////////////////////////////////////////////////
+// Colour methods to convert HSL <-> RGB
+//////////////////////////////////////////////////
+float __min(float x, float y, float z)
+{
+   float m = x < y ? x : y;
+   m = m < z ? m : z;
+   return m;
+}
+
+float __max(float x, float y, float z)
+{
+   float m = x > y ? x : y;
+   m = m > z ? m : z;
+   return m;
+}
+
+void RGB_2_HSL(float r, float g, float b, float *h, float *s, float *l)
+{
+   float var_R = ( r / 255.0 );                     //RGB from 0 to 255
+   float var_G = ( g / 255.0 );
+   float var_B = ( b / 255.0 );
+
+   float var_Min = __min( var_R, var_G, var_B );    //Min. value of RGB
+   float var_Max = __max( var_R, var_G, var_B );    //Max. value of RGB
+   float del_Max = var_Max - var_Min;             //Delta RGB value
+
+   *l = ( var_Max + var_Min ) / 2.0;
+
+   if ( del_Max == 0 ) {                   //This is a gray, no chroma...
+      *h = 0;                                //HSL results from 0 to 1
+      *s = 0;
+   } else {                                 //Chromatic data...
+      if ( *l < 0.5 ) *s = del_Max / ( var_Max + var_Min );
+      else *s = del_Max / ( 2.0 - var_Max - var_Min );
+
+      float del_R = ( ( ( var_Max - var_R ) / 6.0 ) + ( del_Max / 2.0 ) ) / del_Max;
+      float del_G = ( ( ( var_Max - var_G ) / 6.0 ) + ( del_Max / 2.0 ) ) / del_Max;
+      float del_B = ( ( ( var_Max - var_B ) / 6.0 ) + ( del_Max / 2.0 ) ) / del_Max;
+
+      if      ( var_R == var_Max ) *h = del_B - del_G;
+      else if ( var_G == var_Max ) *h = ( 1.0 / 3.0 ) + del_R - del_B;
+      else if ( var_B == var_Max ) *h = ( 2.0 / 3.0 ) + del_G - del_R;
+
+      if ( *h < 0 ) *h += 1;
+      if ( *h > 1 ) *h -= 1;
+   }
+}
+
+float Hue_2_RGB( float v1, float v2, float vH )             //Function Hue_2_RGB
+{
+   if ( vH < 0 ) vH += 1;
+   if ( vH > 1 ) vH -= 1;
+   if ( ( 6.0 * vH ) < 1 ) return ( v1 + ( v2 - v1 ) * 6.0 * vH );
+   if ( ( 2.0 * vH ) < 1 ) return ( v2 );
+   if ( ( 3.0 * vH ) < 2 ) return ( v1 + ( v2 - v1 ) * ( ( 2.0 / 3.0 ) - vH ) * 6.0 );
+   return ( v1 );
+}
+
+void HSL_2_RGB(float h, float s, float l, float *r, float *g, float *b)
+{
+   if ( s == 0 ) {                     //HSL from 0 to 1
+      *r = l * 255.0;                      //RGB results from 0 to 255
+      *g = l * 255.0;
+      *b = l * 255.0;
+   } else {
+      float var_2;
+      if ( l < 0.5 ) var_2 = l * ( 1.0 + s );
+      else           var_2 = ( l + s ) - ( s * l );
+
+      float var_1 = 2.0 * l - var_2;
+
+      *r = 255.0 * Hue_2_RGB( var_1, var_2, h + ( 1.0 / 3.0 ) );
+      *g = 255.0 * Hue_2_RGB( var_1, var_2, h );
+      *b = 255.0 * Hue_2_RGB( var_1, var_2, h - ( 1.0 / 3.0 ) );
+   }
+}
+*/
+
 void WeatherDlg::onColorLabelDClick( wxGridEvent& event ) {
+  if( m_Props == NULL )
+    return;
   int row = event.GetRow();
   int r = atoi(m_ColorGrid->GetCellValue(row, 0).mb_str(wxConvUTF8));
   int g = atoi(m_ColorGrid->GetCellValue(row, 1).mb_str(wxConvUTF8));
@@ -808,8 +907,44 @@ void WeatherDlg::onColorLabelDClick( wxGridEvent& event ) {
     m_ColorGrid->SetCellValue(row, 1, wxString::Format(wxT("%d"), (int)colour.Green()) );
     m_ColorGrid->SetCellValue(row, 2, wxString::Format(wxT("%d"), (int)colour.Blue()) );
     evaluate();
-    m_RGBWPanel->setWeather(m_Props, event.GetRow());
+    m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
   }
   dlg->Destroy();
+}
+
+void WeatherDlg::onColorWhite( wxCommandEvent& event ) {
+  if( m_Props == NULL )
+    return;
+
+  wWeather.setusewhite( m_Props, m_ColorWhite->IsChecked()?True:False);
+  if( m_ColorWhite->IsChecked() )
+    m_ColorGrid->ShowCol(3);
+  else
+    m_ColorGrid->HideCol(3);
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+}
+
+void WeatherDlg::onColorBrightness( wxCommandEvent& event ) {
+  if( m_Props == NULL )
+    return;
+
+  wWeather.setusebri( m_Props, m_ColorBrightness->IsChecked()?True:False);
+  if( m_ColorBrightness->IsChecked() )
+    m_ColorGrid->ShowCol(4);
+  else
+    m_ColorGrid->HideCol(4);
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+}
+
+void WeatherDlg::onColorSaturation( wxCommandEvent& event ) {
+  if( m_Props == NULL )
+    return;
+
+  wWeather.setusesat( m_Props, m_ColorSaturation->IsChecked()?True:False);
+  if( m_ColorSaturation->IsChecked() )
+    m_ColorGrid->ShowCol(5);
+  else
+    m_ColorGrid->HideCol(5);
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
 }
 
