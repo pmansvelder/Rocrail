@@ -7739,3 +7739,9 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
+#. 
+# id="bridge"
+#, c-format
+msgid "Bridge"
+msgstr ""
+

@@ -128,7 +128,20 @@ static void __evaluate(iOHUE inst, const char* json, const char* url, iHueCmd cm
   }
 
   if( cmd->cmd > 0 ) {
-    if( cmd->cmd == HUE_GETLIGHTS ) {
+    if( cmd->cmd == HUE_GETBRIDGECONFIG ) {
+      iONode node = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+      wProgram.setcmd( node, wProgram.datarsp );
+      wProgram.setcv( node, 0 );
+      wProgram.setlntype( node, wProgram.lntype_hue );
+      NodeOp.addChild( node, (iONode)NodeOp.base.clone(xml));
+      if( data->iid != NULL )
+        wProgram.setiid( node, data->iid );
+
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "lights %d", NodeOp.getChildCnt(xml) );
+      if( data->listenerFun != NULL && data->listenerObj != NULL )
+        data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
+    }
+    else if( cmd->cmd == HUE_GETLIGHTS ) {
       /*
       <json>
         <1 type="Dimmable light" name="Lux Lamp" modelid="LWB004" uniqueid="0017880100de2419-0b" swversion="66012040">
@@ -143,6 +156,7 @@ static void __evaluate(iOHUE inst, const char* json, const char* url, iHueCmd cm
 
       iONode node = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
       wProgram.setcmd( node, wProgram.datarsp );
+      wProgram.setcv( node, 1024 );
       wProgram.setlntype( node, wProgram.lntype_hue );
       NodeOp.addChild( node, (iONode)NodeOp.base.clone(xml));
       if( data->iid != NULL )
@@ -347,6 +361,7 @@ static iONode __translate( iOHUE inst, iONode node ) {
     }
   }
 
+  /* Programming command */
   else if( StrOp.equals( NodeOp.getName( node ), wProgram.name() ) ) {
     int cv    = wProgram.getcv( node );
     int value = wProgram.getvalue( node );
@@ -361,15 +376,31 @@ static iONode __translate( iOHUE inst, iONode node ) {
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "get light state of %d", cv);
       ThreadOp.post( data->transactor, (obj)cmd );
     }
+    else if( wProgram.getcmd( node ) == wProgram.getoptions ) {
+      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+      cmd->methode = StrOp.fmt("GET /api/%s/config", wDigInt.getuserid(data->ini));
+      cmd->request = StrOp.dup("");
+      cmd->cmd = HUE_GETBRIDGECONFIG;
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
     else if( wProgram.getcmd( node ) == wProgram.query ) {
       __queryLights(inst);
     }
     else if( wProgram.getcmd( node ) == wProgram.setstring ) {
-      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
-      cmd->methode = StrOp.fmt("PUT /api/%s/lights/%d", wDigInt.getuserid(data->ini), cv);
-      cmd->request = StrOp.fmt("{\"name\":\"%s\"}", wProgram.getstrval1(node));
-      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set light name of %d to [%s]", cv, wProgram.getstrval1(node));
-      ThreadOp.post( data->transactor, (obj)cmd );
+      if( cv > 0 ) {
+        iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+        cmd->methode = StrOp.fmt("PUT /api/%s/lights/%d", wDigInt.getuserid(data->ini), cv);
+        cmd->request = StrOp.fmt("{\"name\":\"%s\"}", wProgram.getstrval1(node));
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set light name of %d to [%s]", cv, wProgram.getstrval1(node));
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+      else {
+        iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+        cmd->methode = StrOp.fmt("PUT /api/%s/config", wDigInt.getuserid(data->ini));
+        cmd->request = StrOp.fmt("{\"name\":\"%s\"}", wProgram.getstrval1(node));
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set bridge name to [%s]", wProgram.getstrval1(node));
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
     }
     else if( wProgram.getcmd( node ) == wProgram.update ) {
       iHueCmd cmd = allocMem(sizeof(struct HueCmd));

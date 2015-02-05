@@ -48,6 +48,7 @@ HueConfDlg::HueConfDlg( wxWindow* parent ):HueConfDlgGen( parent )
 
   initLabels();
 
+  m_BridgePanel->GetSizer()->Layout();
   m_LightsPanel->GetSizer()->Layout();
 
   m_HueBook->Fit();
@@ -105,10 +106,17 @@ void HueConfDlg::onClose( wxCloseEvent& event ) {
 
 void HueConfDlg::initLabels() {
   SetTitle(wxT("HUE"));
-  m_HueBook->SetPageText( 0, wxGetApp().getMsg( "lights" ) );
+  m_HueBook->SetPageText( 0, wxGetApp().getMsg( "bridge" ) );
+  m_HueBook->SetPageText( 1, wxGetApp().getMsg( "lights" ) );
 
   m_labIID->SetLabel( wxGetApp().getMsg( "iid" ) );
   BaseDialog::addIIDs(m_IID);
+
+  // Bridge
+  m_labBridgeName->SetLabel( wxGetApp().getMsg( "name" ) );
+  m_SetBridgeName->SetLabel( wxGetApp().getMsg( "set" ) );
+  m_GetBridge->SetLabel( wxGetApp().getMsg( "get" ) );
+
 
   // Lights
   m_LightsGrid->SetColLabelValue(0, wxGetApp().getMsg("address") );
@@ -131,20 +139,51 @@ void HueConfDlg::event(iONode node) {
   m_Row = -1;
   m_Col = -1;
 
-  /*
-  <program cmd="7" lntype="9" iid="hue-1">
-    <json>
-      <1 type="Dimmable light" name="Lux Lamp" modelid="LWB004" uniqueid="0017880100de2419-0b" swversion="66012040">
-        <state on="false" bri="0" alert="none" reachable="false"/>
-        <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
-      </1>
-   */
   char* s = NodeOp.base.toString(node);
   TraceOp.trc( "hueconf", TRCLEVEL_INFO, __LINE__, 9999, "event:\n%s", s );
   StrOp.free(s);
 
+  int cv = wProgram.getcv(node);
+
   iONode json = NodeOp.findNode(node, "json");
-  if( json != NULL ) {
+
+  // Bridge config
+  if( json != NULL && cv == 0) {
+    /*
+    <program cmd="7" cv="0" lntype="9" iid="hue-1">
+      <json name="Philips hue" zigbeechannel="20" mac="0017881215cd" dhcp="false" ipaddress="192.168.100.175" netmask="255.255.255.0"
+      gateway="192.168.100.99" proxyaddress="none" proxyport="0" UTC="2015-02-05T132537" localtime="2015-02-05T142537"
+      timezone="Europe/Berlin" swversion="01018228" apiversion="1.5.0" linkbutton="false" portalservices="true" portalconnection="connected">
+        <whitelist>
+          <000000007b9c25875ddd6a1a5ddd6a1a last="" use="" date="2015-02-03T194638" create="" date="2014-12-04T160318" name="Hue#BullittGroupLimited"/>
+          <rocrail4ever last="" use="" date="2014-12-04T161156" create="" date="2014-12-04T161156" name="rocrail"/>
+          <rocrail4light last="" use="" date="2015-02-05T132537" create="" date="2014-12-04T161346" name="rocrail"/>
+          <Druxcrfl7zVWbckI last="" use="" date="2014-12-11T153548" create="" date="2014-12-07T150148" name="Huemanic"/>
+        </whitelist>
+        <swupdate updatestate="0" checkforupdate="false" url="" text="" notify="false">
+          <devicetypes bridge="false" lights=""/>
+        </swupdate>
+        <portalstate signedon="true" incoming="true" outgoing="true" communication="disconnected"/>
+      </json>
+    </program>
+     */
+    m_BridgeName->SetValue(wxString(NodeOp.getStr(json, "name", "?"),wxConvUTF8) );
+    m_BridgeIP->SetValue(wxString(NodeOp.getStr(json, "ipaddress", "?"),wxConvUTF8) );
+    m_BridgeFirmware->SetValue(wxString(NodeOp.getStr(json, "swversion", "?"),wxConvUTF8) );
+    m_BridgeAPI->SetValue(wxString(NodeOp.getStr(json, "apiversion", "?"),wxConvUTF8) );
+    m_BridgeZigbee->SetValue(wxString(NodeOp.getStr(json, "zigbeechannel", "?"),wxConvUTF8) );
+  }
+
+  // Lights
+  else if( json != NULL && cv == 1024 ) {
+    /*
+    <program cmd="7" cv="1024" lntype="9" iid="hue-1">
+      <json>
+        <1 type="Dimmable light" name="Lux Lamp" modelid="LWB004" uniqueid="0017880100de2419-0b" swversion="66012040">
+          <state on="false" bri="0" alert="none" reachable="false"/>
+          <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
+        </1>
+     */
     int cnt = NodeOp.getChildCnt(json);
     for( int i = 0; i < cnt; i++ ) {
       iONode light = NodeOp.getChild(json, i);
@@ -229,5 +268,28 @@ void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
     cmd->base.del(cmd);
   }
   dlg->Destroy();
+}
+
+
+
+void HueConfDlg::onBridgeNameSet( wxCommandEvent& event ) {
+  iONode cmd = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+  wProgram.setcmd( cmd, wProgram.setstring );
+  wProgram.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+  wProgram.setlntype(cmd, wProgram.lntype_hue);
+  wProgram.setcv(cmd, 0);
+  wProgram.setstrval1(cmd, m_BridgeName->GetValue().mb_str(wxConvUTF8));
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
+
+}
+
+void HueConfDlg::onBridgeGet( wxCommandEvent& event ) {
+  iONode cmd = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+  wProgram.setcmd( cmd, wProgram.getoptions );
+  wProgram.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+  wProgram.setlntype(cmd, wProgram.lntype_hue);
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
 }
 

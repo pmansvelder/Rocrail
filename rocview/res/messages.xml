@@ -29605,4 +29605,7 @@
   <Msg id="available">
     <en txt="Available"/>
   </Msg>
+  <Msg id="bridge">
+    <en txt="Bridge"/>
+  </Msg>
 </Messages>
