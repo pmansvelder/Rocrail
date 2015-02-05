@@ -364,6 +364,13 @@ static iONode __translate( iOHUE inst, iONode node ) {
     else if( wProgram.getcmd( node ) == wProgram.query ) {
       __queryLights(inst);
     }
+    else if( wProgram.getcmd( node ) == wProgram.setstring ) {
+      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+      cmd->methode = StrOp.fmt("PUT /api/%s/lights/%d", wDigInt.getuserid(data->ini), cv);
+      cmd->request = StrOp.fmt("{\"name\":\"%s\"}", wProgram.getstrval1(node));
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set light name of %d to [%s]", cv, wProgram.getstrval1(node));
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
     else if( wProgram.getcmd( node ) == wProgram.update ) {
       iHueCmd cmd = allocMem(sizeof(struct HueCmd));
       cmd->methode = StrOp.fmt("POST /api/%s/lights", wDigInt.getuserid(data->ini));

@@ -39,6 +39,9 @@
 
 HueConfDlg::HueConfDlg( wxWindow* parent ):HueConfDlgGen( parent )
 {
+  m_Row = -1;
+  m_Col = -1;
+
   initLabels();
 
   m_LightsPanel->GetSizer()->Layout();
@@ -110,6 +113,7 @@ void HueConfDlg::initLabels() {
 
   m_GetLights->SetLabel( wxGetApp().getMsg( "get" ) );
   m_FindLights->SetLabel( wxGetApp().getMsg( "query" ) );
+  m_SetLight->SetLabel( wxGetApp().getMsg( "set" ) );
 
   // Buttons
   m_stdButtonsOK->SetLabel( wxGetApp().getMsg( "ok" ) );
@@ -119,6 +123,9 @@ void HueConfDlg::initLabels() {
 void HueConfDlg::event(iONode node) {
   if( m_LightsGrid->GetNumberRows() > 0 )
     m_LightsGrid->DeleteRows( 0, m_LightsGrid->GetNumberRows() );
+  m_Row = -1;
+  m_Col = -1;
+
   /*
   <program cmd="7" lntype="9" iid="hue-1">
     <json>
@@ -140,13 +147,16 @@ void HueConfDlg::event(iONode node) {
       int row = m_LightsGrid->GetNumberRows()-1;
       m_LightsGrid->SetCellValue(row, 0, wxString(NodeOp.getName(light),wxConvUTF8) );
       m_LightsGrid->SetCellAlignment(wxALIGN_CENTRE, row, 0);
+      m_LightsGrid->SetReadOnly( row, 0, true );
 
       m_LightsGrid->SetCellValue(row, 1, wxString(NodeOp.getStr(light, "name", "?"),wxConvUTF8) );
       m_LightsGrid->SetCellValue(row, 2, wxString(NodeOp.getStr(light, "type", "?"),wxConvUTF8) );
+      m_LightsGrid->SetReadOnly( row, 2, true );
       iONode state = NodeOp.findNode(light, "state");
       if( state != NULL ) {
         m_LightsGrid->SetCellValue(row, 3, wxString(NodeOp.getStr(state, "reachable", "?"),wxConvUTF8) );
         m_LightsGrid->SetCellAlignment(wxALIGN_CENTRE, row, 3);
+        m_LightsGrid->SetReadOnly( row, 3, true );
       }
     }
     m_LightsGrid->AutoSize();
@@ -156,7 +166,29 @@ void HueConfDlg::event(iONode node) {
 
 }
 
-void HueConfDlg::onLightCellChange( wxGridEvent& event ) {
+void HueConfDlg::onLightSet( wxCommandEvent& event ) {
+  if( m_Row == -1 || m_Col == -1 )
+    return;
 
+  TraceOp.trc( "hueconf", TRCLEVEL_INFO, __LINE__, 9999, "program cell: %d,%d", m_Row, m_Col );
+  if( m_Col == 1 ) {
+    iONode cmd = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+    wProgram.setcmd( cmd, wProgram.setstring );
+    wProgram.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+    wProgram.setlntype(cmd, wProgram.lntype_hue);
+    wProgram.setcv(cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)));
+    wProgram.setstrval1(cmd, m_LightsGrid->GetCellValue(m_Row, m_Col).mb_str(wxConvUTF8));
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+
+    wxCommandEvent cevent;
+    onGetLights(cevent);
+  }
+}
+
+void HueConfDlg::onLightCellChange( wxGridEvent& event ) {
+  m_Row = event.GetRow();
+  m_Col = event.GetCol();
+  TraceOp.trc( "hueconf", TRCLEVEL_INFO, __LINE__, 9999, "cell changed: %d,%d", m_Row, m_Col );
 }
 
