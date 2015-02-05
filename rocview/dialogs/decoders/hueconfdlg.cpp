@@ -54,6 +54,7 @@ HueConfDlg::HueConfDlg( wxWindow* parent ):HueConfDlgGen( parent )
   if( m_LightsGrid->GetNumberRows() > 0 )
     m_LightsGrid->DeleteRows( 0, m_LightsGrid->GetNumberRows() );
 
+  m_SetLight->Enable(false);
 
 }
 
@@ -183,6 +184,8 @@ void HueConfDlg::onLightSet( wxCommandEvent& event ) {
 
     wxCommandEvent cevent;
     m_labChangedLight->SetLabel(wxT("..."));
+    m_SetLight->Enable(false);
+
     onGetLights(cevent);
   }
 }
@@ -192,5 +195,6 @@ void HueConfDlg::onLightCellChange( wxGridEvent& event ) {
   m_Col = event.GetCol();
   TraceOp.trc( "hueconf", TRCLEVEL_INFO, __LINE__, 9999, "cell changed: %d,%d", m_Row, m_Col );
   m_labChangedLight->SetLabel(wxString::Format(wxT("%s: \"%s\""), m_LightsGrid->GetCellValue(m_Row, 0), m_LightsGrid->GetCellValue(m_Row, 1)));
+  m_SetLight->Enable(true);
 }
 
