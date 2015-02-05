@@ -47,6 +47,7 @@ class HueConfDlg : public HueConfDlgGen
 		void onClose( wxCloseEvent& event );
 		void onLightCellChange( wxGridEvent& event );
 		void onLightSet( wxCommandEvent& event );
+		void onLightCellDClick( wxGridEvent& event );
 	public:
 		/** Constructor */
 		HueConfDlg( wxWindow* parent );

@@ -27,10 +27,14 @@
 #include "wx/defs.h"
 #endif
 
+#include <wx/colordlg.h>
+
 #include "rocview/public/guiapp.h"
 #include "rocview/dialogs/basedlg.h"
 
 #include "rocrail/wrapper/public/Program.h"
+#include "rocrail/wrapper/public/Output.h"
+#include "rocrail/wrapper/public/Color.h"
 
 #include "rocs/public/trace.h"
 #include "rocs/public/node.h"
@@ -196,5 +200,34 @@ void HueConfDlg::onLightCellChange( wxGridEvent& event ) {
   TraceOp.trc( "hueconf", TRCLEVEL_INFO, __LINE__, 9999, "cell changed: %d,%d", m_Row, m_Col );
   m_labChangedLight->SetLabel(wxString::Format(wxT("%s: \"%s\""), m_LightsGrid->GetCellValue(m_Row, 0), m_LightsGrid->GetCellValue(m_Row, 1)));
   m_SetLight->Enable(true);
+}
+
+
+void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
+  m_Row = event.GetRow();
+  m_Col = event.GetCol();
+
+  wxColourData ColourData;
+  ColourData.SetColour(wxColour(255,255,255));
+
+  wxColourDialog* dlg = new wxColourDialog(this, &ColourData);
+  if( wxID_OK == dlg->ShowModal() ) {
+    wxColour &colour = dlg->GetColourData().GetColour();
+
+    iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
+    iONode color = NodeOp.inst( wColor.name(), NULL, ELEMENT_NODE);
+    NodeOp.addChild(cmd, color);
+    wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+    wOutput.setcolortype( cmd, True );
+    wColor.setred(color, (int)colour.Red());
+    wColor.setgreen(color, (int)colour.Green());
+    wColor.setblue(color, (int)colour.Blue());
+    wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
+    wOutput.setvalue(cmd, 255);
+    wOutput.setcmd(cmd, wOutput.value);
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+  }
+  dlg->Destroy();
 }
 
