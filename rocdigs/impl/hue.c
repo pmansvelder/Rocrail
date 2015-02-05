@@ -387,7 +387,14 @@ static iONode __translate( iOHUE inst, iONode node ) {
       __queryLights(inst);
     }
     else if( wProgram.getcmd( node ) == wProgram.setstring ) {
-      if( cv > 0 ) {
+      if( cv == 1025 ) {
+        iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+        cmd->methode = StrOp.fmt("POST /api");
+        cmd->request = StrOp.fmt("{\"devicetype\": \"rocrail\", \"username\": \"%s\"}", wProgram.getstrval1(node));
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "add user name [%s]", wProgram.getstrval1(node));
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+      else if( cv > 0 ) {
         iHueCmd cmd = allocMem(sizeof(struct HueCmd));
         cmd->methode = StrOp.fmt("PUT /api/%s/lights/%d", wDigInt.getuserid(data->ini), cv);
         cmd->request = StrOp.fmt("{\"name\":\"%s\"}", wProgram.getstrval1(node));
@@ -408,11 +415,17 @@ static iONode __translate( iOHUE inst, iONode node ) {
       cmd->request = StrOp.dup("");
       ThreadOp.post( data->transactor, (obj)cmd );
     }
-    if( wProgram.getlntype(node) == wProgram.lntype_sv && wProgram.getcmd( node ) == wProgram.lncvget &&
+    else if( wProgram.getlntype(node) == wProgram.lntype_sv && wProgram.getcmd( node ) == wProgram.lncvget &&
         wProgram.getcv(node) == 0 && wProgram.getmodid(node) == 0 && wProgram.getaddr(node) == 0 )
     {
       /* This construct is used to to query all LocoIOs, but is here recycled for query all lights. */
       __queryLights(inst);
+    }
+    if(  wProgram.getcmd( node ) == wProgram.pton ) {
+      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
+      cmd->methode = StrOp.fmt("POST /api");
+      cmd->request = StrOp.fmt("{\"devicetype\": \"rocrail\", \"username\": \"%s\"}", wDigInt.getuserid(data->ini));
+      ThreadOp.post( data->transactor, (obj)cmd );
     }
   }
 
@@ -464,15 +477,6 @@ static iONode __translate( iOHUE inst, iONode node ) {
 
   }
 
-  /* Program command. */
-  else if( StrOp.equals( NodeOp.getName( node ), wProgram.name() ) ) {
-    if(  wProgram.getcmd( node ) == wProgram.pton ) {
-      iHueCmd cmd = allocMem(sizeof(struct HueCmd));
-      cmd->methode = StrOp.fmt("POST /api");
-      cmd->request = StrOp.fmt("{\"devicetype\": \"rocrail\", \"username\": \"%s\"}", wDigInt.getuserid(data->ini));
-      ThreadOp.post( data->transactor, (obj)cmd );
-    }
-  }
   return NULL;
 }
 

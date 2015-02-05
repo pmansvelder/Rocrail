@@ -87,8 +87,9 @@ void HueConfDlg::onGetLights( wxCommandEvent& event ) {
 
 void HueConfDlg::onHelp( wxCommandEvent& event ) {
   switch( m_HueBook->GetSelection() ) {
-  case 0: wxGetApp().openLink( "philips:hue" ); break;
-  default: wxGetApp().openLink( "philips:hue" ); break;
+  case 0: wxGetApp().openLink( "philips:hue-conf", "bridge" ); break;
+  case 1: wxGetApp().openLink( "philips:hue-conf", "lights" ); break;
+  default: wxGetApp().openLink( "philips:hue-conf" ); break;
   }
 }
 
@@ -172,6 +173,15 @@ void HueConfDlg::event(iONode node) {
     m_BridgeFirmware->SetValue(wxString(NodeOp.getStr(json, "swversion", "?"),wxConvUTF8) );
     m_BridgeAPI->SetValue(wxString(NodeOp.getStr(json, "apiversion", "?"),wxConvUTF8) );
     m_BridgeZigbee->SetValue(wxString(NodeOp.getStr(json, "zigbeechannel", "?"),wxConvUTF8) );
+    m_BridgeUserName->Clear();
+    iONode users = NodeOp.findNode(json, "whitelist");
+    if( users != NULL ) {
+      int cnt = NodeOp.getChildCnt(users);
+      for( int i = 0; i < cnt; i++ ) {
+        iONode user = NodeOp.getChild( users, i );
+        m_BridgeUserName->Append(wxString(NodeOp.getName(user),wxConvUTF8));
+      }
+    }
   }
 
   // Lights
@@ -281,7 +291,6 @@ void HueConfDlg::onBridgeNameSet( wxCommandEvent& event ) {
   wProgram.setstrval1(cmd, m_BridgeName->GetValue().mb_str(wxConvUTF8));
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
-
 }
 
 void HueConfDlg::onBridgeGet( wxCommandEvent& event ) {
@@ -292,4 +301,16 @@ void HueConfDlg::onBridgeGet( wxCommandEvent& event ) {
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
 }
+
+void HueConfDlg::onSetBridgeUserName( wxCommandEvent& event ) {
+  iONode cmd = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+  wProgram.setcmd( cmd, wProgram.setstring );
+  wProgram.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+  wProgram.setlntype(cmd, wProgram.lntype_hue);
+  wProgram.setcv(cmd, 1025);
+  wProgram.setstrval1(cmd, m_BridgeUserName->GetValue().mb_str(wxConvUTF8));
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
+}
+
 

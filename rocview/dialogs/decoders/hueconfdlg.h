@@ -50,6 +50,7 @@ class HueConfDlg : public HueConfDlgGen
 		void onLightCellDClick( wxGridEvent& event );
     void onBridgeNameSet( wxCommandEvent& event );
     void onBridgeGet( wxCommandEvent& event );
+    void onSetBridgeUserName( wxCommandEvent& event );
 	public:
 		/** Constructor */
 		HueConfDlg( wxWindow* parent );
