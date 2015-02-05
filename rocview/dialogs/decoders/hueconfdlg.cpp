@@ -40,6 +40,8 @@
 #include "rocs/public/node.h"
 #include "rocs/public/str.h"
 
+#include "rocview/res/icons.hpp"
+
 
 HueConfDlg::HueConfDlg( wxWindow* parent ):HueConfDlgGen( parent )
 {
@@ -106,12 +108,14 @@ void HueConfDlg::onClose( wxCloseEvent& event ) {
 }
 
 void HueConfDlg::initLabels() {
-  SetTitle(wxT("HUE"));
+  SetTitle(wxT("Philips HUE"));
   m_HueBook->SetPageText( 0, wxGetApp().getMsg( "bridge" ) );
   m_HueBook->SetPageText( 1, wxGetApp().getMsg( "lights" ) );
 
   m_labIID->SetLabel( wxGetApp().getMsg( "iid" ) );
   BaseDialog::addIIDs(m_IID);
+
+  m_HueLogo->SetBitmap(*_img_hue_logo);
 
   // Bridge
   m_labBridgeName->SetLabel( wxGetApp().getMsg( "name" ) );

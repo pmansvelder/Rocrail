@@ -2283,7 +2283,7 @@ void RocGuiFrame::initFrame() {
 
   menuProgramming->Append( ME_CBusNode, _T("CBUS..."), _T("CBUS Nodes") );
   menuProgramming->Append( ME_BiDiB, _T("BiDiB..."), _T("BiDiB Nodes") );
-  menuProgramming->Append( ME_HueConf, _T("HUE..."), _T("HUE Configuration") );
+  menuProgramming->Append( ME_HueConf, _T("Philips HUE..."), _T("HUE Configuration") );
   wxMenu *menuRocnet = new wxMenu();
   menuRocnet->Append( ME_RocNet, wxGetApp().getMenu("setup") + wxT("..."), wxGetApp().getTip("setup") );
   menuRocnet->Append( ME_RocNetShutdown, wxGetApp().getMenu("shutdownall"), wxGetApp().getTip("shutdownall") );
