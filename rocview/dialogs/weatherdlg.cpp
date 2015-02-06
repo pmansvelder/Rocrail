@@ -447,12 +447,12 @@ void WeatherDlg::initValues() {
   m_ColorBrightness->SetValue( wWeather.isusebri(m_Props)?true:false);
   m_ColorSaturation->SetValue( wWeather.isusesat(m_Props)?true:false);
 
-  if( m_ColorWhite->IsChecked() ) m_ColorGrid->ShowCol(3);
-  else m_ColorGrid->HideCol(3);
-  if( m_ColorBrightness->IsChecked() ) m_ColorGrid->ShowCol(4);
-  else m_ColorGrid->HideCol(4);
-  if( m_ColorSaturation->IsChecked() ) m_ColorGrid->ShowCol(5);
-  else m_ColorGrid->HideCol(5);
+  if( m_ColorWhite->IsChecked() ) ShowCol(3);
+  else HideCol(3);
+  if( m_ColorBrightness->IsChecked() ) ShowCol(4);
+  else HideCol(4);
+  if( m_ColorSaturation->IsChecked() ) ShowCol(5);
+  else HideCol(5);
 
 }
 
@@ -918,9 +918,9 @@ void WeatherDlg::onColorWhite( wxCommandEvent& event ) {
 
   wWeather.setusewhite( m_Props, m_ColorWhite->IsChecked()?True:False);
   if( m_ColorWhite->IsChecked() )
-    m_ColorGrid->ShowCol(3);
+    ShowCol(3);
   else
-    m_ColorGrid->HideCol(3);
+    HideCol(3);
   m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
 }
 
@@ -930,9 +930,9 @@ void WeatherDlg::onColorBrightness( wxCommandEvent& event ) {
 
   wWeather.setusebri( m_Props, m_ColorBrightness->IsChecked()?True:False);
   if( m_ColorBrightness->IsChecked() )
-    m_ColorGrid->ShowCol(4);
+    ShowCol(4);
   else
-    m_ColorGrid->HideCol(4);
+    HideCol(4);
   m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
 }
 
@@ -942,9 +942,23 @@ void WeatherDlg::onColorSaturation( wxCommandEvent& event ) {
 
   wWeather.setusesat( m_Props, m_ColorSaturation->IsChecked()?True:False);
   if( m_ColorSaturation->IsChecked() )
-    m_ColorGrid->ShowCol(5);
+    ShowCol(5);
   else
-    m_ColorGrid->HideCol(5);
+    HideCol(5);
   m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+}
+
+void WeatherDlg::ShowCol(int col) {
+  //m_ColorGrid->ShowCol(col); // wx 3.0
+  m_ColorGrid->SetColSize(col, 50);
+  m_ColorGrid->AutoSizeColumn(col);
+  m_ColorGrid->ForceRefresh();
+}
+
+
+void WeatherDlg::HideCol(int col) {
+  //m_ColorGrid->HideCol(col); // wx 3.0
+  m_ColorGrid->SetColSize(col, 0);
+  m_ColorGrid->ForceRefresh();
 }
 

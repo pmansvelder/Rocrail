@@ -44,6 +44,8 @@ class WeatherDlg : public WeatherDlgGen
   bool evaluate();
   bool evaluateTheme();
   void initColorGrid();
+  void ShowCol(int col);
+  void HideCol(int col);
 	protected:
 		// Handlers for WeatherDlgGen events.
 		void onCancel( wxCommandEvent& event );
