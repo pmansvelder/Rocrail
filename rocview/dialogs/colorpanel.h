@@ -42,6 +42,14 @@ class ColorPanel : public wxPanel
   bool   m_White;
   bool   m_Brightness;
   bool   m_Saturation;
+  bool   m_UseGC;
+  wxGraphicsContext* m_GC;
+  wxPaintDC* m_DC;
+  void setPen(const wxColour& color, int width=1, int style=wxSOLID);
+  void setBrush(const wxColour& color);
+  void drawLine(int x, int y, int cx, int cy);
+  void drawRectangle(int x, int y, int cx, int cy);
+
 public:
   ColorPanel(wxWindow* parent);
   ~ColorPanel();

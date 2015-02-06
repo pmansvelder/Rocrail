@@ -27,10 +27,13 @@
 #include "wx/defs.h"
 #endif
 
+#include "rocview/public/guiapp.h"
 #include "rocview/public/base.h"
 
 #include "rocrail/wrapper/public/Weather.h"
 #include "rocrail/wrapper/public/WeatherColor.h"
+
+#include "rocview/wrapper/public/Gui.h"
 
 #include "rocs/public/trace.h"
 
@@ -66,53 +69,99 @@ void ColorPanel::setWeather(iONode weather, int selection, bool white, bool bri,
 }
 
 
+void ColorPanel::setPen(const wxColour& color, int width, int style) {
+  if( m_UseGC ) {
+    wxPen pen(color);
+    pen.SetWidth(width);
+    pen.SetStyle(style);
+    m_GC->SetPen(pen);
+  }
+  else {
+    wxPen pen(color);
+    pen.SetWidth(width);
+    pen.SetStyle(style);
+    m_DC->SetPen(pen);
+  }
+}
+
+
+void ColorPanel::setBrush(const wxColour& color) {
+  if( m_UseGC ) {
+    wxBrush brush(color);
+    m_GC->SetBrush(brush);
+  }
+  else {
+    wxBrush brush(color);
+    m_DC->SetBrush(brush);
+  }
+}
+
+void ColorPanel::drawLine(int x, int y, int cx, int cy) {
+  if( m_UseGC ) {
+    m_GC->StrokeLine( x, y, cx, cy );
+  }
+  else {
+    m_DC->DrawLine( x, y, cx, cy );
+  }
+}
+
+void ColorPanel::drawRectangle(int x, int y, int cx, int cy) {
+  if( m_UseGC ) {
+    m_GC->DrawRectangle(x,y,cx,cy);
+  }
+  else {
+    m_DC->DrawRectangle(x,y,cx,cy);
+  }
+}
+
+
 void ColorPanel::OnPaint(wxPaintEvent& event)
 {
   wxPaintDC dc(this);
+  m_DC = &dc;
+
   dc.SetBackground(*wxBLACK_BRUSH);
   dc.Clear();
+
+  m_UseGC = false;
+
+  wxGraphicsContext* gc = NULL;
+  if( wGui.isrendergc(wxGetApp().getIni())) {
+    m_UseGC = true;
+    gc = wxGraphicsContext::Create(this);
+    m_GC = gc;
+#ifdef wxANTIALIAS_DEFAULT
+    gc->SetAntialiasMode(wxANTIALIAS_DEFAULT);
+#endif
+  }
 
   int w = 0;
   int h = 0;
   GetSize(&w, &h);
 
-  dc.SetPen( *wxLIGHT_GREY_PEN );
-  wxPen pen = dc.GetPen();
-  pen.SetWidth(1);
-  pen.SetStyle(wxDOT);
-  dc.SetPen(pen);
+  setPen(*wxLIGHT_GREY, 1, wxDOT);
   float h10 = (float)h / 10.0;
   for( int i = 1; i < 10; i++) {
-    dc.DrawLine( 0, i*h10, w, i*h10 );
+    //dc.DrawLine( 0, i*h10, w, i*h10 );
+    drawLine( 0, i*h10, w, i*h10 );
   }
 
   float w23 = (float)w / 23.0;
   for( int i = 0; i < 24; i++) {
     if( m_Hour != -1 && m_Hour == i ) {
-      dc.SetPen( wxPen(wxColor( 0, 50, 0 )) );
-      wxPen pen = dc.GetPen();
-      pen.SetWidth(1);
-      pen.SetStyle(wxSOLID);
-      dc.SetPen(pen);
-      dc.SetBrush( wxBrush(wxColor( 0, 50, 0 )));
-      dc.DrawRectangle(i * w23 + 1, 0, w23, h);
+      setPen(wxColor( 0, 50, 0 ), 1, wxSOLID);
+      setBrush( wxColor( 0, 50, 0 ));
+      drawRectangle(i * w23 + 1, 0, w23, h);
     }
 
     if( i == m_Selection ) {
+      setPen(*wxLIGHT_GREY, 3, wxDOT);
       dc.SetPen( *wxLIGHT_GREY_PEN );
-      wxPen pen = dc.GetPen();
-      pen.SetWidth(3);
-      pen.SetStyle(wxDOT);
-      dc.SetPen(pen);
-      dc.DrawLine( i * w23, 0, i * w23, h );
+      drawLine( i * w23, 0, i * w23, h );
     }
     else if( i > 0 && i < 23 ){
-      dc.SetPen( *wxLIGHT_GREY_PEN );
-      wxPen pen = dc.GetPen();
-      pen.SetWidth(1);
-      pen.SetStyle(wxDOT);
-      dc.SetPen(pen);
-      dc.DrawLine( i * w23, 0, i * w23, h );
+      setPen(*wxLIGHT_GREY, 1, wxDOT);
+      drawLine( i * w23, 0, i * w23, h );
     }
 
   }
@@ -138,77 +187,58 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
         return;
     }
 
-    wxPen pen = dc.GetPen();
     float ystep = (float)h / 255.0;
 
     if( m_White ) {
-      dc.SetPen( *wxWHITE_PEN );
-      pen = dc.GetPen();
-      pen.SetWidth(3);
-      dc.SetPen(pen);
+      setPen(wxColor( 255, 255, 255 ), 3, wxSOLID);
       int start = wWeatherColor.getwhite(colorProps[0]);
       for( int i = 1; i < 24; i++ ) {
         int val = wWeatherColor.getwhite(colorProps[i]);
-        dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
         start = val;
       }
     }
 
-    dc.SetPen( *wxRED_PEN );
-    pen = dc.GetPen();
-    pen.SetWidth(3);
-    dc.SetPen(pen);
+    setPen(wxColor( 255, 0, 0 ), 3, wxSOLID);
     int start = wWeatherColor.getred(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getred(colorProps[i]);
-      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+      drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
-    dc.SetPen( *wxGREEN_PEN );
-    pen = dc.GetPen();
-    pen.SetWidth(3);
-    dc.SetPen(pen);
+    setPen(wxColor( 0, 255, 0 ), 3, wxSOLID);
     start = wWeatherColor.getgreen(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getgreen(colorProps[i]);
-      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+      drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
-    dc.SetPen( wxColour(0,0,255) );
-    pen = dc.GetPen();
-    pen.SetWidth(3);
-    dc.SetPen(pen);
+    setPen(wxColor( 0, 0, 255 ), 3, wxSOLID);
     start = wWeatherColor.getblue(colorProps[0]);
     for( int i = 1; i < 24; i++ ) {
       int val = wWeatherColor.getblue(colorProps[i]);
-      dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+      drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
       start = val;
     }
 
     if( m_Brightness ) {
-      dc.SetPen( wxColour(255,255,0) );
-      pen = dc.GetPen();
-      pen.SetWidth(1);
-      dc.SetPen(pen);
+      setPen(wxColor( 255, 255, 0 ), 1, wxSOLID);
       start = wWeatherColor.getbri(colorProps[0]);
       for( int i = 1; i < 24; i++ ) {
         int val = wWeatherColor.getbri(colorProps[i]);
-        dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
         start = val;
       }
     }
 
     if( m_Saturation ) {
-      dc.SetPen( wxColour(0,255,255) );
-      pen = dc.GetPen();
-      pen.SetWidth(1);
-      dc.SetPen(pen);
+      setPen(wxColor( 0, 255, 255 ), 1, wxSOLID);
       start = wWeatherColor.getsat(colorProps[0]);
       for( int i = 1; i < 24; i++ ) {
         int val = wWeatherColor.getsat(colorProps[i]);
-        dc.DrawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
         start = val;
       }
     }
@@ -220,5 +250,8 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     dc.SetTextForeground(*wxWHITE);
     dc.DrawText(wxT("No weather selected..."), 10, h/2);
   }
+
+  if( gc != NULL)
+    delete gc;
 
 }
