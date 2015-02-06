@@ -81,6 +81,7 @@ CellRenderer::~CellRenderer() {
 
 void CellRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect& rect, int row, int col, bool isSelected)
 {
+  dc.SetClippingRegion(rect);
   wxGridCellStringRenderer::Draw(grid, attr, dc, rect, row, col, false);
 
   if( m_Renderer != NULL && imageName != NULL && StrOp.len(imageName) > 0 ) {
@@ -123,7 +124,10 @@ void CellRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRe
       }
     }
   }
+
+  dc.DestroyClippingRegion();
 }
+
 
 wxSize CellRenderer::GetBestSize(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, int row, int col) {
   if( imageBitmap != NULL )

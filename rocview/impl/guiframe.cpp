@@ -1433,6 +1433,8 @@ void RocGuiFrame::InitActiveLocs(wxCommandEvent& event) {
   m_ActiveLocs->SelectRow(m_iLcRowSelection);
   m_ActiveLocs->MakeCellVisible(m_iLcRowSelection, m_ActiveLocs->XToCol(0) );
 
+  m_ActiveLocs->ForceRefresh();
+
   if( wGui.isrestorelcctrl(m_Ini) && !m_ThrottlesRestored ) {
     initLocCtrlDialogs();
     m_ThrottlesRestored = true;
