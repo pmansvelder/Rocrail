@@ -372,6 +372,24 @@ static iOSlot __getSlot(iOMassothData data, iONode node) {
           slot = __configureVehicle(data, node);
         }
       }
+      else if( rsp[2] == 0x04 ) {
+        int rspAddr = (rsp[4] << 8) + rsp[5];
+        /*
+         * 40 C3 04 80 00 63 64
+         */
+        if( rsp[3] == 0x80 ) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "number of max. active locos reached; addr=%d", rspAddr );
+        }
+        else if( rsp[3] == 0x81 ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "unknown loco addr=%d", rspAddr );
+        }
+        else if( rsp[3] == 0x82 ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "addr=%d already in use", rspAddr );
+        }
+        else if( rsp[3] == 0x83 ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "loco list full; addr=%d", rspAddr );
+        }
+      }
       else if( rsp[2] == 0x08 ) {
         /* 3.100 */
         /* 64 C7 00 33 90 */
