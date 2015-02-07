@@ -2,7 +2,7 @@
 <!--
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -389,7 +389,7 @@
     <nl txt="Stoppen" tip="Stop locomotief"/>
     <sv txt="Stoppa" tip="Stoppa lok"/>
     <fr txt="Arrêter" tip="Arrêter la locomotive"/>
-    <tr txt="Dur" tip="Lokomotifi durdur"/>
+    <tr txt="Dur" tip="Lokomotifi Durdur"/>
     <es txt="Parar" tip="Parar locomotora"/>
     <it txt="Arresta" tip="Arrestare la locomotiva"/>
     <da txt="Stop" tip="Stop lokomotiv"/>
@@ -490,7 +490,7 @@
     <nl txt="verbindt met" tip="verbindt met een Rocrail server"/>
     <sv txt="Anslut till" tip="Anslut till en Rocrail server."/>
     <fr txt="Se connecter" tip="Se connecter à un serveur Rocrail."/>
-    <tr txt="Bağlan" tip="Rocrail vericisine bağlan."/>
+    <tr txt="Bağlan" tip="Bir Rocrail sunucusuna bağlan."/>
     <es txt="Conectar a" tip="Conectar al servidor Rocrail"/>
     <it txt="Connetti a" tip="Connette al server Rocrail"/>
     <da txt="Tilslut til" tip="Tilslut til Rocrail server."/>
@@ -524,7 +524,7 @@
     <nl txt="Open" accel="0" tip="Open een spoorplan"/>
     <sv txt="Öppna" accel="0" tip="Öppna en spårplan"/>
     <fr txt="Ouvrir" accel="0" tip="Ouvrir un plan."/>
-    <tr txt="Aç" accel="0" tip="Bir ray diyagramı aç."/>
+    <tr txt="Aç" accel="0" tip="Bir kurgu planı aç."/>
     <es txt="Abrir" accel="0" tip="Abrir un plan de ruta"/>
     <it txt="Apri" tip="Apre un tracciato"/>
     <da txt="Åben" accel="0" tip="Åben en sporplan."/>
@@ -558,7 +558,7 @@
     <nl txt="Uploaden" accel="0" tip="Stuur een spoorplan naar de server"/>
     <sv txt="Skicka upp" accel="0" tip="Sänd en spårplan till server"/>
     <fr txt="Charger" accel="0" tip="Envoyer un plan au serveur."/>
-    <tr txt="Yükle" accel="0" tip="Vericiye bir ray diyagramı gönder."/>
+    <tr txt="Yükle" accel="0" tip="Sunucuya bir kurgu planı gönder."/>
     <es txt="Subida" accel="0" tip="Enviar plan de seguimiento al servidor"/>
     <it txt="Carica" tip="Invia un tracciato binari al server"/>
     <da txt="Upload" accel="0" tip="Send en sporplan til server."/>
@@ -624,7 +624,7 @@
     <nl txt="Opslaan" tip="Spoorplan opslaan."/>
     <sv txt="Spara" tip="Spara spårplan"/>
     <fr txt="Enregistrer" tip="Enregistrer le plan."/>
-    <tr txt="Kaydet" tip="Ray diyagramı kaydet."/>
+    <tr txt="Kaydet" tip="Kurgu planını kaydet."/>
     <es txt="Guardar" tip="Guardar plan de seguimiento"/>
     <it txt="Salva" tip="Salva il tracciato"/>
     <da txt="Gem" tip="Gem Sporplan."/>
@@ -657,7 +657,7 @@
     <nl txt="Opslaan als" accel="8" tip="Spoorplan met andere naam opslaan."/>
     <sv txt="Spara som" accel="8" tip="Spara spårplan med annat namn"/>
     <fr txt="Enregistrer sous" tip="Enregistrer le plan sous un autre nom."/>
-    <tr txt="Farklı Kaydet" accel="5" tip="Ray diyagramını farklı bir ad ile kaydet."/>
+    <tr txt="Farklı Kaydet" accel="5" tip="Kurgu planını başka isimle kaydet."/>
     <es txt="Salvar Como" accel="5" tip="Guardar plan de seguimiento con otro nombre"/>
     <it txt="Salva con nome" tip="Salva il tracciato con nome"/>
     <da txt="Gem som" accel="5" tip="Gem sporplan med et nyt navn."/>
@@ -690,7 +690,7 @@
     <nl txt="Rocrail en Rocview beëindigen" tip="Rocrail en Rocview beëindigen"/>
     <sv txt="Stäng ned Rocrail och Rocview." tip="Stäng ned Rocrail server och avsluta Rocview."/>
     <fr txt="Fermer Rocrail et Rocview" tip="Fermer le serveur Rocrail et sortir de Rocview."/>
-    <tr txt="Rocrail ve Rocview'i kapat" tip="Rocrail vericisini kapat ve çık."/>
+    <tr txt="Rocrail ve Rocview'i kapat" tip="Rocrail sunucusunu kapat ve Rocview'den çık."/>
     <es txt="Apagar Rocrail y Rocview" tip="Apagar el servidor Rocrail y salir de Rocview"/>
     <it txt="Chiudi Rocrail e Rocview" tip="Arresta il server Rocrail e chiudi Rocview"/>
     <da txt="Luk Rocrail og Rocview." tip="Luk Rocrail server og afslut Rocview."/>
@@ -723,7 +723,7 @@
     <nl txt="Afsluiten" tip="Rocview afsluiten."/>
     <sv txt="Avsluta" tip="Avsluta GUI."/>
     <fr txt="Quitter" tip="Quitter l'interface."/>
-    <tr txt="Çıkış" tip="Rocrail grafik ara yüzünden çık."/>
+    <tr txt="Çıkış" tip="GUI'den çıkış."/>
     <es txt="Salir" tip="Salir de GUI"/>
     <it txt="Esci" tip="Esce da Rocview"/>
     <da txt="Afslut" tip="Afslut GUI"/>
@@ -891,7 +891,7 @@
     <nl txt="Schakel in" accel="9" tip="Schakel de voeding aan"/>
     <sv txt="Körström på" accel="9" tip="Slå till spänning"/>
     <fr txt="Mettre sous tension" accel="1" tip="Mettre sous tension."/>
-    <tr txt="Güç Açık" accel="6" tip="GO komutu ile gücü aç."/>
+    <tr txt="Güç Açık" accel="6" tip="Gücü aç."/>
     <es txt="Encendido" accel="6" tip="Posición de encendido."/>
     <it txt="Alimenta il tracciato" tip="Alimenta il tracciato"/>
     <da txt="Kørestrøm tænd" accel="9" tip="Tænd kørestrøm"/>
@@ -925,7 +925,7 @@
     <nl txt="Schakel uit" accel="9" tip="Schakel de voeding uit"/>
     <sv txt="Körström av" accel="9" tip="Slå från spänning"/>
     <fr txt="Couper l'alimentation" accel="2" tip="Couper l'alimentation."/>
-    <tr txt="Güç Kapalı" accel="0" tip="STOP komutu ile gücü kapat."/>
+    <tr txt="Güç Kapalı" accel="0" tip="Gücü kapat."/>
     <es txt="Apagar" accel="0" tip="Posición de apagado"/>
     <it txt="Spegnere" tip="Togliere alimentazione"/>
     <da txt="Sluk kørestrøm" accel="0" tip="Slå kørestrøm fra."/>
@@ -959,7 +959,7 @@
     <nl txt="Init veld" accel="8" tip="Zet de wissels zoals ze in het spoorplan staan."/>
     <sv txt="Initialisera fält" accel="8" tip="Initialisera växlar enligt spårplan"/>
     <fr txt="Champs d'initialisation" accel="0" tip="Positionner les aiguillages selon le plan."/>
-    <tr txt="Makasları hazırla" accel="0" tip="Ray diyagramına göre demiryolu makaslarını başlangıç durumuna getir."/>
+    <tr txt="Makasları hazırla" accel="0" tip="Makasları kurgu planına göre hazırla."/>
     <es txt="Iniciar maqueta" accel="0" tip="Inicializar conmutadores de acuerdo al plan de seguimiento"/>
     <it txt="Campo di inizializzazione" tip="Inizializza i deviatoi secondo il tracciato"/>
     <da txt="Initialisere anlæg" accel="8" tip="Initialiser kontakter ifølge spor plan"/>
@@ -1125,7 +1125,7 @@
     <nl txt="Start alle loc's" tip="Zet alle loc's in auto mode"/>
     <sv txt="Starta alla lok" tip="Sätt alla lok i autoläge."/>
     <fr txt="Démarrer toutes les locomotives" tip="Placer toutes les locomotives en mode automatique."/>
-    <tr txt="Bütün lokları çalıştır" tip="Oto Modda bütün Locları çalıştır."/>
+    <tr txt="Bütün lokları çalıştır" tip="Tüm lokomotifleri otomatik moda al."/>
     <es txt="Arrancar todas las Locs" tip="Poner todos los locs en modo automático."/>
     <it txt="Avvia tutte le locomotive" tip="Imposta tutte le locomotive in modalità automatica"/>
     <da txt="Start alle lokomotiver" tip="Sæt alle lokomotiver i auto tilstand"/>
@@ -1158,7 +1158,7 @@
     <nl txt="Stop alle locs" tip="Zet alle loc's in hand mode"/>
     <sv txt="Stoppa alla lok" tip="Sätt alla lok i manuellt läge."/>
     <fr txt="Arrêter toutes les locomotives" tip="Placer toutes les locomotives en mode manuel."/>
-    <tr txt="Bütün lokları durdur" tip="Manuel modda bütün Locları durdur."/>
+    <tr txt="Bütün lokları durdur" tip="Tüm lokomotifleri manuel moda al."/>
     <es txt="Parar todas las Locs" tip="Poner todos los locs en modo manual."/>
     <it txt="Arrestare tutte le locomotive" tip="Imposta tutte le locomotive in modalità manuale"/>
     <da txt="Stop alle lokomotiver" tip="Sæt alle lokomotiver i manuel tilstand"/>
@@ -1191,7 +1191,7 @@
     <nl txt="Start loc" tip="Zet locomotief in auto mode."/>
     <sv txt="Starta lok" tip="Sätt lokomotiv i autoläge."/>
     <fr txt="Démarrer la locomotive" tip="Placer la locomotive en mode automatique."/>
-    <tr txt="Lokomotifi çalıştır" tip="Oto Modda lokomotifi başlat."/>
+    <tr txt="Lokomotifi çalıştır" tip="Lokomotifi otomatik moda al."/>
     <es txt="Arrancar locomotora" tip="Poner locomotora en modo automático."/>
     <it txt="Avvia locomotiva" tip="Impostare locomotiva in modalità automatica"/>
     <da txt="Start lokomotiv" tip="Sæt lokomotiv i auto tilstand."/>
@@ -1224,7 +1224,7 @@
     <nl txt="Stop auto loc" tip="Zet loc in hand mode"/>
     <sv txt="Stoppa autoläge för lok" tip="Sätt lokomotiv i manuellt läge."/>
     <fr txt="Arrêter les locomotives en mode automatique" tip="Placer la locomotive en mode manuel."/>
-    <tr txt="Lokomotifi otomatik durdur" tip="Manuel modda lokomotifi durdur."/>
+    <tr txt="Lokomotifi otomatik durdur" tip="Lokomotifi manual moda al."/>
     <es txt="Parar locomotora automáticamente" tip="Poner la locomotora en modo manual"/>
     <it txt="Arrestare locomotiva" tip="Impostare locomotiva in modalità manuale"/>
     <da txt="Stop lokomotivs auto tilstand." tip="Sæt lokomotiv i manuel tilstand."/>
@@ -1359,7 +1359,7 @@
     <nl txt="Nivo hoger" tip="Volgend spoorplan nivo"/>
     <sv txt="En nivå upp" tip="Nästa nivå av spårplan"/>
     <fr txt="Niveau supérieur" tip="Niveau suivant du plan."/>
-    <tr txt="Üst seviye" tip="Ray diyagramının sonraki bölümü."/>
+    <tr txt="Üst seviye" tip="Kurgu planının diğer seviyesi."/>
     <es txt="Subir nivel" tip="Siguiente nivel del plan de seguimiento"/>
     <it txt="Livello superiore" tip="Livello successivo pannello tracciato"/>
     <da txt="Niveau op" tip="Næste niveau af sporplan."/>
@@ -1392,7 +1392,7 @@
     <nl txt="Nivo lager" tip="Voorgaand spoorplan nivo"/>
     <sv txt="En nivå ner" tip="Föregående nivå av spårplan"/>
     <fr txt="Niveau inférieur" tip="Niveau précédent du plan."/>
-    <tr txt="Alt seviye" tip="Ray diyagramının önceki bölümü."/>
+    <tr txt="Alt seviye" tip="Kurgu planının önceki seviyesi."/>
     <es txt="Bajar nivel" tip="Nivel anterior del plan de seguimiento."/>
     <it txt="Livello inferiore" tip="Livello precedente pannello tracciato"/>
     <da txt="Niveau ned" tip="Foregående niveau af sporplan."/>
@@ -1458,7 +1458,7 @@
     <nl txt="Verwijder boodschappen" tip="Verwijder alle boodschappen"/>
     <sv txt="Töm meddelanden" tip="Rensa alla meddelanden."/>
     <fr txt="Effacer les messages" tip="Effacer tous les messages"/>
-    <tr txt="Mesajları temizle" tip="Bütün mesajları temizle."/>
+    <tr txt="Mesajları temizle" tip="Tüm mesajları temizle."/>
     <es txt="Borrar mensajes" tip="Limpiar todos los mensajes."/>
     <it txt="Cancella messaggi" tip="Cancella tutti i messaggi"/>
     <en txt="Slet meddelelser" tip="Slet alle meddelelser."/>
@@ -1620,7 +1620,7 @@
     <nl txt="Auto mode" accel="1" tip="Schakel auto mode in"/>
     <sv txt="Automatikläge" accel="1" tip="Ändra till automatikläge"/>
     <fr txt="Mode automatique" accel="1" tip="Activer le mode automatique."/>
-    <tr txt="Oto Mod" accel="1" tip="Oto Modu aç."/>
+    <tr txt="Oto Mod" accel="1" tip="Otomatik modu aç."/>
     <es txt="Modo automático" accel="1" tip="Cambiar a modo automático activo."/>
     <it txt="Modalità automatica" tip="Attiva modalità automatica"/>
     <da txt="Automatisk tilstand" accel="1" tip="Slå automatisk tilstand til."/>
@@ -2135,7 +2135,7 @@
     <en txt="Change direction" tip="Change direction."/>
     <nl txt="Verander rijrichting" tip="Rij richting wisselen."/>
     <sv txt="Ändra riktning" tip="Ändra riktning."/>
-    <tr txt="Yönü değiştir" tip="Yön değiştir."/>
+    <tr txt="Yönü değiştir" tip="Yönü değiştir."/>
     <es txt="Dirección" tip="Cambiar dirección"/>
     <it txt="Cambia direzione" tip="Cambia direzione"/>
     <da txt="Ændre retning" tip="Ændre retning."/>
@@ -2364,7 +2364,7 @@
     <nl txt="Decoder" tip="Decoder nummer."/>
     <sv txt="Dekoder" tip="Dekoder nummer"/>
     <fr txt="Décodeur" tip="Numéro du décodeur."/>
-    <tr txt="Dekoder" tip="Dekoder Numarası."/>
+    <tr txt="Dekoder" tip="Decoder numarası."/>
     <es txt="Decodificador" tip="Decodificar número."/>
     <it txt="Decoder" tip="Numero decoder"/>
     <da txt="Dekoder" tip="Dekoder nummer."/>
@@ -3387,7 +3387,7 @@
     <nl txt="Spoorplannaam" accel="0" tip="Wijzig  spoorplannaam"/>
     <sv txt="Spårplanstitel" accel="0" tip="Ändra spårplanstitel"/>
     <fr txt="Nom du plan" accel="0" tip="Changer le titre du plan."/>
-    <tr txt="Ray Diyagram Başlığı" accel="0" tip="Ray Diyagram Başlığını değiştir."/>
+    <tr txt="Ray Diyagram Başlığı" accel="0" tip="Kurgu planı adını değiştir."/>
     <es txt="Nombre del diagrama de circuito" accel="0" tip="Cambiar el nombre del plan de seguimiento"/>
     <it txt="Titolo pannello tracciato" tip="Cambia il nome del pannello tracciato"/>
     <da txt="Sporplanstitel" accel="0" tip="Ændre sporplanstitel."/>
@@ -3547,7 +3547,7 @@
     <nl txt="Rocrail Eigenschappen" accel="0" tip="Rocrail eigenschappen bewerken."/>
     <sv txt="Rocrailegenskaper" accel="0" tip="Ändra Rockrailegenskaper"/>
     <fr txt="Propriétés de Rocrail" tip="Éditer les propriétés de Rocrail."/>
-    <tr txt="Rocrail Özellikleri" accel="0" tip="Rocrail Özelliklerini Düzenle."/>
+    <tr txt="Rocrail Özellikleri" accel="0" tip="Rocrail özelliklerini düzenle."/>
     <es txt="Propiedades de Rocrail" accel="0" tip="Editar propiedades de Rocrail."/>
     <it txt="Proprietà di Rocrail" tip="Modifica le proprietà di Rocrail"/>
     <da txt="Rocrail egenskaber" accel="0" tip="Rediger Rocrail egenskaber."/>
@@ -4774,7 +4774,7 @@
     <nl txt="Nieuw" tip="Nieuw spoorplan."/>
     <sv txt="Ny" tip="Ny spårplan"/>
     <fr txt="Nouveau" tip="Nouveau plan"/>
-    <tr txt="Yeni"/>
+    <tr txt="Yeni" tip="Yeni kurgu planı"/>
     <es txt="Nueva" tip="Nuevo plan de  pista"/>
     <it txt="Nuovo" tip="Nuovo pannello tracciato"/>
     <da txt="Ny" tip="Ny sporplan"/>
@@ -6632,7 +6632,7 @@
     <nl txt="V_RMin" tip="Minimale snelheid achteruit."/>
     <sv txt="V_RMin" tip="Omvänd minimal hastighet"/>
     <fr txt="V_RMin" tip="Inverser la vitesse minimale"/>
-    <tr txt="V_RMin"/>
+    <tr txt="V_RMin" tip="En düşük geri hız"/>
     <es txt="V_RMin" tip="Reversa , minima velozidad"/>
     <it txt="VR min" tip="Velocità minima all'indietro"/>
     <da txt="V_RMin" tip="tilbage i minimal hastighed"/>
@@ -6662,7 +6662,7 @@
     <nl txt="V_RMid" tip="Kruis snelheid achteruit."/>
     <sv txt="V_RMid" tip="Omvänd mellan hastighet"/>
     <fr txt="V_RMoy" tip="Inverser la vitesse intermédiaire"/>
-    <tr txt="V_RMid"/>
+    <tr txt="V_RMid" tip="Orta geri hız"/>
     <es txt="V_RMid" tip="Velocidad media en reversa"/>
     <it txt="VR med" tip="Velocità media all'indietro"/>
     <da txt="V_RMid" tip="Tilbage i middel hastighed"/>
@@ -6714,7 +6714,7 @@
     <nl txt="V_RMax" tip="Maximale snelheid achteruit."/>
     <sv txt="V_RMax" tip="Omvänd maximal hastighet"/>
     <fr txt="V_RMax" tip="Inverser la vitesse maximale"/>
-    <tr txt="V_RMax"/>
+    <tr txt="V_RMax" tip="En yüksek geri hız"/>
     <es txt="V_RMax" tip="Reversa, maxima velozidad"/>
     <it txt="VR max" tip="Velocità massima all'indietro"/>
     <da txt="V_RMax" tip="Tilbage i maximal hastighed"/>
@@ -7244,7 +7244,7 @@
     <nl txt="Bedienen" tip="Spoorplan bedienen."/>
     <sv txt="Använd" tip="Använd spårplan"/>
     <fr txt="Mode exploitation" tip="Mode exploitation sur ce plan"/>
-    <tr txt="İşlet" tip="Ray diyagramını işlet."/>
+    <tr txt="İşlet" tip="Tam faaliyet planı"/>
     <es txt="Operar" tip="Operar la pista del plan"/>
     <it txt="Modalità operativa" tip="Tracciato in modalità operativa"/>
     <da txt="Anvend" tip="Anvend sporplan"/>
@@ -7275,7 +7275,7 @@
     <nl txt="Zoom" tip="Afmetingen spoorplan"/>
     <sv txt="Zoom" tip="Storlek på spårplan"/>
     <fr txt="Zoom" tip="Dimension du plan."/>
-    <tr txt="Zum" tip="Ray diyagram boyutunu genişliğe uydur."/>
+    <tr txt="Zum" tip="Kurgu planı boyutu."/>
     <es txt="Zoom" tip="Tamaño del plan de la pista."/>
     <it txt="Zoom" tip="Dimensioni pannello tracciato"/>
     <da txt="Zoom" tip="Sporplan størrelse."/>
@@ -8542,7 +8542,7 @@
     <nl txt="Leg bestemming vast" tip="Loc stopt na het bereiken van de bestemming."/>
     <sv txt="Sätt destination" tip="Lok stannar när det nått sin destination"/>
     <fr txt="Définir la destination" tip="La locomotive s'arrêtera une fois sa destination atteinte."/>
-    <tr txt="Gidilecek yerlerin belirlenmesi" tip="Gidilecek yere ulaştıktan sonra Loc durur."/>
+    <tr txt="Gidilecek yerlerin belirlenmesi" tip="Lokomotif varış noktasına geldikten sonra dursun."/>
     <es txt="Fijar destino" tip="La locomotora se detiene luego de alcanzado su destino"/>
     <it txt="Impostare destinazione" tip="Arrestare la locomotiva dopo aver raggiunto la destinazione"/>
     <da txt="Sæt destination" tip="Lokomotiv stopper når det har nået destination."/>
@@ -8637,7 +8637,7 @@
     <nl txt="Rails vullen" tip="Kleurt de rails grijs in."/>
     <sv txt="Fyllda spår" tip="Fyll spår med grått"/>
     <fr txt="Remplir les voies" tip="Griser les voies."/>
-    <tr txt="Rayları doldur" tip="Grili rayları doldur."/>
+    <tr txt="Rayları doldur" tip="Rayları gri ile doldurur."/>
     <es txt="Rellenar vías" tip="Rellenar caminos con gris."/>
     <it txt="Riempi binari" tip="Riempie i binari con il colore grigio"/>
     <da txt="Fyld spor" tip="Fyld spor med gråt."/>
@@ -9199,7 +9199,7 @@
     <nl txt="Handboek" accel="0" tip="Het online handleiding"/>
     <sv txt="Guide" accel="0" tip="Onlinemanualen."/>
     <fr txt="Guide" accel="0" tip="Manuel d'utilisation en ligne."/>
-    <tr txt="Kılavuz" accel="0" tip="The online Manual."/>
+    <tr txt="Kılavuz" accel="0" tip="On-line kılavuz."/>
     <es txt="Guía" accel="0" tip="El Manual en línea"/>
     <it txt="Guida" tip="Guida in linea"/>
     <sv txt="Hjælp" accel="0" tip="Online manual"/>
@@ -10943,7 +10943,7 @@
     <nl txt="Rocview eigenschappen" accel="0" tip="Rocview eigenschappen bewerken."/>
     <sv txt="Rocview egenskaper" accel="0" tip="Redigera Rocview egenskaper"/>
     <fr txt="Propriétés de Rocview" accel="0" tip="Éditer les propriétés de Rocview."/>
-    <tr txt="Rocview Özellikleri" accel="0" tip="Rocview Özelliklerini Düzenle."/>
+    <tr txt="Rocview Özellikleri" accel="0" tip="Rocview özelliklerini değiştir."/>
     <es txt="Propiedades de Rocview" accel="0" tip="Editar propiedades de Rocview"/>
     <it txt="Proprietà di Rocview" tip="Modifica le proprietà di Rocview"/>
     <da txt="Rocview rettigheder" accel="0" tip="Redigér Rocviews rettigheder"/>
@@ -11035,7 +11035,7 @@
     <nl txt="identificatie" tip="Indien de bezetmelder niet het juiste decoderadres teruggeeft."/>
     <sv txt="Identifierare" tip="Om tågigenkänningssystemet rapporterar ogiltig dekoderadress."/>
     <fr txt="Identifiant" tip="Si le système de détection des trains ne renvoie pas l'adresse du décodeur."/>
-    <tr txt="Identifier"/>
+    <tr txt="Identifier" tip="Eğer tren algılama sistemi decoder adresini döndürmezse."/>
     <es txt="Identificador" tip="En caso de que el sistema de detección del tren no devuelva la dirección descodificada."/>
     <it txt="Identificativo" tip="Nel caso il sistema non restituisca l'indirizzo decoder"/>
     <da txt="Identifikation" tip="I tilfælde af at sensoren ikke viser dekoder adressen"/>
@@ -11093,7 +11093,7 @@
     <nl txt="zelfde bestemmings richting" tip="Nieuwe bestemming zoeken zonder richtings verandering."/>
     <sv txt="Samma riktning" tip="Sök ny destination utan att ändra nuvarande färdriktning."/>
     <fr txt="Même direction que la destination" tip="Rechercher une nouvelle destination sans changer de direction."/>
-    <tr txt="Samedir"/>
+    <tr txt="Samedir" tip="Şimdiki yönü değiştirmeden yeni varış yeri ara."/>
     <es txt="misma direccion de destino" tip="Buscar nuevo destino sin cambiar la dirección actual."/>
     <it txt="Stessa direzione della destinazione" tip="Ricerca nuova destinazione senza cambiare attuale direzione"/>
     <da txt="Samme destinations retning" tip="Søg ny destination uden at ændre den nuværende retning."/>
@@ -11151,7 +11151,7 @@
     <nl txt="verplichte zelfde richting" tip="Nieuwe bestemming zoeken zonder richtings verandering."/>
     <sv txt="Tvinga samma destinationsriktning." tip="Sök forcerad ny destination utan att ändra nuvarande färdriktning."/>
     <fr txt="Forcer la même direction que la destination" tip="Chercher une nouvelle destination forcée sans changer la direction actuelle."/>
-    <tr txt="aynı varış yerini zorla"/>
+    <tr txt="aynı varış yerini zorla" tip="Şimdiki yönü değiştirmeden zorlanmış yeni varış yeri ara."/>
     <es txt="forzar misma direccion de destino" tip="Forzar la busqueda de un nuevo destino sin cambiar la dirección actual"/>
     <it txt="Imporre stessa direzione e destinazione" tip="Ricerca nuova destinazione imposta senza cambiare attuale direzione destinazione"/>
     <da txt="forsæt samme destinations retning" tip="Søg til ny destination uden at ændre den nuværende retning"/>
@@ -11474,7 +11474,7 @@
     <nl txt="Wachttijd voor rijrichtingverandering" tip="Wacht  xxx ms na het laatste wissel commando."/>
     <sv txt="Riktningsväxlingspaus" tip="Pausa xxxms efter sista växelkommandot"/>
     <fr txt="Pause lors d'un changement de direction" tip="Pause de x ms après la dernière commande d'aiguillage."/>
-    <tr txt="DirChange pause" tip="Pause xxxms after last switch command."/>
+    <tr txt="DirChange pause" tip="Son makas komutundan sonra xxx ms ara ver."/>
     <es txt="Pausa de descarga" tip="Detener xxxms despues del ultimo comando de accesorio"/>
     <it txt="Pausa cambio di direzione" tip="Attesa in ms prima del cambio di direzione"/>
     <da txt="Sporskifte Pause" tip="Pause xxxms efter sidste sporskifte kommando."/>
@@ -11502,7 +11502,7 @@
     <nl txt="V=0 bij richtingsverandering" tip="Zet snelheid op 0 bij een richtingsverandering."/>
     <sv txt="V=0 vid riktningsbyte" tip="Sätt hastighet till 0 vid riktningsbyte"/>
     <fr txt="V=0 au changement de direction" tip="Remettre la vitesse à 0 lors d'un changement de direction."/>
-    <tr txt="V=0 at dir change" tip="Set velocity to 0 when chang direction."/>
+    <tr txt="V=0 at dir change" tip="Yön değiştirdikten sonra hızı 0 yap."/>
     <es txt="V=0 en cambios de dirección" tip="Establecer velocidad a 0 cuando cambie la dirección"/>
     <it txt="Arresta marcia al cambio di direzione" tip="Decelerare fino all'arresto prima del cambio di direzione"/>
     <da txt="V=0 ved retningsændring" tip="Sæt hastighed til 0 når der skiftes retning."/>
@@ -11765,7 +11765,7 @@
     <nl txt="Gebruik IDLE inplaats van GPOFF" tip="De LocoBuffer-USB heeft het RailSync nodig."/>
     <sv txt="Använd IDLE istället för GPOFF" tip="LocoBuffer-USB behöver RailSync."/>
     <fr txt="Utiliser IDLE à la place de GPOFF" tip="Le LocoBuffer USB a besoin du RailSync."/>
-    <tr txt="Use IDLE instead of GPOFF"/>
+    <tr txt="Use IDLE instead of GPOFF" tip="LocoBuffer-USB için RailSync gerekli."/>
     <es txt="Usa IDLE en lugar de GPOFF" tip="El LocoBuffer-USB necesita el RailSync."/>
     <it txt="Utilizza IDLE anziché GPOFF" tip="Il LocoBuffer-USB necessita di RailSync"/>
     <da txt="Brug IDLE istedet for GPOFF" tip="LocoBuffer-USB mangler RailSyn"/>
@@ -11795,7 +11795,7 @@
     <nl txt="PT IID" tip="Gebruik deze controller voor programmeren."/>
     <sv txt="PT IID" tip="Använd denna kontrollenhet för programmering"/>
     <fr txt="PT IID" tip="Utiliser ce contrôleur pour la programmation."/>
-    <tr txt="PT IID" tip="Use this controller for programming."/>
+    <tr txt="PT IID" tip="Programlama için bu denetleyiciyi kullan."/>
     <es txt="PT IID" tip="Utilice este controlador para la programación."/>
     <it txt="IID PT" tip="Utilizza questo controller per la programmazione"/>
     <da txt="PT IID" tip="Brug denne controller til programmering."/>
@@ -11824,7 +11824,7 @@
     <nl txt="SV IID" tip="Gebruik deze controller voor LN-SV programmeren."/>
     <sv txt="SV IID" tip="Använd denna kontrollenhet för LN-SV programmering."/>
     <fr txt="SV IID" tip="Utiliser ce contrôleur pour la programmation LN-SV."/>
-    <tr txt="SV IID" tip="Use this controller for LN-SV programming."/>
+    <tr txt="SV IID" tip="LN-SV programlama için bu denetleyiciyi kullan."/>
     <es txt="SV IID" tip="Utilice este controlador para programación LN-SV"/>
     <it txt="IID SV" tip="Utilizza questo controller per la programmazione LN-SV"/>
     <da txt="SV IID" tip="Brug denne controller til LN-SV programmering."/>
@@ -11853,7 +11853,7 @@
     <nl txt="LC IID" tip="Gebruik deze controller voor loc's"/>
     <sv txt="LC IID" tip="Använd denna kontrollenhet för lok."/>
     <fr txt="LC IID" tip="Utiliser ce contrôleur pour les locomotives."/>
-    <tr txt="LC IID" tip="Use this controller for locomotives."/>
+    <tr txt="LC IID" tip="Lokomotifler için bu denetleyiciyi kullan."/>
     <es txt="LC IID" tip="Utilice este controlador para las locomotoras."/>
     <it txt="IID LC" tip="Utilizza questo controller per le locomotive"/>
     <da txt="LC IID" tip="Brug denne controller til lokomotiver."/>
@@ -12232,7 +12232,7 @@
     <nl txt="Lastregeling" tip="Decoder is voorzien van lastregeling"/>
     <sv txt="Reglerad" tip="Dekodern har motorregulator"/>
     <fr txt="Régulé" tip="Le décodeur dispose de la compensation de charge."/>
-    <tr txt="Regulated" tip="Decoder has a motor regulator."/>
+    <tr txt="Regulated" tip="Decoderin motor yük düzenleyicisi var."/>
     <es txt="Regulado" tip="Decodificador tiene un regulador de motor."/>
     <it txt="Regolato" tip="Il decoder permette la regolazione del motore"/>
     <da txt="Lastreguleret" tip="Decoder har en motorregulator."/>
@@ -13424,7 +13424,7 @@
     <nl txt="Software Updates" tip="Controleer op  updates van Rocrail."/>
     <sv txt="Mjukvaru-uppdatering" tip="Sök efter tillgängliga uppdateringar för Rocrail."/>
     <fr txt="Mise à jour du programme" tip="Rechercher des mises à jour pour Rocrail."/>
-    <tr txt="Yazılım Güncellemeleri" tip="Check for available updates for Rocrail."/>
+    <tr txt="Yazılım Güncellemeleri" tip="Rocrail'in yeni sürümlerini kontrol et."/>
     <es txt="Actualizaciones del Software" tip="Comprobar si hay actualizaciones disponibles para Rocrail."/>
     <it txt="Controlla gli aggiornamenti" tip="Controlla aggiornamenti disponibili per Rocrail"/>
     <da txt="Software opdatering" tip="Tjek for tilgængelige opdateringer til Rocrail."/>
@@ -13913,7 +13913,7 @@
     <nl txt="Gebruikers groep" tip="Deel je ervaringen, ontmoet andere Rocrailers en geniet!"/>
     <sv txt="Användargemenskap" tip="Dela med dig av dina erfarenheter, träffa andra Rocrailers och ha trevligt."/>
     <fr txt="Groupe d'utilisateurs" tip="Partagez vos expériences, rencontrez d'autres utilisateurs de Rocrail et amusez-vous !"/>
-    <tr txt="User group" tip="Share your experiences, meet other Rocrailers and have fun!"/>
+    <tr txt="User group" tip="Deneyimlerinizi paylaşın, diğer Rocrail kullanıcıları ile tanışın ve eğlenin!"/>
     <es txt="grupo de usuarios" tip="Comparte tus experiencias, conoce a otros Rocrailers y diviértete!"/>
     <it txt="Gruppo utenti" tip="Condividete le vostre esperienze con altri utenti di Rocrail"/>
     <da txt="Brugergruppe" tip="Del dine oplevelser, mød andre Rocrailers og ha' det sjovt!"/>
@@ -13957,7 +13957,7 @@
     <da txt="Oversættelser" tip="Oversættelser i Launchpad.net"/>
     <nb txt="Oversettelser"/>
     <es txt="Traducciones" tip="Traducciones en Launchpad.net"/>
-    <tr txt="Çeviriler"/>
+    <tr txt="Çeviriler" tip="Launchpad.net'te çeviriler"/>
     <en_AU txt="Translations" tip="Translations in Launchpad.net"/>
     <en_CA txt="Translations" tip="Translations in Launchpad.net"/>
     <en_GB txt="Translations" tip="Translations in Launchpad.net"/>
@@ -13975,7 +13975,7 @@
     <nl txt="Netwerk instellingen" tip="Interactieve rocrail.ini configuratie."/>
     <sv txt="Konfigurationsservice" tip="Interaktiv rocrail.ini konfiguration."/>
     <fr txt="Configuration du service" tip="Configuration interactive de rocrail.ini."/>
-    <tr txt="Configuration Service" tip="Interactive rocrail.ini configuration."/>
+    <tr txt="Configuration Service" tip="İnteraktif rocrail.ini düzenlemesi"/>
     <es txt="Servicio de Configuración" tip="Configuración interactiva rocrail.ini."/>
     <it txt="Servizio di configurazione" tip="Configurazione interattiva del file rocrail.ini"/>
     <da txt="Konfigurationsservice" tip="Interaktiv rocrail.ini konfiguration."/>
@@ -14007,7 +14007,7 @@
     <nl txt="Meld een Bug" tip="Als je een Bug opmerkt..."/>
     <sv txt="Rapportera en bugg" tip="Om du hittar en Bug..."/>
     <fr txt="Signaler un problème" tip="Si vous recontrez un bug..."/>
-    <tr txt="Report a Bug" tip="If you encounter a Bug..."/>
+    <tr txt="Report a Bug" tip="Bir program hatası ile karşılaşırsanız ..."/>
     <es txt="Comunica un error" tip="Si encuentra un fallo..."/>
     <it txt="Riporta un bug" tip="Segnalate eventuali bug..."/>
     <da txt="Rapportér en fejl" tip="Hvis du har opdaget en fejl..."/>
@@ -14039,7 +14039,7 @@
     <nl txt="Uitbreidingsverzoek" tip="Als je een goed idee hebt..."/>
     <sv txt="Funktionsönskemål" tip="Om du har en bra idé..."/>
     <fr txt="Demande de fonctionnalité" tip="Si vous avez une idée géniale..."/>
-    <tr txt="Feature request" tip="If you have a good idea..."/>
+    <tr txt="Feature request" tip="İyi bir fikriniz varsa ..."/>
     <es txt="Feature request" tip="Si tiene una buena idea..."/>
     <it txt="Richiesta nuove funzionalità" tip="Richiedete nuove funzionalità..."/>
     <da txt="Feature request" tip="Hvis du har en god idé..."/>
@@ -14715,7 +14715,7 @@
     <nl txt="Thema"/>
     <sv txt="Tema"/>
     <fr txt="Thème"/>
-    <tr txt="Theme"/>
+    <tr txt="Tema"/>
     <es txt="Tema"/>
     <it txt="Tema"/>
     <da txt="Tema"/>
@@ -15411,7 +15411,7 @@
     <nl txt="Tijdgestuurde akties" tip="Activeer acties op een bepaald tijdstip"/>
     <sv txt="Tidsstyrda händelser" tip="Aktivera åtgärder vid en speciell tidpunkt."/>
     <fr txt="Actions temporisées" tip="Activer les actions à une certaine heure."/>
-    <tr txt="Timed Actions" tip="Activate actions at a certain time."/>
+    <tr txt="Timed Actions" tip="Herhangi bir zamandaki aktif hareketler"/>
     <es txt="Timed Actions" tip="Activar las acciones en un momento determinado."/>
     <it txt="Azioni temporizzate" tip="Attiva le azioni ad un certo tempo."/>
     <da txt="Tidsstyrrede hændelser" tip="Aktivér hændelser på et bestemt tidspunkt."/>
@@ -15730,7 +15730,7 @@
     <nl txt="Toon ID's" tip="Toon object ID's."/>
     <sv txt="Visa ID'n." tip="Visa objektens ID."/>
     <fr txt="Afficher les identifiants" tip="Afficher les identifiants des objets."/>
-    <tr txt="ID'leri Göster" tip="Show object ID's."/>
+    <tr txt="ID'leri Göster" tip="Nesne ID'lerini göster"/>
     <es txt="Mostrar IDs" tip="Mostrar IDs de objeto"/>
     <it txt="Mostrare ID" tip="Mostrare gli ID degli oggetti"/>
     <da txt="Vis ID's" tip="Vis objekts ID's"/>
@@ -16129,7 +16129,7 @@
     <nl txt="Melder wachttijd" tip="Melder wachttijd in seconden"/>
     <sv txt="Händelsetimeout" tip="Väntetid för en händelse i sekunder"/>
     <fr txt="Expiration de l'événement" tip="Durée d'attente pour un événement en secondes."/>
-    <tr txt="Event timeout"/>
+    <tr txt="Event timeout" tip="Saniye olarak bir olayın olması için beklenecek zaman."/>
     <es txt="Event timeout" tip="Tiempo para esperar un evento en segundos."/>
     <it txt="Tempo attesa evento" tip="Secondi d'attesa per evento"/>
     <da txt="Hændelses timeout" tip="Tid at vente på en hændelse i sekunder."/>
@@ -16387,7 +16387,7 @@
     <nl txt="Herstart alle loks" tip="Zet alle loc's uit de vorige sessie in auto mode"/>
     <sv txt="Återuppta alla lok" tip="Sätt alla lok i automode från tidigare session."/>
     <fr txt="Reprendre toutes les locomotives" tip="Mettre toutes les locomotives en mode automatique comme lors de la session précédente."/>
-    <tr txt="Resume all locs" tip="Put all locs in auto mode from previous session."/>
+    <tr txt="Resume all locs" tip="Önceki oturumdaki tüm lokomotifleri otomatik moda geçir."/>
     <es txt="Resume all locs" tip="Pasar todas las locomotoras de la sesión anterior a modo automático."/>
     <it txt="Ripristinare tutte le locomotive" tip="Impostare modalità automatica a tutte le locomotive della precedente sessione"/>
     <da txt="Genoptag alle lokomotiver" tip="Sæt alle lokomotiver i auto tilstand fra foregående session."/>
@@ -16642,7 +16642,7 @@
     <nl txt="Sla wissel commando's over" tip="Sla wisselcommando's in de rijweg over als de wissels al gezet zijn."/>
     <sv txt="Skippa växelkommandon" tip="Skippa växelkommandon om tågväg redan är satt."/>
     <fr txt="Ne pas exécuter la commande de l'aiguillage" tip="Ne pas exécuter la commande de l'aiguillage s'il est déjà en position pour cet itinéraire"/>
-    <tr txt="Skip switch commands" tip="Skip switch commands in routes if already set"/>
+    <tr txt="Skip switch commands" tip="Zaten varsa rotalardaki makas komutlarını pas geç"/>
     <es txt="Skip switch commands" tip="Saltear comandos de decisiones en rutas ya configuradas"/>
     <it txt="Saltare i comandi deviatoi negli itinerari se già impostati" tip="Non comanda i deviatoi dell'itinerario se l'itinerario è già formato"/>
     <da txt="spring over sporskifte kommandoer" tip="Drop sporskife kommandoer hvis togvejen er sat"/>
@@ -19454,7 +19454,7 @@
     <sr_latin txt="Zadška"/>
     <zh_CN txt="防抖"/>
     <sl txt="Odbij"/>
-    <pt_BR txt="Checagem dupla"/>
+    <pt_BR txt="Remover pulos"/>
     <fi txt="Kytkentäaikaviive"/>
     <pl txt="Stabilizacja (podbicie)"/>
   </Msg>
@@ -29560,6 +29560,7 @@
     <en_GB txt="ms"/>
     <pt_BR txt="milissegundos"/>
     <sl txt="ms"/>
+    <it txt="ms"/>
   </Msg>
   <Msg id="devicechannels">
     <en txt="Device channels"/>
@@ -29568,6 +29569,8 @@
     <pt_BR txt="Canais do dispositivo"/>
     <sl txt="Kanali naprave"/>
     <sr_latin txt="Kanali uređaja"/>
+    <en_GB txt="Device channels"/>
+    <it txt="Canali dispositivo"/>
   </Msg>
   <Msg id="generatein">
     <en txt="Generate IN event"/>
@@ -29575,6 +29578,9 @@
     <nl txt="Genereer een IN melding"/>
     <pt_BR txt="Gerar evento de entrada (IN)"/>
     <sl txt="Ustvari IN dogodek"/>
+    <en_GB txt="Generate IN event"/>
+    <it txt="Generare evento IN"/>
+    <sr_latin txt="Generiši \&quot;IN\&quot; događaj"/>
   </Msg>
   <Msg id="framerate">
     <en txt="Frame rate"/>
@@ -29582,6 +29588,9 @@
     <nl txt="Framesnelheid"/>
     <pt_BR txt="Cadência"/>
     <sl txt="Hitrost osveževanja"/>
+    <en_GB txt="Frame rate"/>
+    <it txt="Frame rate"/>
+    <sr_latin txt="Učestalost prikaza"/>
   </Msg>
   <Msg id="blockstate_signal">
     <en txt="Block state"/>
@@ -29589,23 +29598,57 @@
     <nl txt="Block status"/>
     <pt_BR txt="Estado do bloco"/>
     <sl txt="Stanje odseka"/>
+    <en_GB txt="Block state"/>
+    <it txt="Stato blocco"/>
+    <sr_latin txt="Stanje bloka"/>
   </Msg>
   <Msg id="statesignal">
     <en txt="State signal"/>
+    <en_GB txt="State signal"/>
+    <de txt="Statussignal"/>
+    <it txt="Stato segnale"/>
+    <nl txt="Status signaal"/>
+    <pt_BR txt="Sinal de estado"/>
+    <sl txt="Signal stanja"/>
+    <sr_latin txt="Stanje signala"/>
   </Msg>
   <Msg id="bounce">
     <en txt="Bounce"/>
+    <en_GB txt="Bounce"/>
+    <de txt="Wippen"/>
+    <nl txt="Stuiteren"/>
+    <pt_BR txt="Pular"/>
+    <sl txt="Odboj"/>
+    <sr_latin txt="Skok"/>
   </Msg>
   <Msg id="colortable">
     <en txt="Color table"/>
+    <en_GB txt="Colour table"/>
+    <de txt="Farbtabelle"/>
+    <it txt="Tabella colore"/>
+    <nl txt="Kleur tabel"/>
+    <pt_BR txt="Tabela de cores"/>
+    <sl txt="Tabela barv"/>
+    <sr_latin txt="Tabela boja"/>
   </Msg>
   <Msg id="saturation">
     <en txt="Saturation"/>
+    <en_GB txt="Saturation"/>
+    <de txt="Sättigung"/>
+    <nl txt="Kleurverzadiging"/>
+    <pt_BR txt="Saturação"/>
+    <sl txt="Nasičenost"/>
   </Msg>
   <Msg id="available">
     <en txt="Available"/>
+    <en_GB txt="Available"/>
+    <nl txt="Beschikbaar"/>
+    <pt_BR txt="Disponível"/>
   </Msg>
   <Msg id="bridge">
     <en txt="Bridge"/>
+    <en_GB txt="Bridge"/>
+    <nl txt="Brug"/>
+    <pt_BR txt="Ponte"/>
   </Msg>
 </Messages>
