@@ -1252,7 +1252,6 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
     ltm->tm_sec  = 0;
     ltime = mktime(ltm);
 
-    // send to rocrail
     {
       clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
       iONode cmd = NodeOp.inst( wClock.name(), NULL, ELEMENT_NODE );
