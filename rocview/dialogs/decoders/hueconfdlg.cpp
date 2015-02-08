@@ -264,30 +264,32 @@ void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
   m_LightOn->Enable(true);
   m_LightOff->Enable(true);
 
-  wxColourData ColourData;
-  ColourData.SetColour(wxColour(255,255,255));
+  if( StrOp.find(m_LightsGrid->GetCellValue(m_Row, 2).mb_str(wxConvUTF8), "olor" ) ) {
+    wxColourData ColourData;
+    ColourData.SetColour(wxColour(255,255,255));
 
-  wxColourDialog* dlg = new wxColourDialog(this, &ColourData);
-  if( wxID_OK == dlg->ShowModal() ) {
-    wxColour &colour = dlg->GetColourData().GetColour();
+    wxColourDialog* dlg = new wxColourDialog(this, &ColourData);
+    if( wxID_OK == dlg->ShowModal() ) {
+      wxColour &colour = dlg->GetColourData().GetColour();
 
-    iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
-    iONode color = NodeOp.inst( wColor.name(), NULL, ELEMENT_NODE);
-    NodeOp.addChild(cmd, color);
-    wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
-    wOutput.setporttype( cmd, wProgram.porttype_light );
-    wOutput.setcolortype( cmd, True );
-    wColor.setred(color, (int)colour.Red());
-    wColor.setgreen(color, (int)colour.Green());
-    wColor.setblue(color, (int)colour.Blue());
-    wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
-    wOutput.setvalue(cmd, 255);
-    wOutput.setcmd(cmd, wOutput.value);
-    wOutput.setstate( cmd, wOutput.on );
-    wxGetApp().sendToRocrail( cmd );
-    cmd->base.del(cmd);
+      iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
+      iONode color = NodeOp.inst( wColor.name(), NULL, ELEMENT_NODE);
+      NodeOp.addChild(cmd, color);
+      wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+      wOutput.setporttype( cmd, wProgram.porttype_light );
+      wOutput.setcolortype( cmd, True );
+      wColor.setred(color, (int)colour.Red());
+      wColor.setgreen(color, (int)colour.Green());
+      wColor.setblue(color, (int)colour.Blue());
+      wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
+      wOutput.setvalue(cmd, 255);
+      wOutput.setcmd(cmd, wOutput.value);
+      wOutput.setstate( cmd, wOutput.on );
+      wxGetApp().sendToRocrail( cmd );
+      cmd->base.del(cmd);
+    }
+    dlg->Destroy();
   }
-  dlg->Destroy();
 }
 
 
@@ -329,8 +331,10 @@ void HueConfDlg::onLightOn( wxCommandEvent& event ) {
     iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
     wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
     wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
-    wOutput.setcmd(cmd, wOutput.value);
     wOutput.setcmd( cmd, wOutput.on );
+    if( !StrOp.find(m_LightsGrid->GetCellValue(m_Row, 2).mb_str(wxConvUTF8), "olor" ) ) {
+      wOutput.setvalue( cmd, 255 );
+    }
     wxGetApp().sendToRocrail( cmd );
     cmd->base.del(cmd);
   }
@@ -342,7 +346,6 @@ void HueConfDlg::onLightOff( wxCommandEvent& event ) {
     iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
     wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
     wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
-    wOutput.setcmd(cmd, wOutput.value);
     wOutput.setcmd( cmd, wOutput.off );
     wxGetApp().sendToRocrail( cmd );
     cmd->base.del(cmd);
