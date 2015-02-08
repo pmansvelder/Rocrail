@@ -164,6 +164,8 @@ class wxGrid;
 #define ID_BBT_COPY 10455
 #define ID_BUTTON_BBT_DELETEALL 10425
 #define ID_BBT_MODIFY 10426
+#define ID_BBT_EXPORT 10459
+#define ID_BBT_IMPORT 10460
 #define ID_BBT_GENATE_IN 10456
 #define SYMBOL_LOCDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_LOCDIALOG_TITLE _("Dialog")
@@ -365,6 +367,12 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BBT_MODIFY
     void OnBbtModifyClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BBT_EXPORT
+    void OnBbtExportClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BBT_IMPORT
+    void OnBbtImportClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_BBT_GENATE_IN
     void OnBbtGenateInClick( wxCommandEvent& event );
@@ -686,6 +694,8 @@ public:
     wxButton* m_BBTCopy;
     wxButton* m_BBTDeleteAll;
     wxButton* m_BBTModify;
+    wxButton* m_BBTExport;
+    wxButton* m_BBTImport;
     wxCheckBox* m_BBTFixed;
     wxCheckBox* m_BBTGenerateIn;
     wxButton* m_Cancel;

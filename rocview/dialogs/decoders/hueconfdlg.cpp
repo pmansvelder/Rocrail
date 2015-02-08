@@ -198,8 +198,11 @@ void HueConfDlg::event(iONode node) {
       <json>
         <1 type="Dimmable light" name="Lux Lamp" modelid="LWB004" uniqueid="0017880100de2419-0b" swversion="66012040">
           <state on="false" bri="0" alert="none" reachable="false"/>
+          <state on="true" bri="254" hue="0" sat="254" effect="none" xy="0.70400.2960" alert="none" colormode="xy" reachable="true"/>
           <pointsymbol 1="none" 2="none" 3="none" 4="none" 5="none" 6="none" 7="none" 8="none"/>
         </1>
+
+        "xy":[0.4291,0.4144]
      */
     int cnt = NodeOp.getChildCnt(json);
     for( int i = 0; i < cnt; i++ ) {
