@@ -4207,7 +4207,7 @@ void LocDialog::OnBbtExportClick( wxCommandEvent& event ) {
         NodeOp.addChild(lc, (iONode)NodeOp.base.clone(bbt));
         bbt = wLoc.nextbbt( m_Props, bbt );
       };
-      char* s = NodeOp.base.toString(lc);
+      char* s = NodeOp.toEscString(lc);
       FileOp.write( f, s, StrOp.len(s));
       FileOp.base.del( f );
     }
