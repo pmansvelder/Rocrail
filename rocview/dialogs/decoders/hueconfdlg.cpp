@@ -62,6 +62,8 @@ HueConfDlg::HueConfDlg( wxWindow* parent ):HueConfDlgGen( parent )
     m_LightsGrid->DeleteRows( 0, m_LightsGrid->GetNumberRows() );
 
   m_SetLight->Enable(false);
+  m_LightOn->Enable(false);
+  m_LightOff->Enable(false);
 
 }
 
@@ -259,6 +261,8 @@ void HueConfDlg::onLightCellChange( wxGridEvent& event ) {
 void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
   m_Row = event.GetRow();
   m_Col = event.GetCol();
+  m_LightOn->Enable(true);
+  m_LightOff->Enable(true);
 
   wxColourData ColourData;
   ColourData.SetColour(wxColour(255,255,255));
@@ -317,6 +321,41 @@ void HueConfDlg::onSetBridgeUserName( wxCommandEvent& event ) {
   wProgram.setstrval1(cmd, m_BridgeUserName->GetValue().mb_str(wxConvUTF8));
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
+}
+
+
+void HueConfDlg::onLightOn( wxCommandEvent& event ) {
+  if( m_Row != -1 ) {
+    iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
+    wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
+    wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+    wOutput.setcmd(cmd, wOutput.value);
+    wOutput.setcmd( cmd, wOutput.on );
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+  }
+}
+
+
+void HueConfDlg::onLightOff( wxCommandEvent& event ) {
+  if( m_Row != -1 ) {
+    iONode cmd = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
+    wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
+    wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
+    wOutput.setcmd(cmd, wOutput.value);
+    wOutput.setcmd( cmd, wOutput.off );
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+  }
+}
+
+
+void HueConfDlg::onLightCellSelect( wxGridEvent& event ) {
+  m_Row = event.GetRow();
+  m_Col = event.GetCol();
+  m_LightOn->Enable(true);
+  m_LightOff->Enable(true);
+
 }
 
 
