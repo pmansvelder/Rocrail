@@ -135,6 +135,8 @@ void HueConfDlg::initLabels() {
   m_GetLights->SetLabel( wxGetApp().getMsg( "get" ) );
   m_FindLights->SetLabel( wxGetApp().getMsg( "query" ) );
   m_SetLight->SetLabel( wxGetApp().getMsg( "set" ) );
+  m_LightOn->SetLabel( wxGetApp().getMsg( "on" ) );
+  m_LightOff->SetLabel( wxGetApp().getMsg( "off" ) );
 
   // Buttons
   m_stdButtonsOK->SetLabel( wxGetApp().getMsg( "ok" ) );
