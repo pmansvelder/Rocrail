@@ -64,7 +64,7 @@ HueConfDlg::HueConfDlg( wxWindow* parent ):HueConfDlgGen( parent )
   m_SetLight->Enable(false);
   m_LightOn->Enable(false);
   m_LightOff->Enable(false);
-
+  m_Brightness->Enable(false);
 }
 
 
@@ -130,6 +130,7 @@ void HueConfDlg::initLabels() {
   m_LightsGrid->SetColLabelValue(1, wxGetApp().getMsg("name") );
   m_LightsGrid->SetColLabelValue(2, wxGetApp().getMsg("type") );
   m_LightsGrid->SetColLabelValue(3, wxGetApp().getMsg("available") );
+  m_LightsGrid->SetColLabelValue(4, wxGetApp().getMsg("brightness") );
 
   m_GetLights->SetLabel( wxGetApp().getMsg( "get" ) );
   m_FindLights->SetLabel( wxGetApp().getMsg( "query" ) );
@@ -217,6 +218,9 @@ void HueConfDlg::event(iONode node) {
         m_LightsGrid->SetCellValue(row, 3, wxString(NodeOp.getStr(state, "reachable", "?"),wxConvUTF8) );
         m_LightsGrid->SetCellAlignment(wxALIGN_CENTRE, row, 3);
         m_LightsGrid->SetReadOnly( row, 3, true );
+        m_LightsGrid->SetCellValue(row, 4, wxString(NodeOp.getStr(state, "bri", "0"),wxConvUTF8) );
+        m_LightsGrid->SetCellAlignment(wxALIGN_CENTRE, row, 4);
+        m_LightsGrid->SetReadOnly( row, 4, true );
       }
     }
     m_LightsGrid->AutoSize();
@@ -263,6 +267,10 @@ void HueConfDlg::onLightCellDClick( wxGridEvent& event ) {
   m_Col = event.GetCol();
   m_LightOn->Enable(true);
   m_LightOff->Enable(true);
+  m_Brightness->Enable(true);
+
+  int bri = atoi(m_LightsGrid->GetCellValue(m_Row, 4).mb_str(wxConvUTF8));
+  m_Brightness->SetValue(bri);
 
   if( StrOp.find(m_LightsGrid->GetCellValue(m_Row, 2).mb_str(wxConvUTF8), "olor" ) ) {
     wxColourData ColourData;
@@ -332,9 +340,7 @@ void HueConfDlg::onLightOn( wxCommandEvent& event ) {
     wOutput.setaddr( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 0).mb_str(wxConvUTF8)) );
     wOutput.setiid( cmd, m_IID->GetValue().mb_str(wxConvUTF8) );
     wOutput.setcmd( cmd, wOutput.on );
-    if( !StrOp.find(m_LightsGrid->GetCellValue(m_Row, 2).mb_str(wxConvUTF8), "olor" ) ) {
-      wOutput.setvalue( cmd, 255 );
-    }
+    wOutput.setvalue( cmd, atoi(m_LightsGrid->GetCellValue(m_Row, 4).mb_str(wxConvUTF8)) );
     wxGetApp().sendToRocrail( cmd );
     cmd->base.del(cmd);
   }
@@ -358,7 +364,22 @@ void HueConfDlg::onLightCellSelect( wxGridEvent& event ) {
   m_Col = event.GetCol();
   m_LightOn->Enable(true);
   m_LightOff->Enable(true);
-
+  m_Brightness->Enable(true);
+  int bri = atoi(m_LightsGrid->GetCellValue(m_Row, 4).mb_str(wxConvUTF8));
+  m_Brightness->SetValue(bri);
 }
 
+
+void HueConfDlg::onBrightness( wxScrollEvent& event ) {
+  if( m_Row != -1 ) {
+    m_LightsGrid->SetCellValue(m_Row, 4, wxString::Format(wxT("%d"), m_Brightness->GetValue()) );
+  }
+}
+
+void HueConfDlg::onBrightnessThumbRelease( wxScrollEvent& event ) {
+  if( m_Row != -1 ) {
+    wxCommandEvent cmdevent;
+    onLightOn(cmdevent);
+  }
+}
 

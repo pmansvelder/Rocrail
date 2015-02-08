@@ -54,6 +54,8 @@ class HueConfDlg : public HueConfDlgGen
     void onLightOn( wxCommandEvent& event );
     void onLightOff( wxCommandEvent& event );
     void onLightCellSelect( wxGridEvent& event );
+    void onBrightness( wxScrollEvent& event );
+    void onBrightnessThumbRelease( wxScrollEvent& event );
 
 	public:
 		/** Constructor */
