@@ -71,6 +71,7 @@
 #include "rocrail/wrapper/public/Variable.h"
 #include "rocrail/wrapper/public/Location.h"
 #include "rocrail/wrapper/public/Weather.h"
+#include "rocrail/wrapper/public/Clock.h"
 
 static int instCnt = 0;
 static int levelCnt = 0;
@@ -1228,6 +1229,39 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       SelTabOp.cmd( (iIBlockBase)fy, cmd );
     }
   }
+
+
+  /* clock action */
+  else if( StrOp.equals( wClock.name(), wAction.gettype( data->action ) ) ) {
+    long ltime = time(NULL);
+    struct tm* ltm = localtime( &ltime );
+    int div  = 0;
+    int hour = 0;
+    int min  = 0;
+    iOStrTok tok = StrTokOp.inst(wAction.getparam(data->action), ',');
+    if( StrTokOp.hasMoreTokens(tok) )
+      div = atoi(StrTokOp.nextToken(tok));
+    if( StrTokOp.hasMoreTokens(tok) )
+      hour = atoi(StrTokOp.nextToken(tok));
+    if( StrTokOp.hasMoreTokens(tok) )
+      min = atoi(StrTokOp.nextToken(tok));
+    StrTokOp.base.del(tok);
+
+    ltm->tm_hour = hour;
+    ltm->tm_min  = min;
+    ltm->tm_sec  = 0;
+    ltime = mktime(ltm);
+
+    // send to rocrail
+    {
+      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+      iONode cmd = NodeOp.inst( wClock.name(), NULL, ELEMENT_NODE );
+      wClock.setdivider( cmd, div );
+      wClock.settime( cmd, ltime );
+      pfun( (obj)AppOp.getControl(), cmd );
+    }
+  }
+
 
   /* system action */
   else if( StrOp.equals( wSysCmd.name(), wAction.gettype( data->action ) ) ) {

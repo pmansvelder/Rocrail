@@ -57,6 +57,7 @@
 #include "rocrail/wrapper/public/Schedule.h"
 #include "rocrail/wrapper/public/Location.h"
 #include "rocrail/wrapper/public/Weather.h"
+#include "rocrail/wrapper/public/Clock.h"
 
 #include "rocview/public/guiapp.h"
 
@@ -187,6 +188,7 @@ void TimedActions::initLabels() {
     m_Type->Append( wxGetApp().getMsg( "car" ) );
     m_Type->Append( wxGetApp().getMsg( "location" ) );
     m_Type->Append( wxGetApp().getMsg( "weather" ) );
+    m_Type->Append( wxGetApp().getMsg( "clock" ) );
 
     // Interface
     m_labIID->SetLabel( wxGetApp().getMsg( "iid" ) );
@@ -252,6 +254,8 @@ void TimedActions::initValues() {
     m_Type->SetSelection(18);
   else if( StrOp.equals( wWeather.name(), type ) )
     m_Type->SetSelection(19);
+  else if( StrOp.equals( wClock.name(), type ) )
+    m_Type->SetSelection(20);
 
   initOutputList();
   initCommands();
@@ -401,6 +405,7 @@ bool TimedActions::evaluate() {
     case 17: wAction.settype(m_Props, wCar.name()); break;
     case 18: wAction.settype(m_Props, wLocation.name()); break;
     case 19: wAction.settype(m_Props, wWeather.name()); break;
+    case 20: wAction.settype(m_Props, wClock.name()); break;
   }
 
   // Interface
@@ -461,6 +466,7 @@ void TimedActions::initOutputList() {
       case 17: colist = wPlan.getcarlist( model ); break;
       case 18: colist = wPlan.getlocationlist( model ); break;
       case 19: colist = wPlan.getweatherlist( model ); break;
+      case 20: return;
     }
 
     m_ExecCmd->Enable(false);
@@ -1197,6 +1203,9 @@ void TimedActions::initCommands()
     case 19: // weather
       m_Command->Append(wxString( wAction.weather_set, wxConvUTF8));
       m_Command->Append(wxString( wAction.weather_theme, wxConvUTF8));
+      break;
+    case 20: // clock
+      m_Command->Append(wxString( wClock.set, wxConvUTF8));
       break;
   }
 }
