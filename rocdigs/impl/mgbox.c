@@ -73,6 +73,7 @@
 static int instCnt = 0;
 static int rrHash = 0x230F;
 static char idname[17] = { '\0' }; // mfx loc readable name
+static Boolean firstview = True;
 
 
 static void __reportState(iOMCS2Data data);
@@ -905,17 +906,20 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
     case 1:
       //Current in mA
       data->load = (int)((in[11] * 256 + in[12]) * (1000./824.));
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Current I=0x%04X converted to %dmA for UID: 0x%04X", (in[11] * 256 + in[12]), data->load, data->gbUID );
+      if( firstview )
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Current I=0x%04X converted to %dmA for UID: 0x%04X", (in[11] * 256 + in[12]), data->load, data->gbUID );
     break;
     case 3:
       //Voltage in mV
       data->volt = (int)(((in[11] * 256 + in[12])* (1000./185.))+10000);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Voltage U=0x%04X converted to %dmV for UID: 0x%04X", (in[11] * 256 + in[12]), data->volt, data->gbUID );
+      if( firstview  )
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Voltage U=0x%04X converted to %dmV for UID: 0x%04X", (in[11] * 256 + in[12]), data->volt, data->gbUID );
     break;
     case 4:
       //Temperature in degree C
       data->temp = (int)((in[11] * 256 + in[12]) * (74./202.));
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Temperature t=0x%04X converted to %d degree C for UID: 0x%04X", (in[11] * 256 + in[12]), data->temp, data->gbUID );
+      if( firstview )
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Temperature t=0x%04X converted to %d degree C for UID: 0x%04X", (in[11] * 256 + in[12]), data->temp, data->gbUID );
     break;
     }
     __reportState(data);
@@ -939,34 +943,45 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
   int cstype = in[11] * 256 + in[12];
   if( in[1] == ( CAN_ID_PING | BIT_RESPONSE ) ) {
     cstype &= 0xFFF0;
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Evaluate Ping for type: 0x%04X", cstype );
-    if( cstype == 0x0010 ) {
-      data->gbUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Gleisbox UID: 0x%04X stored", data->gbUID );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Gleisbox firmware version = %d.%d", in[9], in[10] );
-    }
-    else if( cstype == 0x0000 ) {
-      data->mcs2gfpUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GFP UID: 0x%04X stored", data->mcs2gfpUID );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GFP firmware version = %d.%d", in[9], in[10] );
-      if( data->gbUID != 0 ) {
-        /* error */
-        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ERROR: Gleisbox and CS2 found on CAN bus, Gleisbox 0x%04X cleared", data->gbUID );
-        data->gbUID = 0;
-      }
-    }
-    else if( cstype == 0xFFF0 ) {
-      data->mcs2guiUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GUI UID: 0x%04X stored", data->mcs2guiUID );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GUI firmware version = %d.%d", in[9], in[10] );
-    }
+    switch( cstype )
+    {
+      case 0x0010:
+        if(  data->gbUID != (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8] ) {
+          data->gbUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> Gleisbox UID: 0x%04X stored", cstype, data->gbUID );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Gleisbox firmware version = %d.%d", in[9], in[10] );
+        }
+        break;
+      case 0x0000: 
+        if( data->mcs2gfpUID != (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8] ) {
+          data->mcs2gfpUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> CS2-GFP UID: 0x%04X stored", cstype, data->mcs2gfpUID );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GFP firmware version = %d.%d", in[9], in[10] );
+          if( data->gbUID != 0 ) {
+            /* error */
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ERROR: Gleisbox and CS2 found on CAN bus, Gleisbox 0x%04X cleared", data->gbUID );
+            data->gbUID = 0;
+          }
+        }
+        break;
+      case 0xFFF0: 
+        if( data->mcs2guiUID != (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8] ) { 
+          data->mcs2guiUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> CS2-GUI UID: 0x%04X stored", cstype, data->mcs2guiUID );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GUI firmware version = %d.%d", in[9], in[10] );
+        }
+        break;
     /* despite the CAN documentation the "Geraetekennung" of a MS2 is 0x0032 */
-    else if( cstype == 0x0030 ) {
-      data->ms2UID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MS-2 UID: 0x%04X stored", data->ms2UID );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MS-2 firmware version = %d.%d", in[9], in[10] );
-    }
-
+      case 0x0030:
+        if( data->ms2UID != (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8] ) {
+          data->ms2UID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> MS-2 UID: 0x%04X stored", cstype, data->ms2UID );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MS-2 firmware version = %d.%d", in[9], in[10] );
+        }
+        break;
+      default: 
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Unknown Ping for type: 0x%04X", cstype );
+    } 
     if( !data->swtimeset && data->mcs2gfpUID !=0 )
         __setSwitchtime(data);
   }
@@ -976,7 +991,6 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
     __genHash();      
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Duplicate CANbus address detect for hash: 0x%04X, new hash generated: 0x%04X", rcvHash, rrHash );
   }
-return;
   /*  if requested announce ourself as a CANbus member, nice but for now it only generates troubles */
 /*  byte  buffer[32];
   buffer[0]  = 'R';
@@ -2017,16 +2031,20 @@ static void __GleisboxSvc( void* threadinst ) {
       buffer[3]  = (data->gbUID & 0x000000FF);
       buffer[4] = CMD_SYSSUB_STATUS;
       data->lstChn++;
-      switch (data->lstChn) {
+      switch( data->lstChn ) {
         case 2:
           data->lstChn++;
           break;
         case 5:
+          firstview = False;
           data->lstChn = 1;
       }
       buffer[5] = data->lstChn; /* 1= current 3= voltage 4= temp */
       ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_SYSTEM, False, 6, buffer) );
-      ThreadOp.sleep(1300);
+      if( firstview )
+        ThreadOp.sleep (13);
+      else
+        ThreadOp.sleep (1300);
     }
   }
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Boot helper and Gleisbox Channel Reporter ended." );
