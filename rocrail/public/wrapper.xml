@@ -1588,7 +1588,7 @@
         <var name="outputs" vt="string" defval="" range="*" remark="Comma separated list of outputs from east to west."/>
         <var name="maxbri" vt="int" defval="255" range="0-255" remark="Maximal brightness."/>
         <var name="minbri" vt="int" defval="0" range="0-255" remark="Minimal brightness."/>
-        <var name="slidingdaylight" vt="bool" defval="true"/>
+        <var name="slidingdaylight" vt="bool" defval="false"/>
         <var name="relativetime" vt="bool" defval="false"/>
         <var name="colorsliding" vt="int" defval="30" range="10-120" unit="min" remark="Color sliding time."/>
         <var name="nightsliding" vt="int" defval="30" range="1-120" unit="min" remark="Night sliding time."/>
