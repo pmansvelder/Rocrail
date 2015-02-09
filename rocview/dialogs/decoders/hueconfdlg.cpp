@@ -123,6 +123,8 @@ void HueConfDlg::initLabels() {
   m_labBridgeName->SetLabel( wxGetApp().getMsg( "name" ) );
   m_SetBridgeName->SetLabel( wxGetApp().getMsg( "set" ) );
   m_GetBridge->SetLabel( wxGetApp().getMsg( "get" ) );
+  m_labBridgeUserName->SetLabel( wxGetApp().getMsg( "userid" ) );
+  m_SetBridgeUserName->SetLabel( wxGetApp().getMsg( "set" ) );
 
 
   // Lights
