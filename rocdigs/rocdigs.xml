@@ -2115,6 +2115,7 @@
       <var name="reader" vt="iOThread"/>
       <var name="writer" vt="iOThread"/>
       <var name="mux" vt="iOMutex"/>
+      <var name="mapwhite" vt="Boolean"/>
       <var name="framerate" vt="int"/>
       <var name="refresh" vt="Boolean"/>
       <var name="dmxchannel[513]" vt="byte"/>

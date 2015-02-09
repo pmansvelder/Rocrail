@@ -256,7 +256,7 @@ static void __setChannel(iODMXArtNet inst, int addr, int red, int green, int blu
       data->dmxchannel[addr+blueChannel-1] = blue;
     if( whiteChannel > 0 )
       data->dmxchannel[addr+whiteChannel-1] = white;
-    else if( white > 0 && redChannel > 0 && greenChannel > 0 && blueChannel > 0 ) {
+    else if( data->mapwhite && white > 0 && redChannel > 0 && greenChannel > 0 && blueChannel > 0 ) {
       /* add it to the other channels */
       if( red + white > 255 )
         data->dmxchannel[addr+redChannel-1] = 255;
@@ -517,6 +517,7 @@ static struct ODMXArtNet* _inst( const iONode ini ,const iOTrace trc ) {
     NodeOp.addChild(data->ini, data->dmxini);
   }
 
+  data->mapwhite  = wDMX.ismapwhite(data->dmxini);
   data->framerate = wDMX.getframerate(data->dmxini);
   if( data->framerate < 100 )
     data->framerate = 500;

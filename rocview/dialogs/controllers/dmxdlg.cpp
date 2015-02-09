@@ -58,6 +58,7 @@ void DmxDlg::initLabels() {
   m_labHost->SetLabel(wxGetApp().getMsg( "host" ));
   m_labFrameRate->SetLabel(wxGetApp().getMsg( "framerate" ));
   m_labFrameRateMS->SetLabel(wxGetApp().getMsg( "milliseconds" ));
+  m_MapWhite->SetLabel(wxGetApp().getMsg( "mapwhite" ));
 
   // Buttons
   m_stdButtonsOK->SetLabel( wxGetApp().getMsg( "ok" ) );
@@ -75,6 +76,7 @@ void DmxDlg::initValues() {
   m_IID->SetValue( wxString( wDigInt.getiid( m_Props ), wxConvUTF8 ) );
   m_Host->SetValue( wxString( wDigInt.gethost( m_Props ), wxConvUTF8 ) );
   m_FrameRate->SetValue(wDMX.getframerate(dmxini));
+  m_MapWhite->SetValue(wDMX.ismapwhite(dmxini)?true:false);
 }
 
 bool DmxDlg::evaluate() {
@@ -82,6 +84,7 @@ bool DmxDlg::evaluate() {
   wDigInt.setiid( m_Props, m_IID->GetValue().mb_str(wxConvUTF8) );
   wDigInt.sethost( m_Props, m_Host->GetValue().mb_str(wxConvUTF8) );
   wDMX.setframerate(dmxini, m_FrameRate->GetValue());
+  wDMX.setmapwhite(dmxini, m_MapWhite->IsChecked()?True:False);
   return true;
 }
 

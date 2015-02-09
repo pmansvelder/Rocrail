@@ -29651,4 +29651,7 @@
     <nl txt="Brug"/>
     <pt_BR txt="Ponte"/>
   </Msg>
+  <Msg id="mapwhite">
+    <en txt="Map white"/>
+  </Msg>
 </Messages>

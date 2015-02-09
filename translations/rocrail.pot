@@ -7745,3 +7745,9 @@ msgstr ""
 msgid "Bridge"
 msgstr ""
 
+#. 
+# id="mapwhite"
+#, c-format
+msgid "Map white"
+msgstr ""
+
