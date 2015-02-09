@@ -43,6 +43,7 @@
 #include "rocrail/wrapper/public/Link.h"
 #include "rocrail/wrapper/public/Block.h"
 #include "rocrail/wrapper/public/State.h"
+#include "rocrail/wrapper/public/Program.h"
 
 static int instCnt = 0;
 
@@ -527,6 +528,8 @@ static int __translate( iODINAMO dinamo, iONode node, byte* datagram, Boolean* r
     int  addr    = wSwitch.getaddr1( node );
     int  port    = wSwitch.getport1( node );
     int  delay   = wSwitch.getdelay( node );
+    int  param   = wSwitch.getparam1( node );
+    int  value   = wSwitch.getvalue1( node );
     int  nr      = 0;
 
     if( delay == 0 )
@@ -548,9 +551,6 @@ static int __translate( iODINAMO dinamo, iONode node, byte* datagram, Boolean* r
       /* OM32 output */
       if( StrOp.equals( wSwitch.getprot( node ), wSwitch.prot_OM32 ) ) {
         byte command = 0;
-        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 %s [%d-%d] %s",
-            wSwitch.getcmd( node ), addr+1, port+1, wSwitch.issinglegate( node )?" (single gate)":"" );
-
         if( wSwitch.issinglegate( node ) ) {
           command = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? 9:8;
           delay = 0;
@@ -559,6 +559,26 @@ static int __translate( iODINAMO dinamo, iONode node, byte* datagram, Boolean* r
           command = 9; /* ON */
           if( StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) )
             port++;
+        }
+
+        if( !wSwitch.isaccessory(node) && wSwitch.getporttype(node) == wProgram.porttype_servo ) {
+          command = 0x26;
+          delay   = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? value:param;
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 switch servo [%d-%d] position=%d", addr+1, port+1, datagram[3]);
+        }
+        else if( !wSwitch.isaccessory(node) && wSwitch.getporttype(node) == wProgram.porttype_motor ) {
+          command = 0x27;
+          delay   = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? value:param;
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 switch motor [%d-%d] PWM=%d", addr+1, port+1, datagram[3]);
+        }
+        else if( !wSwitch.isaccessory(node) && wSwitch.getporttype(node) == wProgram.porttype_light ) {
+          command = 0x01;
+          delay   = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? value:param;
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 switch lights [%d-%d] aspect=%d", addr+1, port+1, datagram[3]);
+        }
+        else {
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 switch %s [%d-%d] %s",
+              wSwitch.getcmd( node ), addr+1, port+1, wSwitch.issinglegate( node )?" (single gate)":"" );
         }
 
         datagram[0] = 4 | VER3_FLAG | data->header;
