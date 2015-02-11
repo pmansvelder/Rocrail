@@ -48,8 +48,15 @@ void statusEnter( iILcDriverInt inst, Boolean re_enter ) {
   Boolean oppwait = True;
 
   /* Signal of destination block; wait or search for next destination? (_event) */
-  iONode bkprops = (iONode)data->curBlock->base.properties( data->curBlock );
+  iONode bkprops = NULL;
   iONode lcprops = (iONode)data->loc->base.properties( data->loc );
+  if( data->curBlock == NULL ) {
+    TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 4001,
+        "Unexpected enter event for \"%s\" state=%d run=%d", data->loc->getId( data->loc ), data->state, data->run );
+    data->state = LC_IDLE;
+    return;
+  }
+  bkprops = (iONode)data->curBlock->base.properties( data->curBlock );
 
   if( data->next1Block == NULL ) {
     TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 4001,
