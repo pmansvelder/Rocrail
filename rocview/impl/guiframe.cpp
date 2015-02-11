@@ -1004,7 +1004,10 @@ void RocGuiFrame::OnInitNotebook( wxCommandEvent& event ) {
   if( wxGetApp().getLocoTabSel() != -1 ) {
     int tabsel = wxGetApp().getLocoTabSel();
     TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "Set tab selection to [%d]", tabsel );
-    m_StatNotebook->ChangeSelection(tabsel);
+    if( m_StatNotebook->GetPageCount() > tabsel )
+      m_StatNotebook->ChangeSelection(tabsel);
+    else
+      TraceOp.trc( "frame", TRCLEVEL_WARNING, __LINE__, 9999, "Tab [%d] does not exist", tabsel );
   }
 
   iONode model = wxGetApp().getModel();
