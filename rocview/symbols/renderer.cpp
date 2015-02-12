@@ -2342,6 +2342,9 @@ void SymbolRenderer::drawBlock( wxPaintDC& dc, bool occupied, const char* ori ) 
         m_GC->DrawBitmap(*imageBitmap, x, y, imageBitmap->GetWidth(), imageBitmap->GetHeight());
       else
         dc.DrawBitmap(*imageBitmap, x, y);
+
+      delete imageBitmap;
+
       l_ImageOK = true;
     }
   }
