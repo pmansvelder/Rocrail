@@ -2649,8 +2649,10 @@ void RocGuiFrame::create() {
   }
 
   iONode colpos = wLocoGrid.getcolpos(locoGridIni);
+  int cols = m_ActiveLocs->GetNumberCols();
   while( colpos != NULL ) {
-    m_ActiveLocs->SetColPos(wColPos.getid(colpos), wColPos.getpos(colpos));
+    if( cols < wColPos.getid(colpos) && cols < wColPos.getpos(colpos) )
+      m_ActiveLocs->SetColPos(wColPos.getid(colpos), wColPos.getpos(colpos));
     colpos = wLocoGrid.nextcolpos(locoGridIni, colpos);
   }
 
