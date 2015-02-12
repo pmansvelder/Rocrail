@@ -29638,20 +29638,31 @@
     <nl txt="Kleurverzadiging"/>
     <pt_BR txt="Saturação"/>
     <sl txt="Nasičenost"/>
+    <sr_latin txt="Zasićenje"/>
   </Msg>
   <Msg id="available">
     <en txt="Available"/>
     <en_GB txt="Available"/>
     <nl txt="Beschikbaar"/>
     <pt_BR txt="Disponível"/>
+    <de txt="Verfügbar"/>
+    <sl txt="Na voljo"/>
+    <sr_latin txt="Dostupno"/>
   </Msg>
   <Msg id="bridge">
     <en txt="Bridge"/>
     <en_GB txt="Bridge"/>
     <nl txt="Brug"/>
     <pt_BR txt="Ponte"/>
+    <de txt="Bridge"/>
+    <sl txt="Most"/>
+    <sr_latin txt="Most"/>
   </Msg>
   <Msg id="mapwhite">
     <en txt="Map white"/>
+    <de txt="Weiß  zuordnen"/>
+    <nl txt="Verdeel wit"/>
+    <pt_BR txt="Mapa branco"/>
+    <sl txt="Določi bele barvo"/>
   </Msg>
 </Messages>
