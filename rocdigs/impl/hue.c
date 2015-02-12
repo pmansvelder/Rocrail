@@ -32,6 +32,8 @@
 #include "rocrail/wrapper/public/Color.h"
 #include "rocrail/wrapper/public/HUEConfig.h"
 
+#include "rocutils/public/colorutils.h"
+
 #include <math.h>
 
 static int instCnt = 0;
@@ -301,35 +303,6 @@ static char* __httpRequest( iOHUE inst, const char* method, const char* request,
 }
 
 
-void __RGBtoXY(int R, int G, int B, float* x, float* y) {
-  float red   = ( (float)R / 255.0 );        //R from 0 to 255
-  float green = ( (float)G / 255.0 );        //G from 0 to 255
-  float blue  = ( (float)B / 255.0 );        //B from 0 to 255
-
-  if ( red > 0.04045 )
-    red = pow( ( red + 0.055 ) / 1.055, 2.4);
-  else
-    red = red / 12.92;
-
-  if ( green > 0.04045 )
-    green = pow( ( green + 0.055 ) / 1.055, 2.4);
-  else
-    green = green / 12.92;
-
-  if ( blue > 0.04045 )
-    blue = pow( ( blue + 0.055 ) / 1.055, 2.4);
-  else
-    blue = blue / 12.92;
-
-  float X = (float) (red * 0.649926 + green * 0.103455 + blue * 0.197109);
-  float Y = (float) (red * 0.234327 + green * 0.743075 + blue * 0.022598);
-  float Z = (float) (red * 0.000000 + green * 0.053077 + blue * 1.035763);
-
-  *x = X / ( X + Y + Z );
-  *y = Y / ( X + Y + Z );
-}
-
-
 static void __queryLights(iOHUE inst) {
   iOHUEData data = Data(inst);
   iHueCmd cmd = allocMem(sizeof(struct HueCmd));
@@ -454,7 +427,7 @@ static iONode __translate( iOHUE inst, iONode node ) {
       g = wColor.getgreen(color);
       b = wColor.getblue(color);
       sat = wColor.getsaturation(color);
-      __RGBtoXY(wColor.getred(color), wColor.getgreen(color), wColor.getblue(color), &x, &y );
+      ColorUtilsOp.RGBtoXY(wColor.getred(color), wColor.getgreen(color), wColor.getblue(color), &x, &y );
       useXY = True;
     }
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output addr=%d active=%d cmd=%s bri=%d RGB=%d,%d,%d xy=%f,%f hue=%d sat=%d",

@@ -1,10 +1,7 @@
 <!--
  Rocbase - Base utility C library
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
-
- 
-  
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public License
@@ -63,6 +60,32 @@
     <fun name="findFile" vt="char*">
       <param name="directory" vt="const char*"/>
       <param name="filename" vt="const char*"/>
+    </fun>
+  </object>
+
+  <object name="ColorUtils" use="list" remark="Color utilities.">
+    <fun name="RGBtoHSV" vt="void">
+      <param name="r" vt="int"/>
+      <param name="g" vt="int"/>
+      <param name="b" vt="int"/>
+      <param name="h" vt="double*"/>
+      <param name="s" vt="double*"/>
+      <param name="v" vt="double*"/>
+    </fun>
+    <fun name="HSVtoRGB" vt="void">
+      <param name="h" vt="double"/>
+      <param name="s" vt="double"/>
+      <param name="v" vt="double"/>
+      <param name="r" vt="int*"/>
+      <param name="g" vt="int*"/>
+      <param name="b" vt="int*"/>
+    </fun>
+    <fun name="RGBtoXY" vt="void">
+      <param name="r" vt="int"/>
+      <param name="g" vt="int"/>
+      <param name="b" vt="int"/>
+      <param name="x" vt="float*"/>
+      <param name="y" vt="float*"/>
     </fun>
   </object>
   
