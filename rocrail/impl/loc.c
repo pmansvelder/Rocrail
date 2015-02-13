@@ -2712,8 +2712,6 @@ static void _setMode( iOLoc inst, const char* mode, const char* reason ) {
 
   /* Only take over the new mode if it is different; Broadcast to clients. */
   if( !StrOp.equals( wLoc.getmode(data->props), mode ) ) {
-    iONode node = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
-
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
         "Loco [%s] mode=%s prevmode=%s reason=%s", LocOp.getId(inst), mode, wLoc.getmode(data->props), reason );
     wLoc.setmode(data->props, mode);
