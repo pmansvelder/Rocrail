@@ -484,6 +484,7 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
         wOutput.setcmd(cmd, shutdown?wOutput.off:wOutput.value);
         OutputOp.cmd(output, cmd, True);
 
+        ThreadOp.sleep(10);
       }
       adjustBri = False;
     }
@@ -763,7 +764,7 @@ static void __makeWeather( void* threadinst ) {
     }
     ThreadOp.sleep(100);
   }
-  __doDaylight(weather, 0, 0, True, False );
+  __doDaylight(weather, 0, 0, wWeather.isoffatshutdown(data->props), False );
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "make weather ended..." );
 

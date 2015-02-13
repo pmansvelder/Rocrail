@@ -480,8 +480,9 @@ static byte* _cmdRaw( obj inst ,const byte* cmd ) {
 /**  */
 static void _halt( obj inst ,Boolean poweroff, Boolean shutdown ) {
   iOHUEData data = Data(inst);
+  ThreadOp.sleep(500);
   data->run = False;
-  ThreadOp.sleep(250);
+  ThreadOp.sleep(500);
 }
 
 

@@ -1596,6 +1596,7 @@
         <var name="usewhite" vt="bool" defval="true"/>
         <var name="usebri" vt="bool" defval="true"/>
         <var name="usesat" vt="bool" defval="true"/>
+        <var name="offatshutdown" vt="bool" defval="true"/>
         <sunrise cardinality="1" remark="Sunrise definition" wrappername="Sunrise">
           <var name="hour" vt="int" defval="6" range="0-23"/>
           <var name="minute" vt="int" defval="0" range="0-59"/>

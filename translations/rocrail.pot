@@ -7763,3 +7763,9 @@ msgstr ""
 msgid "deselected"
 msgstr ""
 
+#. 
+# id="offatshutdown"
+#, c-format
+msgid "Off at shutdown"
+msgstr ""
+

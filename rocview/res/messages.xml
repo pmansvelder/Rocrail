@@ -29671,4 +29671,7 @@
   <Msg id="deselected">
     <en txt="deselected"/>
   </Msg>
+  <Msg id="offatshutdown">
+    <en txt="Off at shutdown"/>
+  </Msg>
 </Messages>
