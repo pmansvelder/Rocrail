@@ -299,7 +299,7 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
     if( StrOp.equals( cmdstr, wSysCmd.stop ) ) {
       /* CS off */
       byte* msg = allocMem(32);
-      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK1, SYSTEM_POWER_OFF, 0, 0, 0, 0);
+      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, SYSTEM_POWER_OFF, 0, 0, 0, 0);
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "request power OFF" );
       ThreadOp.post(data->writer, (obj)msg);
     }
@@ -307,7 +307,7 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
     else if( StrOp.equals( cmdstr, wSysCmd.go ) ) {
       /* CS on */
       byte* msg = allocMem(32);
-      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK1, SYSTEM_POWER_ON, 0, 0, 0, 0);
+      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, SYSTEM_POWER_ON, 0, 0, 0, 0);
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "request power ON" );
       ThreadOp.post(data->writer, (obj)msg);
     }
