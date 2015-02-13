@@ -29665,4 +29665,10 @@
     <pt_BR txt="Mapa branco"/>
     <sl txt="Določi bele barvo"/>
   </Msg>
+  <Msg id="selected">
+    <en txt="selected"/>
+  </Msg>
+  <Msg id="deselected">
+    <en txt="deselected"/>
+  </Msg>
 </Messages>

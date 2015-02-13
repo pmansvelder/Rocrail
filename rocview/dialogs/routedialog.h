@@ -304,6 +304,7 @@ public:
     wxCheckBox* m_Manual;
     wxButton* m_Actions;
     wxCheckBox* m_Show;
+    wxRadioBox* m_Status;
     wxPanel* m_CommandPanel;
     wxListBox* m_Commands;
     wxButton* m_Delete;

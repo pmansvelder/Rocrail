@@ -7751,3 +7751,15 @@ msgstr ""
 msgid "Map white"
 msgstr ""
 
+#. 
+# id="selected"
+#, c-format
+msgid "selected"
+msgstr ""
+
+#. 
+# id="deselected"
+#, c-format
+msgid "deselected"
+msgstr ""
+
