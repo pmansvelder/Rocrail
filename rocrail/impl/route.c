@@ -1250,6 +1250,9 @@ static Boolean _isFree( iORoute inst, const char* id ) {
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route %s is closed (%s)", wRoute.getid(data->props), id!=NULL?id:"-" );
       data->requestId = id;
     }
+    else {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route %s is closed", wRoute.getid(data->props) );
+    }
 
     return False;
   }

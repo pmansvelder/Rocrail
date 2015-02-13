@@ -4099,6 +4099,7 @@ static void _event( iOModel inst, iONode nodeC ) {
       }
       else {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "signal event processing is disabled; skip [%s].", SignalOp.getId(sg) );
+        nodeC->base.del(nodeC);
       }
       return;
     }
