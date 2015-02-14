@@ -254,6 +254,8 @@ public:
     wxSpinCtrl* m_BlueChannel;
     wxStaticText* m_labWhiteChannel;
     wxSpinCtrl* m_WhiteChannel;
+    wxStaticText* m_labWhite2Channel;
+    wxSpinCtrl* m_White2Channel;
     wxStaticText* m_labBrightnessChannel;
     wxSpinCtrl* m_BrightnessChannel;
     wxStaticBox* m_ColorRGBBox;
@@ -265,6 +267,8 @@ public:
     wxSpinCtrl* m_BlueColor;
     wxStaticText* m_labWhiteColor;
     wxSpinCtrl* m_WhiteColor;
+    wxStaticText* m_labWhite2Color;
+    wxSpinCtrl* m_White2Color;
     wxStaticText* m_labSaturationColor;
     wxSpinCtrl* m_SaturationColor;
     wxPanel* m_LocationPanel;

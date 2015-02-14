@@ -70,6 +70,7 @@ class WeatherDlg : public WeatherDlgGen
     void onColorCellLeftDClick( wxGridEvent& event );
     void onColorLabelDClick( wxGridEvent& event );
     void onColorWhite( wxCommandEvent& event );
+    void onColorWhite2( wxCommandEvent& event );
     void onColorBrightness( wxCommandEvent& event );
     void onColorSaturation( wxCommandEvent& event );
 

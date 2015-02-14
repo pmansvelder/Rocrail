@@ -232,8 +232,8 @@ static void __ArtDmx(iODMXArtNet inst) {
 
 }
 
-static void __setChannel(iODMXArtNet inst, int addr, int red, int green, int blue, int white, int brightness,
-    Boolean active, int redChannel, int greenChannel, int blueChannel, int briChannel, int whiteChannel)
+static void __setChannel(iODMXArtNet inst, int addr, int red, int green, int blue, int white, int white2, int brightness,
+    Boolean active, int redChannel, int greenChannel, int blueChannel, int briChannel, int whiteChannel, int white2Channel)
 {
   iODMXArtNetData data = Data(inst);
   if( MutexOp.wait( data->mux ) ) {
@@ -242,10 +242,11 @@ static void __setChannel(iODMXArtNet inst, int addr, int red, int green, int blu
     if( briChannel > 0 )
       data->dmxchannel[addr+briChannel-1] = brightness;
     else {
-      red   = (red   * brightness) / 255;
-      green = (green * brightness) / 255;
-      blue  = (blue  * brightness) / 255;
-      white = (white * brightness) / 255;
+      red    = (red    * brightness) / 255;
+      green  = (green  * brightness) / 255;
+      blue   = (blue   * brightness) / 255;
+      white  = (white  * brightness) / 255;
+      white2 = (white2 * brightness) / 255;
     }
 
     if( redChannel > 0 )
@@ -278,6 +279,8 @@ static void __setChannel(iODMXArtNet inst, int addr, int red, int green, int blu
           addr, data->dmxchannel[addr+redChannel-1], data->dmxchannel[addr+greenChannel-1], data->dmxchannel[addr+blueChannel-1],
           red, green, blue );
     }
+    if( white2Channel > 0 )
+      data->dmxchannel[addr+white2Channel-1] = white2;
 
 
     MutexOp.post(data->mux);
@@ -307,29 +310,32 @@ static iONode __translate( iODMXArtNet inst, iONode node ) {
     Boolean colortype = wOutput.iscolortype( node );
     Boolean active = False;
 
-    int redChannel   = wOutput.getredChannel(node);
-    int greenChannel = wOutput.getgreenChannel(node);
-    int blueChannel  = wOutput.getblueChannel(node);
-    int briChannel   = wOutput.getbrightnessChannel(node);
-    int whiteChannel = wOutput.getwhiteChannel(node);
-    int r = 0;
-    int g = 0;
-    int b = 0;
-    int w = 0;
+    int redChannel    = wOutput.getredChannel(node);
+    int greenChannel  = wOutput.getgreenChannel(node);
+    int blueChannel   = wOutput.getblueChannel(node);
+    int briChannel    = wOutput.getbrightnessChannel(node);
+    int whiteChannel  = wOutput.getwhiteChannel(node);
+    int white2Channel = wOutput.getwhite2Channel(node);
+    int r  = 0;
+    int g  = 0;
+    int b  = 0;
+    int w  = 0;
+    int w2 = 0;
 
     if( StrOp.equals( wOutput.getcmd( node ), wOutput.on ) || StrOp.equals( wOutput.getcmd( node ), wOutput.value ) )
       active = True;
 
     if( color != NULL ) {
-      r = wColor.getred(color);
-      g = wColor.getgreen(color);
-      b = wColor.getblue(color);
-      w = wColor.getwhite(color);
+      r  = wColor.getred(color);
+      g  = wColor.getgreen(color);
+      b  = wColor.getblue(color);
+      w  = wColor.getwhite(color);
+      w2 = wColor.getwhite2(color);
     }
-    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output device=%d active=%d cmd=%s bri=%d briChannel(%d) RGBW=%d,%d,%d,%d RGBWChannels(%d,%d,%d,%d)",
-        addr, active, wOutput.getcmd( node ), val, briChannel, r, g, b, w, redChannel, greenChannel, blueChannel, whiteChannel );
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output device=%d active=%d cmd=%s bri=%d briChannel(%d) RGBWW=%d,%d,%d,%d,%d RGBWWChannels(%d,%d,%d,%d,%d)",
+        addr, active, wOutput.getcmd( node ), val, briChannel, r, g, b, w, w2, redChannel, greenChannel, blueChannel, whiteChannel, white2Channel );
 
-    __setChannel(inst, addr, r, g, b, w, val, active, redChannel, greenChannel, blueChannel, briChannel, whiteChannel);
+    __setChannel(inst, addr, r, g, b, w, w2, val, active, redChannel, greenChannel, blueChannel, briChannel, whiteChannel, white2Channel);
     data->refresh = True;
   }
 

@@ -77,7 +77,7 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
       initValues();
       initThemeIndex();
       m_SelectedRow = wxGetApp().getFrame()->GetHour();
-      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
       m_RGBWPanel->setDayTime(m_SelectedRow);
       m_ColorGrid->SelectRow(m_SelectedRow);
       m_ColorGrid->MakeCellVisible(m_SelectedRow, 0);
@@ -149,7 +149,7 @@ void WeatherDlg::onIndexList( wxCommandEvent& event ) {
     if( m_Props != NULL ) {
       initValues();
       initThemeIndex();
-      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked() );
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked() );
     }
     else
       TraceOp.trc( "weatherdlg", TRCLEVEL_INFO, __LINE__, 9999, "no selection..." );
@@ -174,7 +174,7 @@ void WeatherDlg::onAddWeather( wxCommandEvent& event ) {
         NodeOp.addChild( weatherlist, weather );
         wWeather.setid( weather, "NEW" );
         m_Props = weather;
-        m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+        m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
 
       }
     }
@@ -209,7 +209,7 @@ void WeatherDlg::onDeleteWeather( wxCommandEvent& event ) {
     if( weatherlist != NULL ) {
       NodeOp.removeChild( weatherlist, m_Props );
       m_Props = NULL;
-      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
 
     }
   }
@@ -275,12 +275,12 @@ void WeatherDlg::initColorGrid() {
   m_ColorGrid->AppendRows(24);
   for( int i = 0; i < 24; i++ ) {
     m_ColorGrid->SetRowLabelValue(i, wxString::Format(wxT("%02d:%02d"), i, 0) );
-    for( int n = 0; n < 6; n++) {
+    for( int n = 0; n < 7; n++) {
       m_ColorGrid->SetCellAlignment(wxALIGN_CENTRE, i, n);
       m_ColorGrid->SetCellValue(i, n, wxT("0"));
     }
   }
-  for( int n = 0; n < 6; n++)
+  for( int n = 0; n < 7; n++)
     m_ColorGrid->SetColFormatNumber(n);
 }
 
@@ -357,13 +357,15 @@ void WeatherDlg::initLabels() {
   m_ColorGrid->SetColLabelValue(0, wxGetApp().getMsg("red") );
   m_ColorGrid->SetColLabelValue(1, wxGetApp().getMsg("green") );
   m_ColorGrid->SetColLabelValue(2, wxGetApp().getMsg("blue") );
-  m_ColorGrid->SetColLabelValue(3, wxGetApp().getMsg("white") );
+  m_ColorGrid->SetColLabelValue(3, wxGetApp().getMsg("white") + wxT(" 1") );
   m_ColorGrid->SetColLabelValue(4, wxGetApp().getMsg("brightness") );
   m_ColorGrid->SetColLabelValue(5, wxGetApp().getMsg("saturation") );
+  m_ColorGrid->SetColLabelValue(6, wxGetApp().getMsg("white") + wxT(" 2") );
   m_ColorImport->SetLabel( wxGetApp().getMsg( "import" ) + wxT("...") );
   m_ColorExport->SetLabel( wxGetApp().getMsg( "export" ) + wxT("...") );
 
-  m_ColorWhite->SetLabel(wxGetApp().getMsg("white"));
+  m_ColorWhite->SetLabel(wxGetApp().getMsg("white") + wxT(" 1"));
+  m_ColorWhite2->SetLabel(wxGetApp().getMsg("white") + wxT(" 2"));
   m_ColorBrightness->SetLabel(wxGetApp().getMsg("brightness"));
   m_ColorSaturation->SetLabel(wxGetApp().getMsg("saturation"));
 
@@ -443,10 +445,12 @@ void WeatherDlg::initValues() {
     m_ColorGrid->SetCellValue(hour, 3, wxString::Format(wxT("%d"), wWeatherColor.getwhite(color)));
     m_ColorGrid->SetCellValue(hour, 4, wxString::Format(wxT("%d"), wWeatherColor.getbri(color)));
     m_ColorGrid->SetCellValue(hour, 5, wxString::Format(wxT("%d"), wWeatherColor.getsat(color)));
+    m_ColorGrid->SetCellValue(hour, 6, wxString::Format(wxT("%d"), wWeatherColor.getwhite2(color)));
     color = wWeather.nextweathercolor(m_Props, color);
   }
 
   m_ColorWhite->SetValue( wWeather.isusewhite(m_Props)?true:false);
+  m_ColorWhite2->SetValue( wWeather.isusewhite2(m_Props)?true:false);
   m_ColorBrightness->SetValue( wWeather.isusebri(m_Props)?true:false);
   m_ColorSaturation->SetValue( wWeather.isusesat(m_Props)?true:false);
 
@@ -456,6 +460,8 @@ void WeatherDlg::initValues() {
   else HideCol(4);
   if( m_ColorSaturation->IsChecked() ) ShowCol(5);
   else HideCol(5);
+  if( m_ColorWhite2->IsChecked() ) ShowCol(6);
+  else HideCol(6);
 
 }
 
@@ -525,6 +531,7 @@ bool WeatherDlg::evaluate() {
     wWeatherColor.setwhite(color, atoi(m_ColorGrid->GetCellValue(i, 3).mb_str(wxConvUTF8)));
     wWeatherColor.setbri  (color, atoi(m_ColorGrid->GetCellValue(i, 4).mb_str(wxConvUTF8)));
     wWeatherColor.setsat  (color, atoi(m_ColorGrid->GetCellValue(i, 5).mb_str(wxConvUTF8)));
+    wWeatherColor.setwhite2(color, atoi(m_ColorGrid->GetCellValue(i, 6).mb_str(wxConvUTF8)));
   }
 
   return true;
@@ -682,16 +689,16 @@ void WeatherDlg::onActions( wxCommandEvent& event ) {
 }
 
 void WeatherDlg::onColorCellSelect( wxGridEvent& event ) {
-  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
   event.Skip();
 }
 void WeatherDlg::onColorLabelClick( wxGridEvent& event ) {
-  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
   event.Skip();
 }
 void WeatherDlg::onColorCellChanged( wxGridEvent& event ) {
   evaluate();
-  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
   event.Skip();
 }
 
@@ -749,6 +756,10 @@ void WeatherDlg::onColorImport( wxCommandEvent& event ) {
           m_ColorGrid->SetCellValue(hour, 5, wxString( StrTokOp.nextToken(tok), wxConvUTF8 ) );
         else
           m_ColorGrid->SetCellValue(hour, 5, wxT("250") );
+        if( StrTokOp.hasMoreTokens(tok) )
+          m_ColorGrid->SetCellValue(hour, 6, wxString( StrTokOp.nextToken(tok), wxConvUTF8 ) );
+        else
+          m_ColorGrid->SetCellValue(hour, 6, wxT("0") );
         StrTokOp.base.del(tok);
         hour++;
       }
@@ -780,7 +791,8 @@ void WeatherDlg::onColorExport( wxCommandEvent& event ) {
             atoi(m_ColorGrid->GetCellValue(hour, 2).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 3).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 4).mb_str(wxConvUTF8)),
-            atoi(m_ColorGrid->GetCellValue(hour, 5).mb_str(wxConvUTF8))
+            atoi(m_ColorGrid->GetCellValue(hour, 5).mb_str(wxConvUTF8)),
+            atoi(m_ColorGrid->GetCellValue(hour, 6).mb_str(wxConvUTF8))
             );
       }
       FileOp.base.del( f );
@@ -807,7 +819,7 @@ void WeatherDlg::onColorCellLeftDClick( wxGridEvent& event ) {
   m_ColorGrid->SetCellValue(row, col, wxString::Format(wxT("%d"), val));
 
   evaluate();
-  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
 }
 
 
@@ -911,7 +923,7 @@ void WeatherDlg::onColorLabelDClick( wxGridEvent& event ) {
     m_ColorGrid->SetCellValue(row, 1, wxString::Format(wxT("%d"), (int)colour.Green()) );
     m_ColorGrid->SetCellValue(row, 2, wxString::Format(wxT("%d"), (int)colour.Blue()) );
     evaluate();
-    m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+    m_RGBWPanel->setWeather(m_Props, event.GetRow(), m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
   }
   dlg->Destroy();
 }
@@ -925,7 +937,19 @@ void WeatherDlg::onColorWhite( wxCommandEvent& event ) {
     ShowCol(3);
   else
     HideCol(3);
-  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
+}
+
+void WeatherDlg::onColorWhite2( wxCommandEvent& event ) {
+  if( m_Props == NULL )
+    return;
+
+  wWeather.setusewhite2( m_Props, m_ColorWhite2->IsChecked()?True:False);
+  if( m_ColorWhite2->IsChecked() )
+    ShowCol(6);
+  else
+    HideCol(6);
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
 }
 
 void WeatherDlg::onColorBrightness( wxCommandEvent& event ) {
@@ -937,7 +961,7 @@ void WeatherDlg::onColorBrightness( wxCommandEvent& event ) {
     ShowCol(4);
   else
     HideCol(4);
-  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
 }
 
 void WeatherDlg::onColorSaturation( wxCommandEvent& event ) {
@@ -949,7 +973,7 @@ void WeatherDlg::onColorSaturation( wxCommandEvent& event ) {
     ShowCol(5);
   else
     HideCol(5);
-  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked());
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
 }
 
 void WeatherDlg::ShowCol(int col) {

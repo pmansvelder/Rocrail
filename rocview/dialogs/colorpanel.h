@@ -40,6 +40,7 @@ class ColorPanel : public wxPanel
   int    m_Selection;
   int    m_Hour;
   bool   m_White;
+  bool   m_White2;
   bool   m_Brightness;
   bool   m_Saturation;
   bool   m_UseGC;
@@ -54,7 +55,7 @@ public:
   ColorPanel(wxWindow* parent);
   ~ColorPanel();
   void OnPaint(wxPaintEvent& event);
-  void setWeather(iONode booster, int selection=-1, bool white=true, bool bri=true, bool sat=true);
+  void setWeather(iONode booster, int selection=-1, bool white=true, bool bri=true, bool sat=true, bool white2=true);
   void setDayTime(int hour);
 };
 

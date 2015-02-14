@@ -43,6 +43,7 @@ ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultP
   m_Selection = -1;
   m_Hour = -1;
   m_White = true;
+  m_White2 = false;
   m_Brightness = true;
   m_Saturation = true;
 
@@ -59,10 +60,11 @@ void ColorPanel::setDayTime(int hour) {
   Refresh();
 }
 
-void ColorPanel::setWeather(iONode weather, int selection, bool white, bool bri, bool sat) {
+void ColorPanel::setWeather(iONode weather, int selection, bool white, bool bri, bool sat, bool white2) {
   m_Weather = weather;
   m_Selection = selection;
   m_White = white;
+  m_White2 = white2;
   m_Brightness = bri;
   m_Saturation = sat;
   Refresh();
@@ -194,6 +196,16 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       int start = wWeatherColor.getwhite(colorProps[0]);
       for( int i = 1; i < 24; i++ ) {
         int val = wWeatherColor.getwhite(colorProps[i]);
+        drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
+        start = val;
+      }
+    }
+
+    if( m_White2 ) {
+      setPen(wxColor( 255, 0, 255 ), 3, wxSOLID);
+      int start = wWeatherColor.getwhite(colorProps[0]);
+      for( int i = 1; i < 24; i++ ) {
+        int val = wWeatherColor.getwhite2(colorProps[i]);
         drawLine( (i-1) * w23, (255-start) * ystep, i * w23, (255-val) * ystep );
         start = val;
       }

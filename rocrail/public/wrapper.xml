@@ -1563,7 +1563,8 @@
 		<var name="green" vt="int" defval="0" range="0-255" remark="Green value"/>
 		<var name="blue" vt="int" defval="0" range="0-255" remark="Blue value"/>
     <var name="white" vt="int" defval="0" range="0-255" remark="White value"/>
-		<var name="brightness" vt="int" defval="0" range="0-255" remark="Brightness"/>
+    <var name="white2" vt="int" defval="0" range="0-255" remark="Second white value"/>
+    <var name="brightness" vt="int" defval="0" range="0-255" remark="Brightness"/>
     <var name="saturation" vt="int" defval="254" range="0-254" remark="Brightness"/>
   </color>
 
@@ -1594,6 +1595,7 @@
         <var name="nightsliding" vt="int" defval="30" range="1-120" unit="min" remark="Night sliding time."/>
         <var name="colortable" vt="bool" defval="false"/>
         <var name="usewhite" vt="bool" defval="true"/>
+        <var name="usewhite2" vt="bool" defval="false"/>
         <var name="usebri" vt="bool" defval="true"/>
         <var name="usesat" vt="bool" defval="true"/>
         <var name="offatshutdown" vt="bool" defval="true"/>
@@ -1636,6 +1638,7 @@
           <var name="green" vt="int" defval="255" range="0-255"/>
           <var name="blue" vt="int" defval="255" range="0-255"/>
           <var name="white" vt="int" defval="0" range="0-255"/>
+          <var name="white2" vt="int" defval="0" range="0-255"/>
           <var name="bri" vt="int" defval="255" range="0-255"/>
           <var name="sat" vt="int" defval="200" range="0-255"/>
         </weathercolor>
@@ -1986,6 +1989,7 @@
         <var name="greenChannel" vt="int" defval="0" range="0-*" remark="Green channel address"/>
         <var name="blueChannel" vt="int" defval="0" range="0-*" remark="Blue channel address"/>
         <var name="whiteChannel" vt="int" defval="0" range="0-*" remark="White channel address"/>
+        <var name="white2Channel" vt="int" defval="0" range="0-*" remark="Second white channel address"/>
         <var name="brightnessChannel" vt="int" defval="0" range="0-*" remark="Brightnes channel address"/>
         
         <var name="delay" vt="int" defval="0" range="0-*" required="false" remark="Turn off after x seconds if greater then 0"/>
