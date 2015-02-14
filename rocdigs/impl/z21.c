@@ -630,10 +630,14 @@ static iONode __translate(iOZ21 inst, iONode node) {
     byte* packet = allocMem(32);
 
     if( wLoc.getV( node ) != -1 ) {
-      if( StrOp.equals( wLoc.getV_mode( node ), wLoc.V_mode_percent ) )
+      if( StrOp.equals( wLoc.getV_mode( node ), wLoc.V_mode_percent ) ) {
         speed = (wLoc.getV( node ) * spcnt) / 100;
-      else if( wLoc.getV_max( node ) > 0 )
+        if( ((wLoc.getV( node ) * spcnt) % 100) >= 50 )
+          speed++;
+      }
+      else if( wLoc.getV_max( node ) > 0 ) {
         speed = (wLoc.getV( node ) * spcnt) / wLoc.getV_max( node );
+      }
     }
 
     __checkDecMode(inst, node);
