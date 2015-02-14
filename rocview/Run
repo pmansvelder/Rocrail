@@ -15,4 +15,10 @@ fi
 if [ ! -e ~/rocrail/images ] ; then
   cp -r $mypath/../../../rocdata/images ~/rocrail
 fi
+if [ ! -e ~/rocrail/decspecs ] ; then
+  cp -r $mypath/../../../rocdata/decspecs ~/rocrail
+fi
+if [ ! -e ~/rocrail/stylesheets ] ; then
+  cp -r $mypath/../../../rocdata/stylesheets ~/rocrail
+fi
 $mypath/rocview -i ~/rocrail/rocview.ini -t $mypath/../../../rocdata/trace/rocview -sp $mypath -themespath $mypath/../../..
