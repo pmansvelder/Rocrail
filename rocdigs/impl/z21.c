@@ -167,6 +167,23 @@ static int __normalizeSteps(int insteps, byte* conf ) {
   return 28;
 }
 
+static int sp28[29] = {0x00,0x02,0x12,0x03,0x13,0x04,0x14,0x05,0x15,0x06,0x16,0x07,0x17,0x08,0x18,
+                       0x09,0x19,0x0A,0x1A,0x0B,0x1B,0x0C,0x1C,0x0D,0x1D,0x0E,0x1E,0x0F,0x1F};
+static int __convertSpeed(int speed, int spcnt) {
+  if( spcnt == 28 && speed <= 28) {
+    return sp28[speed];
+  }
+  return speed;
+}
+
+static int sp28b[32] = {0,0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,
+                        0,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28};
+static int __convertSpeedBack(int speed, int spcnt) {
+  if( spcnt == 28 && speed < 32) {
+    return sp28b[speed];
+  }
+  return speed;
+}
 
 static void __fx2fn(iOSlot slot, int fx) {
   int i = 0;
@@ -625,6 +642,7 @@ static iONode __translate(iOZ21 inst, iONode node) {
     iOSlot slot = __getSlot(inst, node);
     int spcnt = __normalizeSteps(wLoc.getspcnt( node ), &conf);
     int speed = 0;
+    int step  = 0;
     Boolean fnstate = wLoc.isfn(node);
     Boolean dir = wLoc.isdir( node );
     byte* packet = allocMem(32);
@@ -642,6 +660,9 @@ static iONode __translate(iOZ21 inst, iONode node) {
 
     __checkDecMode(inst, node);
 
+    step = speed;
+    speed = __convertSpeed(speed, spcnt);
+
     if( slot->Vraw != speed || slot->dir != dir) {
       slot->Vraw = speed;
       slot->dir = dir;
@@ -655,7 +676,7 @@ static iONode __translate(iOZ21 inst, iONode node) {
       packet[7] = addr % 256; /*LSB*/
       packet[8] = (dir?0x80:0x00) + speed;
       packet[9] = packet[4] ^ packet[5] ^ packet[6] ^ packet[7] ^ packet[8]; /*xor*/
-      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "loco %d step=%d dir=%s (0x%02X)", addr, speed, dir?"fwd":"rev", packet[8] );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "loco %d step=%d dir=%s (0x%02X)", addr, step, dir?"fwd":"rev", packet[8] );
       ThreadOp.post(data->writer, (obj)packet);
     }
 
@@ -1243,9 +1264,11 @@ static void __evaluatePacket(iOZ21 inst, byte* packet, int packetSize) {
       Boolean fn = ((packet[packetIdx+9] & 0x10) ? True:False);
       iOSlot slot = __getSlotByAddr(inst, addr);
 
-      if( steps == 0 ) steps = 14;
+      if( steps == 0 || steps == 1) steps = 14;
       else if( steps == 2 ) steps = 28;
       else if( steps == 4 ) steps = 127;
+
+      speed = __convertSpeedBack(speed, steps);
 
       if( slot != NULL ) {
         slot->Vraw = speed;
