@@ -460,6 +460,40 @@ static iONode __translate( iOrocNet inst, iONode node ) {
         rn[RN_PACKET_DATA + 2] = (int)rgb;
         rn[RN_PACKET_DATA + 3] = wOutput.getblueChannel(node);
         rn[RN_PACKET_DATA + 4] = 0;
+
+        if( wOutput.getwhiteChannel(node) > 0 ) {
+          ThreadOp.post( data->writer, (obj)rn );
+
+          rn  = allocMem(32);
+          rn[RN_PACKET_GROUP] |= RN_GROUP_OUTPUT;
+          rnReceipientAddresToPacket( bus, rn, data->seven );
+          rn[RN_PACKET_ACTION] = RN_STATIONARY_SINGLE_PORT;
+          rn[RN_PACKET_LEN] = 5;
+          rn[RN_PACKET_DATA + 0] = cmd;
+          rn[RN_PACKET_DATA + 1] = wOutput.getporttype(node);
+          rgb = wColor.getwhite(color);
+          rgb = (rgb * bri) / 255.0;
+          rn[RN_PACKET_DATA + 2] = (int)rgb;
+          rn[RN_PACKET_DATA + 3] = wOutput.getwhiteChannel(node);
+          rn[RN_PACKET_DATA + 4] = 0;
+        }
+
+        if( wOutput.getwhite2Channel(node) > 0 ) {
+          ThreadOp.post( data->writer, (obj)rn );
+
+          rn  = allocMem(32);
+          rn[RN_PACKET_GROUP] |= RN_GROUP_OUTPUT;
+          rnReceipientAddresToPacket( bus, rn, data->seven );
+          rn[RN_PACKET_ACTION] = RN_STATIONARY_SINGLE_PORT;
+          rn[RN_PACKET_LEN] = 5;
+          rn[RN_PACKET_DATA + 0] = cmd;
+          rn[RN_PACKET_DATA + 1] = wOutput.getporttype(node);
+          rgb = wColor.getwhite2(color);
+          rgb = (rgb * bri) / 255.0;
+          rn[RN_PACKET_DATA + 2] = (int)rgb;
+          rn[RN_PACKET_DATA + 3] = wOutput.getwhite2Channel(node);
+          rn[RN_PACKET_DATA + 4] = 0;
+        }
       }
       else {
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output bus=%d addr=%d cmd=%d type=%d", bus, addr, cmd, wOutput.getporttype(node) );
