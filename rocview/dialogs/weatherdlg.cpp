@@ -84,6 +84,11 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
     }
   }
 
+  m_ColorWhite->SetBackgroundColour(wxColour(255,255,255));
+  m_ColorWhite2->SetBackgroundColour(wxColour(255,0,255));
+  m_ColorBrightness->SetBackgroundColour(wxColour(255,255,0));
+  m_ColorSaturation->SetBackgroundColour(wxColour(0,255,255));
+
 
 }
 
@@ -365,13 +370,9 @@ void WeatherDlg::initLabels() {
   m_ColorExport->SetLabel( wxGetApp().getMsg( "export" ) + wxT("...") );
 
   m_ColorWhite->SetLabel(wxGetApp().getMsg("white") + wxT(" 1"));
-  m_ColorWhite->SetBackgroundColour(wxColour(255,255,255));
   m_ColorWhite2->SetLabel(wxGetApp().getMsg("white") + wxT(" 2"));
-  m_ColorWhite2->SetBackgroundColour(wxColour(255,0,255));
   m_ColorBrightness->SetLabel(wxGetApp().getMsg("brightness"));
-  m_ColorBrightness->SetBackgroundColour(wxColour(255,255,0));
   m_ColorSaturation->SetLabel(wxGetApp().getMsg("saturation"));
-  m_ColorSaturation->SetBackgroundColour(wxColour(0,255,255));
 
   // Buttons
   m_StdButtonsOK->SetLabel( wxGetApp().getMsg( "ok" ) );
