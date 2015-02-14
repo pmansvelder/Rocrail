@@ -1483,9 +1483,9 @@ bool LocDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption
     m_V0onSwap = NULL;
     m_BBT = NULL;
     m_EngineBox = NULL;
-    m_Era = NULL;
     m_labClass = NULL;
     m_Class = NULL;
+    m_Era = NULL;
     m_FunctionPanel = NULL;
     m_labF0Nr = NULL;
     m_labF0Desc = NULL;
@@ -2295,6 +2295,15 @@ void LocDialog::CreateControls()
     m_EngineBox->SetSelection(0);
     itemBoxSizer187->Add(m_EngineBox, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 5);
 
+    wxFlexGridSizer* itemFlexGridSizer201 = new wxFlexGridSizer(0, 3, 0, 0);
+    itemBoxSizer187->Add(itemFlexGridSizer201, 0, wxGROW, 5);
+    m_labClass = new wxStaticText( m_DetailsPanel, wxID_ANY, _("Class"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer201->Add(m_labClass, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+    m_Class = new wxTextCtrl( m_DetailsPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    m_Class->SetMaxLength(8);
+    itemFlexGridSizer201->Add(m_Class, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
     wxArrayString m_EraStrings;
     m_EraStrings.Add(_("&I"));
     m_EraStrings.Add(_("&II"));
@@ -2304,18 +2313,9 @@ void LocDialog::CreateControls()
     m_EraStrings.Add(_("&VI"));
     m_Era = new wxRadioBox( m_DetailsPanel, wxID_ANY, _("Era"), wxDefaultPosition, wxDefaultSize, m_EraStrings, 1, wxRA_SPECIFY_ROWS );
     m_Era->SetSelection(0);
-    itemBoxSizer187->Add(m_Era, 0, wxALIGN_LEFT|wxALL, 5);
+    itemFlexGridSizer201->Add(m_Era, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer202 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer187->Add(itemFlexGridSizer202, 0, wxGROW, 5);
-    m_labClass = new wxStaticText( m_DetailsPanel, wxID_ANY, _("Class"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer202->Add(m_labClass, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_Class = new wxTextCtrl( m_DetailsPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    m_Class->SetMaxLength(8);
-    itemFlexGridSizer202->Add(m_Class, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    itemFlexGridSizer202->AddGrowableCol(1);
+    itemFlexGridSizer201->AddGrowableCol(1);
 
     m_Notebook->AddPage(m_DetailsPanel, _("Details"));
 
@@ -2420,7 +2420,7 @@ void LocDialog::CreateControls()
     itemFlexGridSizer223->Add(m_F1Addr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_F1AddrFn = new wxSpinCtrl( m_FunctionPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
-    itemFlexGridSizer223->Add(m_F1AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer223->Add(m_F1AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_Label_f2 = new wxStaticText( m_FunctionPanel, wxID_STATIC_F2, _("f2"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer223->Add(m_Label_f2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 2);
@@ -2444,7 +2444,7 @@ void LocDialog::CreateControls()
     itemFlexGridSizer223->Add(m_F2Addr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_F2AddrFn = new wxSpinCtrl( m_FunctionPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
-    itemFlexGridSizer223->Add(m_F2AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer223->Add(m_F2AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_Label_f3 = new wxStaticText( m_FunctionPanel, wxID_STATIC_F3, _("f3"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer223->Add(m_Label_f3, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 2);
@@ -2468,7 +2468,7 @@ void LocDialog::CreateControls()
     itemFlexGridSizer223->Add(m_F3Addr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_F3AddrFn = new wxSpinCtrl( m_FunctionPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
-    itemFlexGridSizer223->Add(m_F3AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer223->Add(m_F3AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_Label_f4 = new wxStaticText( m_FunctionPanel, wxID_STATIC_F4, _("f4"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer223->Add(m_Label_f4, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 2);
@@ -2492,7 +2492,7 @@ void LocDialog::CreateControls()
     itemFlexGridSizer223->Add(m_F4Addr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_F4AddrFn = new wxSpinCtrl( m_FunctionPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
-    itemFlexGridSizer223->Add(m_F4AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer223->Add(m_F4AddrFn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     itemFlexGridSizer223->AddGrowableCol(1);
 
@@ -2837,46 +2837,46 @@ void LocDialog::CreateControls()
     m_BBTList2 = new wxListCtrl( m_BBTPanel, ID_LOC_BBTLIST2, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
     itemBoxSizer344->Add(m_BBTList2, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer363 = new wxFlexGridSizer(0, 12, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer363 = new wxFlexGridSizer(0, 8, 0, 0);
     itemBoxSizer344->Add(itemFlexGridSizer363, 0, wxGROW, 5);
     m_labBBTFromBlock = new wxStaticText( m_BBTPanel, wxID_ANY, _("From block"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer363->Add(m_labBBTFromBlock, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_BBTFromBlockStrings;
     m_BBTFromBlock = new wxComboBox( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BBTFromBlockStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer363->Add(m_BBTFromBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+    itemFlexGridSizer363->Add(m_BBTFromBlock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTBlock = new wxStaticText( m_BBTPanel, wxID_ANY, _("Block"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer363->Add(m_labBBTBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer363->Add(m_labBBTBlock, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_BBTBlockStrings;
     m_BBTBlock = new wxComboBox( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BBTBlockStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer363->Add(m_BBTBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer363->Add(m_BBTBlock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTInterval = new wxStaticText( m_BBTPanel, wxID_ANY, _("Interval"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer363->Add(m_labBBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_BBTInterval = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
-    itemFlexGridSizer363->Add(m_BBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+    itemFlexGridSizer363->Add(m_BBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTRoute = new wxStaticText( m_BBTPanel, wxID_ANY, _("Route"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer363->Add(m_labBBTRoute, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_BBTRouteStrings;
     m_BBTRoute = new wxComboBox( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BBTRouteStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer363->Add(m_BBTRoute, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+    itemFlexGridSizer363->Add(m_BBTRoute, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTSpeed = new wxStaticText( m_BBTPanel, wxID_ANY, _("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer363->Add(m_labBBTSpeed, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_BBTSpeed = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 1000, 0 );
-    itemFlexGridSizer363->Add(m_BBTSpeed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+    itemFlexGridSizer363->Add(m_BBTSpeed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTDelay = new wxStaticText( m_BBTPanel, wxID_ANY, _("Delay"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer363->Add(m_labBBTDelay, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_BBTDelay = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(65, -1), wxSP_ARROW_KEYS, 0, 1000, 0 );
-    itemFlexGridSizer363->Add(m_BBTDelay, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+    itemFlexGridSizer363->Add(m_BBTDelay, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     itemFlexGridSizer363->AddGrowableCol(1);
     itemFlexGridSizer363->AddGrowableCol(3);
