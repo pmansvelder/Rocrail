@@ -21,4 +21,4 @@ fi
 if [ ! -e ~/rocrail/stylesheets ] ; then
   cp -r $mypath/../../../rocdata/stylesheets ~/rocrail
 fi
-$mypath/rocview -i ~/rocrail/rocview.ini -t $mypath/../../../rocdata/trace/rocview -sp $mypath -themespath $mypath/../../..
+$mypath/rocview -i ~/rocrail/rocview.ini -t ~/rocrail/trace/rocview -sp $mypath -themespath $mypath/../../..
