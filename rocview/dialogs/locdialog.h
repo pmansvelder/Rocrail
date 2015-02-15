@@ -31,6 +31,7 @@
  * Includes
  */
 #include "rocs/public/node.h"
+#include "rocs/public/list.h"
 
 ////@begin includes
 #include "wx/notebook.h"
@@ -208,6 +209,8 @@ class LocDialog: public wxDialog, public BaseDialog
   iONode m_CVNodes[1024];
   int m_iFunGroup;
   int m_BBTSortCol;
+  iOList m_BBTList;
+  iOList sortBBT();
 
 public:
     /// Constructors
