@@ -179,96 +179,100 @@ static void __doInitialize(iOWeather weather, Boolean day, Boolean night) {
 
 
 static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, float* g, float* b, float* w, float* bri, float* sat, float* w2) {
-  int fromHour = hour;
-  int toHour   = hour + 1;
+  int fromHour = hour * 2 + min / 30;
+  int toHour   = fromHour + 1;
 
-  if( toHour > 23 ) {
-    toHour -= 24;
+  if( toHour > 47 ) {
+    toHour -= 48;
   }
 
   if( color[fromHour] != NULL && color[toHour] != NULL ) {
     if( wWeatherColor.getred(color[fromHour]) <= wWeatherColor.getred(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getred(color[toHour]) - wWeatherColor.getred(color[fromHour]);
-      *r = wWeatherColor.getred(color[fromHour]) + (dif * min) / 60;
+      *r = wWeatherColor.getred(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getred(color[fromHour]) - wWeatherColor.getred(color[toHour]);
-      *r = wWeatherColor.getred(color[fromHour]) - (dif * min) / 60;
+      *r = wWeatherColor.getred(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
     if( wWeatherColor.getgreen(color[fromHour]) <= wWeatherColor.getgreen(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getgreen(color[toHour]) - wWeatherColor.getgreen(color[fromHour]);
-      *g = wWeatherColor.getgreen(color[fromHour]) + (dif * min) / 60;
+      *g = wWeatherColor.getgreen(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getgreen(color[fromHour]) - wWeatherColor.getgreen(color[toHour]);
-      *g = wWeatherColor.getgreen(color[fromHour]) - (dif * min) / 60;
+      *g = wWeatherColor.getgreen(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
     if( wWeatherColor.getblue(color[fromHour]) <= wWeatherColor.getblue(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getblue(color[toHour]) - wWeatherColor.getblue(color[fromHour]);
-      *b = wWeatherColor.getblue(color[fromHour]) + (dif * min) / 60;
+      *b = wWeatherColor.getblue(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getblue(color[fromHour]) - wWeatherColor.getblue(color[toHour]);
-      *b = wWeatherColor.getblue(color[fromHour]) - (dif * min) / 60;
+      *b = wWeatherColor.getblue(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
     if( wWeatherColor.getwhite(color[fromHour]) <= wWeatherColor.getwhite(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getwhite(color[toHour]) - wWeatherColor.getwhite(color[fromHour]);
-      *w = wWeatherColor.getwhite(color[fromHour]) + (dif * min) / 60;
+      *w = wWeatherColor.getwhite(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getwhite(color[fromHour]) - wWeatherColor.getwhite(color[toHour]);
-      *w = wWeatherColor.getwhite(color[fromHour]) - (dif * min) / 60;
+      *w = wWeatherColor.getwhite(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
     if( wWeatherColor.getwhite2(color[fromHour]) <= wWeatherColor.getwhite2(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getwhite2(color[toHour]) - wWeatherColor.getwhite2(color[fromHour]);
-      *w2 = wWeatherColor.getwhite2(color[fromHour]) + (dif * min) / 60;
+      *w2 = wWeatherColor.getwhite2(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getwhite2(color[fromHour]) - wWeatherColor.getwhite2(color[toHour]);
-      *w2 = wWeatherColor.getwhite2(color[fromHour]) - (dif * min) / 60;
+      *w2 = wWeatherColor.getwhite2(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
     if( wWeatherColor.getbri(color[fromHour]) <= wWeatherColor.getbri(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getbri(color[toHour]) - wWeatherColor.getbri(color[fromHour]);
-      *bri = wWeatherColor.getbri(color[fromHour]) + (dif * min) / 60;
+      *bri = wWeatherColor.getbri(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getbri(color[fromHour]) - wWeatherColor.getbri(color[toHour]);
-      *bri = wWeatherColor.getbri(color[fromHour]) - (dif * min) / 60;
+      *bri = wWeatherColor.getbri(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
     if( wWeatherColor.getsat(color[fromHour]) <= wWeatherColor.getsat(color[toHour]) ) {
       /* increase */
       float dif = wWeatherColor.getsat(color[toHour]) - wWeatherColor.getsat(color[fromHour]);
-      *sat = wWeatherColor.getsat(color[fromHour]) + (dif * min) / 60;
+      *sat = wWeatherColor.getsat(color[fromHour]) + (dif * (min%30)) / 30;
     }
     else {
       /* decrease */
       float dif = wWeatherColor.getsat(color[fromHour]) - wWeatherColor.getsat(color[toHour]);
-      *sat = wWeatherColor.getsat(color[fromHour]) - (dif * min) / 60;
+      *sat = wWeatherColor.getsat(color[fromHour]) - (dif * (min%30)) / 30;
     }
 
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "color4Time fromHour=%d toHour=%d red=%d green=%d blue=%d white=%d bri=%d sat=%d",
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "color4Time fromIdx=%d toIdx=%d red=%d green=%d blue=%d white=%d bri=%d sat=%d",
         fromHour, toHour, (int)*r, (int)*g, (int)*b, (int)*w, (int)*bri, (int)*sat);
     return True;
   }
+
+  TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "color4Time fromIdx=%d(%s) toIdx=%d(%s)",
+      fromHour, color[fromHour]==NULL?"null":"ok", toHour, color[toHour]==NULL?"null":"ok");
+
 
   return False;
 }
@@ -302,14 +306,17 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
     iONode noonProps    = wWeather.getnoon(data->props);
     iONode sunsetProps  = wWeather.getsunset(data->props);
     iONode nightProps   = wWeather.getnight(data->props);
-    iONode colorProps[24] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    iONode colorProps[48] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                              NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
     iONode color = wWeather.getweathercolor(data->props);
     while(color != NULL) {
       int hour = wWeatherColor.gethour(color);
-      if( hour < 24 && hour >= 0 ) {
-        colorProps[hour] = color;
+      int min  = wWeatherColor.getminute(color);
+      if( hour < 24 && hour >= 0 && min < 60 && min >= 0) {
+        colorProps[(hour*2)+(min/30)] = color;
       }
       color = wWeather.nextweathercolor(data->props, color);
     }
