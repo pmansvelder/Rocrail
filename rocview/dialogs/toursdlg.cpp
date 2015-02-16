@@ -484,6 +484,8 @@ void ToursDlg::onOK( wxCommandEvent& event ){
 }
 
 void ToursDlg::onShowAll( wxCommandEvent& event ){
+  if(!m_ShowAll->IsChecked())
+    m_Props = NULL;
   initIndex();
 }
 
