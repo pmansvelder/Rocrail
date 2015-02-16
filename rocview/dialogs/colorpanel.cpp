@@ -48,6 +48,19 @@ ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultP
   m_Brightness = true;
   m_Saturation = true;
 
+  m_White1R     = 255;
+  m_White1G     = 255;
+  m_White1B     = 255;
+  m_White2R     = 255;
+  m_White2G     = 0;
+  m_White2B     = 255;
+  m_BrightnessR = 255;
+  m_BrightnessG = 255;
+  m_BrightnessB = 0;
+  m_SaturationR = 0;
+  m_SaturationG = 255;
+  m_SaturationB = 255;
+
   this->Connect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
 }
 
@@ -215,7 +228,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     float ystep = (float)h / 255.0;
 
     if( m_White ) {
-      setPen(wxColor( 255, 255, 255 ), 3, wxSOLID);
+      setPen(wxColor( m_White1R, m_White1G, m_White1B ), 3, wxSOLID);
       int start = wWeatherColor.getwhite(colorProps[0]);
       for( int i = 1; i < 48; i++ ) {
         int val = wWeatherColor.getwhite(colorProps[i]);
@@ -225,7 +238,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     }
 
     if( m_White2 ) {
-      setPen(wxColor( 255, 0, 255 ), 3, wxSOLID);
+      setPen(wxColor( m_White2R, m_White2G, m_White2B ), 3, wxSOLID);
       int start = wWeatherColor.getwhite(colorProps[0]);
       for( int i = 1; i < 48; i++ ) {
         int val = wWeatherColor.getwhite2(colorProps[i]);
@@ -259,7 +272,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     }
 
     if( m_Brightness ) {
-      setPen(wxColor( 255, 255, 0 ), 1, wxSOLID);
+      setPen(wxColor( m_BrightnessR, m_BrightnessG, m_BrightnessB ), 1, wxSOLID);
       start = wWeatherColor.getbri(colorProps[0]);
       for( int i = 1; i < 48; i++ ) {
         int val = wWeatherColor.getbri(colorProps[i]);
@@ -269,7 +282,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     }
 
     if( m_Saturation ) {
-      setPen(wxColor( 0, 255, 255 ), 1, wxSOLID);
+      setPen(wxColor( m_SaturationR, m_SaturationG, m_SaturationB ), 1, wxSOLID);
       start = wWeatherColor.getsat(colorProps[0]);
       for( int i = 1; i < 48; i++ ) {
         int val = wWeatherColor.getsat(colorProps[i]);
@@ -290,3 +303,31 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
     delete gc;
 
 }
+
+
+void ColorPanel::setWhite1Color(int r, int g, int b) {
+  m_White1R = r;
+  m_White1G = g;
+  m_White1B = b;
+  Refresh();
+}
+void ColorPanel::setWhite2Color(int r, int g, int b) {
+  m_White2R = r;
+  m_White2G = g;
+  m_White2B = b;
+  Refresh();
+}
+void ColorPanel::setBrightnessColor(int r, int g, int b) {
+  m_BrightnessR = r;
+  m_BrightnessG = g;
+  m_BrightnessB = b;
+  Refresh();
+}
+void ColorPanel::setSaturationColor(int r, int g, int b) {
+  m_SaturationR = r;
+  m_SaturationG = g;
+  m_SaturationB = b;
+  Refresh();
+}
+
+

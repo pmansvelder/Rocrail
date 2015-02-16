@@ -84,12 +84,6 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
     }
   }
 
-  m_ColorWhite->SetBackgroundColour(wxColour(255,255,255));
-  m_ColorWhite2->SetBackgroundColour(wxColour(255,0,255));
-  m_ColorBrightness->SetBackgroundColour(wxColour(255,255,0));
-  m_ColorSaturation->SetBackgroundColour(wxColour(0,255,255));
-
-
 }
 
 
@@ -288,6 +282,12 @@ void WeatherDlg::initColorGrid() {
   }
   for( int n = 0; n < 7; n++)
     m_ColorGrid->SetColFormatNumber(n);
+
+  m_colourPickerWhite1->SetColour(wxColour(255,255,255));
+  m_colourPickerWhite2->SetColour(wxColour(255,0,255));
+  m_colourPickerBrightness->SetColour(wxColour(255,255,0));
+  m_colourPickerSaturation->SetColour(wxColour(0,255,255));
+
 }
 
 
@@ -997,5 +997,25 @@ void WeatherDlg::HideCol(int col) {
   //m_ColorGrid->HideCol(col); // wx 3.0
   m_ColorGrid->SetColSize(col, 0);
   m_ColorGrid->ForceRefresh();
+}
+
+
+void WeatherDlg::onColorPickerWhite1( wxColourPickerEvent& event ) {
+  m_RGBWPanel->setWhite1Color(event.GetColour().Red(), event.GetColour().Green(), event.GetColour().Blue());
+}
+
+
+void WeatherDlg::onColorPickerWhite2( wxColourPickerEvent& event ) {
+  m_RGBWPanel->setWhite2Color(event.GetColour().Red(), event.GetColour().Green(), event.GetColour().Blue());
+}
+
+
+void WeatherDlg::onColorPickerBrightness( wxColourPickerEvent& event ) {
+  m_RGBWPanel->setBrightnessColor(event.GetColour().Red(), event.GetColour().Green(), event.GetColour().Blue());
+}
+
+
+void WeatherDlg::onColorPickerSaturation( wxColourPickerEvent& event ) {
+  m_RGBWPanel->setSaturationColor(event.GetColour().Red(), event.GetColour().Green(), event.GetColour().Blue());
 }
 

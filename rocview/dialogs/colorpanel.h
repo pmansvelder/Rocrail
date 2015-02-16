@@ -44,6 +44,18 @@ class ColorPanel : public wxPanel
   bool   m_White2;
   bool   m_Brightness;
   bool   m_Saturation;
+  int    m_White1R;
+  int    m_White1G;
+  int    m_White1B;
+  int    m_White2R;
+  int    m_White2G;
+  int    m_White2B;
+  int    m_BrightnessR;
+  int    m_BrightnessG;
+  int    m_BrightnessB;
+  int    m_SaturationR;
+  int    m_SaturationG;
+  int    m_SaturationB;
   bool   m_UseGC;
   wxGraphicsContext* m_GC;
   wxPaintDC* m_DC;
@@ -58,6 +70,10 @@ public:
   void OnPaint(wxPaintEvent& event);
   void setWeather(iONode booster, int selection=-1, bool white=true, bool bri=true, bool sat=true, bool white2=true);
   void setDayTime(int hour, int min=0);
+  void setWhite1Color(int r, int g, int b);
+  void setWhite2Color(int r, int g, int b);
+  void setBrightnessColor(int r, int g, int b);
+  void setSaturationColor(int r, int g, int b);
 };
 
 #endif /* COLORPANEL_H_ */

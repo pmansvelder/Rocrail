@@ -73,6 +73,10 @@ class WeatherDlg : public WeatherDlgGen
     void onColorWhite2( wxCommandEvent& event );
     void onColorBrightness( wxCommandEvent& event );
     void onColorSaturation( wxCommandEvent& event );
+    void onColorPickerWhite1( wxColourPickerEvent& event );
+    void onColorPickerWhite2( wxColourPickerEvent& event );
+    void onColorPickerBrightness( wxColourPickerEvent& event );
+    void onColorPickerSaturation( wxColourPickerEvent& event );
 
 	public:
 		/** Constructor */
