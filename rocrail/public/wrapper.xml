@@ -1512,6 +1512,7 @@
   <actionctrl wrappername="ActionCtrl">
     <var name="id" vt="string" defval="" range="*" required="true"/>
     <var name="state" vt="string" defval="" range="*" remark="Activation state, empty is always."/>
+    <var name="substate" vt="string" defval="" range="*"/>
     <var name="duration" vt="int" defval="0" range="0-*"/>
     <var name="auto" vt="bool" defval="true" remark="Activate in auto mode."/>
     <var name="manual" vt="bool" defval="true" remark="Activate in manual mode."/>

@@ -29674,4 +29674,7 @@
   <Msg id="offatshutdown">
     <en txt="Off at shutdown"/>
   </Msg>
+  <Msg id="substate">
+    <en txt="Sub state"/>
+  </Msg>
 </Messages>

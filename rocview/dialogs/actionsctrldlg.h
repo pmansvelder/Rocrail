@@ -96,7 +96,7 @@ class ActionsCtrlDlg: public wxDialog
 public:
     /// Constructors
     ActionsCtrlDlg();
-    ActionsCtrlDlg(wxWindow* parent, iONode node, const char* states=NULL );
+    ActionsCtrlDlg(wxWindow* parent, iONode node, const char* states=NULL, const char* substates=NULL );
 
     /// Creation
     bool Create( wxWindow* parent, wxWindowID id = SYMBOL_ACTIONSCTRLDLG_IDNAME, const wxString& caption = SYMBOL_ACTIONSCTRLDLG_TITLE, const wxPoint& pos = SYMBOL_ACTIONSCTRLDLG_POSITION, const wxSize& size = SYMBOL_ACTIONSCTRLDLG_SIZE, long style = SYMBOL_ACTIONSCTRLDLG_STYLE );
@@ -189,6 +189,8 @@ public:
     wxChoice* m_ID;
     wxStaticText* m_labState;
     wxComboBox* m_State;
+    wxStaticText* m_labSubState;
+    wxComboBox* m_SubState;
     wxStaticText* m_labDuration;
     wxSpinCtrl* m_Duration;
     wxStaticText* m_labLocoID;

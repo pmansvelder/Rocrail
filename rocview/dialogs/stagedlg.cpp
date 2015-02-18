@@ -593,12 +593,24 @@ void StageDlg::onActions( wxCommandEvent& event ) {
   if( m_Props == NULL )
     return;
 
-  ActionsCtrlDlg*  dlg = new ActionsCtrlDlg(this, m_Props, "ghost,enter,occupied,reserved,free,closed,depart,exit" );
+  char* substates = NULL;
+  iONode section = wStage.getsection(m_Props);
+  while( section != NULL ) {
+    const char* id = wStageSection.getid(section);
+    if( substates != NULL )
+      substates = StrOp.cat(substates, ",");
+    substates = StrOp.cat(substates, id);
+    section = wStage.nextsection(m_Props, section);
+  }
+
+  ActionsCtrlDlg*  dlg = new ActionsCtrlDlg(this, m_Props, "ghost,enter,occupied,reserved,free,closed,depart,exit,section", substates );
 
   if( wxID_OK == dlg->ShowModal() ) {
     // TODO: inform
   }
   dlg->Destroy();
+
+  StrOp.free(substates);
 }
 
 
