@@ -191,16 +191,24 @@ static void __checkAction( iOStage inst, const char* state, const char* substate
   iOModel     model  = AppOp.getModel();
   iONode      action = wStage.getactionctrl( data->props );
 
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "%s checkaction state [%s] substate %s: lc=[%s]",
+      wStage.getid(data->props), state, substate!=NULL?substate:"", lcid!=NULL?lcid:"" );
+
   /* loop over all actions */
   while( action != NULL ) {
     int counter = atoi(wActionCtrl.getstate( action ));
 
-    if( substate != NULL && StrOp.equals(state, wActionCtrl.getstate( action )) && StrOp.equals(substate, wActionCtrl.getsubstate( action )) ) {
-      iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));
-      if( Action != NULL ) {
-        wActionCtrl.setbkid(action, data->id);
-        wActionCtrl.setlcid(action, lcid != NULL ? lcid:"");
-        ActionOp.exec(Action, action);
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "action [%s] state[%s](%s) substate[%s](%s)",
+        wActionCtrl.getid(action),  wActionCtrl.getstate(action), state, wActionCtrl.getsubstate(action), substate );
+
+    if( substate != NULL && StrOp.equals(state, wActionCtrl.getstate( action )) ) {
+      if( StrOp.equals(substate, wActionCtrl.getsubstate( action )) ) {
+        iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));
+        if( Action != NULL ) {
+          wActionCtrl.setbkid(action, "");
+          wActionCtrl.setlcid(action, lcid != NULL ? lcid:"");
+          ActionOp.exec(Action, action);
+        }
       }
     }
     else if( StrOp.len(wActionCtrl.getstate( action )) == 0 || StrOp.equals(state, wActionCtrl.getstate( action )) )
