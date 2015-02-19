@@ -35,6 +35,14 @@
 
 #define SYSTEM_CONTROL_GROUP 0X00
 #define SYSTEM_POWER 0X00
+
+#define Zs100_PortStateCmd_None   0
+#define Zs100_PortStateCmd_Run    1
+#define Zs100_PortStateCmd_SSP0   2
+#define Zs100_PortStateCmd_SSPE   3
+#define Zs100_PortStateCmd_OFF    4
+#define Zs100_PortStateCmd_SProg  5
+
 #define SYSTEM_POWER_ON 0X00
 #define SYSTEM_POWER_OFF 0X01
 #define SYSTEM_POWER_TRACK1 0X00

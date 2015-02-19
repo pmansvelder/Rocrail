@@ -293,22 +293,33 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
   if( StrOp.equals( NodeOp.getName( node ), wFbInfo.name() ) ) {
   }
 
-  /* System command. */
+  /* System command.
+      Mode 1, EIN:        Normaler Fahrbetrieb
+      Mode 2, SSP0:        Sammelstopp FS0, eigentlich 'Broadcast Fahrstufe 0'
+      Mode 3, SSPE:        Emergency Sammelstopp, eigentlich 'Broadcast E-Stopp'
+      Mode 4, OFF:        Schlichtweg 'Schiene AUS'
+   */
   else if( StrOp.equals( NodeOp.getName( node ), wSysCmd.name() ) ) {
     const char* cmdstr = wSysCmd.getcmd( node );
     if( StrOp.equals( cmdstr, wSysCmd.stop ) ) {
       /* CS off */
       byte* msg = allocMem(32);
-      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, SYSTEM_POWER_OFF, 0, 0, 0, 0);
+      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_OFF, 0, 0, 0, 0);
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "request power OFF" );
       ThreadOp.post(data->writer, (obj)msg);
     }
-
     else if( StrOp.equals( cmdstr, wSysCmd.go ) ) {
       /* CS on */
       byte* msg = allocMem(32);
-      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, SYSTEM_POWER_ON, 0, 0, 0, 0);
+      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_Run, 0, 0, 0, 0);
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "request power ON" );
+      ThreadOp.post(data->writer, (obj)msg);
+    }
+    else if( StrOp.equals( cmdstr, wSysCmd.ebreak ) ) {
+      /* CS ebreak */
+      byte* msg = allocMem(32);
+      msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_SSPE, 0, 0, 0, 0);
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break" );
       ThreadOp.post(data->writer, (obj)msg);
     }
   }
