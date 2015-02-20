@@ -2018,7 +2018,7 @@ static void __stopAllLocs( iOModel inst ) {
   }
 }
 
-static void __V0Locos( iOModel inst ) {
+static void __V0Locos( iOModel inst, Boolean reset ) {
   iOModelData data = Data(inst);
   int i = 0;
   int cnt = ListOp.size( data->locList );
@@ -2026,7 +2026,7 @@ static void __V0Locos( iOModel inst ) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "V0 all Locos..." );
   for( i = 0; i < cnt; i++ ) {
     iOLoc loc = (iOLoc)ListOp.get( data->locList, i );
-    if( LocOp.saveSpeed(loc, False) > 0 ) {
+    if( LocOp.saveSpeed(loc, False) > 0 || reset ) {
       iONode cmd = NodeOp.inst(wLoc.name(), NULL, ELEMENT_NODE);
       wLoc.setcmd(cmd, wLoc.velocity);
       wLoc.setV(cmd, 0);
@@ -2254,7 +2254,7 @@ static Boolean _cmd( iOModel inst, iONode cmd ) {
       __stopAllLocs( inst );
     }
     else if( StrOp.equals( wAutoCmd.v0locos, cmdVal ) ) {
-      __V0Locos( inst );
+      __V0Locos( inst, wAutoCmd.isreset(cmd) );
     }
     else if( StrOp.equals( wAutoCmd.vrestorelocos, cmdVal ) ) {
       __VRestoreLocos( inst );

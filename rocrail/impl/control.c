@@ -294,6 +294,7 @@ static Boolean _cmd( iOControl inst, iONode node, int* error ) {
   iOControlData data  = Data(inst);
   Boolean rc          = True;
   iONode modelSysCmd  = NULL;
+  Boolean skipDigInt  = False;
 
   if( error != NULL )
     *error = CMD_OK;
@@ -359,6 +360,17 @@ static Boolean _cmd( iOControl inst, iONode node, int* error ) {
       /* keep a copy of the command to inform the model after the digints */
       modelSysCmd = (iONode)NodeOp.base.clone(node);
       __checkAction(inst, wSysCmd.getcmd(node), "cmd");
+
+      if( StrOp.equals(wSysCmd.ebreak, wSysCmd.getcmd(node)) ) {
+        if( wCtrl.isv0onebreak( wRocRail.getctrl( AppOp.getIni() ) ) ) {
+          NodeOp.setName(node, wAutoCmd.name());
+          wAutoCmd.setcmd(node, wAutoCmd.v0locos);
+          wAutoCmd.setreset(node, True);
+          NodeOp.base.del(modelSysCmd);
+          modelSysCmd = node;
+          skipDigInt = True;
+        }
+      }
     }
 
     if( StrOp.equals( wPwrCmd.name(), NodeOp.getName(node) ) && data->powerman != NULL ) {
@@ -373,31 +385,33 @@ static Boolean _cmd( iOControl inst, iONode node, int* error ) {
       }
     }
 
-    if( (StrOp.equals( wSysCmd.name(), NodeOp.getName(node) ) && wSysCmd.isinformall(node)) ||
-        StrOp.equals( wClock.name(), NodeOp.getName(node) ) )
-    {
-      /* inform all */
-      pDi = (iIDigInt)MapOp.first( data->diMap );
-      while( pDi != NULL ) {
-        rc = __informDigInt(inst, pDi, (iONode)NodeOp.base.clone(node), error);
-        pDi = (iIDigInt)MapOp.next( data->diMap );
+    if( !skipDigInt ) {
+      if( (StrOp.equals( wSysCmd.name(), NodeOp.getName(node) ) && wSysCmd.isinformall(node)) ||
+          StrOp.equals( wClock.name(), NodeOp.getName(node) ) )
+      {
+        /* inform all */
+        pDi = (iIDigInt)MapOp.first( data->diMap );
+        while( pDi != NULL ) {
+          rc = __informDigInt(inst, pDi, (iONode)NodeOp.base.clone(node), error);
+          pDi = (iIDigInt)MapOp.next( data->diMap );
+        }
+        /* clean up original command node */
+        NodeOp.base.del(node);
       }
-      /* clean up original command node */
-      NodeOp.base.del(node);
-    }
-    else if( iid != NULL && StrOp.len( iid ) > 0 ) {
-      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "address of diMap=%d", data->diMap );
-      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "iid=%s", iid );
-      /* inform a specific one */
-      pDi = (iIDigInt)MapOp.get( data->diMap, iid );
-      if( pDi != NULL )
-        rc = __informDigInt(inst, pDi, node, error);
-      else
-        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "iid=%s not found", iid );
-    }
-    else {
-      /* inform the default */
-      rc = __informDigInt(inst, data->pDi, node, error);
+      else if( iid != NULL && StrOp.len( iid ) > 0 ) {
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "address of diMap=%d", data->diMap );
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "iid=%s", iid );
+        /* inform a specific one */
+        pDi = (iIDigInt)MapOp.get( data->diMap, iid );
+        if( pDi != NULL )
+          rc = __informDigInt(inst, pDi, node, error);
+        else
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "iid=%s not found", iid );
+      }
+      else {
+        /* inform the default */
+        rc = __informDigInt(inst, data->pDi, node, error);
+      }
     }
 
     if( modelSysCmd != NULL ) {

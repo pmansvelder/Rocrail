@@ -7775,3 +7775,9 @@ msgstr ""
 msgid "Sub state"
 msgstr ""
 
+#. 
+# id="v0onebreak"
+#, c-format
+msgid "V 0 on emergency break"
+msgstr ""
+

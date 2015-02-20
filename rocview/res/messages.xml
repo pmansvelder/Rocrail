@@ -29677,4 +29677,7 @@
   <Msg id="substate">
     <en txt="Sub state"/>
   </Msg>
+  <Msg id="v0onebreak">
+    <en txt="V 0 on emergency break"/>
+  </Msg>
 </Messages>

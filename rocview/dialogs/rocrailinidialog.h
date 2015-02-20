@@ -396,6 +396,7 @@ public:
     wxCheckBox* m_UseRandomRate;
     wxCheckBox* m_RedirectToMaster;
     wxCheckBox* m_Weather;
+    wxCheckBox* m_V0OnEbreak;
     wxPanel* m_ControllersPanel;
     wxListBox* m_Controllers;
     wxButton* m_ControllerDelete;

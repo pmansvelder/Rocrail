@@ -935,6 +935,7 @@
       <var name="userandomrate" vt="bool" defval="false"/>
       <var name="redirecttomaster" vt="bool" defval="true" remark="Redirect commands send to a slave consist member to the master loco."/>
       <var name="weather" vt="bool" defval="true"/>
+      <var name="v0onebreak" vt="bool" defval="false"/>
     </ctrl>
     <anaopt remark="Analyser options." wrappername="AnaOpt">
       <!-- option -->
@@ -1322,6 +1323,7 @@
     <const name="vrestorelocos" vt="string" val="vrestorelocos"/>
     <var name="cmd" vt="string" defval="" range="on,off,start,stop,reset"/>
     <var name="era" vt="int" defval="0" range="0-6"/>
+    <var name="reset" vt="bool" defval="false"/>
   </auto>
 
   <binstate remark="Binary state command" wrappername="BinStateCmd">
