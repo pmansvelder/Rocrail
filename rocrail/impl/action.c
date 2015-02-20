@@ -327,7 +327,6 @@ static Boolean __checkLocoState(const char* locoid, const char* id, const char* 
             fonoff = StrTokOp.nextToken(tok);
           if(StrTokOp.hasMoreTokens(tok))
             fnumber = StrTokOp.nextToken(tok);
-          StrTokOp.base.del(tok);
 
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
               "checking function of loco %s", LocOp.getId(lc) );
@@ -359,6 +358,8 @@ static Boolean __checkLocoState(const char* locoid, const char* id, const char* 
           else {
             rc = False;
           }
+          StrTokOp.base.del(tok);
+
         }
       }
       else {
