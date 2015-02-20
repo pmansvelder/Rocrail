@@ -51,6 +51,8 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
   m_PropsList = props;
   m_Props = NULL;
   m_SelectedRow = -1;
+
+  m_RGBWPanel->setListener(this);
   initLabels();
 
 
@@ -1019,3 +1021,10 @@ void WeatherDlg::onColorPickerSaturation( wxColourPickerEvent& event ) {
   m_RGBWPanel->setSaturationColor(event.GetColour().Red(), event.GetColour().Green(), event.GetColour().Blue());
 }
 
+void WeatherDlg::handleEvent( iONode node ) {
+  TraceOp.trc( "weatherdlg", TRCLEVEL_INFO, __LINE__, 9999, "event: %s", NodeOp.getName(node) );
+  m_SelectedRow = NodeOp.getInt(node, "section", 0);
+  m_ColorGrid->SelectRow(m_SelectedRow);
+  m_ColorGrid->MakeCellVisible(m_SelectedRow, 0);
+  m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
+}

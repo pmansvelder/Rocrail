@@ -32,6 +32,7 @@
 #endif
 
 #include "rocs/public/node.h"
+#include "rocview/public/listener.h"
 
 
 class ColorPanel : public wxPanel
@@ -59,6 +60,9 @@ class ColorPanel : public wxPanel
   bool   m_UseGC;
   wxGraphicsContext* m_GC;
   wxPaintDC* m_DC;
+  wxWindow* m_Parent;
+  Listener* m_Listener;
+
   void setPen(const wxColour& color, int width=1, int style=wxSOLID);
   void setBrush(const wxColour& color);
   void drawLine(int x, int y, int cx, int cy);
@@ -74,6 +78,8 @@ public:
   void setWhite2Color(int r, int g, int b);
   void setBrightnessColor(int r, int g, int b);
   void setSaturationColor(int r, int g, int b);
+  void onLeftDown( wxMouseEvent& event );
+  void setListener(Listener* listener);
 };
 
 #endif /* COLORPANEL_H_ */

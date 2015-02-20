@@ -39,6 +39,8 @@
 
 ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultPosition, wxSize( 200,-1 ), wxGROW|wxFULL_REPAINT_ON_RESIZE )
 {
+  m_Parent = parent;
+  m_Listener = NULL;
   m_Weather = NULL;
   m_Selection = -1;
   m_Hour = -1;
@@ -62,11 +64,13 @@ ColorPanel::ColorPanel( wxWindow* parent ):wxPanel( parent, wxID_ANY, wxDefaultP
   m_SaturationB = 255;
 
   this->Connect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
+  this->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( ColorPanel::onLeftDown ), NULL, this );
 }
 
 ColorPanel::~ColorPanel()
 {
   this->Disconnect( wxEVT_PAINT, wxPaintEventHandler( ColorPanel::OnPaint ), NULL, this );
+  this->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( ColorPanel::onLeftDown ), NULL, this );
 }
 
 void ColorPanel::setDayTime(int hour, int min) {
@@ -128,6 +132,41 @@ void ColorPanel::drawRectangle(int x, int y, int cx, int cy) {
   }
   else {
     m_DC->DrawRectangle(x,y,cx,cy);
+  }
+}
+
+
+void ColorPanel::setListener(Listener* listener) {
+  m_Listener = listener;
+}
+
+void ColorPanel::onLeftDown( wxMouseEvent& event ) {
+  int w = 0;
+  int h = 0;
+  GetSize(&w, &h);
+
+  float w47 = (float)w / 47.0;
+
+  int x = 0;
+  int y = 0;
+  int sx = 0;
+  int sy = 0;
+
+  wxGetMousePosition( &x, &y );
+  GetScreenPosition(&sx, &sy);
+
+  int l_selX = (x - sx);
+  int l_selY = (y - sy);
+
+  int section = (int)(l_selX/w47);
+
+  TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "select even at %d,%d -> %d", l_selX, l_selY, section );
+
+  if( m_Listener != NULL ) {
+    iONode node = NodeOp.inst( wWeather.name(), NULL, ELEMENT_NODE );
+    NodeOp.setInt(node, "section", section );
+    m_Listener->handleEvent(node);
+    NodeOp.base.del(node);
   }
 }
 
@@ -219,7 +258,7 @@ void ColorPanel::OnPaint(wxPaintEvent& event)
       if( colorProps[i] == NULL && prevColorProps != NULL) {
         colorProps[i] = prevColorProps;
       }
-      TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "i=%d", i );
+      TraceOp.trc( "colorpanel", TRCLEVEL_DEBUG, __LINE__, 9999, "i=%d", i );
       prevColorProps = colorProps[i];
     }
 
