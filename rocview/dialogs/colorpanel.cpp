@@ -158,9 +158,15 @@ void ColorPanel::onLeftDown( wxMouseEvent& event ) {
   int l_selX = (x - sx);
   int l_selY = (y - sy);
 
-  int section = (int)(l_selX/w47);
+  int section   = (int)(l_selX / w47);
+  float rest    = l_selX - (section * w47);
+  float demisec = w47 / 2.0;
 
-  TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "select even at %d,%d -> %d", l_selX, l_selY, section );
+  if( rest >= demisec  )
+    section += 1.0;
+
+  TraceOp.trc( "colorpanel", TRCLEVEL_INFO, __LINE__, 9999, "select even at %d,%d -> %d rest=%f demisec=%f w47=%f",
+      l_selX, l_selY, section, rest, demisec, w47 );
 
   if( m_Listener != NULL ) {
     iONode node = NodeOp.inst( wWeather.name(), NULL, ELEMENT_NODE );
