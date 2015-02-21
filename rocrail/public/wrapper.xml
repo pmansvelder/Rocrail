@@ -522,7 +522,8 @@
       <var name="poweroffexit" vt="bool" defval="true" remark="Power off at halt command."/>
       <var name="poweratstartup" vt="bool" defval="false" remark="Power on at startup."/>
       <var name="restricted" vt="bool" defval="false" remark="Restricted functionality due to missing support key."/>
-
+      <var name="v0onebreak" vt="bool" defval="false"/>
+      
       <!-- all -->
       <var name="fbmod" vt="int" defval="0" range="*" remark="Number of connected feedback modules of 8 inputs."/>
       <var name="fbpoll" vt="bool" defval="false" remark="Poll sensor events in p50x instead of xEvtSen."/>

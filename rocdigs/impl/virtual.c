@@ -444,7 +444,10 @@ static iONode __translate( iOVirtual virtual, iONode node ) {
       }
     }
     else if( StrOp.equals( cmd, wSysCmd.ebreak ) ) {
-      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Emergency break" );
+      if( wDigInt.isv0onebreak(data->ini) )
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "V 0 on emergency break" );
+      else
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Emergency break" );
     }
     else if( StrOp.equals( cmd, wSysCmd.clearshortids ) ) {
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "cleart short IDs on the throttle" );

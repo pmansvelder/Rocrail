@@ -158,6 +158,7 @@ public:
     wxCheckBox* m_LocoList;
     wxCheckBox* m_SwitchList;
     wxCheckBox* m_Overrule;
+    wxCheckBox* m_V0onEbreak;
     wxStaticText* m_labVersion;
     wxSpinCtrl* m_Version;
     wxStaticText* m_labSwTime;
