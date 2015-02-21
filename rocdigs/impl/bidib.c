@@ -917,7 +917,7 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
         speed = (wLoc.getV( node ) * 126) / wLoc.getV_max( node );
     }
 
-    if( speed >= 1 ) {
+    if( speed >= 1 && speed < 127) {
       /* skip emergancy break */
       speed++;
     }
