@@ -284,6 +284,25 @@ Boolean __getFState(iONode fcmd, int fn) {
 
 
 
+static void __reportState(iOZimoCAN inst, Boolean shortcircuit) {
+  iOZimoCANData data = Data(inst);
+
+  if( data->listenerFun != NULL && data->listenerObj != NULL ) {
+    iONode node = NodeOp.inst( wState.name(), NULL, ELEMENT_NODE );
+
+    if( data->iid != NULL )
+      wState.setiid( node, data->iid );
+    wState.setpower( node, data->power );
+    wState.settrackbus( node, data->connOK );
+    wState.setsensorbus( node, True );
+    wState.setaccessorybus( node, True );
+    wState.setshortcut(node, shortcircuit);
+
+    data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
+  }
+}
+
+
 static iONode __translate( iOZimoCAN inst, iONode node ) {
   iOZimoCANData data = Data(inst);
   iONode rsp = NULL;
@@ -307,6 +326,8 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
       msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_OFF, 0, 0, 0, 0);
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "request power OFF" );
       ThreadOp.post(data->writer, (obj)msg);
+      data->power = False;
+      __reportState(inst, False);
     }
     else if( StrOp.equals( cmdstr, wSysCmd.go ) ) {
       /* CS on */
@@ -314,15 +335,22 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
       msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_Run, 0, 0, 0, 0);
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "request power ON" );
       ThreadOp.post(data->writer, (obj)msg);
+      data->power = True;
+      __reportState(inst, False);
     }
     else if( StrOp.equals( cmdstr, wSysCmd.ebreak ) ) {
       /* CS ebreak */
       byte* msg = allocMem(32);
-      if( wSysCmd.getval(node) == 0 )
+      if( wSysCmd.getval(node) == 0 ) {
         msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_SSPE, 0, 0, 0, 0);
-      else
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break" );
+        data->power = False;
+        __reportState(inst, False);
+      }
+      else {
         msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID, SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_SSP0, 0, 0, 0, 0);
-      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break" );
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "SP0" );
+      }
       ThreadOp.post(data->writer, (obj)msg);
     }
   }
@@ -415,6 +443,18 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
         msg[0] = __makePacket(msg+1, TRACK_CONFIG_GROUP, TRACK_CONFIG_WRITE, MODE_CMD, 8, data->NID, slot->nid, cv&0xFF, (cv&0xFF00)>>8, cv>>16, val, 0, 0);
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "write cv=%d value=%d nid=0x%04X", cv, val, slot->nid );
         ThreadOp.post(data->writer, (obj)msg);
+      }
+      else if(  wProgram.getcmd( node ) == wProgram.pton ) {
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "PT On" );
+        byte* msg = allocMem(32);
+        msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID,
+            SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_SProg, 0, 0, 0, 0);
+      }
+      else if(  wProgram.getcmd( node ) == wProgram.ptoff ) {
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "PT Off" );
+        byte* msg = allocMem(32);
+        msg[0] = __makePacket(msg+1, SYSTEM_CONTROL_GROUP, SYSTEM_POWER, MODE_CMD, 4, data->NID, data->masterNID,
+            SYSTEM_POWER_TRACK_ALL, Zs100_PortStateCmd_Run, 0, 0, 0, 0);
       }
     }
     else {

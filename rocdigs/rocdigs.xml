@@ -1859,6 +1859,7 @@
       <var name="subAvailable" vt="sublib_available"/>
       <var name="connOK" vt="Boolean"/>
       <var name="connAck" vt="Boolean"/>
+      <var name="power" vt="Boolean"/>
       <var name="NID" vt="int"/>
       <var name="masterNID" vt="int"/>
       <var name="lcmux" vt="iOMutex"/>
