@@ -2648,6 +2648,9 @@ void RocGuiFrame::create() {
     NodeOp.addChild(m_Ini, locoGridIni);
   }
 
+  m_LocoSortColumn  = wLocoGrid.getsortcol(locoGridIni);
+  ms_LocoSortInvert = wLocoGrid.issortinv(locoGridIni)?true:false;
+
   iONode colpos = wLocoGrid.getcolpos(locoGridIni);
   int cols = m_ActiveLocs->GetNumberCols();
   while( colpos != NULL ) {
@@ -5185,6 +5188,11 @@ void RocGuiFrame::OnLabelLeftClick( wxGridEvent& event ){
       TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "OnLabelLeftClick column=%d invert=%s", m_LocoSortColumn, ms_LocoSortInvert?"true":"false" );
       wxCommandEvent cmdevent;
       InitActiveLocs(cmdevent);
+
+      iONode locoGridIni = wGui.getlocogrid(m_Ini);
+      wLocoGrid.setsortcol(locoGridIni, m_LocoSortColumn);
+      wLocoGrid.setsortinv(locoGridIni, ms_LocoSortInvert?True:False);
+
     }
   }
   else {
