@@ -29680,4 +29680,7 @@
   <Msg id="v0onebreak">
     <en txt="V 0 on emergency break"/>
   </Msg>
+  <Msg id="restorechannels">
+    <en txt="Restore channels"/>
+  </Msg>
 </Messages>

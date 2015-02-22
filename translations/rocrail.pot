@@ -7781,3 +7781,9 @@ msgstr ""
 msgid "V 0 on emergency break"
 msgstr ""
 
+#. 
+# id="restorechannels"
+#, c-format
+msgid "Restore channels"
+msgstr ""
+

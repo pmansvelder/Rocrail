@@ -368,6 +368,10 @@ static void _halt( obj inst ,Boolean poweroff ,Boolean shutdown ) {
   if( poweroff ) {
   }
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Shutting down <%s>...", data->iid );
+  char* dmxdata = StrOp.byteToStr(data->dmxchannel, 513);
+  TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "save data:\n%s", dmxdata );
+  wDMX.setdmxdata(data->dmxini, dmxdata);
+  StrOp.free(dmxdata);
   ThreadOp.sleep(200);
 }
 
@@ -527,6 +531,16 @@ static struct ODMXArtNet* _inst( const iONode ini ,const iOTrace trc ) {
   data->framerate = wDMX.getframerate(data->dmxini);
   if( data->framerate < 100 )
     data->framerate = 500;
+
+  if( wDMX.isrestoredata(data->dmxini) ) {
+    byte* dmxdata = StrOp.strToByte( wDMX.getdmxdata(data->dmxini) );
+    if( dmxdata != NULL ) {
+      int len = StrOp.len(wDMX.getdmxdata(data->dmxini))/2;
+      MemOp.copy(data->dmxchannel, dmxdata, len);
+      freeMem(dmxdata);
+    }
+  }
+
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "----------------------------------------" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "DMX-ArtNet %d.%d.%d", vmajor, vminor, patch );

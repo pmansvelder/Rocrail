@@ -1218,8 +1218,6 @@ static Boolean _shutdown( int network, const char* signame ) {
       };
     }
 
-    AppOp.saveIni();
-
     if( data->http != NULL )
       HttpOp.shutdown( data->http );
 
@@ -1227,6 +1225,8 @@ static Boolean _shutdown( int network, const char* signame ) {
     if( data->weather != NULL )
       WeatherOp.halt( data->weather );
     ControlOp.halt( data->control );
+
+    AppOp.saveIni();
 
     /* signal main loop */
     bShutdown = True;

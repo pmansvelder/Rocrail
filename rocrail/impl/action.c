@@ -72,6 +72,8 @@
 #include "rocrail/wrapper/public/Location.h"
 #include "rocrail/wrapper/public/Weather.h"
 #include "rocrail/wrapper/public/Clock.h"
+#include "rocrail/wrapper/public/Ctrl.h"
+#include "rocrail/wrapper/public/RocRail.h"
 
 static int instCnt = 0;
 static int levelCnt = 0;
@@ -710,7 +712,9 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
     if( StrOp.equals( wAction.weather_set, wAction.getcmd( data->action ) ) ) {
       iOWeather weather = AppOp.getWeather();
       if( weather != NULL ) {
+        wRocRail.setweatherid(AppOp.getIni(), id);
         WeatherOp.setWeather(weather, id, wAction.getparam(data->action));
+        wCtrl.setweather(wRocRail.getctrl(AppOp.getIni()), StrOp.len(id) > 0 );
       }
     }
     else if( StrOp.equals( wAction.weather_theme, wAction.getcmd( data->action ) ) ) {

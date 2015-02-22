@@ -746,6 +746,8 @@
       <dmx remark="DMX Options" wrappername="DMX">
         <var name="framerate" vt="int" defval="500" range="100-10000"/>
         <var name="mapwhite" vt="bool" defval="false"/>
+        <var name="dmxdata" vt="string" defval=""/>
+        <var name="restoredata" vt="bool" defval="true"/>
       </dmx>
       
       <cbus remark="CBUS options" wrappername="CBus">
