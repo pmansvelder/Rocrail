@@ -135,11 +135,8 @@ static void __fx2fn(iOSlot slot, int fx) {
   }
 }
 
-Boolean __getFState(iONode fcmd, int fn, Boolean oldFxValue) {
-  char fnStr[32] = {'\0'};
-  if( NodeOp.findAttr(fcmd, fnStr) == NULL ) {
-    return oldFxValue;
-  }
+Boolean __getFState(iONode fcmd, int fn) {
+
   switch( fn ) {
     case 0 : return (wFunCmd.isf0 (fcmd) | wLoc.isfn(fcmd));
     case 1 : return wFunCmd.isf1 (fcmd);
@@ -999,7 +996,7 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
     iOSlot slot = __getSlot(inst, node);
 
     int fnchanged = wFunCmd.getfnchanged(node);
-    Boolean fnstate = __getFState(node, fnchanged, slot->f[fnchanged]);
+    Boolean fnstate = __getFState(node, fnchanged);
 
     slot->f[fnchanged] = fnstate;
 
@@ -1488,7 +1485,8 @@ static void __handleSensor(iOBiDiB bidib, iOBiDiBNode bidibnode, int addr, Boole
     11  Extended Accessory
   */
 
-  char* sType = "loco-addr-fwd";
+  char* sType = "loco-addr-none";
+  if( type == 0 ) sType = "loco-addr-fwd";
   if( type == 2 ) sType = "loco-addr-rev";
   if( type == 1 ) sType = "accessory-addr";
   if( type == 3 ) sType = "ext-accessory";
@@ -1560,9 +1558,15 @@ static void __handleMultiAddrSensor(iOBiDiB bidib, iOBiDiBNode bidibnode, int ad
   }
 
   if( report ) {
+    char* sType = "loco-addr-none";
+    if( type[0] == 0 ) sType = "loco-addr-fwd";
+    if( type[0] == 2 ) sType = "loco-addr-rev";
+    if( type[0] == 1 ) sType = "accessory-addr";
+    if( type[0] == 3 ) sType = "ext-accessory";
+
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
-        "sensor bus=%08X addr=%d state=%s ident=%s,%s,%s,%s cnt=%d username=%s",
-        bidibnode->uid, addr, state?"occ":"free",
+        "sensor bus=%08X addr=%d state=%s type=%s ident=%s,%s,%s,%s cnt=%d username=%s",
+        bidibnode->uid, addr, state?"occ":"free", sType,
         wFeedback.getidentifier(nodeC), wFeedback.getidentifier2(nodeC), wFeedback.getidentifier3(nodeC), wFeedback.getidentifier4(nodeC),
         cnt, bidibnode->username );
 
@@ -1580,7 +1584,7 @@ static void __handleMultiAddrSensor(iOBiDiB bidib, iOBiDiBNode bidibnode, int ad
 
     wFeedback.setstate( nodeC, state );
     if( type[0] == 0 || type[0] == 2 )
-      wFeedback.setdirection( nodeC, type == 0 ? True:False );
+      wFeedback.setdirection( nodeC, type[0] == 0 ? True:False );
 
     data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_INFO );
   }
@@ -2296,7 +2300,7 @@ static void __handleCSStat(iOBiDiB bidib, iOBiDiBNode bidibnode, byte* pdata) {
     const char* stateStr = __csstate2str(pdata[0], &level);
     bidibnode->laststat = pdata[0];
     TraceOp.trc( name, level, __LINE__, 9999, "CS state=0x%02X [%s][%08X]", pdata[0], stateStr, bidibnode!=NULL?bidibnode->uid:0 );
-    data->power = (pdata[0] == BIDIB_CS_STATE_OFF) ? False:True;
+    data->power = (pdata[0] < BIDIB_CS_STATE_GO) ? False:True;
     if( bidibnode != NULL ) {
       bidibnode->stat &= ~BIDIB_BST_STATE_ON;
       bidibnode->stat |= data->power?BIDIB_BST_STATE_ON:0;
@@ -2731,7 +2735,7 @@ static void __handleUpdateStat(iOBiDiB bidib, iOBiDiBNode bidibnode, byte* pdata
 
       if( data->hexfh != NULL ) {
         FILE* fs = FileOp.getStream(data->hexfh);
-        fgets( (char*)(msgdata+1), 256, fs );
+        fgets( (char*)(msgdata+1), 255, fs );
         if( !ferror(fs) && !feof(fs) ) {
           StrOp.replaceAll((char*)(msgdata+1), '\r', '\0');
           StrOp.replaceAll((char*)(msgdata+1), '\n', '\0');
