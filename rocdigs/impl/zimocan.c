@@ -437,14 +437,14 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
     if( slot != NULL ) {
       if( wProgram.getcmd( node ) == wProgram.get ) {
         byte* msg = allocMem(32);
-        msg[0] = __makePacket(msg+1, TRACK_CONFIG_GROUP, TRACK_CONFIG_READ, MODE_CMD, 7, data->NID, slot->nid, cv&0xFF, (cv&0xFF00)>>8, cv>>16, 0, 0, 0);
+        msg[0] = __makePacket(msg+1, TRACK_CONFIG_GROUP, TRACK_CONFIG_READ, MODE_CMD, 7, data->NID, slot->nid, cv>>16, (cv&0xFF00)>>8, cv&0xFF, 0, 0, 0);
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "read cv=%d nid=0x%04X", cv, slot->nid );
         ThreadOp.post(data->writer, (obj)msg);
       }
       else if( wProgram.getcmd( node ) == wProgram.set ) {
         int val = wProgram.getvalue( node );
         byte* msg = allocMem(32);
-        msg[0] = __makePacket(msg+1, TRACK_CONFIG_GROUP, TRACK_CONFIG_WRITE, MODE_CMD, 8, data->NID, slot->nid, cv&0xFF, (cv&0xFF00)>>8, cv>>16, val, 0, 0);
+        msg[0] = __makePacket(msg+1, TRACK_CONFIG_GROUP, TRACK_CONFIG_WRITE, MODE_CMD, 8, data->NID, slot->nid, cv>>16, (cv&0xFF00)>>8, cv&0xFF, val, 0, 0);
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "write cv=%d value=%d nid=0x%04X", cv, val, slot->nid );
         ThreadOp.post(data->writer, (obj)msg);
       }
