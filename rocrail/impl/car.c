@@ -216,6 +216,13 @@ static void __traceFunctions(iOCar inst, int fnchanged) {
   );
 }
 
+static iONode _getFunctionStatus( iOCar car, iONode cmd ) {
+  iOCarData data = Data(car);
+  /* save the function status: */
+  __copyFx2Node(car, cmd);
+
+  return cmd;
+}
 
 static Boolean _cmd( iOCar inst, iONode nodeA ) {
   iOCarData data = Data(inst);
@@ -245,12 +252,14 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
     if( StrOp.equals(wLoc.name(), nodename ) ) {
       Boolean dir = wCar.isinvdir(data->props) ? !wLoc.isdir(nodeA):wLoc.isdir(nodeA);
       Boolean lights = wLoc.isfn(nodeA);
+      Boolean broadcast = False;
 
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
           "car %s (%d) V=%d usedir=%d uselights=%d", wCar.getid(data->props), wCar.getaddr(data->props),
           wLoc.getV(nodeA),  wCar.isusedir(data->props), wCar.isuselights(data->props) );
 
       if( wCar.isusedir(data->props) ) {
+        wCar.setid( nodeA, wCar.getid(data->props) );
         wLoc.setdir( nodeA, wCar.isplacing(data->props)?dir:!dir );
         if( wCar.getiid(data->props) != NULL )
           wCar.setiid( nodeA, wCar.getiid(data->props) );
@@ -259,6 +268,7 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
         wCar.setprotver( nodeA, wCar.getprotver( data->props ) );
         wLoc.setspcnt( nodeA, wLoc.getspcnt(data->props) );
         ControlOp.cmd( control, (iONode)NodeOp.base.clone(nodeA), NULL );
+        broadcast = True;
       }
 
       if( wCar.isuselights(data->props) ) {
@@ -275,6 +285,7 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
 
         wFunCmd.setf0(nodeA, lights); /**/
         wLoc.setdir( nodeA, wCar.isplacing(data->props)?dir:!dir );
+        wCar.setid( nodeA, wCar.getid(data->props) );
         if( wCar.getiid(data->props) != NULL )
           wCar.setiid( nodeA, wCar.getiid(data->props) );
         wCar.setaddr( nodeA, wCar.getaddr(data->props) );
@@ -282,6 +293,13 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
         wCar.setprotver( nodeA, wCar.getprotver( data->props ) );
         wLoc.setspcnt( nodeA, wLoc.getspcnt(data->props) );
         ControlOp.cmd( control, (iONode)NodeOp.base.clone(nodeA), NULL );
+        broadcast = True;
+      }
+
+      /* Broadcast to clients. */
+      if( broadcast ) {
+        iONode clone = (iONode)NodeOp.base.clone( nodeA );
+        AppOp.broadcastEvent( clone );
       }
 
       NodeOp.base.del(nodeA);
@@ -377,6 +395,12 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
       }
 
       __traceFunctions(inst, fnchanged);
+
+      /* Broadcast to clients. */
+      {
+        iONode clone = (iONode)NodeOp.base.clone( nodeA );
+        AppOp.broadcastEvent( clone );
+      }
 
       ControlOp.cmd( control, nodeA, NULL );
     }

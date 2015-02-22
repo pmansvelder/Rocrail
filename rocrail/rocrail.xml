@@ -2259,6 +2259,10 @@
     <fun name="getAddress" vt="int">
       <param name="inst" vt="this" remark="Car instance"/>
     </fun>
+    <fun name="getFunctionStatus" vt="iONode">
+      <param name="inst" vt="this" remark="Car instance"/>
+      <param name="funcmd" vt="iONode" remark="function command node"/>
+    </fun>
     <fun name="setLocality" vt="void">
       <param name="inst" vt="this" remark="Car instance"/>
       <param name="id" vt="const char*" remark="Locality ID"/>

@@ -1622,6 +1622,7 @@ static void __doCarFunction(iOActionData data, iOCar car, Boolean fon, int fnact
   iONode cmd = NodeOp.inst( wFunCmd.name(), NULL, ELEMENT_NODE );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "car function [%d] %s", fnaction, fon?"ON":"OFF" );
   wFunCmd.setid( cmd, wAction.getid( data->action ) );
+  CarOp.getFunctionStatus(car, cmd);
 
   __setFunctionCmd(data, cmd, fon, fnaction, duration);
 
