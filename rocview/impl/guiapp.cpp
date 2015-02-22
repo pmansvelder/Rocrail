@@ -242,7 +242,7 @@ int RocGui::OnExit() {
 
 #ifdef __APPLE__
     if( !wGui.isverticaltoolbar( m_Ini ) )
-      wWindow.setcy( wGui.getwindow( m_Ini ), size.GetHeight() - 32 ); // hard coded work around for increasing height.
+      wWindow.setcy( wGui.getwindow( m_Ini ), size.GetHeight() - 35 ); // hard coded work around for increasing height.
 #endif
 
     if( wGui.getrrcon( m_Ini ) == NULL ) {
