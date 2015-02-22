@@ -186,6 +186,7 @@
 #include "rocrail/wrapper/public/Turntable.h"
 #include "rocrail/wrapper/public/Weather.h"
 #include "rocrail/wrapper/public/WeatherList.h"
+#include "rocview/wrapper/public/PowerCtrl.h"
 
 
 #include "rocview/symbols/svg.h"
@@ -1442,6 +1443,13 @@ void RocGuiFrame::InitActiveLocs(wxCommandEvent& event) {
     initLocCtrlDialogs();
     m_ThrottlesRestored = true;
   }
+
+  iONode powerctrl = wGui.getpowerctrl(m_Ini);
+  if( powerctrl != NULL && wPowerCtrl.isshow(powerctrl) ) {
+    m_PowerCtrl = new PowerCtrlDlg(this );
+    m_PowerCtrl->Show(true);
+  }
+
   m_CV->init();
 
 }

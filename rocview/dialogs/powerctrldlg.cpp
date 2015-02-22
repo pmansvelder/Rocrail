@@ -78,6 +78,7 @@ PowerCtrlDlg::PowerCtrlDlg( wxWindow* parent ):powerctrlgen( parent )
   if( powerctrl != NULL ) {
     if( wPowerCtrl.getcx(powerctrl) > 0 && wPowerCtrl.getcy(powerctrl) > 0 ) {
       SetSize(wPowerCtrl.getx(powerctrl), wPowerCtrl.gety(powerctrl), wPowerCtrl.getcx(powerctrl), wPowerCtrl.getcy(powerctrl));
+      wPowerCtrl.setshow(powerctrl, True);
     }
     else
       SetSize(wPowerCtrl.getx(powerctrl), wPowerCtrl.gety(powerctrl));
@@ -338,6 +339,7 @@ void PowerCtrlDlg::OnOK( wxCommandEvent& event )
   wPowerCtrl.sety(powerctrl,y);
   wPowerCtrl.setcx(powerctrl,cx);
   wPowerCtrl.setcy(powerctrl,cy);
+  wPowerCtrl.setshow(powerctrl, False);
 
   wxGetApp().getFrame()->resetPowerCtrlRef();
   Destroy();
