@@ -1683,6 +1683,7 @@ static void __theSwap(iOLoc loc, Boolean swap, Boolean consist, iONode cmd) {
     LocOp.cmd(loc, cmd);
   }
   __broadcastLocoProps( loc, NULL, NULL, NULL );
+  __checkAction(loc, "dirchange");
 
 }
 
