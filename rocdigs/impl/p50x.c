@@ -420,7 +420,36 @@ static int __translate( iOP50xData o, iONode node, unsigned char* p50, int* insi
   else if( StrOp.equals( NodeOp.getName( node ), wFunCmd.name() ) ) {
     int   addr = wFunCmd.getaddr( node );
     int group = wFunCmd.getgroup(node);
-    if( group > 2 ) {
+    if( group > 4 ) {
+      Boolean f1 = wFunCmd.isf17 ( node );
+      Boolean f2 = wFunCmd.isf18( node );
+      Boolean f3 = wFunCmd.isf19( node );
+      Boolean f4 = wFunCmd.isf20( node );
+      Boolean f5 = wFunCmd.isf21( node );
+      Boolean f6 = wFunCmd.isf22( node );
+      Boolean f7 = wFunCmd.isf23( node );
+      Boolean f8 = wFunCmd.isf24( node );
+      Boolean f9  = wFunCmd.isf25( node );
+      Boolean f10 = wFunCmd.isf26( node );
+      Boolean f11 = wFunCmd.isf27( node );
+      Boolean f12 = wFunCmd.isf28( node );
+      int   info  = (f1?0x01:0) + (f2?0x02:0) + (f3?0x04:0) + (f4?0x08:0) + (f5?0x10:0) + (f6?0x20:0) + (f7?0x40:0) + (f8?0x80:0);
+      int   info2 = (f9?0x01:0) + (f10?0x02:0) + (f11?0x04:0) + (f12?0x08:0);
+      p50[0] = (byte)'x';
+      p50[1] = 0x8A;
+      p50[2] = (byte)(addr&0xFF);
+      p50[3] = (addr >> 8) & 0xFF;
+      p50[4] = (unsigned char)info;
+      p50[5] = (unsigned char)info2;
+      *insize = 1; /* Return code from P50x. */
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
+              "loc %d f17=%s f18=%s f19=%s f20=%s f21=%s f22=%s f23=%s f24=%s f25=%s f26=%s f27=%s f28=%s",
+              addr, f1?"on":"off", f2?"on":"off", f3?"on":"off", f4?"on":"off",
+              f5?"on":"off", f6?"on":"off", f7?"on":"off", f8?"on":"off",
+              f9?"on":"off", f10?"on":"off", f11?"on":"off", f12?"on":"off");
+      return 6;
+    }
+    else if( group > 2 ) {
       Boolean f1 = wFunCmd.isf9 ( node );
       Boolean f2 = wFunCmd.isf10( node );
       Boolean f3 = wFunCmd.isf11( node );
