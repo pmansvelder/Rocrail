@@ -1283,7 +1283,7 @@ void PlanPanel::OnTimer(wxTimerEvent& event) {
   wxHashTable::Node* node = m_ChildTable->Next();
   while( node != NULL ) {
     item = (Symbol*)node->GetData();
-    if( item->isSignal() && !item->isDragged() && item->hasAlt())
+    if( ( item->isSignal() || item->isSwitch() ) && !item->isDragged() && item->hasAlt())
       item->Refresh();
     node = m_ChildTable->Next();
   }

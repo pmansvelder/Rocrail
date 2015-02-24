@@ -1779,6 +1779,7 @@
         <var name="ori" vt="string" defval="NULL" range="north,south,west,east" remark="Orientation in the plan."/>
         <var name="show" vt="bool" defval="true" remark="Visibility flag."/>
         <var name="virtual" vt="bool" defval="false" remark="If this object is only used for dispatching commands."/>
+        <const name="none" vt="string" val="none" remark="none savepos"/>
         <const name="turnout" vt="string" val="turnout" remark="Turnout command."/>
         <const name="straight" vt="string" val="straight" remark="Straight command."/>
         <const name="right" vt="string" val="right" remark="3way switch right command or right switch type."/>

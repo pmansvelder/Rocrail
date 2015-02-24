@@ -133,6 +133,7 @@ public:
   void setPosition();
   bool isDragged() {return m_isDragged;}
   bool isSignal();
+  bool isSwitch();
   bool hasAlt();
 
   void Blockstate(iONode bk, iONode lc);

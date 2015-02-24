@@ -1415,6 +1415,12 @@ bool Symbol::isSignal() {
   return false;
 }
 
+bool Symbol::isSwitch() {
+  if( m_Props != NULL && StrOp.equals( wSwitch.name(), NodeOp.getName(m_Props)))
+    return true;
+  return false;
+}
+
 bool Symbol::hasAlt() {
   if( m_Renderer != NULL && m_Renderer->hasAlt() )
     return true;
@@ -2913,6 +2919,9 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
   }
   else if( StrOp.equals( wSwitch.name(), NodeOp.getName( m_Props ) ) ) {
     const char* state = wSwitch.getstate( node );
+    const char* wantedstate = wSwitch.getwantedstate( node );
+    const char* fieldstate = wSwitch.getfieldstate( node );
+    const char* savepos = wSwitch.getsavepos( node );
     const char* locid = wSwitch.getlocid( node );
     Boolean isSet = wSwitch.isset(node);
     Boolean isLocked = (wSwitch.getlocid( node )==NULL?False:True);
@@ -2941,7 +2950,8 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
     if( !wxGetApp().getFrame()->isShowLocked() )
       isLocked = False;
 
-    SetBackgroundColour( isSet? (isLocked? Base::getRed():m_PlanPanel->GetBackgroundColour()):*wxRED );
+    if( wxGetApp().getFrame()->isShowLocked() )
+      SetBackgroundColour( isSet? (isLocked? Base::getRed():m_PlanPanel->GetBackgroundColour()):*wxRED );
 
     if( addr > 0 && port > 0 ) {
       pada = (addr-1) * 4 + port;

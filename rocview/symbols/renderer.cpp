@@ -381,6 +381,23 @@ void SymbolRenderer::initSym() {
           m_SvgSym10 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_t_route:switchtype::dcrossingright_t_route );
           m_SvgSym11 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tl_route:switchtype::dcrossingright_tl_route );
           m_SvgSym12 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tr_route:switchtype::dcrossingright_tr_route );
+
+          m_SvgSym13 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_l_occ:switchtype::dcrossingright_l_occ );
+          m_SvgSym14 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_t_l_occ:switchtype::dcrossingright_t_l_occ );
+          m_SvgSym15 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tl_l_occ:switchtype::dcrossingright_tl_l_occ );
+          m_SvgSym16 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tr_l_occ:switchtype::dcrossingright_tl_l_occ );
+          m_SvgSym[17] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_b_route:switchtype::dcrossingright_b_route );
+          m_SvgSym[18] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_l_route:switchtype::dcrossingright_l_route );
+          m_SvgSym[19] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_lb_route:switchtype::dcrossingright_lb_route );
+          m_SvgSym[20] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_t_b_route:switchtype::dcrossingright_t_b_route );
+          m_SvgSym[21] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_t_l_route:switchtype::dcrossingright_t_l_route );
+          m_SvgSym[22] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_t_lb_route:switchtype::dcrossingright_t_lb_route );
+          m_SvgSym[23] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tl_b_route:switchtype::dcrossingright_tl_b_route );
+          m_SvgSym[24] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tl_l_route:switchtype::dcrossingright_tl_l_route );
+          m_SvgSym[25] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tl_lb_route:switchtype::dcrossingright_tl_lb_route );
+          m_SvgSym[26] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tr_b_route:switchtype::dcrossingright_tr_b_route );
+          m_SvgSym[27] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tr_l_route:switchtype::dcrossingright_tr_l_route );
+          m_SvgSym[28] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::dcrossingleft_tr_lb_route:switchtype::dcrossingright_tr_lb_route );
         }
       }
     }
@@ -487,6 +504,16 @@ void SymbolRenderer::initSym() {
           m_SvgSym3 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t );
           m_SvgSym4 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_occ );
           m_SvgSym5 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t_occ );
+          m_SvgSym6 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_route );
+          m_SvgSym7 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t_route );
+          m_SvgSym11 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_b_route );
+          m_SvgSym13 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t_b_route );
+          m_SvgSym14 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_l_occ );
+          m_SvgSym15 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t_l_occ );
+          m_SvgSym16 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_l_route );
+          m_SvgSym[17] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t_l_route );
+          m_SvgSym[26] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_lb_route );
+          m_SvgSym[27] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_r_t_lb_route );
         }
         else {
           if( wItem.isroad( m_Props ) ) {
@@ -518,6 +545,14 @@ void SymbolRenderer::initSym() {
               m_SvgSym5 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_t_occ );
               m_SvgSym6 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_route );
               m_SvgSym7 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_t_route );
+              m_SvgSym11 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_b_route );
+              m_SvgSym13 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_t_b_route );
+              m_SvgSym14 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_l_occ );
+              m_SvgSym15 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_t_l_occ );
+              m_SvgSym16 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_l_route );
+              m_SvgSym[17] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_t_l_route );
+              m_SvgSym[26] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_lb_route );
+              m_SvgSym[27] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutleft_t_lb_route );
             }
           }
         }
@@ -533,6 +568,16 @@ void SymbolRenderer::initSym() {
           m_SvgSym3 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t );
           m_SvgSym4 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_occ );
           m_SvgSym5 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t_occ );
+          m_SvgSym6 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_route );
+          m_SvgSym7 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t_route );
+          m_SvgSym11 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_b_route );
+          m_SvgSym13 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t_b_route );
+          m_SvgSym14 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_l_occ );
+          m_SvgSym15 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t_l_occ );
+          m_SvgSym16 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_l_route );
+          m_SvgSym[17] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t_l_route );
+          m_SvgSym[26] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_lb_route );
+          m_SvgSym[27] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_r_t_lb_route );
         }
         else {
           if( wItem.isroad( m_Props ) ) {
@@ -564,6 +609,14 @@ void SymbolRenderer::initSym() {
               m_SvgSym5 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_t_occ );
               m_SvgSym6 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_route );
               m_SvgSym7 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_t_route );
+              m_SvgSym11 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_b_route );
+              m_SvgSym13 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_t_b_route );
+              m_SvgSym14 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_l_occ );
+              m_SvgSym15 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_t_l_occ );
+              m_SvgSym16 = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_l_route );
+              m_SvgSym[17] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_t_l_route );
+              m_SvgSym[26] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_lb_route );
+              m_SvgSym[27] = (svgSymbol*)MapOp.get( m_SymMap, switchtype::turnoutright_t_lb_route );
             }
           }
         }
@@ -974,10 +1027,6 @@ void SymbolRenderer::sizeToScale( double symsize, double scale, double bktext, i
     }
     */
   }
-  else if( StrOp.equals( wSelTab.name(), NodeOp.getName( m_Props ) ) ) {
-    *cx = 4;
-    *cy = 1;
-  }
   else if( StrOp.equals( wTurntable.name(), NodeOp.getName( m_Props ) ) && !wTurntable.istraverser(m_Props) ) {
     int ttdiam = wTurntable.getsymbolsize( m_Props );
 
@@ -1353,12 +1402,15 @@ void SymbolRenderer::drawCCrossing( wxPaintDC& dc, bool occupied, bool actroute,
  */
 void SymbolRenderer::drawCrossing( wxPaintDC& dc, bool occupied, bool actroute, const char* ori ) {
   const char* state = wSwitch.getstate( m_Props );
+  const char* savepos = wSwitch.getsavepos( m_Props );
   Boolean raster = StrOp.equals( wSwitch.getswtype( m_Props ), wSwitch.swtype_raster );
 
   TraceOp.trc( "render", TRCLEVEL_INFO, __LINE__, 9999, "Crossing %s occ=%d route=%d",
       wSwitch.getid( m_Props ), occupied, actroute );
 
   if( !wGui.isshowroute4switch(wxGetApp().getIni()) )
+    actroute = !occupied;
+  else if( !StrOp.equals( savepos, wSwitch.none ) && !StrOp.equals( state, savepos ) )
     actroute = !occupied;
 
 
@@ -1416,45 +1468,92 @@ void SymbolRenderer::drawCrossing( wxPaintDC& dc, bool occupied, bool actroute, 
  */
 void SymbolRenderer::drawDCrossing( wxPaintDC& dc, bool occupied, bool actroute, const char* ori ) {
   const char* state = wSwitch.getstate( m_Props );
+  const char* savepos = wSwitch.getsavepos( m_Props );
+  Boolean islocked = (wSwitch.getlocid( m_Props )==NULL)?False:True;
+  Boolean isset = wSwitch.isset( m_Props );
+  Boolean issavepos = (Boolean)( !StrOp.equals( savepos, wSwitch.none ) && !StrOp.equals( state, savepos ) );
   Boolean has2Units = ( wSwitch.getaddr2( m_Props ) > 0 || wSwitch.getport2( m_Props ) > 0 )  ? True:False;
   Boolean raster = StrOp.equals( wSwitch.getswtype( m_Props ), wSwitch.swtype_raster );
 
   TraceOp.trc( "render", TRCLEVEL_DEBUG, __LINE__, 9999, "drawDCrossing %s state=%s", wSwitch.getid( m_Props ), state );
 
-  if( !wGui.isshowroute4switch(wxGetApp().getIni()) )
+  if( wSwitch.getlocid( m_Props )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( m_Props )) )
+    islocked = False;
+
+  if( islocked || issavepos || !isset || !wGui.isshowroute4switch(wxGetApp().getIni()) )
     actroute = !occupied;
 
   // SVG Symbol:
   if( has2Units ) {
     if( m_SvgSym3!=NULL && StrOp.equals( state, wSwitch.left ) ) {
       if( occupied && m_SvgSym7 != NULL )
-        drawSvgSym(dc, m_SvgSym7, ori);
+        if( islocked && m_SvgSym15 != NULL )
+          drawSvgSym(dc, m_SvgSym15, ori);
+        else
+          drawSvgSym(dc, m_SvgSym7, ori);
       else if( actroute && m_SvgSym11 != NULL )
-        drawSvgSym(dc, m_SvgSym11, ori);
+        if( !isset && m_SvgSym[23] != NULL )
+          drawSvgSym(dc, m_SvgSym[23], ori);
+        else if( islocked && m_SvgSym[24] != NULL )
+          drawSvgSym(dc, m_SvgSym[24], ori);
+        else if( issavepos && m_SvgSym[25] != NULL )
+          drawSvgSym(dc, m_SvgSym[25], ori);
+        else
+          drawSvgSym(dc, m_SvgSym11, ori);
       else
         drawSvgSym(dc, m_SvgSym3, ori);
     }
     else if( m_SvgSym4!=NULL && StrOp.equals( state, wSwitch.right ) ) {
       if( occupied && m_SvgSym8 != NULL )
-        drawSvgSym(dc, m_SvgSym8, ori);
+        if( islocked && m_SvgSym16 != NULL )
+          drawSvgSym(dc, m_SvgSym16, ori);
+        else
+          drawSvgSym(dc, m_SvgSym8, ori);
       else if( actroute && m_SvgSym12 != NULL )
-        drawSvgSym(dc, m_SvgSym12, ori);
+        if( !isset && m_SvgSym[26] != NULL )
+          drawSvgSym(dc, m_SvgSym[26], ori);
+        else if( islocked && m_SvgSym[27] != NULL )
+          drawSvgSym(dc, m_SvgSym[27], ori);
+        else if( issavepos && m_SvgSym[28] != NULL )
+          drawSvgSym(dc, m_SvgSym[28], ori);
+        else
+          drawSvgSym(dc, m_SvgSym12, ori);
       else
         drawSvgSym(dc, m_SvgSym4, ori);
     }
     else if( m_SvgSym2!=NULL && StrOp.equals( state, wSwitch.turnout ) ) {
       if( occupied && m_SvgSym6 != NULL )
-        drawSvgSym(dc, m_SvgSym6, ori);
+        if( islocked && m_SvgSym14 != NULL )
+          drawSvgSym(dc, m_SvgSym14, ori);
+        else
+          drawSvgSym(dc, m_SvgSym6, ori);
       else if( actroute && m_SvgSym10 != NULL )
-        drawSvgSym(dc, m_SvgSym10, ori);
+        if( !isset && m_SvgSym[20] != NULL )
+          drawSvgSym(dc, m_SvgSym[20], ori);
+        else if( islocked && m_SvgSym[21] != NULL )
+          drawSvgSym(dc, m_SvgSym[21], ori);
+        else if( issavepos && m_SvgSym[22] != NULL )
+          drawSvgSym(dc, m_SvgSym[22], ori);
+        else
+          drawSvgSym(dc, m_SvgSym10, ori);
       else
         drawSvgSym(dc, m_SvgSym2, ori);
     }
     else if( m_SvgSym1!=NULL ) {
       if( occupied && m_SvgSym5 != NULL )
-        drawSvgSym(dc, m_SvgSym5, ori);
+        if( islocked && m_SvgSym13 != NULL )
+          drawSvgSym(dc, m_SvgSym13, ori);
+        else
+          drawSvgSym(dc, m_SvgSym5, ori);
       else if( actroute && m_SvgSym9 != NULL )
-        drawSvgSym(dc, m_SvgSym9, ori);
+        if( !isset && m_SvgSym[17] != NULL )
+          drawSvgSym(dc, m_SvgSym[17], ori);
+        else if( islocked && m_SvgSym[18] != NULL )
+          drawSvgSym(dc, m_SvgSym[18], ori);
+        else if( issavepos && m_SvgSym[19] != NULL )
+          drawSvgSym(dc, m_SvgSym[19], ori);
+        else
+          drawSvgSym(dc, m_SvgSym9, ori);
       else
         drawSvgSym(dc, m_SvgSym1, ori);
     }
@@ -1462,18 +1561,38 @@ void SymbolRenderer::drawDCrossing( wxPaintDC& dc, bool occupied, bool actroute,
 
   else if( m_SvgSym2!=NULL && StrOp.equals( state, wSwitch.turnout ) ) {
     if( occupied && m_SvgSym6 != NULL )
-      drawSvgSym(dc, m_SvgSym6, ori);
+      if( islocked && m_SvgSym14 != NULL )
+        drawSvgSym(dc, m_SvgSym14, ori);
+      else
+        drawSvgSym(dc, m_SvgSym6, ori);
     else if( actroute && m_SvgSym10 != NULL )
-      drawSvgSym(dc, m_SvgSym10, ori);
+      if( !isset && m_SvgSym[20] != NULL )
+        drawSvgSym(dc, m_SvgSym[20], ori);
+      else if( islocked && m_SvgSym[21] != NULL )
+        drawSvgSym(dc, m_SvgSym[21], ori);
+      else if( issavepos && m_SvgSym[22] != NULL )
+        drawSvgSym(dc, m_SvgSym[22], ori);
+      else
+        drawSvgSym(dc, m_SvgSym10, ori);
     else
       drawSvgSym(dc, m_SvgSym2, ori);
   }
 
   else if( m_SvgSym1!=NULL ) {
     if( occupied && m_SvgSym5 != NULL )
-      drawSvgSym(dc, m_SvgSym5, ori);
+      if( islocked && m_SvgSym[13] != NULL )
+        drawSvgSym(dc, m_SvgSym[13], ori);
+      else
+        drawSvgSym(dc, m_SvgSym5, ori);
     else if( actroute && m_SvgSym9 != NULL )
-      drawSvgSym(dc, m_SvgSym9, ori);
+      if( !isset && m_SvgSym[17] != NULL )
+        drawSvgSym(dc, m_SvgSym[17], ori);
+      else if( islocked && m_SvgSym[18] != NULL )
+        drawSvgSym(dc, m_SvgSym[18], ori);
+      else if( issavepos && m_SvgSym[19] != NULL )
+        drawSvgSym(dc, m_SvgSym[19], ori);
+      else
+        drawSvgSym(dc, m_SvgSym9, ori);
     else
       drawSvgSym(dc, m_SvgSym1, ori);
   }
@@ -1637,25 +1756,52 @@ void SymbolRenderer::drawAccessory( wxPaintDC& dc, bool occupied, bool actroute,
  */
 void SymbolRenderer::drawTurnout( wxPaintDC& dc, bool occupied, bool actroute, const char* ori ) {
   const char* state = wSwitch.getstate( m_Props );
+  const char* savepos = wSwitch.getsavepos( m_Props );
+  Boolean islocked = (wSwitch.getlocid( m_Props )==NULL)?False:True;
+  Boolean isset = wSwitch.isset( m_Props );
+  Boolean issavepos = (Boolean)( !StrOp.equals( savepos, wSwitch.none ) && !StrOp.equals( state, savepos ) );
   Boolean raster = StrOp.equals( wSwitch.getswtype( m_Props ), wSwitch.swtype_raster );
 
-  if( !wGui.isshowroute4switch(wxGetApp().getIni()) )
+  if( wSwitch.getlocid( m_Props )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( m_Props )) )
+    islocked = False;
+
+  if( islocked || issavepos || !isset || !wGui.isshowroute4switch(wxGetApp().getIni()) )
     actroute = !occupied;
 
   // SVG Symbol:
   if( m_SvgSym2!=NULL && StrOp.equals( state, wSwitch.turnout ) ) {
     if( occupied && m_SvgSym5 != NULL )
-      drawSvgSym(dc, m_SvgSym5, ori);
+      if( islocked && m_SvgSym15 != NULL )
+        drawSvgSym(dc, m_SvgSym15, ori);
+      else
+        drawSvgSym(dc, m_SvgSym5, ori);
     else if( actroute && m_SvgSym7 != NULL )
-      drawSvgSym(dc, m_SvgSym7, ori);
+      if( !isset && m_SvgSym13 != NULL )
+        drawSvgSym(dc, m_SvgSym13, ori);
+      else if( islocked && m_SvgSym[17] != NULL )
+        drawSvgSym(dc, m_SvgSym[17], ori);
+      else if( issavepos && m_SvgSym[27] != NULL )
+        drawSvgSym(dc, m_SvgSym[27], ori);
+      else
+        drawSvgSym(dc, m_SvgSym7, ori);
     else
       drawSvgSym(dc, m_SvgSym2, ori);
   }
   else if( m_SvgSym1!=NULL ) {
     if( occupied && m_SvgSym4 != NULL )
-      drawSvgSym(dc, m_SvgSym4, ori);
+      if( islocked && m_SvgSym14 != NULL )
+        drawSvgSym(dc, m_SvgSym14, ori);
+      else
+        drawSvgSym(dc, m_SvgSym4, ori);
     else if( actroute && m_SvgSym6 != NULL )
-      drawSvgSym(dc, m_SvgSym6, ori);
+      if( !isset && m_SvgSym11 != NULL )
+        drawSvgSym(dc, m_SvgSym11, ori);
+      else if( islocked && m_SvgSym16 != NULL )
+        drawSvgSym(dc, m_SvgSym16, ori);
+      else if( issavepos && m_SvgSym[26] != NULL )
+        drawSvgSym(dc, m_SvgSym[26], ori);
+      else
+        drawSvgSym(dc, m_SvgSym6, ori);
     else
       drawSvgSym(dc, m_SvgSym1, ori);
   }
@@ -1688,6 +1834,49 @@ void SymbolRenderer::drawTurnout( wxPaintDC& dc, bool occupied, bool actroute, c
       }
       else {
         drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 0, 12, 0.0 );
+      }
+    }
+    else if( m_iSymSubType == switchtype::i_turnoutright ) {
+      if( StrOp.equals( ori, wItem.south ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 31, 18, 270.0 );
+      }
+      else if( StrOp.equals( ori, wItem.north ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 14, 90.0 );
+      }
+      else if( StrOp.equals( ori, wItem.east ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 20, 0.0 );
+      }
+      else {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 17, 1, 0.0 );
+      }
+    }
+    else if( m_iSymSubType == switchtype::i_turnoutleft ) {
+      if( StrOp.equals( ori, wItem.south ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 31, 1, 270.0 );
+      }
+      else if( StrOp.equals( ori, wItem.north ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 32, 90.0 );
+      }
+      else if( StrOp.equals( ori, wItem.east ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 17, 20, 0.0 );
+      }
+      else {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 1, 0.0 );
+      }
+    }
+    /* standard switches non raster and raster with lock indicator */
+    else if( m_SvgSym16 != NULL ) {
+      if( StrOp.equals( ori, wItem.south ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 32, 17, 270.0 );
+      }
+      else if( StrOp.equals( ori, wItem.north ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 17, 90.0 );
+      }
+      else if( StrOp.equals( ori, wItem.east ) ) {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 0, 20, 0.0 );
+      }
+      else {
+        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 17, 1, 0.0 );
       }
     }
     /* standard switches non raster and raster */

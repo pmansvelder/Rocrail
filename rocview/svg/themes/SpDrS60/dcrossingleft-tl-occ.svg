@@ -15,5 +15,8 @@
     <!-- Winkel -->
     <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 31,6 L 32,5 L 35,8 L 39,8 L 39,9 L 34,9 L 31,6 z " />
     <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 24,21 L 28,21 L 31,24 L 30,25 L 27,22 L 24,22  z " />
+    <!-- Marker grau -->
+    <circle cx="17" cy="28" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
+    <circle cx="25" cy="28" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
   </g>
 </svg>
