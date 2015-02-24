@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!-- Proposal for theme properties. -->
-<theme id="SpDrS60-a">
+<theme id="SpDrS60">
   <panel red="200" green="255" blue="200" border="true"/>
   <block showid="true" red="0" green="0" blue="0"/>
   <shortcut show="true" red="255" green="0" blue="0"/>
