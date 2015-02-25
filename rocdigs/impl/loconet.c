@@ -166,7 +166,9 @@ static void _stateChanged( iOLocoNet loconet ) {
     wState.setiid( node, data->iid );
     wState.setpower( node, data->power?True:False );
     wState.setprogramming( node, data->pt?True:False );
-    wState.settrackbus( node, data->comm?True:False );
+    wState.settrackbus( node, data->commOK?True:False );
+    wState.setsensorbus( node, data->commOK?True:False );
+    wState.setaccessorybus( node, data->commOK?True:False );
 
     data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
   }
