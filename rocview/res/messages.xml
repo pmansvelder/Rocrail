@@ -19766,7 +19766,7 @@
     <sr_latin txt="Povrati funkcije"/>
     <zh_CN txt="恢复功能"/>
     <sl txt="Obnovi funkcije"/>
-    <pt_BR txt="Recuperar funções"/>
+    <pt_BR txt="Restabelecer funções"/>
     <fi txt="Palauta toiminnot"/>
     <pl txt="Przywróć funkcje"/>
   </Msg>
@@ -20977,7 +20977,7 @@
     <sv txt="Återställ."/>
     <zh_CN txt="恢复"/>
     <sl txt="Obnovi"/>
-    <pt_BR txt="Recuperar"/>
+    <pt_BR txt="Restabelecer"/>
     <fi txt="Palauta"/>
     <pl txt="Przywróć"/>
   </Msg>
@@ -23126,7 +23126,7 @@
     <zh_CN txt="恢复速度"/>
     <sl txt="Obnovi hitrost"/>
     <da txt="Gendan hastighed"/>
-    <pt_BR txt="Restaurar velocidade"/>
+    <pt_BR txt="Restabelecer velocidade"/>
     <en_GB txt="Restore speed"/>
     <fi txt="Palauta nopeus"/>
     <pl txt="Przywróć prędkość"/>
@@ -24564,7 +24564,7 @@
     <sl txt="Obnovi urnik"/>
     <ru txt="Восстановить расписание"/>
     <da txt="Gendan tidsplan"/>
-    <pt_BR txt="Restaurar agendamentos"/>
+    <pt_BR txt="Restabelecer agendamentos"/>
     <en_GB txt="Restore schedule"/>
     <fi txt="Palauta aikataulu"/>
     <fr txt="Réinitialiser le trajet"/>
@@ -29660,27 +29660,65 @@
   </Msg>
   <Msg id="mapwhite">
     <en txt="Map white"/>
-    <de txt="Weiß  zuordnen"/>
+    <de txt="Weiß zuordnen"/>
     <nl txt="Verdeel wit"/>
     <pt_BR txt="Mapa branco"/>
-    <sl txt="Določi bele barvo"/>
+    <sl txt="Določi belo barvo"/>
+    <en_GB txt="Map white"/>
+    <sr_latin txt="Karta bele boje"/>
   </Msg>
   <Msg id="selected">
     <en txt="selected"/>
+    <de txt="ausgewählt"/>
+    <en_GB txt="selected"/>
+    <nl txt="geselecteerd"/>
+    <pt_BR txt="marcado"/>
+    <sl txt="izbrano"/>
+    <sr_latin txt="izabran"/>
   </Msg>
   <Msg id="deselected">
     <en txt="deselected"/>
+    <de txt="abgewählt"/>
+    <en_GB txt="deselected"/>
+    <nl txt="gedeselecteerd"/>
+    <pt_BR txt="desmarcado"/>
+    <sl txt="odznačeno"/>
+    <sr_latin txt="slobodan za izbor"/>
   </Msg>
   <Msg id="offatshutdown">
     <en txt="Off at shutdown"/>
+    <de txt="AUS beim Herunterfahren"/>
+    <en_GB txt="Off at shutdown"/>
+    <nl txt="Uit na stoppen"/>
+    <pt_BR txt="Desligado ao encerrar"/>
+    <sl txt="Izklopi ob izhodu"/>
+    <sr_latin txt="Ugasi pri isključenju"/>
   </Msg>
   <Msg id="substate">
     <en txt="Sub state"/>
+    <de txt="Sub-Status"/>
+    <en_GB txt="Sub state"/>
+    <nl txt="Sub status"/>
+    <pt_BR txt="Sub-estado"/>
+    <sl txt="Podrejeno stanje"/>
+    <sr_latin txt="Pod stanje"/>
   </Msg>
   <Msg id="v0onebreak">
     <en txt="V 0 on emergency break"/>
+    <de txt="V 0 bei Nothalt"/>
+    <en_GB txt="V 0 on emergency break"/>
+    <nl txt="Zend 0 snelheid bij noodstop"/>
+    <pt_BR txt="V 0 em parada de emergência"/>
+    <sl txt="V 0 ob prekinitvi v sili"/>
+    <sr_latin txt="Brz. 0 kod hitnog zaustavljnja"/>
   </Msg>
   <Msg id="restorechannels">
     <en txt="Restore channels"/>
+    <de txt="Kanäle wiederherstellen"/>
+    <en_GB txt="Restore channels"/>
+    <nl txt="Kanalen terugzetten"/>
+    <pt_BR txt="Restabelecer canais"/>
+    <sl txt="Ponastavi kanale"/>
+    <sr_latin txt="Povrati kanale"/>
   </Msg>
 </Messages>
