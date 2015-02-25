@@ -1281,9 +1281,8 @@ void SwitchDialog::CreateControls()
     itemFlexGridSizer15->Add(m_labSwitched, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxFlexGridSizer* itemFlexGridSizer29 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemFlexGridSizer15->Add(itemFlexGridSizer29, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_Switched = new wxTextCtrl( m_GeneralPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxTE_CENTRE );
-    m_Switched->Enable(false);
+    itemFlexGridSizer15->Add(itemFlexGridSizer29, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    m_Switched = new wxTextCtrl( m_GeneralPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
     itemFlexGridSizer29->Add(m_Switched, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_ResetSwitched = new wxButton( m_GeneralPanel, ID_SW_RESET_SWITCHED, _("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
