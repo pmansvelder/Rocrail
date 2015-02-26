@@ -938,7 +938,7 @@ static Boolean __checkResponse( iODINAMO dinamo, byte* rbuffer ) {
       }
     }
     else {
-      TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "null datagram received" );
+      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "null datagram received" );
     }
   }
   return True;
@@ -1014,6 +1014,14 @@ static void __flush( iODINAMO dinamo ) {
   }
 
   TraceOp.trc(name, TRCLEVEL_MONITOR, __LINE__, 9999, "flushed %d bytes", flushed);
+}
+
+
+static Boolean __isNullDatagram(byte* b) {
+  if( (b[0] & 0x07) == 0 ) {
+    return True;
+  }
+  return False;
 }
 
 
@@ -1106,8 +1114,8 @@ static void __transactor( void* threadinst ) {
         if( (SystemOp.getTick() - timer) > 25 )
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "timeout on response: send null datagram size=%d", lsize );
         else
-          TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "send null datagram size=%d", lsize );
-        TraceOp.dump( "nullreq", TRCLEVEL_BYTE, (char*)lbuffer, lsize );
+          TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "send null datagram size=%d", lsize );
+        TraceOp.dump( "nullreq", TRCLEVEL_DEBUG, (char*)lbuffer, lsize );
         SerialOp.write( data->serial, (char*)lbuffer, lsize );
         lastdatagramsize = 0;
         timer = SystemOp.getTick();
@@ -1133,8 +1141,10 @@ static void __transactor( void* threadinst ) {
           if( !data->dummyio ) {
             ok = SerialOp.read( data->serial, (char*)rbuffer+1, dsize+1 );
             if( ok ) {
-              TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "%d bytes read in buffer:", dsize + 2 );
-              TraceOp.dump( "cmdrsp", TRCLEVEL_BYTE, (char*)rbuffer, dsize + 2 );
+              if( !__isNullDatagram(rbuffer) ) {
+                TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "%d bytes read in buffer:", dsize + 2 );
+                TraceOp.dump( "cmdrsp", TRCLEVEL_BYTE, (char*)rbuffer, dsize + 2 );
+              }
             }
             ismore = SerialOp.available(data->serial);
             if( ismore > 0 )
