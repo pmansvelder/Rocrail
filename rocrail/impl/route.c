@@ -1664,6 +1664,15 @@ static Boolean _isSetCrossingblockSignals( iORoute inst ) {
 }
 
 
+static void _setClass( iORoute inst, const char* p_Class ) {
+  iORouteData data = Data(inst);
+  wRoute.setclass(data->props, p_Class);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set class to [%s] in route [%s]", wRoute.getclass(data->props),  wRoute.getid(data->props) );
+  /* Broadcast to clients. */
+  AppOp.broadcastEvent( (iONode)NodeOp.base.clone( data->props ) );
+}
+
+
 static iORoute _inst( iONode props ) {
   iORoute     route = allocMem( sizeof( struct ORoute ) );
   iORouteData data  = allocMem( sizeof( struct ORouteData ) );

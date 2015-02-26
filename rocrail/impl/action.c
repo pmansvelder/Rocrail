@@ -1166,7 +1166,10 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
   else if( StrOp.equals( wRoute.name(), wAction.gettype( data->action ) ) ) {
     iORoute st = ModelOp.getRoute( model, wAction.getoid( data->action ) );
     if( st != NULL ) {
-      if( StrOp.equals( wAction.route_set, wAction.getcmd( data->action ) ) ) {
+      if( StrOp.equals( wAction.block_class, wAction.getcmd( data->action ) ) ) {
+        RouteOp.setClass(st, wAction.getparam( data->action ));
+      }
+      else if( StrOp.equals( wAction.route_set, wAction.getcmd( data->action ) ) ) {
         RouteOp.go( st );
       }
       else if( StrOp.equals( wAction.route_lockset, wAction.getcmd( data->action ) ) ) {
