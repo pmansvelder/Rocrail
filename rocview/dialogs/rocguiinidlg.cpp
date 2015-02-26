@@ -240,6 +240,11 @@ void RocguiIniDialog::initLabels() {
   m_EmergencyBreakList->Append( wxT("Pause") );
   m_EmergencyBreakList->Append( wxT("Space") );
   m_EmergencyBreakList->SetSelection(0);
+
+  // Buttons
+  m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
+  m_Cancel->SetLabel( wxGetApp().getMsg( "cancel" ) );
+  m_Help->SetLabel( wxGetApp().getMsg( "help" ) );
 }
 
 
@@ -833,6 +838,7 @@ bool RocguiIniDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
     m_EmergencyBreakModifier = NULL;
     m_OK = NULL;
     m_Cancel = NULL;
+    m_Help = NULL;
 ////@end RocguiIniDialog member initialisation
 
 ////@begin RocguiIniDialog creation
@@ -1504,8 +1510,8 @@ void RocguiIniDialog::CreateControls()
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer200->AddButton(m_Cancel);
 
-    wxButton* itemButton203 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer200->AddButton(itemButton203);
+    m_Help = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer200->AddButton(m_Help);
 
     itemStdDialogButtonSizer200->Realize();
 

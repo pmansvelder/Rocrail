@@ -331,6 +331,7 @@ public:
     wxRadioBox* m_EmergencyBreakModifier;
     wxButton* m_OK;
     wxButton* m_Cancel;
+    wxButton* m_Help;
 ////@end RocguiIniDialog member variables
 };
 
