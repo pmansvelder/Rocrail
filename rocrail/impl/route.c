@@ -1204,6 +1204,29 @@ static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID,
     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "*****No conditions");
   }
 
+  /* Check if the locos class fits. */
+  if( wRoute.getclass(data->props) != NULL && StrOp.len(wRoute.getclass(data->props)) > 0 ) {
+    Boolean classFits = False;
+    const char* locoClass = LocOp.getClass(loc);
+    iOStrTok tok = StrTokOp.inst(wRoute.getclass(data->props), ',');
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      if( StrOp.equals( StrTokOp.nextToken(tok), locoClass) ) {
+        classFits = True;
+        break;
+      }
+    }
+    StrTokOp.base.del(tok);
+    if( !classFits ) {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+                     "Route [%s] does not allow class [%s] from loco [%s]",
+                     wRoute.getid(data->props), locoClass, LocOp.getId( loc ) );
+      return False;
+    }
+  }
+
+
+
+
   TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "*****OK");
   return True;
 
