@@ -63,9 +63,13 @@
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/Block.h"
 #include "rocrail/wrapper/public/ModelCmd.h"
+#include "rocrail/wrapper/public/SpeedCondition.h"
+#include "rocrail/wrapper/public/Variable.h"
 
 static int instCnt = 0;
 static iOMutex __routeSem = NULL;
+
+static Boolean __checkClass(iORoute inst, const char* classStr,  iOLoc loc);
 
 /*
  ***** OBase functions.
@@ -607,10 +611,53 @@ static Boolean _getDirection( iORoute inst, const char* blockid, Boolean* fromto
 }
 
 
-static const char* _getVelocity( iORoute inst, int* percent ) {
+
+static int __getSpeedCondPercent(iORoute inst, iOLoc loco) {
+  iORouteData data = Data(inst);
+  iOModel    model = AppOp.getModel();
+  if( loco != NULL ) {
+    iONode spcond = wRoute.getspeedcondition(data->props);
+    while( spcond != NULL ) {
+      if( wSpeedCondition.gettype(spcond) != NULL && StrOp.len(wSpeedCondition.gettype(spcond)) > 0 && !StrOp.equals( wSpeedCondition.gettype(spcond), wLoc.cargo_all)) {
+        if( !StrOp.equals( wSpeedCondition.gettype(spcond), LocOp.getCargo(loco) ) ) {
+          spcond = wRoute.nextspeedcondition(data->props, spcond);
+          continue;
+        }
+        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition %s fits to the loco %s type: %s",
+            wSpeedCondition.getdesc(spcond), LocOp.getId(loco), wSpeedCondition.gettype(spcond) );
+      }
+
+      if( __checkClass(inst, wSpeedCondition.getclass(spcond), loco) ) {
+        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition %s fits to the loco %s class: %s",
+            wSpeedCondition.getdesc(spcond), LocOp.getId(loco), wSpeedCondition.getclass(spcond) );
+      }
+      else {
+        spcond = wRoute.nextspeedcondition(data->props, spcond);
+        continue;
+      }
+
+      if( wSpeedCondition.getvariable(spcond) != NULL && StrOp.len(wSpeedCondition.getvariable(spcond)) > 0 ) {
+        const char* resolvedKey = wSpeedCondition.getvariable(spcond);
+        iONode var = ModelOp.getVariable( model, resolvedKey );
+        if( var != NULL ) {
+          if( wVariable.getvalue(var) != atoi(wSpeedCondition.getvalue(spcond)) ) {
+            spcond = wRoute.nextspeedcondition(data->props, spcond);
+            continue;
+          }
+        }
+      }
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition %s use %d percent speed for loco %s",
+          wSpeedCondition.getdesc(spcond), wSpeedCondition.getpercent(spcond), LocOp.getId(loco) );
+      return wSpeedCondition.getpercent(spcond);
+    }
+  }
+  return wRoute.getspeedpercent(data->props);
+}
+
+static const char* _getVelocity( iORoute inst, int* percent, iOLoc loco ) {
   iORouteData data = Data(inst);
   const char* V_hint = wRoute.getspeed(data->props);
-  *percent = wRoute.getspeedpercent(data->props);
+  *percent = __getSpeedCondPercent(inst, loco);
   return V_hint;
 }
 
@@ -989,6 +1036,30 @@ static Boolean __checkSensors( iORoute inst ) {
 }
 
 
+static Boolean __checkClass(iORoute inst, const char* classStr,  iOLoc loc) {
+  iORouteData data = Data(inst);
+  /* Check if the locos class fits. */
+  if( classStr != NULL && StrOp.len(classStr) > 0 ) {
+    Boolean classFits = False;
+    const char* locoClass = LocOp.getClass(loc);
+    iOStrTok tok = StrTokOp.inst(classStr, ',');
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      if( StrOp.equals( StrTokOp.nextToken(tok), locoClass) ) {
+        classFits = True;
+        break;
+      }
+    }
+    StrTokOp.base.del(tok);
+    if( !classFits ) {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+                     "Route [%s]; Class [%s] does not fit for loco [%s]",
+                     wRoute.getid(data->props), locoClass, LocOp.getId( loc ) );
+      return False;
+    }
+  }
+  return True;
+}
+
 static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID, Boolean mustChDir ) {
   iORouteData data = Data(inst);
 
@@ -1205,26 +1276,9 @@ static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID,
   }
 
   /* Check if the locos class fits. */
-  if( wRoute.getclass(data->props) != NULL && StrOp.len(wRoute.getclass(data->props)) > 0 ) {
-    Boolean classFits = False;
-    const char* locoClass = LocOp.getClass(loc);
-    iOStrTok tok = StrTokOp.inst(wRoute.getclass(data->props), ',');
-    while( StrTokOp.hasMoreTokens(tok) ) {
-      if( StrOp.equals( StrTokOp.nextToken(tok), locoClass) ) {
-        classFits = True;
-        break;
-      }
-    }
-    StrTokOp.base.del(tok);
-    if( !classFits ) {
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
-                     "Route [%s] does not allow class [%s] from loco [%s]",
-                     wRoute.getid(data->props), locoClass, LocOp.getId( loc ) );
-      return False;
-    }
+  if( !__checkClass(inst, wRoute.getclass(data->props), loc) ) {
+    return False;
   }
-
-
 
 
   TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "*****OK");

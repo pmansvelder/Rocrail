@@ -1510,6 +1510,7 @@
     <fun name="getVelocity" vt="const char*">
       <param name="inst" vt="this" remark="Route instance"/>
       <param name="percent" vt="int*" remark="Speed percent"/>
+      <param name="loco" vt="iOLoc" remark="Loco to check for speed condition."/>
     </fun>
     <fun name="getMaxKmh" vt="int">
       <param name="inst" vt="this" remark="Route instance"/>
