@@ -1548,6 +1548,8 @@
     <var name="type" vt="string" defval="" remark="Train type"/>
     <var name="class" vt="string" defval="" remark="Classes"/>
     <var name="variable" vt="string" defval="" remark="Variable ID"/>
+    <var name="varsub" vt="string" defval="" remark="Variable sub ID"/>
+    <var name="varcomp" vt="string" defval="=" remark="Variable compare"/>
     <var name="value" vt="string" defval="" remark="Variable value"/>
     <var name="percent" vt="int" defval="0" unit="%" range="0-100" remark="Speed in percent."/>
   </speedcondition>
@@ -1846,6 +1848,7 @@
         <const name="prot_N" vt="string" val="N" remark="NMRA-DCC"/>
         <const name="prot_MDD" vt="string" val="mdd" remark="Dinamo MDD"/>
         <const name="prot_OM32" vt="string" val="om32" remark="Dinamo OM32"/>
+        <const name="prot_OC32" vt="string" val="om32" remark="Dinamo OC32"/>
         <const name="prot_DO" vt="string" val="do" remark="Dinamo DO"/>
         <const name="prot_VO" vt="string" val="vo" remark="Dinamo VO"/>
 

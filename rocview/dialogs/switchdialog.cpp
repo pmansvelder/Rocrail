@@ -283,6 +283,7 @@ void SwitchDialog::initLabels() {
   m_Prot->Append(_T("NMRA-DCC"));
   m_Prot->Append(_T("Dinamo MDD"));
   m_Prot->Append(_T("Dinamo OM32"));
+  m_Prot->Append(_T("Dinamo OC32"));
   m_Prot->Append(_T("Dinamo DO"));
   m_Prot->Append(_T("Dinamo VO"));
 
@@ -598,10 +599,12 @@ void SwitchDialog::initValues() {
     m_Prot->SetSelection( 3 );
   else if( StrOp.equals( wSwitch.prot_OM32, wSwitch.getprot( m_Props ) ) )
     m_Prot->SetSelection( 4 );
-  else if( StrOp.equals( wSwitch.prot_DO, wSwitch.getprot( m_Props ) ) )
+  else if( StrOp.equals( wSwitch.prot_OC32, wSwitch.getprot( m_Props ) ) )
     m_Prot->SetSelection( 5 );
-  else if( StrOp.equals( wSwitch.prot_VO, wSwitch.getprot( m_Props ) ) )
+  else if( StrOp.equals( wSwitch.prot_DO, wSwitch.getprot( m_Props ) ) )
     m_Prot->SetSelection( 6 );
+  else if( StrOp.equals( wSwitch.prot_VO, wSwitch.getprot( m_Props ) ) )
+    m_Prot->SetSelection( 7 );
 
   m_PortType->SetSelection(wSwitch.getporttype(m_Props));
 
@@ -866,8 +869,10 @@ bool SwitchDialog::evaluate() {
   else if( m_Prot->GetSelection() == 4 )
     wSwitch.setprot( m_Props, wSwitch.prot_OM32 );
   else if( m_Prot->GetSelection() == 5 )
-    wSwitch.setprot( m_Props, wSwitch.prot_DO );
+    wSwitch.setprot( m_Props, wSwitch.prot_OC32 );
   else if( m_Prot->GetSelection() == 6 )
+    wSwitch.setprot( m_Props, wSwitch.prot_DO );
+  else if( m_Prot->GetSelection() == 7 )
     wSwitch.setprot( m_Props, wSwitch.prot_VO );
 
   wSwitch.setporttype(m_Props, m_PortType->GetSelection());

@@ -549,11 +549,17 @@ static int __translate( iODINAMO dinamo, iONode node, byte* datagram, Boolean* r
       nr = addr * 4 + port;
 
       /* OM32 output */
-      if( StrOp.equals( wSwitch.getprot( node ), wSwitch.prot_OM32 ) ) {
+      if( StrOp.equals( wSwitch.getprot( node ), wSwitch.prot_OM32 ) || StrOp.equals( wSwitch.getprot( node ), wSwitch.prot_OC32 ) ) {
         byte command = 0;
         if( wSwitch.issinglegate( node ) ) {
-          command = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? 9:8;
-          delay = 0;
+          if( StrOp.equals( wSwitch.getprot( node ), wSwitch.prot_OC32 ) ) {
+            command = 1;
+            delay = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? 1:0;
+          }
+          else {
+            command = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? 9:8;
+            delay = 0;
+          }
         }
         else {
           command = 9; /* ON */
