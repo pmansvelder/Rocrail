@@ -33,6 +33,7 @@
 #include "rocrail/public/tt.h"
 #include "rocrail/public/seltab.h"
 #include "rocrail/public/r2rnet.h"
+#include "rocrail/public/var.h"
 
 #include "rocs/public/doc.h"
 #include "rocs/public/trace.h"
@@ -637,10 +638,50 @@ static int __getSpeedCondPercent(iORoute inst, iOLoc loco) {
       }
 
       if( wSpeedCondition.getvariable(spcond) != NULL && StrOp.len(wSpeedCondition.getvariable(spcond)) > 0 ) {
-        const char* resolvedKey = wSpeedCondition.getvariable(spcond);
-        iONode var = ModelOp.getVariable( model, resolvedKey );
+        const char* varid = wSpeedCondition.getvariable(spcond);
+        const char* subid = wSpeedCondition.getvarsub(spcond);
+        iONode var = NULL;
+
+        if( subid != NULL && StrOp.len(subid) > 0 ) {
+          char* key = StrOp.fmt( "%s-%s", varid, subid );
+          iOMap map = MapOp.inst();
+          MapOp.put(map, "lcid", (obj)LocOp.getId(loco));
+          char* resolvedKey = TextOp.replaceAllSubstitutions(key, map);
+          StrOp.free(key);
+          var = ModelOp.getVariable( model, resolvedKey );
+          StrOp.free(resolvedKey);
+          MapOp.base.del(map);
+        }
+        else {
+          var = ModelOp.getVariable( model, varid );
+        }
+
+
         if( var != NULL ) {
-          if( wVariable.getvalue(var) != atoi(wSpeedCondition.getvalue(spcond)) ) {
+          Boolean rc = True;
+          const char* state = wSpeedCondition.getvalue(spcond);
+          if( StrOp.len(state) > 0 ) {
+            iOMap map = MapOp.inst();
+            MapOp.put(map, "lcid", (obj)LocOp.getId(loco));
+            int stateVal = VarOp.getValue(state+1, map);
+            MapOp.base.del(map);
+
+            if( state[0] == '=' )
+              rc = wVariable.getvalue(var) == stateVal;
+            else if( state[0] == '>' )
+              rc = wVariable.getvalue(var) > stateVal;
+            else if( state[0] == '<' )
+              rc = wVariable.getvalue(var) < stateVal;
+            else if( state[0] == '!' )
+              rc = wVariable.getvalue(var) != stateVal;
+            /* Text compare */
+            else if( state[0] == '#' )
+              rc = StrOp.equals(wVariable.gettext(var), state+1);
+            else if( state[0] == '?' )
+              rc = !StrOp.equals(wVariable.gettext(var), state+1);
+          }
+
+          if( !rc ) {
             spcond = wRoute.nextspeedcondition(data->props, spcond);
             continue;
           }

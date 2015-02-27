@@ -339,7 +339,7 @@ public:
     wxTextCtrl* m_SpeedCondClass;
     wxStaticText* m_labSpeedCondVariable;
     wxComboBox* m_SpeedCondVariable;
-    wxStaticText* m_labSpeedCondVarEquals;
+    wxTextCtrl* m_SpeedCondVarSub;
     wxTextCtrl* m_SpeedCondValue;
     wxStaticText* m_labSpeedCondPercent;
     wxSpinCtrl* m_SpeedCondPercent;
