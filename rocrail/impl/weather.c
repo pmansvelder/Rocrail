@@ -688,6 +688,10 @@ static void __checkWeatherThemes(iOWeather weather, int hour, int min ) {
           wOutput.setcmd(cmd, wOutput.value);
           OutputOp.cmd(output, cmd, False);
 
+          if( wWeatherTheme.getsoundrandomrate(data->theme) == 0 ) {
+            cnt = 0;
+          }
+
           if( cnt == wWeatherTheme.getsoundrandomrate(data->theme) && StrOp.len(wWeatherTheme.getsound(data->theme)) > 0 ) {
             if( data->themesoundtimer <= 0 ) {
               if( StrOp.len(wWeatherTheme.getsound(data->theme)) > 0 ) {
