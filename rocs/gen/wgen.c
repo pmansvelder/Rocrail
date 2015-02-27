@@ -825,7 +825,7 @@ static void __wrpCreate( iONode node, const char* modulename ) {
 
     ListOp.sort( varList, comp );
     ListOp.sort( constList, comp );
-    ListOp.sort( subnodeList, compNodeName );
+    //ListOp.sort( subnodeList, compNodeName );
 
     for( i = 0; i < ListOp.size( constList ); i++ ) {
       iONode var = (iONode)ListOp.get( constList, i );
@@ -1020,7 +1020,7 @@ static Boolean __processChild( char* indexStr, iONode child, iOFile fHdr, iOFile
 
     ListOp.sort( constList, comp );
     ListOp.sort( varList, comp );
-    ListOp.sort( subnodeList, compNodeName );
+    //ListOp.sort( subnodeList, compNodeName );
 
     for( i = 0; !existing && i < ListOp.size( constList ); i++ ) {
       iONode var = (iONode)ListOp.get( constList, i );
@@ -1127,7 +1127,7 @@ static int __gConstHdr( iONode node, const char* fileName, Boolean docAll, const
       if( NodeOp.getType( child ) == ELEMENT_NODE )
         ListOp.add( childList, (obj)child );
     }
-    ListOp.sort( childList, compNodeName );
+    //ListOp.sort( childList, compNodeName );
     for( i = 0; i < ListOp.size( childList ); i++ ) {
       iONode child = (iONode)ListOp.get( childList, i );
       if( NodeOp.getType( child ) == ELEMENT_NODE ) {

@@ -78,8 +78,13 @@ class wxGrid;
 #define wxID_STATIC_BLOCKB 10010
 #define ID_COMBOBOX_ST_BLOCKB 10011
 #define wxID_STATIC_BLOCKC 10336
-#define ID_ROUTE_VELOCITY 10004
 #define ID_ROUTE_ACTIONS 10197
+#define ID_PANEL_ST_SPEED 10461
+#define ID_ROUTE_VELOCITY 10004
+#define ID_SPEED_CONDITION_DESC 10462
+#define ID_SPEEDCOND_ADD 10463
+#define ID_SPEEDCOND_DEL 10464
+#define ID_SPEEDCOND_MODIFY 10465
 #define ID_PANEL_ST_COMMANDS 10014
 #define ID_LISTBOX_COMMANDS 10015
 #define ID_BUTTON_ST_DELETE 10016
@@ -139,6 +144,10 @@ class RouteDialog: public wxDialog, public BaseDialog
   void initLocPermissionList();
   void initCondList();
   void setSwCmd( iONode swcmd );
+  void initSpeedCond();
+  iONode findSpeedCond(const char* desc);
+  const char* getSpeedCondType();
+  void setSpeedCondType(const char* condtype);
 
 public:
     /// Constructors
@@ -182,11 +191,23 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ST_COPY
     void OnButtonStCopyClick( wxCommandEvent& event );
 
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROUTE_ACTIONS
+    void OnRouteActionsClick( wxCommandEvent& event );
+
     /// wxEVT_COMMAND_RADIOBOX_SELECTED event handler for ID_ROUTE_VELOCITY
     void OnRouteVelocitySelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROUTE_ACTIONS
-    void OnRouteActionsClick( wxCommandEvent& event );
+    /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SPEED_CONDITION_DESC
+    void OnSpeedConditionDescSelected( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SPEEDCOND_ADD
+    void OnSpeedcondAddClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SPEEDCOND_DEL
+    void OnSpeedcondDelClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SPEEDCOND_MODIFY
+    void OnSpeedcondModifyClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_COMMANDS
     void OnListboxCommandsSelected( wxCommandEvent& event );
@@ -291,11 +312,6 @@ public:
     wxCheckBox* m_ToSide;
     wxStaticText* m_labCrossingBlock;
     wxTextCtrl* m_BlockC;
-    wxRadioBox* m_Speed;
-    wxSpinCtrl* m_SpeedPercent;
-    wxCheckBox* m_ReduceV;
-    wxStaticText* m_labMaxKmH;
-    wxSpinCtrl* m_MaxKmH;
     wxRadioBox* m_FromSignals;
     wxRadioBox* m_ToSignals;
     wxRadioBox* m_CountCars;
@@ -305,6 +321,31 @@ public:
     wxButton* m_Actions;
     wxCheckBox* m_Show;
     wxRadioBox* m_Status;
+    wxPanel* m_SpeedPanel;
+    wxRadioBox* m_Speed;
+    wxStaticText* m_labSpeedPercent;
+    wxSpinCtrl* m_SpeedPercent;
+    wxStaticText* m_labMaxKmH;
+    wxSpinCtrl* m_MaxKmH;
+    wxStaticBox* m_SpeedOptionsBox;
+    wxCheckBox* m_ReduceV;
+    wxStaticBox* m_SpeedConditionsBox;
+    wxListBox* m_SpeedConditionList;
+    wxStaticText* m_labSpeedCondDesc;
+    wxTextCtrl* m_SpeedCondDesc;
+    wxStaticText* m_labSpeedCondType;
+    wxComboBox* m_SpeedCondType;
+    wxStaticText* m_labSpeedCondClass;
+    wxTextCtrl* m_SpeedCondClass;
+    wxStaticText* m_labSpeedCondVariable;
+    wxComboBox* m_SpeedCondVariable;
+    wxStaticText* m_labSpeedCondVarEquals;
+    wxTextCtrl* m_SpeedCondValue;
+    wxStaticText* m_labSpeedCondPercent;
+    wxSpinCtrl* m_SpeedCondPercent;
+    wxButton* m_SpeedCondAdd;
+    wxButton* m_SpeedCondDel;
+    wxButton* m_SpeedCondModify;
     wxPanel* m_CommandPanel;
     wxListBox* m_Commands;
     wxButton* m_Delete;
@@ -397,6 +438,7 @@ public:
     wxButton* m_Cancel;
     wxButton* m_OK;
     wxButton* m_Apply;
+    wxButton* m_Help;
     iONode m_Props;
 ////@end RouteDialog member variables
     int m_CondNr;

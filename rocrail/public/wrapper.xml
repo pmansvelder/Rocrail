@@ -1543,6 +1543,15 @@
     </actioncond>
   </actionctrl>
 
+  <speedcondition wrappername="SpeedCondition">
+    <var name="desc" vt="string" defval="" remark="Condition description"/>
+    <var name="type" vt="string" defval="" remark="Train type"/>
+    <var name="class" vt="string" defval="" remark="Classes"/>
+    <var name="variable" vt="string" defval="" remark="Variable ID"/>
+    <var name="value" vt="string" defval="" remark="Variable value"/>
+    <var name="percent" vt="int" defval="0" unit="%" range="0-100" remark="Speed in percent."/>
+  </speedcondition>
+  
   <fundef wrappername="FunDef">
     <var name="fn" vt="int" defval="1" range="1-*" remark="function number"/>
     <var name="timer" vt="int" defval="0" range="0-99" unit="s" remark="function timer"/>
@@ -2308,6 +2317,7 @@
           <var name="use_timer2" vt="bool" defval="false" remark="use reverse direction timer"/>
         </fbevent>
         <actionctrl cardinality="n"/>
+        <speedcondition cardinality="n"/>
       </bk>
     </bklist>
 
@@ -2492,6 +2502,7 @@
           <var name="type" vt="string" defval="" remark="Train type"/>
           <var name="allowschedules" vt="bool" defval="true" remark="Allow schedules to use this route."/>
         </stcondition>
+        <speedcondition cardinality="n"/>
       </st>
     </stlist>
     <tklist cardinality="1" remark="Track table" wrappername="TrackList">

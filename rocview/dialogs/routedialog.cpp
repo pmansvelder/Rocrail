@@ -66,6 +66,8 @@
 #include "rocrail/wrapper/public/RouteCondition.h"
 #include "rocrail/wrapper/public/Stage.h"
 #include "rocrail/wrapper/public/Operator.h"
+#include "rocrail/wrapper/public/SpeedCondition.h"
+#include "rocrail/wrapper/public/Variable.h"
 
 #include "rocs/public/strtok.h"
 
@@ -84,65 +86,39 @@ BEGIN_EVENT_TABLE( RouteDialog, wxDialog )
 ////@begin RouteDialog event table entries
     EVT_LIST_ITEM_SELECTED( ID_LISTCTRLINDEX_ST, RouteDialog::OnListctrlindexStSelected )
     EVT_LIST_COL_CLICK( ID_LISTCTRLINDEX_ST, RouteDialog::OnListctrlindexStColLeftClick )
-
     EVT_BUTTON( ID_BUTTON_ST_NEW, RouteDialog::OnButtonStNewClick )
-
     EVT_BUTTON( ID_BUTTON_ST_DELETE_ROUTE, RouteDialog::OnButtonStDeleteRouteClick )
-
     EVT_BUTTON( ID_BUTTON_ST_TEST, RouteDialog::OnButtonStTestClick )
-
     EVT_BUTTON( ID_ROUTE_LOCK, RouteDialog::OnRouteLockClick )
-
     EVT_BUTTON( ID_RESET_ROUTE, RouteDialog::OnResetRouteClick )
-
     EVT_BUTTON( ID_BUTTON_ST_DOC, RouteDialog::OnButtonStDocClick )
-
     EVT_BUTTON( ID_BUTTON_ST_COPY, RouteDialog::OnButtonStCopyClick )
-
-    EVT_RADIOBOX( ID_ROUTE_VELOCITY, RouteDialog::OnRouteVelocitySelected )
-
     EVT_BUTTON( ID_ROUTE_ACTIONS, RouteDialog::OnRouteActionsClick )
-
+    EVT_RADIOBOX( ID_ROUTE_VELOCITY, RouteDialog::OnRouteVelocitySelected )
+    EVT_LISTBOX( ID_SPEED_CONDITION_DESC, RouteDialog::OnSpeedConditionDescSelected )
+    EVT_BUTTON( ID_SPEEDCOND_ADD, RouteDialog::OnSpeedcondAddClick )
+    EVT_BUTTON( ID_SPEEDCOND_DEL, RouteDialog::OnSpeedcondDelClick )
+    EVT_BUTTON( ID_SPEEDCOND_MODIFY, RouteDialog::OnSpeedcondModifyClick )
     EVT_LISTBOX( ID_LISTBOX_COMMANDS, RouteDialog::OnListboxCommandsSelected )
-
     EVT_BUTTON( ID_BUTTON_ST_DELETE, RouteDialog::OnButtonTurnoutDeleteClick )
-
     EVT_BUTTON( ID_BUTTON_ST_MODIFY, RouteDialog::OnButtonTurnoutModifyClick )
-
     EVT_COMBOBOX( ID_COMBOBOX_ST_SWITCH_ID, RouteDialog::OnComboboxStSwitchIdSelected )
-
     EVT_BUTTON( ID_BUTTON_ST_ADD, RouteDialog::OnButtonTurnoutAddClick )
-
     EVT_LISTBOX( ID_LIST_ROUTE_SENSORS, RouteDialog::OnListRouteSensorsSelected )
-
     EVT_BUTTON( ID_BUTTON_ROUTES_ADD_SENSOR, RouteDialog::OnButtonRoutesAddSensorClick )
-
     EVT_BUTTON( ID_BUTTON_ROUTES_DEL_SENSOR, RouteDialog::OnButtonRoutesDelSensorClick )
-
     EVT_BUTTON( ID_ADD_INCLUDE, RouteDialog::OnAddIncludeClick )
-
     EVT_BUTTON( ID_ADD_EXCLUDE, RouteDialog::OnAddExcludeClick )
-
     EVT_BUTTON( ID_REMOVE_INCLUDE, RouteDialog::OnRemoveIncludeClick )
-
     EVT_BUTTON( ID_REMOVE_EXCLUDE, RouteDialog::OnRemoveExcludeClick )
-
     EVT_GRID_CELL_LEFT_CLICK( RouteDialog::OnCondCellLeftClick )
-
     EVT_BUTTON( ID_ROUTE_CONDITION_ADD, RouteDialog::OnRouteConditionAddClick )
-
     EVT_BUTTON( ID_ROUTE_CONDITION_MODIFY, RouteDialog::OnRouteConditionModifyClick )
-
     EVT_BUTTON( ID_ROUTE_CONDITION_DEL, RouteDialog::OnRouteConditionDelClick )
-
     EVT_BUTTON( wxID_CANCEL, RouteDialog::OnCancelClick )
-
     EVT_BUTTON( wxID_OK, RouteDialog::OnOkClick )
-
     EVT_BUTTON( wxID_APPLY, RouteDialog::OnApplyClick )
-
     EVT_BUTTON( wxID_HELP, RouteDialog::OnHelpClick )
-
 ////@end RouteDialog event table entries
     EVT_MENU( ID_PANEL_ST_GENERAL, RouteDialog::OnSelectPage )
 
@@ -188,6 +164,7 @@ RouteDialog::RouteDialog( wxWindow* parent, iONode p_Props, bool readonly, bool 
 
   m_IndexPanel->GetSizer()->Layout();
   m_GeneralPanel->GetSizer()->Layout();
+  m_SpeedPanel->GetSizer()->Layout();
   m_CommandPanel->GetSizer()->Layout();
   m_SensorPanel->GetSizer()->Layout();
   m_PermissionsPanel->GetSizer()->Layout();
@@ -195,6 +172,7 @@ RouteDialog::RouteDialog( wxWindow* parent, iONode p_Props, bool readonly, bool 
   m_WiringPanel->GetSizer()->Layout();
 
   m_GeneralPanel->Enable(!m_bReadOnly);
+  m_SpeedPanel->Enable(!m_bReadOnly);
   m_CommandPanel->Enable(!m_bReadOnly);
   m_SensorPanel->Enable(!m_bReadOnly);
   m_WiringPanel->Enable(!m_bReadOnly);
@@ -226,12 +204,13 @@ void RouteDialog::OnSelectPage(wxCommandEvent& event) {
 void RouteDialog::initLabels() {
   m_Notebook->SetPageText( 0, wxGetApp().getMsg( "index" ) );
   m_Notebook->SetPageText( 1, wxGetApp().getMsg( "general" ) );
-  m_Notebook->SetPageText( 2, wxGetApp().getMsg( "commands" ) );
-  m_Notebook->SetPageText( 3, wxGetApp().getMsg( "sensors" ) );
-  m_Notebook->SetPageText( 4, wxGetApp().getMsg( "permissions" ) );
-  m_Notebook->SetPageText( 5, wxGetApp().getMsg( "conditions" ) );
-  m_Notebook->SetPageText( 6, wxGetApp().getMsg( "position" ) );
-  m_Notebook->SetPageText( 7, wxGetApp().getMsg( "wiring" ) );
+  m_Notebook->SetPageText( 2, wxGetApp().getMsg( "speed" ) );
+  m_Notebook->SetPageText( 3, wxGetApp().getMsg( "commands" ) );
+  m_Notebook->SetPageText( 4, wxGetApp().getMsg( "sensors" ) );
+  m_Notebook->SetPageText( 5, wxGetApp().getMsg( "permissions" ) );
+  m_Notebook->SetPageText( 6, wxGetApp().getMsg( "conditions" ) );
+  m_Notebook->SetPageText( 7, wxGetApp().getMsg( "position" ) );
+  m_Notebook->SetPageText( 8, wxGetApp().getMsg( "wiring" ) );
 
   // Index
   initList(m_List2, this, true, false);
@@ -272,17 +251,6 @@ void RouteDialog::initLabels() {
   m_CountCars->SetString( 1, wxT("+") );
   m_CountCars->SetString( 2, wxT("-") );
 
-
-  m_Speed->SetLabel( wxGetApp().getMsg( "speed" ) );
-  m_Speed->SetString( 0, wxGetApp().getMsg( "block" ) );
-  m_Speed->SetString( 1, wxGetApp().getMsg( "min" ) );
-  m_Speed->SetString( 2, wxGetApp().getMsg( "mid" ) );
-  m_Speed->SetString( 3, wxGetApp().getMsg( "cruise" ) );
-  m_Speed->SetString( 4, wxGetApp().getMsg( "max" ) );
-  m_Speed->SetString( 5, _T("%") );
-  m_ReduceV->SetLabel( wxGetApp().getMsg( "reducespeed" ) );
-  m_labMaxKmH->SetLabel( wxGetApp().getMsg( "maxkmh" ) );
-
   m_DetailsBox->SetLabel( wxGetApp().getMsg( "options" ) );
   m_SwapPost->SetLabel( wxGetApp().getMsg( "swapplacingpost" ) );
   m_Actions->SetLabel( wxGetApp().getMsg( "actions" )+_T("...") );
@@ -296,6 +264,67 @@ void RouteDialog::initLabels() {
   m_Status->SetString( 3, wxGetApp().getMsg( "deselected" ) );
   m_Status->SetString( 4, wxGetApp().getMsg( "closed" ) );
 
+  // Speed
+  m_Speed->SetLabel( wxGetApp().getMsg( "speed" ) );
+  m_Speed->SetString( 0, wxGetApp().getMsg( "block" ) );
+  m_Speed->SetString( 1, wxGetApp().getMsg( "min" ) );
+  m_Speed->SetString( 2, wxGetApp().getMsg( "mid" ) );
+  m_Speed->SetString( 3, wxGetApp().getMsg( "cruise" ) );
+  m_Speed->SetString( 4, wxGetApp().getMsg( "max" ) );
+  m_Speed->SetString( 5, _T("%") );
+  m_labSpeedPercent->SetLabel( wxGetApp().getMsg( "percent" ) );
+  m_labMaxKmH->SetLabel( wxGetApp().getMsg( "maxkmh" ) );
+
+  m_SpeedOptionsBox->SetLabel( wxGetApp().getMsg( "options" ) );
+  m_ReduceV->SetLabel( wxGetApp().getMsg( "reducespeed" ) );
+
+  m_SpeedConditionsBox->SetLabel( wxGetApp().getMsg( "conditions" ) );
+  m_labSpeedCondDesc->SetLabel( wxGetApp().getMsg( "description" ) );
+  m_labSpeedCondType->SetLabel( wxGetApp().getMsg( "type" ) );
+  m_labSpeedCondClass->SetLabel( wxGetApp().getMsg( "class" ) );
+  m_labSpeedCondVariable->SetLabel( wxGetApp().getMsg( "variable" ) );
+  m_labSpeedCondPercent->SetLabel( wxGetApp().getMsg( "percent" ) );
+  m_SpeedCondAdd->SetLabel( wxGetApp().getMsg( "add" ) );
+  m_SpeedCondDel->SetLabel( wxGetApp().getMsg( "delete" ) );
+  m_SpeedCondModify->SetLabel( wxGetApp().getMsg( "modify" ) );
+
+  m_SpeedCondType->Append(wxT(""));
+  m_SpeedCondType->Append( wxGetApp().getMsg( "others" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "goods" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "local" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "mixed" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "cleaning" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "ice" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "post" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "light" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "lightgoods" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "regional" ) );
+  m_SpeedCondType->Append( wxGetApp().getMsg( "shunting" ) );
+
+  m_SpeedCondVariable->Append(wxT(""));
+  iONode model = wxGetApp().getModel();
+  iOList list = ListOp.inst();
+  if( model != NULL ) {
+    iONode vrlist = wPlan.getvrlist( model );
+    if( vrlist != NULL ) {
+      int cnt = NodeOp.getChildCnt( vrlist );
+      for( int i = 0; i < cnt; i++ ) {
+        iONode vr = NodeOp.getChild( vrlist, i );
+        const char* id = wVariable.getid( vr );
+        if( id != NULL ) {
+          ListOp.add(list, (obj)id);
+        }
+      }
+      ListOp.sort(list, &__sortStr);
+      cnt = ListOp.size( list );
+      for( int i = 0; i < cnt; i++ ) {
+        const char* id = (const char*)ListOp.get( list, i );
+        m_SpeedCondVariable->Append( wxString(id,wxConvUTF8) );
+      }
+    }
+  }
+  /* clean up the temp. list */
+  ListOp.base.del(list);
 
   // Commands
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
@@ -323,8 +352,8 @@ void RouteDialog::initLabels() {
   m_AddSensor->SetLabel( wxGetApp().getMsg( "add" ) );
   m_DelSensor->SetLabel( wxGetApp().getMsg( "delete" ) );
 
-  iONode model = wxGetApp().getModel();
-  iOList list = ListOp.inst();
+  model = wxGetApp().getModel();
+  list = ListOp.inst();
   if( model != NULL ) {
     iONode fblist = wPlan.getfblist( model );
     if( fblist != NULL ) {
@@ -497,6 +526,7 @@ void RouteDialog::initLabels() {
   m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
   m_Cancel->SetLabel( wxGetApp().getMsg( "cancel" ) );
   m_Apply->SetLabel( wxGetApp().getMsg( "apply" ) );
+  m_Help->SetLabel( wxGetApp().getMsg( "help" ) );
 
   m_OK->Enable(!m_bReadOnly);
   m_Apply->Enable(!m_bReadOnly);
@@ -818,6 +848,14 @@ void RouteDialog::initValues() {
 
   m_ReduceV->SetValue(wRoute.isreduceV( m_Props ));
   m_MaxKmH->SetValue(wRoute.getmaxkmh(m_Props));
+
+  m_SpeedConditionList->Clear();
+  iONode spcond = wRoute.getspeedcondition(m_Props);
+  while( spcond != NULL ) {
+    m_SpeedConditionList->Append( wxString( wSpeedCondition.getdesc(spcond), wxConvUTF8));
+    spcond = wRoute.nextspeedcondition(m_Props, spcond);
+  }
+  initSpeedCond();
 
   m_SwapPost->SetValue(wRoute.isswappost( m_Props ));
   m_Show->SetValue(wRoute.isshow( m_Props ));
@@ -1250,11 +1288,6 @@ bool RouteDialog::Create( wxWindow* parent, wxWindowID id, const wxString& capti
     m_ToSide = NULL;
     m_labCrossingBlock = NULL;
     m_BlockC = NULL;
-    m_Speed = NULL;
-    m_SpeedPercent = NULL;
-    m_ReduceV = NULL;
-    m_labMaxKmH = NULL;
-    m_MaxKmH = NULL;
     m_FromSignals = NULL;
     m_ToSignals = NULL;
     m_CountCars = NULL;
@@ -1264,6 +1297,31 @@ bool RouteDialog::Create( wxWindow* parent, wxWindowID id, const wxString& capti
     m_Actions = NULL;
     m_Show = NULL;
     m_Status = NULL;
+    m_SpeedPanel = NULL;
+    m_Speed = NULL;
+    m_labSpeedPercent = NULL;
+    m_SpeedPercent = NULL;
+    m_labMaxKmH = NULL;
+    m_MaxKmH = NULL;
+    m_SpeedOptionsBox = NULL;
+    m_ReduceV = NULL;
+    m_SpeedConditionsBox = NULL;
+    m_SpeedConditionList = NULL;
+    m_labSpeedCondDesc = NULL;
+    m_SpeedCondDesc = NULL;
+    m_labSpeedCondType = NULL;
+    m_SpeedCondType = NULL;
+    m_labSpeedCondClass = NULL;
+    m_SpeedCondClass = NULL;
+    m_labSpeedCondVariable = NULL;
+    m_SpeedCondVariable = NULL;
+    m_labSpeedCondVarEquals = NULL;
+    m_SpeedCondValue = NULL;
+    m_labSpeedCondPercent = NULL;
+    m_SpeedCondPercent = NULL;
+    m_SpeedCondAdd = NULL;
+    m_SpeedCondDel = NULL;
+    m_SpeedCondModify = NULL;
     m_CommandPanel = NULL;
     m_Commands = NULL;
     m_Delete = NULL;
@@ -1356,6 +1414,7 @@ bool RouteDialog::Create( wxWindow* parent, wxWindowID id, const wxString& capti
     m_Cancel = NULL;
     m_OK = NULL;
     m_Apply = NULL;
+    m_Help = NULL;
 ////@end RouteDialog member initialisation
 
 ////@begin RouteDialog creation
@@ -1427,102 +1486,72 @@ void RouteDialog::CreateControls()
     wxFlexGridSizer* itemFlexGridSizer18 = new wxFlexGridSizer(0, 2, 0, 0);
     itemBoxSizer17->Add(itemFlexGridSizer18, 0, wxGROW|wxALL, 5);
     m_LabelId = new wxStaticText( m_GeneralPanel, wxID_STATIC_ST_ID, _("Id"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer18->Add(m_LabelId, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer18->Add(m_LabelId, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_Id = new wxTextCtrl( m_GeneralPanel, ID_TEXTCTRL_ST_ID, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer18->Add(m_Id, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer18->Add(m_Id, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labModID = new wxStaticText( m_GeneralPanel, wxID_ANY, _("Module ID"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer18->Add(m_labModID, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer18->Add(m_labModID, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_ModID = new wxTextCtrl( m_GeneralPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer18->Add(m_ModID, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer18->Add(m_ModID, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labDescription = new wxStaticText( m_GeneralPanel, wxID_ANY, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer18->Add(m_labDescription, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer18->Add(m_labDescription, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Description = new wxTextCtrl( m_GeneralPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer18->Add(m_Description, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer18->Add(m_Description, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     itemFlexGridSizer18->AddGrowableCol(1);
 
     wxFlexGridSizer* itemFlexGridSizer25 = new wxFlexGridSizer(0, 3, 0, 0);
     itemBoxSizer17->Add(itemFlexGridSizer25, 0, wxGROW, 5);
     m_LabelBlockA = new wxStaticText( m_GeneralPanel, wxID_STATIC_ST_BLOCKA, _("from block"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer25->Add(m_LabelBlockA, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer25->Add(m_LabelBlockA, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_BlockAStrings;
     m_BlockA = new wxComboBox( m_GeneralPanel, ID_COMBOBOX_ST_BLOCKA, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BlockAStrings, wxCB_READONLY );
-    itemFlexGridSizer25->Add(m_BlockA, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer25->Add(m_BlockA, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_FromSide = new wxCheckBox( m_GeneralPanel, wxID_ANY, _("+"), wxDefaultPosition, wxDefaultSize, 0 );
     m_FromSide->SetValue(false);
-    itemFlexGridSizer25->Add(m_FromSide, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer25->Add(m_FromSide, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_LabelBlockB = new wxStaticText( m_GeneralPanel, wxID_STATIC_BLOCKB, _("to block"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer25->Add(m_LabelBlockB, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer25->Add(m_LabelBlockB, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_BlockBStrings;
     m_BlockB = new wxComboBox( m_GeneralPanel, ID_COMBOBOX_ST_BLOCKB, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BlockBStrings, wxCB_READONLY );
-    itemFlexGridSizer25->Add(m_BlockB, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer25->Add(m_BlockB, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_ToSide = new wxCheckBox( m_GeneralPanel, wxID_ANY, _("+"), wxDefaultPosition, wxDefaultSize, 0 );
     m_ToSide->SetValue(false);
-    itemFlexGridSizer25->Add(m_ToSide, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer25->Add(m_ToSide, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     itemFlexGridSizer25->AddGrowableCol(1);
 
     wxFlexGridSizer* itemFlexGridSizer32 = new wxFlexGridSizer(0, 2, 0, 0);
     itemBoxSizer17->Add(itemFlexGridSizer32, 0, wxGROW, 5);
     m_labCrossingBlock = new wxStaticText( m_GeneralPanel, wxID_STATIC_BLOCKC, _("crossing block"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer32->Add(m_labCrossingBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer32->Add(m_labCrossingBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_BlockC = new wxTextCtrl( m_GeneralPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer32->Add(m_BlockC, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer32->Add(m_BlockC, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     itemFlexGridSizer32->AddGrowableCol(1);
 
-    wxFlexGridSizer* itemFlexGridSizer35 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer16->Add(itemFlexGridSizer35, 0, wxGROW|wxLEFT|wxRIGHT, 5);
-    wxArrayString m_SpeedStrings;
-    m_SpeedStrings.Add(_("&None"));
-    m_SpeedStrings.Add(_("&Min"));
-    m_SpeedStrings.Add(_("&Mid"));
-    m_SpeedStrings.Add(_("&Cruise"));
-    m_SpeedStrings.Add(_("&Max"));
-    m_SpeedStrings.Add(_("&%"));
-    m_Speed = new wxRadioBox( m_GeneralPanel, ID_ROUTE_VELOCITY, _("Speed"), wxDefaultPosition, wxDefaultSize, m_SpeedStrings, 1, wxRA_SPECIFY_ROWS );
-    m_Speed->SetSelection(0);
-    itemFlexGridSizer35->Add(m_Speed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
-
-    m_SpeedPercent = new wxSpinCtrl( m_GeneralPanel, wxID_ANY, _T("80"), wxDefaultPosition, wxSize(70, -1), wxSP_ARROW_KEYS, 0, 100, 80 );
-    itemFlexGridSizer35->Add(m_SpeedPercent, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_BOTTOM|wxLEFT|wxRIGHT|wxTOP, 5);
-
-    wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
-    itemFlexGridSizer35->Add(itemBoxSizer38, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    m_ReduceV = new wxCheckBox( m_GeneralPanel, wxID_ANY, _("Reduce speed"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_ReduceV->SetValue(false);
-    itemBoxSizer38->Add(m_ReduceV, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    wxFlexGridSizer* itemFlexGridSizer40 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer38->Add(itemFlexGridSizer40, 0, wxALIGN_CENTER_VERTICAL, 5);
-    m_labMaxKmH = new wxStaticText( m_GeneralPanel, wxID_ANY, _("Max. KmH"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer40->Add(m_labMaxKmH, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    m_MaxKmH = new wxSpinCtrl( m_GeneralPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 500, 0 );
-    itemFlexGridSizer40->Add(m_MaxKmH, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer16->Add(itemBoxSizer43, 0, wxGROW|wxRIGHT, 5);
-    wxFlexGridSizer* itemFlexGridSizer44 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer43->Add(itemFlexGridSizer44, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+    wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxVERTICAL);
+    itemBoxSizer16->Add(itemBoxSizer35, 0, wxGROW|wxRIGHT, 5);
+    wxFlexGridSizer* itemFlexGridSizer36 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer35->Add(itemFlexGridSizer36, 0, wxGROW|wxLEFT|wxRIGHT, 5);
     wxArrayString m_FromSignalsStrings;
     m_FromSignalsStrings.Add(_("&forward"));
     m_FromSignalsStrings.Add(_("&reverse"));
     m_FromSignalsStrings.Add(_("&none"));
     m_FromSignals = new wxRadioBox( m_GeneralPanel, wxID_ANY, _("From signal pair"), wxDefaultPosition, wxDefaultSize, m_FromSignalsStrings, 1, wxRA_SPECIFY_ROWS );
     m_FromSignals->SetSelection(0);
-    itemFlexGridSizer44->Add(m_FromSignals, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer36->Add(m_FromSignals, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_ToSignalsStrings;
     m_ToSignalsStrings.Add(_("&forward"));
@@ -1530,7 +1559,7 @@ void RouteDialog::CreateControls()
     m_ToSignalsStrings.Add(_("&none"));
     m_ToSignals = new wxRadioBox( m_GeneralPanel, wxID_ANY, _("To signal pair"), wxDefaultPosition, wxDefaultSize, m_ToSignalsStrings, 1, wxRA_SPECIFY_ROWS );
     m_ToSignals->SetSelection(0);
-    itemFlexGridSizer44->Add(m_ToSignals, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer36->Add(m_ToSignals, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_CountCarsStrings;
     m_CountCarsStrings.Add(_("&no"));
@@ -1538,29 +1567,29 @@ void RouteDialog::CreateControls()
     m_CountCarsStrings.Add(_("&reverse"));
     m_CountCars = new wxRadioBox( m_GeneralPanel, wxID_ANY, _("Count cars before firing events"), wxDefaultPosition, wxDefaultSize, m_CountCarsStrings, 1, wxRA_SPECIFY_ROWS );
     m_CountCars->SetSelection(0);
-    itemFlexGridSizer44->Add(m_CountCars, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer36->Add(m_CountCars, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer48 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer43->Add(itemBoxSizer48, 0, wxGROW, 5);
+    wxBoxSizer* itemBoxSizer40 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer35->Add(itemBoxSizer40, 0, wxGROW, 5);
     m_DetailsBox = new wxStaticBox(m_GeneralPanel, wxID_ANY, _("Details"));
-    wxStaticBoxSizer* itemStaticBoxSizer49 = new wxStaticBoxSizer(m_DetailsBox, wxHORIZONTAL);
-    itemBoxSizer48->Add(itemStaticBoxSizer49, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-    wxFlexGridSizer* itemFlexGridSizer50 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemStaticBoxSizer49->Add(itemFlexGridSizer50, 1, wxGROW, 5);
+    wxStaticBoxSizer* itemStaticBoxSizer41 = new wxStaticBoxSizer(m_DetailsBox, wxHORIZONTAL);
+    itemBoxSizer40->Add(itemStaticBoxSizer41, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer42 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemStaticBoxSizer41->Add(itemFlexGridSizer42, 1, wxGROW, 5);
     m_SwapPost = new wxCheckBox( m_GeneralPanel, wxID_ANY, _("Swap post"), wxDefaultPosition, wxDefaultSize, 0 );
     m_SwapPost->SetValue(false);
-    itemFlexGridSizer50->Add(m_SwapPost, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer42->Add(m_SwapPost, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Manual = new wxCheckBox( m_GeneralPanel, wxID_ANY, _("Manual controlled"), wxDefaultPosition, wxDefaultSize, 0 );
     m_Manual->SetValue(false);
-    itemFlexGridSizer50->Add(m_Manual, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer42->Add(m_Manual, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Actions = new wxButton( m_GeneralPanel, ID_ROUTE_ACTIONS, _("Actions..."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer50->Add(m_Actions, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer42->Add(m_Actions, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Show = new wxCheckBox( m_GeneralPanel, wxID_ANY, _("Visible"), wxDefaultPosition, wxDefaultSize, 0 );
     m_Show->SetValue(false);
-    itemFlexGridSizer50->Add(m_Show, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer42->Add(m_Show, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_StatusStrings;
     m_StatusStrings.Add(_("&free"));
@@ -1570,50 +1599,152 @@ void RouteDialog::CreateControls()
     m_StatusStrings.Add(_("&closed"));
     m_Status = new wxRadioBox( m_GeneralPanel, wxID_ANY, _("Status"), wxDefaultPosition, wxDefaultSize, m_StatusStrings, 2, wxRA_SPECIFY_ROWS );
     m_Status->SetSelection(0);
-    itemBoxSizer48->Add(m_Status, 0, wxALIGN_TOP|wxLEFT|wxRIGHT, 5);
+    itemBoxSizer40->Add(m_Status, 0, wxALIGN_TOP|wxALL, 5);
 
     m_Notebook->AddPage(m_GeneralPanel, _("General"));
 
+    m_SpeedPanel = new wxPanel( m_Notebook, ID_PANEL_ST_SPEED, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+    wxBoxSizer* itemBoxSizer49 = new wxBoxSizer(wxVERTICAL);
+    m_SpeedPanel->SetSizer(itemBoxSizer49);
+
+    wxArrayString m_SpeedStrings;
+    m_SpeedStrings.Add(_("&None"));
+    m_SpeedStrings.Add(_("&Min"));
+    m_SpeedStrings.Add(_("&Mid"));
+    m_SpeedStrings.Add(_("&Cruise"));
+    m_SpeedStrings.Add(_("&Max"));
+    m_SpeedStrings.Add(_("&%"));
+    m_Speed = new wxRadioBox( m_SpeedPanel, ID_ROUTE_VELOCITY, _("Speed"), wxDefaultPosition, wxDefaultSize, m_SpeedStrings, 1, wxRA_SPECIFY_ROWS );
+    m_Speed->SetSelection(0);
+    itemBoxSizer49->Add(m_Speed, 0, wxALIGN_LEFT|wxALL, 5);
+
+    wxFlexGridSizer* itemFlexGridSizer51 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer49->Add(itemFlexGridSizer51, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+    m_labSpeedPercent = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Percent"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer51->Add(m_labSpeedPercent, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+    m_SpeedPercent = new wxSpinCtrl( m_SpeedPanel, wxID_ANY, wxT("80"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 100, 80 );
+    itemFlexGridSizer51->Add(m_SpeedPercent, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_BOTTOM|wxALL, 5);
+
+    m_labMaxKmH = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Max. KmH"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer51->Add(m_labMaxKmH, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
+
+    m_MaxKmH = new wxSpinCtrl( m_SpeedPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 500, 0 );
+    itemFlexGridSizer51->Add(m_MaxKmH, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_SpeedOptionsBox = new wxStaticBox(m_SpeedPanel, wxID_ANY, _("Options"));
+    wxStaticBoxSizer* itemStaticBoxSizer56 = new wxStaticBoxSizer(m_SpeedOptionsBox, wxVERTICAL);
+    itemBoxSizer49->Add(itemStaticBoxSizer56, 0, wxGROW|wxALL, 5);
+    m_ReduceV = new wxCheckBox( m_SpeedPanel, wxID_ANY, _("Reduce speed"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_ReduceV->SetValue(false);
+    itemStaticBoxSizer56->Add(m_ReduceV, 0, wxALIGN_LEFT|wxALL, 5);
+
+    m_SpeedConditionsBox = new wxStaticBox(m_SpeedPanel, wxID_ANY, _("Conditions"));
+    wxStaticBoxSizer* itemStaticBoxSizer58 = new wxStaticBoxSizer(m_SpeedConditionsBox, wxVERTICAL);
+    itemBoxSizer49->Add(itemStaticBoxSizer58, 0, wxGROW|wxALL, 5);
+    wxBoxSizer* itemBoxSizer59 = new wxBoxSizer(wxHORIZONTAL);
+    itemStaticBoxSizer58->Add(itemBoxSizer59, 0, wxGROW, 5);
+    wxArrayString m_SpeedConditionListStrings;
+    m_SpeedConditionList = new wxListBox( m_SpeedPanel, ID_SPEED_CONDITION_DESC, wxDefaultPosition, wxDefaultSize, m_SpeedConditionListStrings, wxLB_SINGLE );
+    itemBoxSizer59->Add(m_SpeedConditionList, 1, wxGROW|wxALL, 5);
+
+    wxFlexGridSizer* itemFlexGridSizer61 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer59->Add(itemFlexGridSizer61, 0, wxGROW, 5);
+    m_labSpeedCondDesc = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_labSpeedCondDesc, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SpeedCondDesc = new wxTextCtrl( m_SpeedPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_SpeedCondDesc, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_labSpeedCondType = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Type"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_labSpeedCondType, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    wxArrayString m_SpeedCondTypeStrings;
+    m_SpeedCondType = new wxComboBox( m_SpeedPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_SpeedCondTypeStrings, wxCB_DROPDOWN );
+    itemFlexGridSizer61->Add(m_SpeedCondType, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_labSpeedCondClass = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Class"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_labSpeedCondClass, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_SpeedCondClass = new wxTextCtrl( m_SpeedPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_SpeedCondClass, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_labSpeedCondVariable = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Variable"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_labSpeedCondVariable, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    wxFlexGridSizer* itemFlexGridSizer69 = new wxFlexGridSizer(0, 3, 0, 0);
+    itemFlexGridSizer61->Add(itemFlexGridSizer69, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
+    wxArrayString m_SpeedCondVariableStrings;
+    m_SpeedCondVariable = new wxComboBox( m_SpeedPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_SpeedCondVariableStrings, wxCB_DROPDOWN );
+    itemFlexGridSizer69->Add(m_SpeedCondVariable, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_labSpeedCondVarEquals = new wxStaticText( m_SpeedPanel, wxID_ANY, _("="), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer69->Add(m_labSpeedCondVarEquals, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxBOTTOM, 5);
+
+    m_SpeedCondValue = new wxTextCtrl( m_SpeedPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer69->Add(m_SpeedCondValue, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_labSpeedCondPercent = new wxStaticText( m_SpeedPanel, wxID_ANY, _("Percent"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer61->Add(m_labSpeedCondPercent, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    m_SpeedCondPercent = new wxSpinCtrl( m_SpeedPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 100, 0 );
+    itemFlexGridSizer61->Add(m_SpeedCondPercent, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    itemFlexGridSizer61->AddGrowableCol(1);
+
+    wxBoxSizer* itemBoxSizer75 = new wxBoxSizer(wxHORIZONTAL);
+    itemStaticBoxSizer58->Add(itemBoxSizer75, 0, wxALIGN_LEFT, 5);
+    m_SpeedCondAdd = new wxButton( m_SpeedPanel, ID_SPEEDCOND_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer75->Add(m_SpeedCondAdd, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SpeedCondDel = new wxButton( m_SpeedPanel, ID_SPEEDCOND_DEL, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer75->Add(m_SpeedCondDel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SpeedCondModify = new wxButton( m_SpeedPanel, ID_SPEEDCOND_MODIFY, _("Modify"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer75->Add(m_SpeedCondModify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_Notebook->AddPage(m_SpeedPanel, _("Speed"));
+
     m_CommandPanel = new wxPanel( m_Notebook, ID_PANEL_ST_COMMANDS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer57 = new wxBoxSizer(wxVERTICAL);
-    m_CommandPanel->SetSizer(itemBoxSizer57);
+    wxBoxSizer* itemBoxSizer80 = new wxBoxSizer(wxVERTICAL);
+    m_CommandPanel->SetSizer(itemBoxSizer80);
 
     wxArrayString m_CommandsStrings;
     m_Commands = new wxListBox( m_CommandPanel, ID_LISTBOX_COMMANDS, wxDefaultPosition, wxDefaultSize, m_CommandsStrings, wxLB_SINGLE|wxLB_ALWAYS_SB );
-    itemBoxSizer57->Add(m_Commands, 1, wxGROW|wxALL, 5);
+    itemBoxSizer80->Add(m_Commands, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer59 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer57->Add(itemBoxSizer59, 0, wxGROW|wxALL, 5);
+    wxBoxSizer* itemBoxSizer82 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer80->Add(itemBoxSizer82, 0, wxGROW|wxALL, 5);
     m_Delete = new wxButton( m_CommandPanel, ID_BUTTON_ST_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer59->Add(m_Delete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer82->Add(m_Delete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Modify = new wxButton( m_CommandPanel, ID_BUTTON_ST_MODIFY, _("Modify"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer59->Add(m_Modify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer82->Add(m_Modify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer62 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer57->Add(itemFlexGridSizer62, 1, wxGROW|wxALL, 5);
-    wxBoxSizer* itemBoxSizer63 = new wxBoxSizer(wxVERTICAL);
-    itemFlexGridSizer62->Add(itemBoxSizer63, 1, wxGROW|wxALIGN_TOP|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer85 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer80->Add(itemFlexGridSizer85, 1, wxGROW|wxALL, 5);
+    wxBoxSizer* itemBoxSizer86 = new wxBoxSizer(wxVERTICAL);
+    itemFlexGridSizer85->Add(itemBoxSizer86, 1, wxGROW|wxALIGN_TOP|wxALL, 5);
     m_LabelSwitchId = new wxStaticText( m_CommandPanel, wxID_STATIC, _("turnoutID"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer63->Add(m_LabelSwitchId, 0, wxALIGN_LEFT|wxALL, 5);
+    itemBoxSizer86->Add(m_LabelSwitchId, 0, wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_SwitchIdStrings;
     m_SwitchId = new wxComboBox( m_CommandPanel, ID_COMBOBOX_ST_SWITCH_ID, wxEmptyString, wxDefaultPosition, wxSize(120, -1), m_SwitchIdStrings, wxCB_READONLY );
-    itemBoxSizer63->Add(m_SwitchId, 0, wxGROW|wxALL, 5);
+    itemBoxSizer86->Add(m_SwitchId, 0, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer66 = new wxFlexGridSizer(1, 2, 0, 0);
-    itemBoxSizer63->Add(itemFlexGridSizer66, 0, wxGROW|wxBOTTOM, 5);
+    wxFlexGridSizer* itemFlexGridSizer89 = new wxFlexGridSizer(1, 2, 0, 0);
+    itemBoxSizer86->Add(itemFlexGridSizer89, 0, wxGROW|wxBOTTOM, 5);
     m_labTrackNumber = new wxStaticText( m_CommandPanel, wxID_ANY, _("Track number"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer66->Add(m_labTrackNumber, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer89->Add(m_labTrackNumber, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_TrackNumber = new wxSpinCtrl( m_CommandPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxSize(70, -1), wxSP_ARROW_KEYS, 0, 255, 0 );
-    itemFlexGridSizer66->Add(m_TrackNumber, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_TrackNumber = new wxSpinCtrl( m_CommandPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(70, -1), wxSP_ARROW_KEYS, 0, 255, 0 );
+    itemFlexGridSizer89->Add(m_TrackNumber, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Add = new wxButton( m_CommandPanel, ID_BUTTON_ST_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer63->Add(m_Add, 0, wxALIGN_LEFT|wxALL, 5);
+    itemBoxSizer86->Add(m_Add, 0, wxALIGN_LEFT|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer70 = new wxBoxSizer(wxVERTICAL);
-    itemFlexGridSizer62->Add(itemBoxSizer70, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP, 5);
+    wxBoxSizer* itemBoxSizer93 = new wxBoxSizer(wxVERTICAL);
+    itemFlexGridSizer85->Add(itemBoxSizer93, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP, 5);
     wxArrayString m_SwitchCmdStrings;
     m_SwitchCmdStrings.Add(_("&straight"));
     m_SwitchCmdStrings.Add(_("&turnout(left)"));
@@ -1629,185 +1760,185 @@ void RouteDialog::CreateControls()
     m_SwitchCmdStrings.Add(_("&aspect"));
     m_SwitchCmd = new wxRadioBox( m_CommandPanel, ID_RADIOBOX_ST_SW_CMD, _("Command"), wxDefaultPosition, wxDefaultSize, m_SwitchCmdStrings, 2, wxRA_SPECIFY_COLS );
     m_SwitchCmd->SetSelection(0);
-    itemBoxSizer70->Add(m_SwitchCmd, 0, wxALIGN_LEFT|wxALL, 5);
+    itemBoxSizer93->Add(m_SwitchCmd, 0, wxALIGN_LEFT|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer72 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer70->Add(itemFlexGridSizer72, 0, wxALIGN_LEFT, 5);
+    wxFlexGridSizer* itemFlexGridSizer95 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer93->Add(itemFlexGridSizer95, 0, wxALIGN_LEFT, 5);
     m_Lock = new wxCheckBox( m_CommandPanel, wxID_ANY, _("Lock"), wxDefaultPosition, wxDefaultSize, 0 );
     m_Lock->SetValue(false);
-    itemFlexGridSizer72->Add(m_Lock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer95->Add(m_Lock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_SwReduceV = new wxCheckBox( m_CommandPanel, wxID_ANY, _("Reduce speed"), wxDefaultPosition, wxDefaultSize, 0 );
     m_SwReduceV->SetValue(true);
-    itemFlexGridSizer72->Add(m_SwReduceV, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer95->Add(m_SwReduceV, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    itemFlexGridSizer62->AddGrowableCol(0);
+    itemFlexGridSizer85->AddGrowableCol(0);
 
     m_Notebook->AddPage(m_CommandPanel, _("Turnouts"));
 
     m_SensorPanel = new wxPanel( m_Notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer76 = new wxBoxSizer(wxVERTICAL);
-    m_SensorPanel->SetSizer(itemBoxSizer76);
+    wxBoxSizer* itemBoxSizer99 = new wxBoxSizer(wxVERTICAL);
+    m_SensorPanel->SetSizer(itemBoxSizer99);
 
     wxArrayString m_SensorListStrings;
     m_SensorList = new wxListBox( m_SensorPanel, ID_LIST_ROUTE_SENSORS, wxDefaultPosition, wxDefaultSize, m_SensorListStrings, wxLB_SINGLE|wxLB_ALWAYS_SB );
-    itemBoxSizer76->Add(m_SensorList, 1, wxGROW|wxALL, 5);
+    itemBoxSizer99->Add(m_SensorList, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer78 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer76->Add(itemBoxSizer78, 0, wxGROW|wxALL, 5);
+    wxBoxSizer* itemBoxSizer101 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer99->Add(itemBoxSizer101, 0, wxGROW|wxALL, 5);
     wxArrayString m_SensorComboStrings;
     m_SensorCombo = new wxComboBox( m_SensorPanel, ID_COMBOBOX_ROUTES_SENSORS, wxEmptyString, wxDefaultPosition, wxSize(140, -1), m_SensorComboStrings, wxCB_DROPDOWN );
-    itemBoxSizer78->Add(m_SensorCombo, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+    itemBoxSizer101->Add(m_SensorCombo, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
     m_AddSensor = new wxButton( m_SensorPanel, ID_BUTTON_ROUTES_ADD_SENSOR, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer78->Add(m_AddSensor, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
+    itemBoxSizer101->Add(m_AddSensor, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
     m_DelSensor = new wxButton( m_SensorPanel, ID_BUTTON_ROUTES_DEL_SENSOR, _("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer78->Add(m_DelSensor, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
+    itemBoxSizer101->Add(m_DelSensor, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
     m_Notebook->AddPage(m_SensorPanel, _("Sensors"));
 
     m_PermissionsPanel = new wxPanel( m_Notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer83 = new wxBoxSizer(wxVERTICAL);
-    m_PermissionsPanel->SetSizer(itemBoxSizer83);
+    wxBoxSizer* itemBoxSizer106 = new wxBoxSizer(wxVERTICAL);
+    m_PermissionsPanel->SetSizer(itemBoxSizer106);
 
-    wxBoxSizer* itemBoxSizer84 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer83->Add(itemBoxSizer84, 1, wxGROW, 5);
-    wxFlexGridSizer* itemFlexGridSizer85 = new wxFlexGridSizer(0, 1, 0, 0);
-    itemBoxSizer84->Add(itemFlexGridSizer85, 1, wxGROW, 5);
+    wxBoxSizer* itemBoxSizer107 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer106->Add(itemBoxSizer107, 1, wxGROW, 5);
+    wxFlexGridSizer* itemFlexGridSizer108 = new wxFlexGridSizer(0, 1, 0, 0);
+    itemBoxSizer107->Add(itemFlexGridSizer108, 1, wxGROW, 5);
     m_labLocoListPerm = new wxStaticText( m_PermissionsPanel, wxID_ANY, _("Locos"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer85->Add(m_labLocoListPerm, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer108->Add(m_labLocoListPerm, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
     wxArrayString m_LocoListPermStrings;
     m_LocoListPerm = new wxListBox( m_PermissionsPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_LocoListPermStrings, wxLB_SINGLE );
-    itemFlexGridSizer85->Add(m_LocoListPerm, 0, wxGROW|wxGROW|wxALL, 5);
+    itemFlexGridSizer108->Add(m_LocoListPerm, 0, wxGROW|wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer88 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemFlexGridSizer85->Add(itemFlexGridSizer88, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    wxFlexGridSizer* itemFlexGridSizer111 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemFlexGridSizer108->Add(itemFlexGridSizer111, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_AddInclude = new wxButton( m_PermissionsPanel, ID_ADD_INCLUDE, _("Include"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer88->Add(m_AddInclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer111->Add(m_AddInclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_AddExclude = new wxButton( m_PermissionsPanel, ID_ADD_EXCLUDE, _("exclude"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer88->Add(m_AddExclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer111->Add(m_AddExclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer85->AddGrowableRow(1);
-    itemFlexGridSizer85->AddGrowableCol(0);
+    itemFlexGridSizer108->AddGrowableRow(1);
+    itemFlexGridSizer108->AddGrowableCol(0);
 
-    wxFlexGridSizer* itemFlexGridSizer91 = new wxFlexGridSizer(0, 1, 0, 0);
-    itemBoxSizer84->Add(itemFlexGridSizer91, 1, wxGROW, 5);
+    wxFlexGridSizer* itemFlexGridSizer114 = new wxFlexGridSizer(0, 1, 0, 0);
+    itemBoxSizer107->Add(itemFlexGridSizer114, 1, wxGROW, 5);
     m_labInclude = new wxStaticText( m_PermissionsPanel, wxID_ANY, _("Include"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer91->Add(m_labInclude, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer114->Add(m_labInclude, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_IncludeListStrings;
     m_IncludeList = new wxListBox( m_PermissionsPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_IncludeListStrings, wxLB_SINGLE );
-    itemFlexGridSizer91->Add(m_IncludeList, 0, wxGROW|wxGROW|wxALL, 5);
+    itemFlexGridSizer114->Add(m_IncludeList, 0, wxGROW|wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer94 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemFlexGridSizer91->Add(itemFlexGridSizer94, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    wxFlexGridSizer* itemFlexGridSizer117 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemFlexGridSizer114->Add(itemFlexGridSizer117, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_RemoveInclude = new wxButton( m_PermissionsPanel, ID_REMOVE_INCLUDE, _("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer94->Add(m_RemoveInclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer117->Add(m_RemoveInclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer91->AddGrowableRow(1);
-    itemFlexGridSizer91->AddGrowableCol(0);
+    itemFlexGridSizer114->AddGrowableRow(1);
+    itemFlexGridSizer114->AddGrowableCol(0);
 
-    wxFlexGridSizer* itemFlexGridSizer96 = new wxFlexGridSizer(0, 1, 0, 0);
-    itemBoxSizer84->Add(itemFlexGridSizer96, 1, wxGROW, 5);
+    wxFlexGridSizer* itemFlexGridSizer119 = new wxFlexGridSizer(0, 1, 0, 0);
+    itemBoxSizer107->Add(itemFlexGridSizer119, 1, wxGROW, 5);
     m_labExclude = new wxStaticText( m_PermissionsPanel, wxID_ANY, _("Exclude"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer96->Add(m_labExclude, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer119->Add(m_labExclude, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_ExcludeListStrings;
     m_ExcludeList = new wxListBox( m_PermissionsPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_ExcludeListStrings, wxLB_SINGLE );
-    itemFlexGridSizer96->Add(m_ExcludeList, 0, wxGROW|wxGROW|wxALL, 5);
+    itemFlexGridSizer119->Add(m_ExcludeList, 0, wxGROW|wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer99 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemFlexGridSizer96->Add(itemFlexGridSizer99, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    wxFlexGridSizer* itemFlexGridSizer122 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemFlexGridSizer119->Add(itemFlexGridSizer122, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_RemoveExclude = new wxButton( m_PermissionsPanel, ID_REMOVE_EXCLUDE, _("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer99->Add(m_RemoveExclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer122->Add(m_RemoveExclude, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer96->AddGrowableRow(1);
-    itemFlexGridSizer96->AddGrowableCol(0);
+    itemFlexGridSizer119->AddGrowableRow(1);
+    itemFlexGridSizer119->AddGrowableCol(0);
 
     m_PermType = new wxStaticBox(m_PermissionsPanel, wxID_ANY, _("Type"));
-    wxStaticBoxSizer* itemStaticBoxSizer101 = new wxStaticBoxSizer(m_PermType, wxVERTICAL);
-    itemBoxSizer83->Add(itemStaticBoxSizer101, 0, wxGROW|wxALL, 5);
-    wxFlexGridSizer* itemFlexGridSizer102 = new wxFlexGridSizer(0, 6, 0, 0);
-    itemStaticBoxSizer101->Add(itemFlexGridSizer102, 0, wxGROW, 5);
+    wxStaticBoxSizer* itemStaticBoxSizer124 = new wxStaticBoxSizer(m_PermType, wxVERTICAL);
+    itemBoxSizer106->Add(itemStaticBoxSizer124, 0, wxGROW|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer125 = new wxFlexGridSizer(0, 6, 0, 0);
+    itemStaticBoxSizer124->Add(itemFlexGridSizer125, 0, wxGROW, 5);
     m_PermTypeGoods = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Goods"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeGoods->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeGoods, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer125->Add(m_PermTypeGoods, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_PermTypeMixed = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Mixed"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeMixed->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeMixed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer125->Add(m_PermTypeMixed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_PermTypeICE = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("ICE"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeICE->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeICE, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer125->Add(m_PermTypeICE, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_PermTypePerson = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Person"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypePerson->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypePerson, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer125->Add(m_PermTypePerson, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_PermTypeLightGoods = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Light Goods"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeLightGoods->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeLightGoods, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer125->Add(m_PermTypeLightGoods, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_PermTypeNone = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("None"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeNone->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeNone, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer125->Add(m_PermTypeNone, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_PermTypeLocal = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Local"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeLocal->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeLocal, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer125->Add(m_PermTypeLocal, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_PermTypeCleaning = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Cleaning"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeCleaning->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeCleaning, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer125->Add(m_PermTypeCleaning, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_PermTypePost = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Post"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypePost->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypePost, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer125->Add(m_PermTypePost, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_PermTypeLight = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Light"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeLight->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeLight, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer125->Add(m_PermTypeLight, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_PermTypeShunting = new wxCheckBox( m_PermissionsPanel, wxID_ANY, _("Shunting"), wxDefaultPosition, wxDefaultSize, 0 );
     m_PermTypeShunting->SetValue(false);
-    itemFlexGridSizer102->Add(m_PermTypeShunting, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer125->Add(m_PermTypeShunting, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer114 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer83->Add(itemBoxSizer114, 0, wxALIGN_LEFT, 5);
-    wxBoxSizer* itemBoxSizer115 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer114->Add(itemBoxSizer115, 0, wxALIGN_TOP, 5);
-    wxFlexGridSizer* itemFlexGridSizer116 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer115->Add(itemFlexGridSizer116, 0, wxGROW|wxALL, 5);
+    wxBoxSizer* itemBoxSizer137 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer106->Add(itemBoxSizer137, 0, wxALIGN_LEFT, 5);
+    wxBoxSizer* itemBoxSizer138 = new wxBoxSizer(wxVERTICAL);
+    itemBoxSizer137->Add(itemBoxSizer138, 0, wxALIGN_TOP, 5);
+    wxFlexGridSizer* itemFlexGridSizer139 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer138->Add(itemFlexGridSizer139, 0, wxGROW|wxALL, 5);
     m_labMaxLen = new wxStaticText( m_PermissionsPanel, wxID_ANY, _("Max. train length"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer116->Add(m_labMaxLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer139->Add(m_labMaxLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_MaxLen = new wxSpinCtrl( m_PermissionsPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
-    itemFlexGridSizer116->Add(m_MaxLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_MaxLen = new wxSpinCtrl( m_PermissionsPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
+    itemFlexGridSizer139->Add(m_MaxLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labMinLen = new wxStaticText( m_PermissionsPanel, wxID_ANY, _("Min. train length"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer116->Add(m_labMinLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer139->Add(m_labMinLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_MinLen = new wxSpinCtrl( m_PermissionsPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
-    itemFlexGridSizer116->Add(m_MinLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_MinLen = new wxSpinCtrl( m_PermissionsPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
+    itemFlexGridSizer139->Add(m_MinLen, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer116->AddGrowableCol(1);
+    itemFlexGridSizer139->AddGrowableCol(1);
 
-    wxStaticLine* itemStaticLine121 = new wxStaticLine( m_PermissionsPanel, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-    itemBoxSizer114->Add(itemStaticLine121, 0, wxGROW|wxALL, 5);
+    wxStaticLine* itemStaticLine144 = new wxStaticLine( m_PermissionsPanel, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+    itemBoxSizer137->Add(itemStaticLine144, 0, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer122 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer114->Add(itemBoxSizer122, 0, wxALIGN_TOP, 5);
+    wxBoxSizer* itemBoxSizer145 = new wxBoxSizer(wxVERTICAL);
+    itemBoxSizer137->Add(itemBoxSizer145, 0, wxALIGN_TOP, 5);
     wxArrayString m_CommuterStrings;
     m_CommuterStrings.Add(_("&allow"));
     m_CommuterStrings.Add(_("&only"));
     m_CommuterStrings.Add(_("&disallow"));
     m_Commuter = new wxRadioBox( m_PermissionsPanel, wxID_ANY, _("Commuter train"), wxDefaultPosition, wxDefaultSize, m_CommuterStrings, 1, wxRA_SPECIFY_ROWS );
     m_Commuter->SetSelection(0);
-    itemBoxSizer122->Add(m_Commuter, 0, wxALIGN_LEFT|wxALL, 5);
+    itemBoxSizer145->Add(m_Commuter, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxArrayString m_PlacingStrings;
     m_PlacingStrings.Add(_("&Both"));
@@ -1815,23 +1946,23 @@ void RouteDialog::CreateControls()
     m_PlacingStrings.Add(_("&Swapped"));
     m_Placing = new wxRadioBox( m_PermissionsPanel, wxID_ANY, _("Placing"), wxDefaultPosition, wxDefaultSize, m_PlacingStrings, 1, wxRA_SPECIFY_ROWS );
     m_Placing->SetSelection(0);
-    itemBoxSizer122->Add(m_Placing, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemBoxSizer145->Add(m_Placing, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer125 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer83->Add(itemFlexGridSizer125, 0, wxGROW, 5);
+    wxFlexGridSizer* itemFlexGridSizer148 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer106->Add(itemFlexGridSizer148, 0, wxGROW, 5);
     m_labClass = new wxStaticText( m_PermissionsPanel, wxID_ANY, _("Class"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer125->Add(m_labClass, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer148->Add(m_labClass, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Class = new wxTextCtrl( m_PermissionsPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer125->Add(m_Class, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer148->Add(m_Class, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer125->AddGrowableCol(1);
+    itemFlexGridSizer148->AddGrowableCol(1);
 
     m_Notebook->AddPage(m_PermissionsPanel, _("Persmissions"));
 
     m_ConditionsPanel = new wxPanel( m_Notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer129 = new wxBoxSizer(wxVERTICAL);
-    m_ConditionsPanel->SetSizer(itemBoxSizer129);
+    wxBoxSizer* itemBoxSizer152 = new wxBoxSizer(wxVERTICAL);
+    m_ConditionsPanel->SetSizer(itemBoxSizer152);
 
     m_CondGrid = new wxGrid( m_ConditionsPanel, ID_COND_GRID, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
     m_CondGrid->SetDefaultColSize(50);
@@ -1839,70 +1970,70 @@ void RouteDialog::CreateControls()
     m_CondGrid->SetColLabelSize(25);
     m_CondGrid->SetRowLabelSize(0);
     m_CondGrid->CreateGrid(1, 6, wxGrid::wxGridSelectCells);
-    itemBoxSizer129->Add(m_CondGrid, 1, wxGROW|wxALL, 5);
+    itemBoxSizer152->Add(m_CondGrid, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer131 = new wxFlexGridSizer(0, 3, 0, 0);
-    itemBoxSizer129->Add(itemFlexGridSizer131, 0, wxGROW|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer154 = new wxFlexGridSizer(0, 3, 0, 0);
+    itemBoxSizer152->Add(itemFlexGridSizer154, 0, wxGROW|wxALL, 5);
     m_CondNotFromBlock = new wxCheckBox( m_ConditionsPanel, wxID_ANY, _("Not from"), wxDefaultPosition, wxDefaultSize, 0 );
     m_CondNotFromBlock->SetValue(false);
-    itemFlexGridSizer131->Add(m_CondNotFromBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer154->Add(m_CondNotFromBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_CondFromBlockStrings;
     m_CondFromBlock = new wxComboBox( m_ConditionsPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(160, -1), m_CondFromBlockStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer131->Add(m_CondFromBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer154->Add(m_CondFromBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_CondTypeStrings;
     m_CondType = new wxComboBox( m_ConditionsPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(120, -1), m_CondTypeStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer131->Add(m_CondType, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer154->Add(m_CondType, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CondCommuter = new wxCheckBox( m_ConditionsPanel, wxID_ANY, _("Commuter"), wxDefaultPosition, wxDefaultSize, 0 );
     m_CondCommuter->SetValue(false);
-    itemFlexGridSizer131->Add(m_CondCommuter, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer154->Add(m_CondCommuter, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CondChangeDir = new wxCheckBox( m_ConditionsPanel, wxID_ANY, _("Change dir"), wxDefaultPosition, wxDefaultSize, 0 );
     m_CondChangeDir->SetValue(false);
-    itemFlexGridSizer131->Add(m_CondChangeDir, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer154->Add(m_CondChangeDir, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CondAllowSchedules = new wxCheckBox( m_ConditionsPanel, wxID_ANY, _("Allow schedules"), wxDefaultPosition, wxDefaultSize, 0 );
     m_CondAllowSchedules->SetValue(true);
-    itemFlexGridSizer131->Add(m_CondAllowSchedules, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer154->Add(m_CondAllowSchedules, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer138 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer129->Add(itemBoxSizer138, 0, wxGROW|wxALL, 5);
+    wxBoxSizer* itemBoxSizer161 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer152->Add(itemBoxSizer161, 0, wxGROW|wxALL, 5);
     m_CondAdd = new wxButton( m_ConditionsPanel, ID_ROUTE_CONDITION_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer138->Add(m_CondAdd, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer161->Add(m_CondAdd, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CondModify = new wxButton( m_ConditionsPanel, ID_ROUTE_CONDITION_MODIFY, _("Modify"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer138->Add(m_CondModify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer161->Add(m_CondModify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CondDelete = new wxButton( m_ConditionsPanel, ID_ROUTE_CONDITION_DEL, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer138->Add(m_CondDelete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer161->Add(m_CondDelete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Notebook->AddPage(m_ConditionsPanel, _("Conditions"));
 
     m_LocationPanel = new wxPanel( m_Notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer143 = new wxBoxSizer(wxHORIZONTAL);
-    m_LocationPanel->SetSizer(itemBoxSizer143);
+    wxBoxSizer* itemBoxSizer166 = new wxBoxSizer(wxHORIZONTAL);
+    m_LocationPanel->SetSizer(itemBoxSizer166);
 
-    wxFlexGridSizer* itemFlexGridSizer144 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemBoxSizer143->Add(itemFlexGridSizer144, 0, wxALIGN_TOP|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer167 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer166->Add(itemFlexGridSizer167, 0, wxALIGN_TOP|wxALL, 5);
     m_LabelX = new wxStaticText( m_LocationPanel, wxID_ANY, _("x"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer144->Add(m_LabelX, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer167->Add(m_LabelX, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_x = new wxTextCtrl( m_LocationPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
-    itemFlexGridSizer144->Add(m_x, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer167->Add(m_x, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_LabelY = new wxStaticText( m_LocationPanel, wxID_ANY, _("y"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer144->Add(m_LabelY, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer167->Add(m_LabelY, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_y = new wxTextCtrl( m_LocationPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
-    itemFlexGridSizer144->Add(m_y, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer167->Add(m_y, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_LabelZ = new wxStaticText( m_LocationPanel, wxID_ANY, _("z"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer144->Add(m_LabelZ, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer167->Add(m_LabelZ, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_z = new wxTextCtrl( m_LocationPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
-    itemFlexGridSizer144->Add(m_z, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer167->Add(m_z, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_oriStrings;
     m_oriStrings.Add(_("&north"));
@@ -1911,105 +2042,105 @@ void RouteDialog::CreateControls()
     m_oriStrings.Add(_("&west"));
     m_ori = new wxRadioBox( m_LocationPanel, wxID_ANY, _("Orientation"), wxDefaultPosition, wxDefaultSize, m_oriStrings, 1, wxRA_SPECIFY_COLS );
     m_ori->SetSelection(0);
-    itemBoxSizer143->Add(m_ori, 0, wxALIGN_TOP|wxALL, 5);
+    itemBoxSizer166->Add(m_ori, 0, wxALIGN_TOP|wxALL, 5);
 
     m_Notebook->AddPage(m_LocationPanel, _("Location"));
 
     m_WiringPanel = new wxPanel( m_Notebook, ID_ROUTE_WIRING, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer153 = new wxBoxSizer(wxVERTICAL);
-    m_WiringPanel->SetSizer(itemBoxSizer153);
+    wxBoxSizer* itemBoxSizer176 = new wxBoxSizer(wxVERTICAL);
+    m_WiringPanel->SetSizer(itemBoxSizer176);
 
     m_CTCBox = new wxStaticBox(m_WiringPanel, wxID_ANY, _("CTC"));
-    wxStaticBoxSizer* itemStaticBoxSizer154 = new wxStaticBoxSizer(m_CTCBox, wxVERTICAL);
-    itemBoxSizer153->Add(itemStaticBoxSizer154, 0, wxGROW|wxALL, 5);
-    wxFlexGridSizer* itemFlexGridSizer155 = new wxFlexGridSizer(0, 5, 0, 0);
-    itemStaticBoxSizer154->Add(itemFlexGridSizer155, 0, wxGROW|wxALL, 5);
+    wxStaticBoxSizer* itemStaticBoxSizer177 = new wxStaticBoxSizer(m_CTCBox, wxVERTICAL);
+    itemBoxSizer176->Add(itemStaticBoxSizer177, 0, wxGROW|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer178 = new wxFlexGridSizer(0, 5, 0, 0);
+    itemStaticBoxSizer177->Add(itemFlexGridSizer178, 0, wxGROW|wxALL, 5);
     m_labCTCbutton = new wxStaticText( m_WiringPanel, wxID_ANY, _("Button"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCbutton, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCbutton, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labCTCIID = new wxStaticText( m_WiringPanel, wxID_ANY, _("IID"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCIID, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCIID, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labCTCBus = new wxStaticText( m_WiringPanel, wxID_ANY, _("Bus"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCBus, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCBus, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labCTCAddr = new wxStaticText( m_WiringPanel, wxID_ANY, _("Address"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCAddr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCAddr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labOutput = new wxStaticText( m_WiringPanel, wxID_ANY, _("Output"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labOutput, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labOutput, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labCTCButton1 = new wxStaticText( m_WiringPanel, wxID_STATIC, _("1"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCButton1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCButton1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CTCIID1 = new wxTextCtrl( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_CTCIID1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_CTCIID1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CTCBus1 = new wxTextCtrl( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_CTCBus1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_CTCBus1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_CTCAddr1 = new wxSpinCtrl( m_WiringPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
-    itemFlexGridSizer155->Add(m_CTCAddr1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_CTCAddr1 = new wxSpinCtrl( m_WiringPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
+    itemFlexGridSizer178->Add(m_CTCAddr1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_Output1Strings;
     m_Output1 = new wxComboBox( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_Output1Strings, wxCB_DROPDOWN );
-    itemFlexGridSizer155->Add(m_Output1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_Output1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labCTCButton2 = new wxStaticText( m_WiringPanel, wxID_ANY, _("2"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCButton2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCButton2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CTCIID2 = new wxTextCtrl( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_CTCIID2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_CTCIID2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CTCBus2 = new wxTextCtrl( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_CTCBus2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_CTCBus2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_CTCAddr2 = new wxSpinCtrl( m_WiringPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
-    itemFlexGridSizer155->Add(m_CTCAddr2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_CTCAddr2 = new wxSpinCtrl( m_WiringPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
+    itemFlexGridSizer178->Add(m_CTCAddr2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_Output2Strings;
     m_Output2 = new wxComboBox( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_Output2Strings, wxCB_DROPDOWN );
-    itemFlexGridSizer155->Add(m_Output2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_Output2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labCTCButton3 = new wxStaticText( m_WiringPanel, wxID_ANY, _("3"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_labCTCButton3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_labCTCButton3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CTCIID3 = new wxTextCtrl( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_CTCIID3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_CTCIID3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_CTCBus3 = new wxTextCtrl( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer155->Add(m_CTCBus3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_CTCBus3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_CTCAddr3 = new wxSpinCtrl( m_WiringPanel, wxID_ANY, _T("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
-    itemFlexGridSizer155->Add(m_CTCAddr3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_CTCAddr3 = new wxSpinCtrl( m_WiringPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 10000, 0 );
+    itemFlexGridSizer178->Add(m_CTCAddr3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxArrayString m_Output3Strings;
     m_Output3 = new wxComboBox( m_WiringPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_Output3Strings, wxCB_DROPDOWN );
-    itemFlexGridSizer155->Add(m_Output3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer178->Add(m_Output3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer155->AddGrowableCol(0);
+    itemFlexGridSizer178->AddGrowableCol(0);
 
     m_Notebook->AddPage(m_WiringPanel, _("Wiring"));
 
     itemBoxSizer2->Add(m_Notebook, 1, wxGROW|wxALL, 5);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer176 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer199 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer176, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer199, 0, wxGROW|wxALL, 5);
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer176->AddButton(m_Cancel);
+    itemStdDialogButtonSizer199->AddButton(m_Cancel);
 
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     m_OK->SetDefault();
-    itemStdDialogButtonSizer176->AddButton(m_OK);
+    itemStdDialogButtonSizer199->AddButton(m_OK);
 
     m_Apply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer176->AddButton(m_Apply);
+    itemStdDialogButtonSizer199->AddButton(m_Apply);
 
-    wxButton* itemButton180 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer176->AddButton(itemButton180);
+    m_Help = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer199->AddButton(m_Help);
 
-    itemStdDialogButtonSizer176->Realize();
+    itemStdDialogButtonSizer199->Realize();
 
 ////@end RouteDialog content construction
 }
@@ -2894,5 +3025,144 @@ void RouteDialog::OnRouteLockClick( wxCommandEvent& event )
   wRoute.setstatus( cmd, wRoute.status_locked);
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
+}
+
+
+/*!
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SPEED_CONDITION_DESC
+ */
+
+void RouteDialog::OnSpeedConditionDescSelected( wxCommandEvent& event )
+{
+  initSpeedCond();
+}
+
+
+iONode RouteDialog::findSpeedCond(const char* desc) {
+  iONode spcond = wRoute.getspeedcondition(m_Props);
+  while( spcond != NULL ) {
+    if( StrOp.equals(desc, wSpeedCondition.getdesc(spcond)) ) {
+      return spcond;
+    }
+    spcond = wRoute.nextspeedcondition(m_Props, spcond);
+  }
+  return NULL;
+}
+
+
+void RouteDialog::initSpeedCond() {
+  int sel = m_SpeedConditionList->GetSelection();
+  if( sel != wxNOT_FOUND ) {
+    iONode spcond = findSpeedCond(m_SpeedConditionList->GetString(sel).mb_str(wxConvUTF8));
+    if( spcond != NULL ) {
+      m_SpeedCondDesc->SetValue(wxString(wSpeedCondition.getdesc(spcond),wxConvUTF8));
+      setSpeedCondType(wSpeedCondition.gettype(spcond));
+      m_SpeedCondClass->SetValue(wxString(wSpeedCondition.getclass(spcond),wxConvUTF8));
+      m_SpeedCondVariable->SetStringSelection(wxString(wSpeedCondition.getvariable(spcond),wxConvUTF8));
+      m_SpeedCondValue->SetValue(wxString(wSpeedCondition.getvalue(spcond),wxConvUTF8));
+      m_SpeedCondPercent->SetValue(wSpeedCondition.getpercent(spcond));
+    }
+  }
+  else {
+    m_SpeedCondDesc->SetValue(wxT(""));
+    m_SpeedCondType->SetSelection(0);
+    m_SpeedCondClass->SetValue(wxT(""));
+    m_SpeedCondVariable->SetSelection(0);
+    m_SpeedCondValue->SetValue(wxT(""));
+    m_SpeedCondPercent->SetValue(0);
+  }
+}
+
+void RouteDialog::OnSpeedcondAddClick( wxCommandEvent& event )
+{
+  if( m_SpeedConditionList->FindString(wxT("New")) == wxNOT_FOUND ) {
+    m_SpeedConditionList->Append( wxT("New") );
+    m_SpeedConditionList->SetStringSelection( wxT("New") );
+    iONode spcond = NodeOp.inst(wSpeedCondition.name(), m_Props, ELEMENT_NODE);
+    wSpeedCondition.setdesc( spcond, "New");
+    NodeOp.addChild(m_Props, spcond);
+    initSpeedCond();
+  }
+}
+
+
+void RouteDialog::OnSpeedcondDelClick( wxCommandEvent& event )
+{
+  int action = wxMessageDialog( this, wxGetApp().getMsg("removewarning"), _T("Rocrail"), wxYES_NO | wxICON_EXCLAMATION ).ShowModal();
+  if( action == wxID_NO )
+    return;
+
+  int sel = m_SpeedConditionList->GetSelection();
+  if( sel != wxNOT_FOUND ) {
+    iONode spcond = findSpeedCond(m_SpeedConditionList->GetString(sel).mb_str(wxConvUTF8));
+    if( spcond != NULL ) {
+      NodeOp.removeChild( m_Props, spcond );
+      NodeOp.base.del(spcond);
+      m_SpeedConditionList->Delete(sel);
+      initSpeedCond();
+    }
+  }
+}
+
+
+void RouteDialog::setSpeedCondType(const char* condtype) {
+  m_SpeedCondType->SetSelection(0);
+  if( StrOp.equals( condtype, wLoc.cargo_none  ) )
+    m_SpeedCondType->SetSelection(1);
+  if( StrOp.equals( condtype, wLoc.cargo_goods  ) )
+    m_SpeedCondType->SetSelection(2);
+  if( StrOp.equals( condtype, wLoc.cargo_person  ) )
+    m_SpeedCondType->SetSelection(3);
+  if( StrOp.equals( condtype, wLoc.cargo_mixed  ) )
+    m_SpeedCondType->SetSelection(4);
+  if( StrOp.equals( condtype, wLoc.cargo_cleaning  ) )
+    m_SpeedCondType->SetSelection(5);
+  if( StrOp.equals( condtype, wLoc.cargo_ice  ) )
+    m_SpeedCondType->SetSelection(6);
+  if( StrOp.equals( condtype, wLoc.cargo_post  ) )
+    m_SpeedCondType->SetSelection(7);
+  if( StrOp.equals( condtype, wLoc.cargo_light  ) )
+    m_SpeedCondType->SetSelection(8);
+  if( StrOp.equals( condtype, wLoc.cargo_lightgoods  ) )
+    m_SpeedCondType->SetSelection(9);
+  if( StrOp.equals( condtype, wLoc.cargo_regional  ) )
+    m_SpeedCondType->SetSelection(10);
+  if( StrOp.equals( condtype, wLoc.cargo_shunting  ) )
+    m_SpeedCondType->SetSelection(11);
+
+}
+
+const char* RouteDialog::getSpeedCondType() {
+  int sel = m_SpeedCondType->GetSelection();
+
+  if( sel ==  1 ) return wLoc.cargo_none;
+  if( sel ==  2 ) return wLoc.cargo_goods;
+  if( sel ==  3 ) return wLoc.cargo_person;
+  if( sel ==  4 ) return wLoc.cargo_mixed;
+  if( sel ==  5 ) return wLoc.cargo_cleaning;
+  if( sel ==  6 ) return wLoc.cargo_ice;
+  if( sel ==  7 ) return wLoc.cargo_post;
+  if( sel ==  8 ) return wLoc.cargo_light;
+  if( sel ==  9 ) return wLoc.cargo_lightgoods;
+  if( sel == 10 ) return wLoc.cargo_regional;
+  if( sel == 11 ) return wLoc.cargo_shunting;
+  return "";
+}
+
+void RouteDialog::OnSpeedcondModifyClick( wxCommandEvent& event )
+{
+  int sel = m_SpeedConditionList->GetSelection();
+  if( sel != wxNOT_FOUND ) {
+    iONode spcond = findSpeedCond(m_SpeedConditionList->GetString(sel).mb_str(wxConvUTF8));
+    if( spcond != NULL ) {
+      wSpeedCondition.setdesc(spcond, m_SpeedCondDesc->GetValue().mb_str(wxConvUTF8));
+      wSpeedCondition.settype(spcond, getSpeedCondType());
+      wSpeedCondition.setclass(spcond, m_SpeedCondClass->GetValue().mb_str(wxConvUTF8));
+      wSpeedCondition.setvariable(spcond, m_SpeedCondVariable->GetStringSelection().mb_str(wxConvUTF8));
+      wSpeedCondition.setvalue(spcond, m_SpeedCondValue->GetValue().mb_str(wxConvUTF8));
+      wSpeedCondition.setpercent(spcond, m_SpeedCondPercent->GetValue());
+      m_SpeedConditionList->SetString(sel, m_SpeedCondDesc->GetValue());
+    }
+  }
 }
 
