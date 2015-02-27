@@ -332,6 +332,14 @@ void SymbolRenderer::initSym() {
             m_SvgSym5 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_t_occ : switchtype::crossingright_t_occ );
             m_SvgSym6 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_route : switchtype::crossingright_route );
             m_SvgSym7 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_t_route : switchtype::crossingright_t_route );
+            m_SvgSym14 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_l_occ : switchtype::crossingright_l_occ );
+            m_SvgSym15 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_t_l_occ : switchtype::crossingright_t_l_occ );
+            m_SvgSym[16] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_b_route : switchtype::crossingright_b_route );
+            m_SvgSym[17] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_t_b_route : switchtype::crossingright_t_b_route );
+            m_SvgSym12 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_l_route : switchtype::crossingright_l_route );
+            m_SvgSym13 = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_t_l_route : switchtype::crossingright_t_l_route );
+            m_SvgSym[18] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_lb_route : switchtype::crossingright_lb_route );
+            m_SvgSym[19] = (svgSymbol*)MapOp.get( m_SymMap, wSwitch.isdir(m_Props) ? switchtype::crossingleft_t_lb_route : switchtype::crossingright_t_lb_route );
           }
         }
       }
@@ -1403,33 +1411,56 @@ void SymbolRenderer::drawCCrossing( wxPaintDC& dc, bool occupied, bool actroute,
 void SymbolRenderer::drawCrossing( wxPaintDC& dc, bool occupied, bool actroute, const char* ori ) {
   const char* state = wSwitch.getstate( m_Props );
   const char* savepos = wSwitch.getsavepos( m_Props );
+  Boolean islocked = (wSwitch.getlocid( m_Props )==NULL)?False:True;
+  Boolean isset = wSwitch.isset( m_Props );
+  Boolean issavepos = (Boolean)( !StrOp.equals( savepos, wSwitch.none ) && !StrOp.equals( state, savepos ) );
   Boolean raster = StrOp.equals( wSwitch.getswtype( m_Props ), wSwitch.swtype_raster );
 
   TraceOp.trc( "render", TRCLEVEL_INFO, __LINE__, 9999, "Crossing %s occ=%d route=%d",
       wSwitch.getid( m_Props ), occupied, actroute );
 
-  if( !wGui.isshowroute4switch(wxGetApp().getIni()) )
-    actroute = !occupied;
-  else if( !StrOp.equals( savepos, wSwitch.none ) && !StrOp.equals( state, savepos ) )
-    actroute = !occupied;
+  if( wSwitch.getlocid( m_Props )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( m_Props )) )
+    islocked = False;
 
+  if( islocked || issavepos || !isset || !wGui.isshowroute4switch(wxGetApp().getIni()) )
+    actroute = !occupied;
 
   // SVG Symbol:
   if( m_SvgSym2!=NULL && StrOp.equals( state, wSwitch.turnout ) ) {
     if( occupied && m_SvgSym5 != NULL )
-      drawSvgSym(dc, m_SvgSym5, ori);
+      if( islocked && m_SvgSym15 != NULL )
+        drawSvgSym(dc, m_SvgSym15, ori);
+      else
+        drawSvgSym(dc, m_SvgSym5, ori);
     else if( actroute && m_SvgSym7 != NULL )
-      drawSvgSym(dc, m_SvgSym7, ori);
+      if( !isset && m_SvgSym[17] != NULL )
+        drawSvgSym(dc, m_SvgSym[17], ori);
+      else if( islocked && m_SvgSym13 != NULL )
+        drawSvgSym(dc, m_SvgSym13, ori);
+      else if( issavepos && m_SvgSym[19] != NULL )
+        drawSvgSym(dc, m_SvgSym[19], ori);
+      else
+        drawSvgSym(dc, m_SvgSym7, ori);
     else
       drawSvgSym(dc, m_SvgSym2, ori);
   }
   else if( m_SvgSym1!=NULL ) {
     if( occupied && m_SvgSym4 != NULL )
-      drawSvgSym(dc, m_SvgSym4, ori);
+      if( islocked && m_SvgSym14 != NULL )
+        drawSvgSym(dc, m_SvgSym14, ori);
+      else
+        drawSvgSym(dc, m_SvgSym4, ori);
     else if( actroute && m_SvgSym8 != NULL )
       drawSvgSym(dc, m_SvgSym8, ori);
     else if( actroute && m_SvgSym6 != NULL )
-      drawSvgSym(dc, m_SvgSym6, ori);
+      if( !isset && m_SvgSym[16] != NULL )
+        drawSvgSym(dc, m_SvgSym[16], ori);
+      else if( islocked && m_SvgSym12 != NULL )
+        drawSvgSym(dc, m_SvgSym12, ori);
+      else if( issavepos && m_SvgSym[18] != NULL )
+        drawSvgSym(dc, m_SvgSym[18], ori);
+      else
+        drawSvgSym(dc, m_SvgSym6, ori);
     else
       drawSvgSym(dc, m_SvgSym1, ori);
   }
