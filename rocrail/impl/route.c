@@ -646,8 +646,10 @@ static int __getSpeedCondPercent(iORoute inst, iOLoc loco) {
           char* key = StrOp.fmt( "%s-%s", varid, subid );
           iOMap map = MapOp.inst();
           MapOp.put(map, "lcid", (obj)LocOp.getId(loco));
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition variable key: [%s]", key);
           char* resolvedKey = TextOp.replaceAllSubstitutions(key, map);
           StrOp.free(key);
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition variable resolved key: [%s]", resolvedKey);
           var = ModelOp.getVariable( model, resolvedKey );
           StrOp.free(resolvedKey);
           MapOp.base.del(map);
@@ -659,32 +661,39 @@ static int __getSpeedCondPercent(iORoute inst, iOLoc loco) {
 
         if( var != NULL ) {
           Boolean rc = True;
-          const char* state = wSpeedCondition.getvalue(spcond);
-          if( StrOp.len(state) > 0 ) {
-            iOMap map = MapOp.inst();
-            MapOp.put(map, "lcid", (obj)LocOp.getId(loco));
-            int stateVal = VarOp.getValue(state+1, map);
-            MapOp.base.del(map);
+          const char* condvalStr = wSpeedCondition.getvalue(spcond);
 
-            if( state[0] == '=' )
-              rc = wVariable.getvalue(var) == stateVal;
-            else if( state[0] == '>' )
-              rc = wVariable.getvalue(var) > stateVal;
-            else if( state[0] == '<' )
-              rc = wVariable.getvalue(var) < stateVal;
-            else if( state[0] == '!' )
-              rc = wVariable.getvalue(var) != stateVal;
+          if( StrOp.len(condvalStr) > 0 ) {
+            int condval = atoi(condvalStr+1);
+            int varval  = wVariable.getvalue(var);
+
+            if( condvalStr[0] == '=' )
+              rc = varval == condval;
+            else if( condvalStr[0] == '>' )
+              rc = varval > condval;
+            else if( condvalStr[0] == '<' )
+              rc = varval < condval;
+            else if( condvalStr[0] == '!' )
+              rc = varval != condval;
             /* Text compare */
-            else if( state[0] == '#' )
-              rc = StrOp.equals(wVariable.gettext(var), state+1);
-            else if( state[0] == '?' )
-              rc = !StrOp.equals(wVariable.gettext(var), state+1);
+            else if( condvalStr[0] == '#' )
+              rc = StrOp.equals(wVariable.gettext(var), condvalStr+1);
+            else if( condvalStr[0] == '?' )
+              rc = !StrOp.equals(wVariable.gettext(var), condvalStr+1);
+
+            if( rc )
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition variable value [%d]%c[%d]", condval, condvalStr[0], varval);
           }
 
           if( !rc ) {
             spcond = wRoute.nextspeedcondition(data->props, spcond);
             continue;
           }
+
+        }
+        else {
+          spcond = wRoute.nextspeedcondition(data->props, spcond);
+          continue;
         }
       }
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition %s use %d percent speed for loco %s",
