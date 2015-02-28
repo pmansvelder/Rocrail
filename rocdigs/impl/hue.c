@@ -317,7 +317,7 @@ static void __queryLights(iOHUE inst) {
 static iONode __translate( iOHUE inst, iONode node ) {
   iOHUEData data = Data(inst);
 
-  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "cmd=%s", NodeOp.getName( node ) );
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "node=%s cmd=%s", NodeOp.getName( node ), wSysCmd.getcmd( node ) );
   if( StrOp.equals( NodeOp.getName( node ), wSysCmd.name() ) ) {
 
   /* System command. */

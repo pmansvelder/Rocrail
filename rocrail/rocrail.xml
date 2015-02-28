@@ -2803,6 +2803,7 @@
       <var name="themedimtimer" vt="int"/>
       <var name="starthour" vt="int"/>
       <var name="startminute" vt="int"/>
+      <var name="ebreak" vt="Boolean"/>
     </data>
   </object>
   

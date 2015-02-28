@@ -50,9 +50,12 @@
 #include "rocrail/wrapper/public/Ctrl.h"
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/WeatherColor.h"
+#include "rocrail/wrapper/public/SysCmd.h"
 
 
 static int instCnt = 0;
+
+static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown, Boolean clearTheme );
 
 /** ----- OBase ----- */
 static void __del( void* inst ) {
@@ -104,6 +107,36 @@ static const char* __id( void* inst ) {
 }
 
 static void* __event( void* inst, const void* evt ) {
+  iOWeatherData data = Data(inst);
+  iONode     evtNode = (iONode)evt;
+  if( evtNode == NULL )
+    return NULL;
+
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "event for weather %s: %s %s",
+      wWeather.getid(data->props), NodeOp.getName(evtNode), wSysCmd.getcmd(evtNode) );
+
+  if( StrOp.equals( wSysCmd.name(), NodeOp.getName(evtNode) ) ) {
+    const char* cmd = wSysCmd.getcmd(evtNode);
+    iOControl control = AppOp.getControl();
+
+    if( StrOp.equals( wSysCmd.ebreak, cmd ) ) {
+      data->ebreak = True;
+      long t = ControlOp.getTime(control);
+      struct tm* ltm = localtime( &t );
+      int hour = ltm->tm_hour;
+      int min  = ltm->tm_min;
+      __doDaylight(inst, hour, min, False, False );
+    }
+    else if( StrOp.equals( wSysCmd.go, cmd ) || StrOp.equals( wSysCmd.stop, cmd ) ) {
+      data->ebreak = False;
+      long t = ControlOp.getTime(control);
+      struct tm* ltm = localtime( &t );
+      int hour = ltm->tm_hour;
+      int min  = ltm->tm_min;
+      __doDaylight(inst, hour, min, False, False );
+    }
+  }
+
   return NULL;
 }
 
@@ -457,6 +490,15 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
       brightness = l_brightness - (l_briPercent * l_percentDim);
     }
 
+    if( data->ebreak ) {
+      brightness = 255;
+      red = 255;
+      green = 255;
+      blue = 255;
+      white = 255;
+      white2 = 255;
+    }
+
     if(adjustBri || shutdown) {
       int LAMPS = ListOp.size(list);
       float segment = 180.0 / (float)(LAMPS-1);
@@ -481,7 +523,7 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
           lampBri = 0;
         }
 
-        if( !wWeather.isslidingdaylight(data->props) || LAMPS < 2 ) {
+        if( !wWeather.isslidingdaylight(data->props) || LAMPS < 2 || data->ebreak ) {
           lampBri = brightness;
           if( lampBri < minbri )
             lampBri = minbri;
@@ -906,6 +948,8 @@ static struct OWeather* _inst( iONode ini ) {
 
   data->makeWeather = ThreadOp.inst( "makeWeather", __makeWeather, __Weather );
   ThreadOp.start( data->makeWeather );
+
+  ModelOp.addSysEventListener( AppOp.getModel(), (obj)__Weather );
 
   instCnt++;
   return __Weather;
