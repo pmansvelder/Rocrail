@@ -199,6 +199,26 @@ static iONode _cmd( obj inst ,const iONode cmd ) {
       }
 
     }
+    else if(  wProgram.getcmd( cmd ) == wProgram.get && wProgram.ispom( cmd )) {
+      iONode rsp = NULL;
+      iONode lccmd = NodeOp.inst( wBinCmd.name(), NULL, ELEMENT_NODE );
+      char* str = StrOp.fmt( "XPD %d, %d\r", wProgram.getaddr(cmd), wProgram.getcv(cmd) );
+      char* byteStr = StrOp.byteToStr( (byte*)str, StrOp.len(str) );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, str );
+      wBinCmd.setoutlen( lccmd, StrOp.len(str) );
+      wBinCmd.setinlen( lccmd, 256 );
+      wBinCmd.setinendbyte( lccmd, ']' );
+      wBinCmd.setout( lccmd, byteStr );
+      StrOp.free( byteStr );
+      StrOp.free( str );
+      rsp = data->sublib->cmd((obj)data->sublib, lccmd);
+      if(rsp != NULL) {
+        /* -> response is useless, must use other way 
+           -> just ignore
+        */
+        NodeOp.base.del(rsp);
+      }
+    }
     else if(  wProgram.getcmd( cmd ) == wProgram.get ) {
       iONode rsp = NULL;
       iONode lccmd = NodeOp.inst( wBinCmd.name(), NULL, ELEMENT_NODE );
