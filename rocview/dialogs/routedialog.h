@@ -85,6 +85,7 @@ class wxGrid;
 #define ID_SPEEDCOND_ADD 10463
 #define ID_SPEEDCOND_DEL 10464
 #define ID_SPEEDCOND_MODIFY 10465
+#define ID_SPEEDCOND_IMPORT 10466
 #define ID_PANEL_ST_COMMANDS 10014
 #define ID_LISTBOX_COMMANDS 10015
 #define ID_BUTTON_ST_DELETE 10016
@@ -208,6 +209,9 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SPEEDCOND_MODIFY
     void OnSpeedcondModifyClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SPEEDCOND_IMPORT
+    void OnSpeedcondImportClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_COMMANDS
     void OnListboxCommandsSelected( wxCommandEvent& event );
@@ -346,6 +350,8 @@ public:
     wxButton* m_SpeedCondAdd;
     wxButton* m_SpeedCondDel;
     wxButton* m_SpeedCondModify;
+    wxButton* m_SpeedCondImport;
+    wxComboBox* m_SpeedCondImportFrom;
     wxPanel* m_CommandPanel;
     wxListBox* m_Commands;
     wxButton* m_Delete;
