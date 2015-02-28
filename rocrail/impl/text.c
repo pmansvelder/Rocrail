@@ -203,6 +203,11 @@ static char* __addActionProperties(iOMap map, iONode node) {
   MapOp.put(map, "countedcars", (obj)NodeOp.getStr(node, "countedcars", "0") );
   MapOp.put(map, "wheelcount", (obj)NodeOp.getStr(node, "wheelcount", "0") );
 
+  MapOp.put(map, "load", (obj)NodeOp.getStr(node, "load", "0"));
+  MapOp.put(map, "volt", (obj)NodeOp.getStr(node, "volt", "0"));
+  MapOp.put(map, "temp", (obj)NodeOp.getStr(node, "temp", "0"));
+
+
   /* Get time from Control */
   if( AppOp.getControl() != NULL ) {
     long l_time = ControlOp.getTime( AppOp.getControl() );
