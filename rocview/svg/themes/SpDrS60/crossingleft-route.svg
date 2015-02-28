@@ -12,8 +12,5 @@
     <path stroke="rgb(255,255,0)" fill="rgb(255,255,0)" d="M 21,3 L 27,9 L 25,11 L 19,5 z " />
     <!-- Ausleuchtung rechts unten gelb -->
     <path stroke="rgb(255,255,0)" fill="rgb(255,255,0)" d="M 38,20 L 44,26 L 42,28 L 36,22 z " />
-    <!-- Marker grau -->
-    <circle cx="17" cy="28" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
-    <circle cx="25" cy="28" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
   </g>
 </svg>

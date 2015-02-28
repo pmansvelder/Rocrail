@@ -9,8 +9,5 @@
     <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 20,0 L 37,12 L 63,12 L 63,19 L 38,19 L 12,0 z " />
     <!-- Ausleuchtung rot  -->
     <path stroke="rgb(255,0,0)" fill="rgb(255,0,0)" d="M 55,14 L 38,14 L 24,4 L 22,6 L 38,17 L 55,17 z " />
-    <!-- Marker grau -->
-    <circle cx="17" cy="28" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
-    <circle cx="25" cy="28" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
   </g>
 </svg>

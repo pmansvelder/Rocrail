@@ -8,8 +8,5 @@
     <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 0,31 L 0,27 L 8,19 L 16,19 L 4,31 z " />
   <!-- Ausleuchtung Abzweig unten links grau -->
     <path stroke="rgb(192,192,192)" fill="rgb(192,192,192)" d="M 3,26 L 9,20 L 11,22 L 5,28 z " />
-  <!-- Marker grau -->
-    <circle cx="19" cy="7" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
-    <circle cx="27" cy="7" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
   </g>
 </svg>
