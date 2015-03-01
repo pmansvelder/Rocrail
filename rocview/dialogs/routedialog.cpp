@@ -3220,7 +3220,7 @@ void RouteDialog::OnSpeedcondImportClick( wxCommandEvent& event )
 
   int sel = m_SpeedCondImportFrom->GetSelection();
   if( sel > 0 ) {
-    int idx = findID(m_SpeedCondImportFrom->GetStringSelection());
+    int idx = findID(m_SpeedCondImportFrom->GetStringSelection().mb_str(wxConvUTF8));
     if( idx != wxNOT_FOUND ) {
       iONode props = getSelection(idx);
       if( props != NULL ) {
