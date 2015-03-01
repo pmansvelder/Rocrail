@@ -643,7 +643,7 @@ static int __getSpeedCondPercent(iORoute inst, iOLoc loco) {
         iONode var = NULL;
 
         if( subid != NULL && StrOp.len(subid) > 0 ) {
-          char* key = StrOp.fmt( "%s-%s", varid, subid );
+          char* key = StrOp.fmt( "%s%s", varid, subid );
           iOMap map = MapOp.inst();
           MapOp.put(map, "lcid", (obj)LocOp.getId(loco));
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition variable key: [%s]", key);
