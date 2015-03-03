@@ -583,7 +583,7 @@ static int __translate( iODINAMO dinamo, iONode node, byte* datagram, Boolean* r
           TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 switch lights [%d-%d] aspect=%d", addr+1, port+1, datagram[3]);
         }
         else {
-          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32 switch %s [%d-%d] %s",
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "om32/oc32 switch %s [%d-%d] %s",
               wSwitch.getcmd( node ), addr+1, port+1, wSwitch.issinglegate( node )?" (single gate)":"" );
         }
 

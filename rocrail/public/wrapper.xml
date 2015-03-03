@@ -1847,7 +1847,7 @@
         <const name="prot_N" vt="string" val="N" remark="NMRA-DCC"/>
         <const name="prot_MDD" vt="string" val="mdd" remark="Dinamo MDD"/>
         <const name="prot_OM32" vt="string" val="om32" remark="Dinamo OM32"/>
-        <const name="prot_OC32" vt="string" val="om32" remark="Dinamo OC32"/>
+        <const name="prot_OC32" vt="string" val="oc32" remark="Dinamo OC32"/>
         <const name="prot_DO" vt="string" val="do" remark="Dinamo DO"/>
         <const name="prot_VO" vt="string" val="vo" remark="Dinamo VO"/>
 
