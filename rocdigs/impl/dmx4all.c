@@ -308,7 +308,6 @@ static void __transactor( void* threadinst ) {
 
     char* cmd = (char*)ThreadOp.getPost( th );
     if (cmd != NULL) {
-      int len = cmd[0];
       TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "write: %s", cmd );
       if( !SerialOp.write( data->serial, cmd, StrOp.len(cmd) ) ) {
         SerialOp.base.del(data->serial);
