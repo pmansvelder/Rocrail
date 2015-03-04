@@ -2102,7 +2102,7 @@
     </data>
   </object>
 
-  <object name="DMXArtNet" interface="$../rocint/rocint.xml:DigInt" use="node,trace,thread,socket,map,mutex" include="$rocint/public/digint" remark="Philips HUE">
+  <object name="DMXArtNet" interface="$../rocint/rocint.xml:DigInt" use="node,trace,thread,socket,map,mutex" include="$rocint/public/digint" remark="ArtNetNode">
     <fun name="inst" vt="this">
       <param name="ini" vt="const iONode" remark="Ini node"/>
       <param name="trc" vt="const iOTrace" remark="Trace instance"/>
@@ -2115,6 +2115,29 @@
       <var name="run" vt="Boolean"/>
       <var name="reader" vt="iOThread"/>
       <var name="writer" vt="iOThread"/>
+      <var name="mux" vt="iOMutex"/>
+      <var name="mapwhite" vt="Boolean"/>
+      <var name="framerate" vt="int"/>
+      <var name="refresh" vt="Boolean"/>
+      <var name="dmxchannel[513]" vt="byte"/>
+      <var name="transactor" vt="iOThread"/>
+      <var name="listenerObj" vt="obj"/>
+      <var name="listenerFun" vt="digint_listener"/>
+    </data>
+  </object>
+
+  <object name="DMX4ALL" interface="$../rocint/rocint.xml:DigInt" use="node,trace,thread,serial,map,mutex" include="$rocint/public/digint" remark="DMX4ALL">
+    <fun name="inst" vt="this">
+      <param name="ini" vt="const iONode" remark="Ini node"/>
+      <param name="trc" vt="const iOTrace" remark="Trace instance"/>
+    </fun>
+    <data>
+      <var name="ini" vt="iONode"/>
+      <var name="dmxini" vt="iONode"/>
+      <var name="iid" vt="const char*"/>
+      <var name="serial" vt="iOSerial"/>
+      <var name="serialOK" vt="Boolean"/>
+      <var name="run" vt="Boolean"/>
       <var name="mux" vt="iOMutex"/>
       <var name="mapwhite" vt="Boolean"/>
       <var name="framerate" vt="int"/>
