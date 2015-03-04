@@ -95,10 +95,126 @@ static void* __event( void* inst, const void* evt ) {
 
 /** ----- ODMX4ALL ----- */
 
+static void __setChannel(iODMX4ALL inst, int addr, int red, int green, int blue, int white, int white2, int brightness,
+    Boolean active, int redChannel, int greenChannel, int blueChannel, int briChannel, int whiteChannel, int white2Channel)
+{
+  iODMX4ALLData data = Data(inst);
+  if( MutexOp.wait( data->mux ) ) {
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999,
+        "device=%d active=%d bri=%d RGBW=%d,%d,%d,%d", addr, active, brightness, red, green, blue, white );
+    if( briChannel > 0 )
+      data->dmxchannel[addr+briChannel-1] = brightness;
+    else {
+      red    = (red    * brightness) / 255;
+      green  = (green  * brightness) / 255;
+      blue   = (blue   * brightness) / 255;
+      white  = (white  * brightness) / 255;
+      white2 = (white2 * brightness) / 255;
+    }
+
+    if( redChannel > 0 ) {
+      char* cmd = StrOp.fmt("C%03dL%03d", addr+redChannel-1, red);
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
+    if( greenChannel > 0 ) {
+      char* cmd = StrOp.fmt("C%03dL%03d", addr+greenChannel-1, green);
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
+    if( blueChannel > 0 ) {
+      char* cmd = StrOp.fmt("C%03dL%03d", addr+blueChannel-1, blue);
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
+    if( whiteChannel > 0 ) {
+      char* cmd = StrOp.fmt("C%03dL%03d", addr+whiteChannel-1, white);
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
+    else if( data->mapwhite && white > 0 && redChannel > 0 && greenChannel > 0 && blueChannel > 0 ) {
+      /* add it to the other channels */
+      if( red + white > 255 ) {
+        char* cmd = StrOp.fmt("C%03dL%03d", addr+redChannel-1, 255);
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+      else {
+        char* cmd = StrOp.fmt("C%03dL%03d", addr+redChannel-1, red + white);
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+
+      if( green + white > 255 ) {
+        char* cmd = StrOp.fmt("C%03dL%03d", addr+greenChannel-1, 255);
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+      else {
+        char* cmd = StrOp.fmt("C%03dL%03d", addr+greenChannel-1, red + white);
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+
+      if( blue + white > 255 ) {
+        char* cmd = StrOp.fmt("C%03dL%03d", addr+blueChannel-1, 255);
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+      else {
+        char* cmd = StrOp.fmt("C%03dL%03d", addr+blueChannel-1, blue + white);
+        ThreadOp.post( data->transactor, (obj)cmd );
+      }
+
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
+          "device %d does not support white; adjust other colors RGB=%d,%d,%d (base=%d,%d,%d)",
+          addr, data->dmxchannel[addr+redChannel-1], data->dmxchannel[addr+greenChannel-1], data->dmxchannel[addr+blueChannel-1],
+          red, green, blue );
+    }
+    if( white2Channel > 0 ) {
+      char* cmd = StrOp.fmt("C%03dL%03d", addr+white2Channel-1, white2);
+      ThreadOp.post( data->transactor, (obj)cmd );
+    }
+
+
+    MutexOp.post(data->mux);
+  }
+}
+
+
+
 static iONode __translate( iODMX4ALL inst, iONode node ) {
   iODMX4ALLData data = Data(inst);
   iONode rsp   = NULL;
 
+  /* Output command. */
+  if( StrOp.equals( NodeOp.getName( node ), wOutput.name() ) ) {
+    int addr = wOutput.getaddr( node );
+    int port = wOutput.getport( node );
+    int val  = wOutput.getvalue( node );
+    iONode  color = wOutput.getcolor(node);
+    Boolean blink = wOutput.isblink( node );
+    Boolean colortype = wOutput.iscolortype( node );
+    Boolean active = False;
+
+    int redChannel    = wOutput.getredChannel(node);
+    int greenChannel  = wOutput.getgreenChannel(node);
+    int blueChannel   = wOutput.getblueChannel(node);
+    int briChannel    = wOutput.getbrightnessChannel(node);
+    int whiteChannel  = wOutput.getwhiteChannel(node);
+    int white2Channel = wOutput.getwhite2Channel(node);
+    int r  = 0;
+    int g  = 0;
+    int b  = 0;
+    int w  = 0;
+    int w2 = 0;
+
+    if( StrOp.equals( wOutput.getcmd( node ), wOutput.on ) || StrOp.equals( wOutput.getcmd( node ), wOutput.value ) )
+      active = True;
+
+    if( color != NULL ) {
+      r  = wColor.getred(color);
+      g  = wColor.getgreen(color);
+      b  = wColor.getblue(color);
+      w  = wColor.getwhite(color);
+      w2 = wColor.getwhite2(color);
+    }
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output device=%d active=%d cmd=%s bri=%d briChannel(%d) RGBWW=%d,%d,%d,%d,%d RGBWWChannels(%d,%d,%d,%d,%d)",
+        addr, active, wOutput.getcmd( node ), val, briChannel, r, g, b, w, w2, redChannel, greenChannel, blueChannel, whiteChannel, white2Channel );
+
+    __setChannel(inst, addr, r, g, b, w, w2, val, active, redChannel, greenChannel, blueChannel, briChannel, whiteChannel, white2Channel);
+  }
 
   return rsp;
 }
@@ -167,28 +283,50 @@ static void __transactor( void* threadinst ) {
   iOThread        th = (iOThread)threadinst;
   iODMX4ALL  dmx4all = (iODMX4ALL)ThreadOp.getParm(th);
   iODMX4ALLData data = Data(dmx4all);
+  Boolean   serialOK = False;
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Transactor started." );
 
   ThreadOp.sleep(100);
-  data->serial = SerialOp.inst( wDigInt.getdevice( data->ini ) );
-  SerialOp.setFlow( data->serial, 0 );
-  SerialOp.setLine( data->serial, 38400, 8, 1, none, False );
+
+  while( data->run ) {
+
+    if( !serialOK ) {
+      data->serial = SerialOp.inst( wDigInt.getdevice( data->ini ) );
+      SerialOp.setFlow( data->serial, 0 );
+      SerialOp.setLine( data->serial, 38400, 8, 1, none, wDigInt.isrtsdisabled( data->ini ) );
+      SerialOp.setTimeout( data->serial, wDigInt.gettimeout(data->ini), wDigInt.gettimeout(data->ini) );
+      serialOK = SerialOp.open( data->serial );
+      if( !serialOK ) {
+        SerialOp.base.del(data->serial);
+        data->serial = NULL;
+        ThreadOp.sleep(2500);
+        continue;
+      }
+    }
 
 
-  do {
-    obj post = NULL;
-
-    post = ThreadOp.getPost( th );
-
-    if( post != NULL ) {
-      char* cmd = (char*)post;
-
-      StrOp.free(cmd);
+    char* cmd = (char*)ThreadOp.getPost( th );
+    if (cmd != NULL) {
+      int len = cmd[0];
+      TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "write: %s", cmd );
+      if( !SerialOp.write( data->serial, cmd, StrOp.len(cmd) ) ) {
+        SerialOp.base.del(data->serial);
+        data->serial = NULL;
+        serialOK = False;
+      }
+      else {
+        while( SerialOp.available(data->serial) ) {
+          char b = '\0';
+          SerialOp.read( data->serial, &b, 1 );
+          TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "read: %c", b );
+        }
+      }
+      StrOp.free( cmd );
     }
 
     ThreadOp.sleep(10);
-  } while( data->run );
+  };
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Transactor ended." );
 }
