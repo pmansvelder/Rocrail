@@ -807,11 +807,11 @@ static iONode __translate( iOXpressNet xpressnet, iONode node ) {
             outa[1] = 0x16;
             outa[2] = cv & 0xFF;
           }
-          if( cv < 512 ) {
+          else if( cv < 512 ) {
             outa[1] = 0x1D;
             outa[2] = (cv % 256) & 0xFF;
           }
-          if( cv < 768 ) {
+          else if( cv < 768 ) {
             outa[1] = 0x1E;
             outa[2] = (cv % 256) & 0xFF;
           }
