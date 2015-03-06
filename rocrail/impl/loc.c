@@ -3884,6 +3884,12 @@ static Boolean _isManually( iOLoc loc ) {
 }
 
 
+static Boolean _isReduceSpeedAtEnter( iOLoc loc ) {
+  iOLocData data = Data(loc);
+  return wLoc.isreducespeedatenter( data->props );
+}
+
+
 static Boolean _matchIdent( iOLoc loc, const char* ident, const char* ident2, const char* ident3, const char* ident4 ) {
   iOLocData data = Data(loc);
   Boolean match = False;

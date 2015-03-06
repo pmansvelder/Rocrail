@@ -7787,3 +7787,9 @@ msgstr ""
 msgid "Restore channels"
 msgstr ""
 
+#. 
+# id="reducespeedatenter"
+#, c-format
+msgid "Reduce speed at enter"
+msgstr ""
+

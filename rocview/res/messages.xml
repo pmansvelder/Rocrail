@@ -29721,4 +29721,7 @@
     <sl txt="Ponastavi kanale"/>
     <sr_latin txt="Povrati kanale"/>
   </Msg>
+  <Msg id="reducespeedatenter">
+    <en txt="Reduce speed at enter"/>
+  </Msg>
 </Messages>

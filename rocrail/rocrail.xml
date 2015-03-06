@@ -740,6 +740,9 @@
     <fun name="isManually" vt="Boolean">
       <param name="inst" vt="this" remark="Loc instance"/>
     </fun>
+    <fun name="isReduceSpeedAtEnter" vt="Boolean">
+      <param name="inst" vt="this" remark="Loc instance"/>
+    </fun>
     <fun name="setClass" vt="void">
       <param name="inst" vt="this" remark="Loc instance"/>
       <param name="class" vt="const char*"/>
