@@ -284,6 +284,7 @@ static void __transactor( void* threadinst ) {
   iODMX4ALL  dmx4all = (iODMX4ALL)ThreadOp.getParm(th);
   iODMX4ALLData data = Data(dmx4all);
   Boolean   serialOK = False;
+  Boolean   didInit  = False;
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Transactor started." );
 
@@ -305,20 +306,54 @@ static void __transactor( void* threadinst ) {
       }
     }
 
+    if( !didInit ) {
+      char* cmd = StrOp.fmt("I");
+      ThreadOp.post( data->transactor, (obj)cmd );
+      cmd = StrOp.fmt("N511");
+      ThreadOp.post( data->transactor, (obj)cmd );
+      cmd = StrOp.fmt("N?");
+      ThreadOp.post( data->transactor, (obj)cmd );
+      didInit = True;
+    }
 
     char* cmd = (char*)ThreadOp.getPost( th );
     if (cmd != NULL) {
-      TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "write: %s", cmd );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "write: %s", cmd );
       if( !SerialOp.write( data->serial, cmd, StrOp.len(cmd) ) ) {
         SerialOp.base.del(data->serial);
         data->serial = NULL;
         serialOK = False;
       }
       else {
+        char* s = NULL;
+        int timeout = 0;
+        while( !SerialOp.available(data->serial) && timeout < 10 ) {
+          ThreadOp.sleep(10);
+          timeout++;
+        }
         while( SerialOp.available(data->serial) ) {
-          char b = '\0';
-          SerialOp.read( data->serial, &b, 1 );
-          TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "read: %c", b );
+          char b[2] = {'\0'};
+          SerialOp.read( data->serial, &b[0], 1 );
+          TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "read : %02X %c", b[0], b[0] );
+          b[1] = '\0';
+          if( b[0] != 0x0D && b[0] != 0x0A ) {
+            s = StrOp.cat(s, b);
+          }
+          if( (b[0] == 0x0D || b[0] == 0x0A) && s != NULL ) {
+            TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "read : %s", s );
+            StrOp.free(s);
+            s = NULL;
+          }
+          int timeout = 0;
+          while( !SerialOp.available(data->serial) && timeout < 10 ) {
+            ThreadOp.sleep(1);
+            timeout++;
+          }
+        }
+        if( s != NULL ) {
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "read : %s", s );
+          StrOp.free(s);
+          s = NULL;
         }
       }
       StrOp.free( cmd );
