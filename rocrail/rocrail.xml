@@ -2352,6 +2352,10 @@
     <fun name="getClass" vt="const char*">
       <param name="inst" vt="this" remark="Operator instance"/>
     </fun>
+    <fun name="setClass" vt="void">
+      <param name="inst" vt="this" remark="Operator instance"/>
+      <param name="class" vt="const char*"/>
+    </fun>
     <fun name="getVMax" vt="int">
       <param name="inst" vt="this" remark="Operator instance"/>
     </fun>

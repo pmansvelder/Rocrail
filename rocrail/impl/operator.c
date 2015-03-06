@@ -364,6 +364,12 @@ static const char* _getClass( struct OOperator* inst ) {
 }
 
 
+static void _setClass( struct OOperator* inst, const char* newclass ) {
+  iOOperatorData data = Data(inst);
+  wOperator.setclass(data->props, newclass);
+}
+
+
 static int _getVMax( struct OOperator* inst ) {
   iOOperatorData data = Data(inst);
   int vmax = wOperator.getV_max(data->props);

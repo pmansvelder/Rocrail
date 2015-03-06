@@ -664,13 +664,18 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
     const char* id = wAction.getoid( data->action );
     iOOperator op = ModelOp.getOperator( model, id );
     if( op != NULL ) {
-      iONode cmd = NodeOp.inst( wOperator.name(), NULL, ELEMENT_NODE );
-      const char* cmdStr = wAction.getcmd( data->action );
-      wOperator.setcmd( cmd, cmdStr );
-      wOperator.setcarids( cmd, wAction.getparam(data->action) );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "operator[%s], [%s] [%s]",
-          id, cmdStr, wAction.getparam(data->action) );
-      OperatorOp.cmd( op, cmd );
+      if( StrOp.equals( wAction.loco_class, wAction.getcmd( data->action ) ) ) {
+        OperatorOp.setClass(op, wAction.getparam( data->action ));
+      }
+      else {
+        iONode cmd = NodeOp.inst( wOperator.name(), NULL, ELEMENT_NODE );
+        const char* cmdStr = wAction.getcmd( data->action );
+        wOperator.setcmd( cmd, cmdStr );
+        wOperator.setcarids( cmd, wAction.getparam(data->action) );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "operator[%s], [%s] [%s]",
+            id, cmdStr, wAction.getparam(data->action) );
+        OperatorOp.cmd( op, cmd );
+      }
     }
   }
 
