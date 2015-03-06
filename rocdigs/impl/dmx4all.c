@@ -213,7 +213,7 @@ static iONode __translate( iODMX4ALL inst, iONode node ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output device=%d active=%d cmd=%s bri=%d briChannel(%d) RGBWW=%d,%d,%d,%d,%d RGBWWChannels(%d,%d,%d,%d,%d)",
         addr, active, wOutput.getcmd( node ), val, briChannel, r, g, b, w, w2, redChannel, greenChannel, blueChannel, whiteChannel, white2Channel );
 
-    __setChannel(inst, addr, r, g, b, w, w2, val, active, redChannel, greenChannel, blueChannel, briChannel, whiteChannel, white2Channel);
+    __setChannel(inst, addr-1, r, g, b, w, w2, val, active, redChannel, greenChannel, blueChannel, briChannel, whiteChannel, white2Channel);
   }
 
   return rsp;
