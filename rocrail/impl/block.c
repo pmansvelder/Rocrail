@@ -376,7 +376,7 @@ static void _setGhostDetected(iIBlockBase inst, const char* key, const char* ide
   /* ghost train! */
 
   if( ModelOp.isAuto( AppOp.getModel() ) ) {
-    if( !__acceptGhost((obj)inst) ) {
+    if( !__acceptGhost((obj)inst) && !wBlock.isvirtual(data->props) ) {
       int tl = TRCLEVEL_USER1;
       data->ghost = True;
 
