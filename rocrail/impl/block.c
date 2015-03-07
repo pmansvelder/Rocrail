@@ -1621,13 +1621,29 @@ static void _enterBlock( iIBlockBase inst, const char* id ) {
     wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
     wBlock.setacceptident(nodeD, data->acceptident);
     AppOp.broadcastEvent( nodeD );
-    __checkAction((iOBlock)inst, "enter");
+    if( !data->crossing )
+      __checkAction((iOBlock)inst, "enter");
   }
 
   if( wBlock.getfifosize(data->props) > 0 && wBlock.isfreeblockonenter(data->props) ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "reset arrivalPending in block [%s] for FiFo", data->id );
     data->arrivalPending = False;
   }
+
+  if( !data->crossing && wBlock.isvirtual(data->props) ) {
+    iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(data->props), ',' );
+
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* blockid = StrTokOp.nextToken( tok );
+      iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
+      if( bk != NULL ) {
+        bk->enterBlock( bk, id );
+      }
+    };
+    StrTokOp.base.del(tok);
+  }
+
+
 }
 
 
@@ -1652,13 +1668,27 @@ static void _inBlock( iIBlockBase inst, const char* id ) {
     wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
     wBlock.setacceptident(nodeD, data->acceptident);
     AppOp.broadcastEvent( nodeD );
-    __checkAction((iOBlock)inst, "occupied");
+    if( !data->crossing )
+      __checkAction((iOBlock)inst, "occupied");
 
-    if( location != NULL ) {
+    if( !data->crossing && location != NULL ) {
       LocationOp.locoDidArrive(location, id);
     }
   }
   data->arrivalPending = False;
+
+  if( !data->crossing && wBlock.isvirtual(data->props) ) {
+    iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(data->props), ',' );
+
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* blockid = StrTokOp.nextToken( tok );
+      iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
+      if( bk != NULL ) {
+        bk->inBlock( bk, id );
+      }
+    };
+    StrTokOp.base.del(tok);
+  }
 }
 
 
