@@ -188,8 +188,7 @@ const char* getBlockV_hint( iILcDriverInt inst, iIBlockBase block, Boolean onexi
       if( StrOp.equals( wBlock.percent, data->V_hint ) ) {
         StrOp.fmtb( data->V_hint, "%d", percent );
       }
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4205, "Route[%s] V_hint [%s]",
-          street->getId(street), data->V_hint );
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4205, "Route[%s] V_hint [%s]", street->getId(street), data->V_hint );
       return data->V_hint;
     }
   }
