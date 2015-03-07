@@ -496,14 +496,24 @@ static void _event( iOFBack inst, iONode nodeC ) {
 
   {
     obj listener = ListOp.first( data->listeners );
+    iONode node = (iONode)NodeOp.base.clone(data->props);
+    wFeedback.setstate(node, data->state);
+    wFeedback.setidentifier(node, wFeedback.getidentifier( nodeC ));
+    wFeedback.setidentifier2(node, wFeedback.getidentifier2( nodeC ) );
+    wFeedback.setidentifier3(node, wFeedback.getidentifier3( nodeC ) );
+    wFeedback.setidentifier4(node, wFeedback.getidentifier4( nodeC ) );
+    wFeedback.setval(node, wFeedback.getval( nodeC ) );
+    wFeedback.setwheelcount(node, wFeedback.getwheelcount( nodeC ) + data->wheelcount);
+    wFeedback.setdirection(node, wFeedback.isdirection(nodeC) );
     while( listener != NULL ) {
       hasListener = True;
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "fb [%s](%s) ident=%d val=%d count=%d call listener 0x%08X...",
                    FBackOp.getId(inst), data->state?"ON":"OFF", wFeedback.getidentifier( nodeC ),
                    wFeedback.getval( nodeC ), data->counter, listener );
-      listener->event( listener, data->props );
+      listener->event( listener, node );
       listener = ListOp.next( data->listeners );
     };
+    NodeOp.base.del(node);
   }
 
   __ctcAction( inst );

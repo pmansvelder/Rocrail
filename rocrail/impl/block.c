@@ -48,6 +48,7 @@
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/SysCmd.h"
 #include "rocrail/wrapper/public/ModelCmd.h"
+#include "rocrail/wrapper/public/Feedback.h"
 #include "rocrail/wrapper/public/FeedbackEvent.h"
 #include "rocrail/wrapper/public/PermInclude.h"
 #include "rocrail/wrapper/public/PermExclude.h"
@@ -92,8 +93,23 @@ static void* __event( void* inst, const void* evt ) {
     /* Broadcast to clients. */
     AppOp.broadcastEvent( (iONode)NodeOp.base.clone( data->props ) );
   }
+  else if( StrOp.equals( wFeedback.name(), NodeOp.getName( node ) ) ) {
+    if( BlockOp.event( (iIBlockBase)inst, wFeedback.isstate(node), wFeedback.getid(node), wFeedback.getidentifier(node), wFeedback.getidentifier2(node),
+        wFeedback.getidentifier3(node), wFeedback.getidentifier4(node), wFeedback.getval(node), wFeedback.getwheelcount(node), NULL, wFeedback.isdirection(node) ) ) {
+      if( wFeedback.getwheelcount(node) > 0 ) {
+        data->wheelcount = wFeedback.getwheelcount(node);
+        data->wheelcounterId = wFeedback.getid(node);
+      }
+    }
 
-  NodeOp.base.del(node);
+    if( data->pendingFree ) {
+      if( __isElectricallyFree((iOBlock)inst) ) {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block [%s] is finally unlocked", data->id );
+        data->pendingFree = False;
+      }
+    }
+  }
+
   return NULL;
 }
 
@@ -501,7 +517,7 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
     }
     else
       loc = ModelOp.getLoc( model, data->locId, NULL, False );
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "loco %s found", data->locId, loc==NULL?"NOT ":"" );
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "loco [%s] %sfound", data->locId, loc==NULL?"NOT ":"" );
   }
   else {
     TraceOp.trc( name, puls?TRCLEVEL_INFO:TRCLEVEL_USER1, __LINE__, 9999, "locId not set in block %s", data->id );
@@ -779,6 +795,26 @@ static void _setCarCount( iIBlockBase inst, int count ) {
 /**
  * map all fbevent's and set the listener to the common __fbEvent
  */
+static void __resetFeedbackEvents( iOBlock inst ) {
+  iOBlockData data = Data(inst);
+  iOModel model = AppOp.getModel();
+  char key[256] = {'\0'};
+  iONode fbevt = wBlock.getfbevent( data->props );
+
+  MapOp.clear( data->fbEvents );
+
+  while( fbevt != NULL ) {
+    const char* fbid = wFeedbackEvent.getid( fbevt );
+    const char* byroute = wFeedbackEvent.getbyroute( fbevt );
+    Boolean endpuls = wFeedbackEvent.isendpuls( fbevt );
+    iOFBack fb = ModelOp.getFBack( model, fbid );
+
+    FBackOp.removeListener( fb, (obj)inst );
+
+    fbevt = wBlock.nextfbevent( data->props, fbevt );
+  }
+}
+
 static void __initFeedbackEvents( iOBlock inst ) {
   iOBlockData data = Data(inst);
   iOModel model = AppOp.getModel();
@@ -808,7 +844,8 @@ static void __initFeedbackEvents( iOBlock inst ) {
       };
       StrTokOp.base.del(tok);
 
-      FBackOp.setListener( fb, (obj)inst, &_fbEvent );
+      /*FBackOp.setListener( fb, (obj)inst, &_fbEvent );*/
+      FBackOp.addListener( fb, (obj)inst );
     }
     fbevt = wBlock.nextfbevent( data->props, fbevt );
   };
@@ -1019,6 +1056,29 @@ static Boolean _isFree( iIBlockBase inst, const char* locId ) {
       data->pendingFree = False;
     }
   }
+
+  if( wBlock.isvirtual(data->props) ) {
+    Boolean Free = True;
+    iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(data->props), ',' );
+
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* blockid = StrTokOp.nextToken( tok );
+      iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
+      if( bk != NULL ) {
+        if( !bk->isFree( bk, locId ) ) {
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "virtual block [%s] slave block [%s] is not free", wBlock.getid(data->props), blockid );
+          Free = False;
+          break;
+        }
+      }
+    };
+    StrTokOp.base.del(tok);
+    if(!Free) {
+      return False;
+    }
+  }
+
+
 
   if( wBlock.getfbevent( data->props ) == NULL && data->manager == NULL && wCtrl.isclosenoevents(wRocRail.getctrl( AppOp.getIni() ) ) ) {
     iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
@@ -1706,6 +1766,28 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
       return False;
     }
 
+    if( wBlock.isvirtual(data->props) ) {
+      Boolean Locked = True;
+      iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(data->props), ',' );
+
+      while( StrTokOp.hasMoreTokens(tok) ) {
+        const char* blockid = StrTokOp.nextToken( tok );
+        iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
+        if( bk != NULL ) {
+          if( !bk->lock( bk, id, blockid, routeid, True, reset, reverse, indelay ) ) {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "virtual block [%s] could not lock slave block [%s]", wBlock.getid(data->props), blockid );
+            Locked = False;
+            break;
+          }
+        }
+      };
+      StrTokOp.base.del(tok);
+      if(!Locked) {
+        MutexOp.post( data->muxLock );
+        return False;
+      }
+    }
+
     /* check group lock */
     if( data->locIdGroup != NULL && !StrOp.equals( data->locIdGroup, id ) ) {
       if( !ModelOp.isBlockGroupLockedForLoco(AppOp.getModel(), data->id, id) ) {
@@ -2049,6 +2131,29 @@ static Boolean _unLock( iIBlockBase inst, const char* id, const char* routeId ) 
         return False;
       }
 
+
+      if( wBlock.isvirtual(data->props) ) {
+        Boolean unLocked = True;
+        iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(data->props), ',' );
+
+        while( StrTokOp.hasMoreTokens(tok) ) {
+          const char* blockid = StrTokOp.nextToken( tok );
+          iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
+          if( bk != NULL ) {
+            if( !bk->unLock( bk, id, routeId ) ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "virtual block [%s] could not unlock slave block [%s]", wBlock.getid(data->props), blockid );
+              unLocked = False;
+              break;
+            }
+          }
+        };
+        StrTokOp.base.del(tok);
+        if(!unLocked) {
+          return False;
+        }
+      }
+
+
       /* FiFO */
       if( wBlock.getfifosize(data->props) > 0 && ListOp.size(data->fifoList) > 0 ) {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
@@ -2283,7 +2388,7 @@ static void _init( iIBlockBase inst ) {
   iOModel model = AppOp.getModel(  );
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "init block %s", data->id );
-  /* this string pointer is not persistent! */
+  /* ToDo: This string pointer is not persistent! */
   data->locId = wBlock.getlocid( data->props );
   data->ghost = False;
 
@@ -2598,6 +2703,8 @@ static void _modify( iOBlock inst, iONode props ) {
   data->id = wBlock.getid( data->props );
 
   if( !move ) {
+    __resetFeedbackEvents( inst );
+
     cnt = NodeOp.getChildCnt( data->props );
     while( cnt > 0 ) {
       iONode child = NodeOp.getChild( data->props, 0 );

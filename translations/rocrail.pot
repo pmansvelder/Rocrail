@@ -7793,3 +7793,9 @@ msgstr ""
 msgid "Reduce speed at enter"
 msgstr ""
 
+#. 
+# id="slaveblocks"
+#, c-format
+msgid "Slave blocks"
+msgstr ""
+

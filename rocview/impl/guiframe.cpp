@@ -4030,6 +4030,11 @@ void RocGuiFrame::OnEditBlocks( wxCommandEvent& event ) {
   BlockDialog*  dlg = new BlockDialog(this, (iONode)NULL );
   if( wxID_OK == dlg->ShowModal() ) {
     /* Notify RocRail. */
+    int pages = m_PlanNotebook->GetPageCount();
+    for( int i = 0; i < pages; i++ ) {
+      BasePanel* p = (BasePanel*)m_PlanNotebook->GetPage(i);
+      p->reScale( m_Scale );
+    }
   }
   dlg->Destroy();
 }

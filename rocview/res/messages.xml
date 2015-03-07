@@ -29724,4 +29724,7 @@
   <Msg id="reducespeedatenter">
     <en txt="Reduce speed at enter"/>
   </Msg>
+  <Msg id="slaveblocks">
+    <en txt="Slave blocks"/>
+  </Msg>
 </Messages>

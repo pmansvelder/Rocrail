@@ -347,6 +347,10 @@ public:
     wxButton* m_LocProps;
     wxStaticText* m_labTurntableID;
     wxChoice* m_TurntableID;
+    wxStaticBox* m_VirtualBox;
+    wxCheckBox* m_Virtual;
+    wxStaticText* m_labSlaveBlocks;
+    wxTextCtrl* m_SlaveBlocks;
     wxStaticBoxSizer* m_Configuration;
     wxCheckBox* m_Electrified;
     wxCheckBox* m_Closed;
@@ -363,6 +367,7 @@ public:
     wxCheckBox* m_MainLine;
     wxCheckBox* m_SleepOnClosed;
     wxCheckBox* m_FreeBlockOnEnter;
+    wxCheckBox* m_Show;
     wxButton* m_BlockActions;
     wxPanel* m_LocationPanel;
     wxStaticBox* m_Location;

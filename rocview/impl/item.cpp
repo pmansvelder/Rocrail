@@ -646,7 +646,7 @@ void Symbol::sizeToScale() {
            StrOp.equals( wRoute.name(), name ) || StrOp.equals( wBlock.name(), name ) || StrOp.equals( wStage.name(), name ) ) {
     TraceOp.trc( "item", TRCLEVEL_DEBUG, __LINE__, 9999, "set show to %d for %s, %s in level %d",
         wOutput.isshow(m_Props), name, wItem.getid( m_Props ), m_Z);
-    Show(wOutput.isshow(m_Props));
+    Show(wItem.isshow(m_Props));
   }
   else {
     Show(true);
