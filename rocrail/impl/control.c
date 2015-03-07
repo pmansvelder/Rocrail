@@ -1723,8 +1723,12 @@ static void __clockticker( void* threadinst ) {
     if( data->clockrun ) {
       if( data->devider > 1 )
         data->time += 1;
-      else
-        data->time = time(NULL);
+      else {
+        if( abs(data->time - time(NULL)) > 60 )
+          data->time += 1;
+        else
+          data->time = time(NULL);
+      }
     }
 
     if( !wCtrl.isactiontimer60( wRocRail.getctrl( AppOp.getIni() ) ) ) {
