@@ -529,6 +529,8 @@ public:
     wxSpinCtrl* m_MinAccel;
     wxStaticText* m_labMaxAccel;
     wxSpinCtrl* m_MaxAccel;
+    wxStaticText* m_labDecelerate;
+    wxSpinCtrl* m_Decelerate;
     wxPanel* m_DetailsPanel;
     wxStaticText* m_Label_Blockwait;
     wxTextCtrl* m_Blockwait;

@@ -1398,6 +1398,31 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
     }
   }
 
+  if(wLoc.isregulated(data->props) && wLoc.getdecelerate( data->props ) > 0 ) {
+    if( data->step >= wLoc.getV_step( data->props ) ) {
+      data->step = 0;
+      if( data->curSpeed == 0 && data->drvSpeed > 0 )
+        data->curSpeed = V_old;
+      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "*****Vcur=%d Vdrv=%d", data->curSpeed, data->drvSpeed );
+      if( data->curSpeed > data->drvSpeed ) {
+        int dif = data->curSpeed - data->drvSpeed;
+        int Vdif = (dif * wLoc.getdecelerate(data->props)) / 100;
+        if( Vdif < 1 )
+          Vdif = 1;
+        data->curSpeed -= Vdif;
+        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "V=%d Vdif=%d", data->curSpeed, Vdif );
+        if( cmd == NULL )
+          cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
+        wLoc.setV( cmd, data->curSpeed );
+      }
+    }
+    else if( cmd != NULL ) {
+      /* Initial speed change. */
+      wLoc.setV( cmd, data->curSpeed );
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "Initial V=%d", data->curSpeed );
+    }
+  }
+
 
   /* Send the command to the controller with all mandatory attributes: */
   if( cmd != NULL && control != NULL )

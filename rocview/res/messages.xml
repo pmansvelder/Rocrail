@@ -29730,4 +29730,7 @@
   <Msg id="texttable" dialog="true">
     <en txt="Text table" alttxt="Text" tip="Text table"/>
   </Msg>
+  <Msg id="decelerate">
+    <en txt="Decelerate"/>
+  </Msg>
 </Messages>

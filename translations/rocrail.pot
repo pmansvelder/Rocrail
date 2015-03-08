@@ -7805,3 +7805,9 @@ msgstr ""
 msgid "Text table"
 msgstr ""
 
+#. 
+# id="decelerate"
+#, c-format
+msgid "Decelerate"
+msgstr ""
+
