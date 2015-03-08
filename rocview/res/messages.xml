@@ -29727,4 +29727,7 @@
   <Msg id="slaveblocks">
     <en txt="Slave blocks"/>
   </Msg>
+  <Msg id="texttable" dialog="true">
+    <en txt="Text table" alttxt="Text" tip="Text table"/>
+  </Msg>
 </Messages>

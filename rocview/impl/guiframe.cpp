@@ -74,6 +74,7 @@
 #include "rocview/dialogs/scheduledialog.h"
 #include "rocview/dialogs/locationsdlg.h"
 #include "rocview/dialogs/outputdialog.h"
+#include "rocview/dialogs/textdialog.h"
 #include "rocview/dialogs/feedbackdialog.h"
 #include "rocview/dialogs/routedialog.h"
 #include "rocview/dialogs/blockdialog.h"
@@ -344,6 +345,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( ME_EditStages     , RocGuiFrame::OnEditStages)
     EVT_MENU( ME_EditSignals    , RocGuiFrame::OnEditSignals)
     EVT_MENU( ME_EditOutputs    , RocGuiFrame::OnEditOutputs)
+    EVT_MENU( ME_EditText       , RocGuiFrame::OnEditText)
     EVT_MENU( ME_EditSchedules  , RocGuiFrame::OnEditSchedules)
     EVT_MENU( ME_EditTours      , RocGuiFrame::OnEditTours)
     EVT_MENU( ME_EditLocations  , RocGuiFrame::OnEditLocations)
@@ -2122,6 +2124,7 @@ void RocGuiFrame::initFrame() {
   menuTables->Append(ME_EditTurnouts, wxGetApp().getMenu("turnouttable"), wxGetApp().getTip("turnouttable") );
   menuTables->Append(ME_EditSignals, wxGetApp().getMenu("signaltable"), wxGetApp().getTip("signaltable") );
   menuTables->Append(ME_EditOutputs, wxGetApp().getMenu("outputtable"), wxGetApp().getTip("outputtable") );
+  menuTables->Append(ME_EditText, wxGetApp().getMenu("texttable"), wxGetApp().getTip("texttable") );
   menuTables->Append(ME_EditSensors, wxGetApp().getMenu("sensortable"), wxGetApp().getTip("sensortable") );
   menuTables->Append(ME_EditMVTrack, wxGetApp().getMenu("mvtrack"), wxGetApp().getTip("mvtrack") );
   menuTables->Append(ME_EditTimedActions, wxGetApp().getMenu("actiontable"), wxGetApp().getTip("actiontable") );
@@ -3932,6 +3935,19 @@ void RocGuiFrame::OnEditOutputs( wxCommandEvent& event ) {
   dlg->Destroy();
 }
 
+void RocGuiFrame::OnEditText( wxCommandEvent& event ) {
+  TextDialog*  dlg = new TextDialog(this, (iONode)NULL );
+  if( wxID_OK == dlg->ShowModal() ) {
+    /* Notify RocRail. */
+    int pages = m_PlanNotebook->GetPageCount();
+    for( int i = 0; i < pages; i++ ) {
+      BasePanel* p = (BasePanel*)m_PlanNotebook->GetPage(i);
+      p->reScale( m_Scale );
+    }
+  }
+  dlg->Destroy();
+}
+
 void RocGuiFrame::OnEditSchedules( wxCommandEvent& event ) {
   ScheduleDialog*  dlg = new ScheduleDialog(this, (iONode)NULL );
   if( wxID_OK == dlg->ShowModal() ) {
@@ -4376,6 +4392,8 @@ void RocGuiFrame::OnMenu( wxMenuEvent& event ) {
   mi = menuBar->FindItem(ME_EditSignals);
   if( mi != NULL ) mi->Enable( !m_bAutoMode || !wxGetApp().isRestrictedEdit() );
   mi = menuBar->FindItem(ME_EditOutputs);
+  if( mi != NULL ) mi->Enable( !m_bAutoMode || !wxGetApp().isRestrictedEdit() );
+  mi = menuBar->FindItem(ME_EditText);
   if( mi != NULL ) mi->Enable( !m_bAutoMode || !wxGetApp().isRestrictedEdit() );
   mi = menuBar->FindItem(ME_EditSchedules);
   if( mi != NULL ) mi->Enable( !m_bAutoMode || !wxGetApp().isRestrictedEdit() );

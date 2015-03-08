@@ -12,6 +12,7 @@
 #include "rocrail/wrapper/public/Plan.h"
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/Output.h"
+#include "rocrail/wrapper/public/Text.h"
 #include "rocrail/wrapper/public/Switch.h"
 #include "rocrail/wrapper/public/Signal.h"
 #include "rocrail/wrapper/public/Loc.h"

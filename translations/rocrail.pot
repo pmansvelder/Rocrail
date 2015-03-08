@@ -7799,3 +7799,9 @@ msgstr ""
 msgid "Slave blocks"
 msgstr ""
 
+#. 
+# id="texttable"
+#, c-format
+msgid "Text table"
+msgstr ""
+

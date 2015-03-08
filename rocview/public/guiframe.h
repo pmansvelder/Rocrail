@@ -191,6 +191,7 @@ public:
   void OnEditStages(wxCommandEvent& event);
   void OnEditSignals(wxCommandEvent& event);
   void OnEditOutputs(wxCommandEvent& event);
+  void OnEditText(wxCommandEvent& event);
   void OnEditSchedules(wxCommandEvent& event);
   void OnEditTours(wxCommandEvent& event);
   void OnEditLocations(wxCommandEvent& event);
@@ -577,6 +578,7 @@ enum
     ME_EditSensors,
     ME_EditSignals,
     ME_EditOutputs,
+    ME_EditText,
     ME_EditSchedules,
     ME_EditTours,
     ME_EditLocations,

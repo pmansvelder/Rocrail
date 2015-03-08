@@ -33,6 +33,7 @@
 
 ////@begin includes
 #include "wx/notebook.h"
+#include "wx/listctrl.h"
 #include "wx/spinctrl.h"
 ////@end includes
 
@@ -45,6 +46,7 @@
 
 ////@begin forward declarations
 class wxNotebook;
+class wxListCtrl;
 class wxSpinCtrl;
 ////@end forward declarations
 
@@ -55,7 +57,11 @@ class wxSpinCtrl;
 ////@begin control identifiers
 #define ID_DIALOG_TEXT_PROPS 10282
 #define ID_NOTEBOOK_TEXT 10005
-#define ID_PANEL 10006
+#define ID_INDEX_PANEL 10000
+#define ID_INDEXLIST 10467
+#define ID_NEWTEXT 10468
+#define ID_DELETETEXT 10469
+#define ID_GEN_PANEL 10006
 #define ID_STATICTEXT_TEXT_ID 10007
 #define ID_TEXTCTRL_TEXT_ID 10008
 #define ID_STATICTEXT_TEXT_TEXT 10017
@@ -68,8 +74,8 @@ class wxSpinCtrl;
 #define ID_BUTTON_TEXT_COLOR 10220
 #define ID_BUTTON_TEXT_BACKGROUND 10351
 #define ID_TEXT_ACTIONS 10387
-#define ID_PANEL_INT 10399
-#define ID_PANEL1 10021
+#define ID_INT_PANEL 10399
+#define ID_LOC_PANEL 10021
 #define ID_STATICTEXT_TEXT_X 10022
 #define ID_TEXTCTRL_TEXT_X 10023
 #define ID_STATICTEXT_TEXT_Y 10024
@@ -107,6 +113,7 @@ class TextDialog: public wxDialog, public BaseDialog
   void initLabels();
   void initValues();
   bool evaluate();
+  bool initIndex();
   int m_TabAlign;
 
 public:
@@ -121,6 +128,15 @@ public:
     void CreateControls();
 
 ////@begin TextDialog event handler declarations
+
+    /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_INDEXLIST
+    void OnIndexlistSelected( wxListEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_NEWTEXT
+    void OnNewtextClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_DELETETEXT
+    void OnDeletetextClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TXT_IMAGE
     void OnButtonTxtImageClick( wxCommandEvent& event );
@@ -143,6 +159,9 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_HELP
     void OnHelpClick( wxCommandEvent& event );
 
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY
+    void OnApplyClick( wxCommandEvent& event );
+
 ////@end TextDialog event handler declarations
 
 ////@begin TextDialog member function declarations
@@ -159,6 +178,10 @@ public:
 
 ////@begin TextDialog member variables
     wxNotebook* m_Notebook;
+    wxPanel* m_IndexPanel;
+    wxListCtrl* m_IndexList;
+    wxButton* m_New;
+    wxButton* m_Delete;
     wxPanel* m_GeneralPanel;
     wxStaticText* m_LabelID;
     wxTextCtrl* m_ID;
@@ -183,7 +206,7 @@ public:
     wxRadioBox* m_Ori;
     wxCheckBox* m_Reset;
     wxButton* m_Actions;
-    wxPanel* m_Interface;
+    wxPanel* m_InterfacePanel;
     wxStaticText* m_labIID;
     wxComboBox* m_IID;
     wxStaticText* m_labBus;
