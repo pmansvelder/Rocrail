@@ -2515,7 +2515,7 @@ static Boolean blockFeedbackActionCheck( iOAnalyse inst, Boolean repair ) {
     iONode bk = wBlockList.getbk( bklist );
     while( bk != NULL ) {
       const char* type = wItem.gettype( bk );
-      if( StrOp.equals( type, wBlock.type_turntable ) ) {
+      if( StrOp.equals( type, wBlock.type_turntable ) || wBlock.isvirtual(bk) ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block feedback action check: bk[%s] of type[%s] skip tests", wItem.getid( bk ), type  );
         bk =  wBlockList.nextbk( bklist, bk );
         continue;
@@ -2718,7 +2718,7 @@ static Boolean blockFbackUniqueCheck( iOAnalyse inst, Boolean repair ) {
     iONode bk = wBlockList.getbk( bklist );
     while( bk != NULL ) {
       const char* type = wItem.gettype( bk );
-      if( StrOp.equals( type, wBlock.type_turntable ) ) {
+      if( StrOp.equals( type, wBlock.type_turntable ) || wBlock.isvirtual(bk) ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block feedback unique check: bk[%s] of type[%s] skip tests", wItem.getid( bk ), type  );
         bk =  wBlockList.nextbk( bklist, bk );
         continue;
