@@ -167,6 +167,8 @@ void TextDialog::initLabels() {
   // Buttons
   m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
   m_Cancel->SetLabel( wxGetApp().getMsg( "cancel" ) );
+  m_Apply->SetLabel( wxGetApp().getMsg( "apply" ) );
+  m_Help->SetLabel( wxGetApp().getMsg( "help" ) );
 }
 
 bool TextDialog::initIndex() {
@@ -352,6 +354,8 @@ bool TextDialog::Create( wxWindow* parent, wxWindowID id, const wxString& captio
     m_Cy = NULL;
     m_OK = NULL;
     m_Cancel = NULL;
+    m_Help = NULL;
+    m_Apply = NULL;
 ////@end TextDialog member initialisation
 
 ////@begin TextDialog creation
@@ -576,11 +580,11 @@ void TextDialog::CreateControls()
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer61->AddButton(m_Cancel);
 
-    wxButton* itemButton64 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer61->AddButton(itemButton64);
+    m_Help = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer61->AddButton(m_Help);
 
-    wxButton* itemButton65 = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer61->AddButton(itemButton65);
+    m_Apply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer61->AddButton(m_Apply);
 
     itemStdDialogButtonSizer61->Realize();
 
@@ -831,9 +835,22 @@ void TextDialog::OnIndexlistSelected( wxListEvent& event )
 
 void TextDialog::OnApplyClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY in TextDialog.
-    // Before editing this code, remove the block markers.
-    event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY in TextDialog. 
+  if( m_Props == NULL )
+    return;
+  if( !evaluate() )
+    return;
+
+  if( !wxGetApp().isStayOffline() ) {
+    /* Notify RocRail. */
+    iONode cmd = NodeOp.inst( wModelCmd.name(), NULL, ELEMENT_NODE );
+    wModelCmd.setcmd( cmd, wModelCmd.modify );
+    NodeOp.addChild( cmd, (iONode)m_Props->base.clone( m_Props ) );
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+  }
+  else {
+    wxGetApp().setLocalModelModified(true);
+  }
+  initIndex();
 }
 

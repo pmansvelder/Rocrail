@@ -228,6 +228,8 @@ public:
     wxTextCtrl* m_Cy;
     wxButton* m_OK;
     wxButton* m_Cancel;
+    wxButton* m_Help;
+    wxButton* m_Apply;
 ////@end TextDialog member variables
     iONode m_Props;
 };
