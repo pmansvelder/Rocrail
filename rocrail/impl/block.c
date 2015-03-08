@@ -237,7 +237,11 @@ static void _setDefaultAspect(iIBlockBase inst, Boolean signalpair) {
 static Boolean __acceptGhost( obj inst ) {
   iOBlockData data = Data(inst);
 
-  if( ( data->locId == NULL || StrOp.equals( data->locId, "") || StrOp.equals( data->locId, "?") || StrOp.equals( data->locId, "GHOST")) && wBlock.isacceptghost( data->props ) ) {
+  if( wBlock.isvirtual( data->props ) )
+    return True;
+
+  if( ( data->locId == NULL || StrOp.equals( data->locId, "") || StrOp.equals( data->locId, "?") ||
+      StrOp.equals( data->locId, "GHOST")) && wBlock.isacceptghost( data->props ) ) {
     data->locId = "GHOST";
     data->ghost = True;
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Block:%s accepted a Ghosttrain", data->id );
