@@ -2734,7 +2734,7 @@ static iONode __findFreeTrack(iIBlockBase inst, const char* locId) {
 /**
  * Lock the bridge block and also lock a free track block in case the manager option is activated.
  */
-static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, const char* routeid, Boolean crossing, Boolean reset, Boolean reverse, int indelay ) {
+static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, const char* routeid, Boolean crossing, Boolean reset, Boolean reverse, int indelay, const char* masterId ) {
   iOTTData data = Data(inst);
   Boolean ok = False;
   iOControl control = AppOp.getControl();

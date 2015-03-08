@@ -204,6 +204,7 @@
       <param name="reset" vt="Boolean" remark="reset all triggers"/>
       <param name="reverse" vt="Boolean" remark="reverse enter"/>
       <param name="indelay" vt="int" remark="in event delay timer"/>
+      <param name="masterId" vt="const char*" remark="Master block"/>
     </fun>
     <fun name="unLock" vt="Boolean">
       <param name="inst" vt="this"/>

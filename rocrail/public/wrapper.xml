@@ -2172,6 +2172,7 @@
       <bk cardinality="n" wrappername="Block">
         <var name="id" vt="string" defval="?" range="*" required="true"/>
         <var name="managerid" vt="string" defval="" range="*" required="false" remark="ID of the manager object like FY or TT."/>
+        <var name="masterid" vt="string" defval="" range="*" required="false" remark="ID of the master block."/>
         <var name="desc" vt="string" defval="" range="*" remark="Description of block."/>
         <var name="x" vt="int" defval="0" range="0-*" remark="X-Position in the plan."/>
         <var name="y" vt="int" defval="0" range="0-*" remark="Y-Position in the plan."/>
@@ -2283,6 +2284,7 @@
         <const name="bsp" vt="string" val="bsp" remark="Block site plus."/>
         <const name="bsm" vt="string" val="bsm" remark="Block site min."/>
         <var name="cmd" vt="string" defval="NULL" range="*"/>
+        <var name="mastercmd" vt="bool" defval="false"/>
         <var name="ttid" vt="string" defval="NULL" range="*" remark="Turntable ID."/>
         <var name="class" vt="string" defval="" range="*" remark="Comma separated list of permitted classes."/>
         <incl cardinality="n" wrappername="PermInclude">

@@ -2448,7 +2448,8 @@ void Symbol::OnProps(wxCommandEvent& event) {
   const char* name = NodeOp.getName( m_Props );
 
   if( StrOp.equals( wBlock.name(), name ) ) {
-    BlockDialog* blockDlg = new BlockDialog( this, m_Props );
+    BlockDialog* blockDlg = NULL;
+    blockDlg = new BlockDialog( this, m_Props );
     blockDlg->ShowModal();
     updateLabel();
     sizeToScale();

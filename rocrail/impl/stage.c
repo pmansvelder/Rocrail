@@ -454,7 +454,7 @@ static Boolean _event( iIBlockBase inst ,Boolean puls ,const char* id ,const cha
   if( StrOp.equals( wStage.getfbenterid(data->props), id ) && data->locId == NULL && puls && !data->wait4enter && ident != NULL && StrOp.len(ident) > 0 ) {
     if( wCtrl.isusebicom( wRocRail.getctrl( AppOp.getIni())) && wCtrl.isuseident( wRocRail.getctrl( AppOp.getIni())) ) {
       iOLoc loc = ModelOp.getLocByIdent(AppOp.getModel(), ident, ident2, ident3, ident4, dir);
-      if( loc != NULL && StageOp.lock(inst, LocOp.getId(loc), NULL, NULL, False, False, False, 0) ) {
+      if( loc != NULL && StageOp.lock(inst, LocOp.getId(loc), NULL, NULL, False, False, False, 0, NULL) ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "unexpected loco %s accepted by ident:%s", data->locId, ident );
       }
     }
@@ -1196,7 +1196,7 @@ static Boolean _link( iIBlockBase inst ,iIBlockBase linkto ) {
 
 
 /**  */
-static Boolean _lock( iIBlockBase inst ,const char* locid ,const char* blockid ,const char* routeid ,Boolean crossing ,Boolean reset ,Boolean reverse ,int indelay ) {
+static Boolean _lock( iIBlockBase inst ,const char* locid ,const char* blockid ,const char* routeid ,Boolean crossing ,Boolean reset ,Boolean reverse ,int indelay, const char* masterId ) {
   iOStageData data = Data(inst);
   iOControl control = AppOp.getControl();
 

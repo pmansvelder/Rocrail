@@ -1107,7 +1107,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       else if( StrOp.equals(wAction.block_reserve, wAction.getcmd(data->action) ) ) {
         bl = ModelOp.getBlock( model, wAction.getoid( data->action ) );
         if( bl != NULL ) {
-          bl->lock( bl, wActionCtrl.getlcid(actionctrl), NULL, NULL, False, False, False, 0);
+          bl->lock( bl, wActionCtrl.getlcid(actionctrl), NULL, NULL, False, False, False, 0, NULL);
         }
       }
     }

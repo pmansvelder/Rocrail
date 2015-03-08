@@ -247,6 +247,7 @@ static Boolean __acceptGhost( obj inst ) {
       wBlock.setlocid( node, data->locId );
       wBlock.setfifoids(node, wBlock.getfifoids(data->props));
       wBlock.setacceptident(node, data->acceptident);
+      wBlock.setmasterid(node, wBlock.getmasterid(data->props));
       AppOp.broadcastEvent( node );
     }
     return True;
@@ -403,6 +404,7 @@ static void _setGhostDetected(iIBlockBase inst, const char* key, const char* ide
         wBlock.setlocid( nodeD, data->locId );
         wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
         wBlock.setacceptident(nodeD, data->acceptident);
+        wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
         AppOp.broadcastEvent( nodeD );
         __checkAction((iOBlock)inst, "ghost");
       }
@@ -558,6 +560,7 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
                 iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
                 wBlock.setid( nodeD, data->id );
                 wBlock.setacceptident(nodeD, data->acceptident);
+                wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
                 AppOp.broadcastEvent( nodeD );
 
                 wBlock.setacceptident(data->props, data->acceptident);
@@ -593,6 +596,7 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
         wBlock.setlocid( nodeD, puls ? ident:data->locId );
         wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
         wBlock.setacceptident(nodeD, data->acceptident);
+        wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
         AppOp.broadcastEvent( nodeD );
       }
     }
@@ -725,6 +729,7 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
           wBlock.setlocid( nodeD, data->locId );
           wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
           wBlock.setacceptident(nodeD, data->acceptident);
+          wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
           AppOp.broadcastEvent( nodeD );
         }
       }
@@ -1087,6 +1092,7 @@ static Boolean _isFree( iIBlockBase inst, const char* locId ) {
     wBlock.setid( nodeD, data->id );
     wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
     wBlock.setstate( nodeD, wBlock.getstate(data->props) );
+    wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
     AppOp.broadcastEvent( nodeD );
 
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "No events defined for block [%s]; Closed.", data->id );
@@ -1127,6 +1133,7 @@ static Boolean _isFree( iIBlockBase inst, const char* locId ) {
           wBlock.setstate(data->props, wBlock.closed);
           wBlock.setid( nodeD, data->id );
           wBlock.setstate( nodeD, wBlock.getstate(data->props) );
+          wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
           AppOp.broadcastEvent( nodeD );
         }
       }
@@ -1620,6 +1627,7 @@ static void _enterBlock( iIBlockBase inst, const char* id ) {
     wBlock.setlocid( nodeD, id );
     wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
     wBlock.setacceptident(nodeD, data->acceptident);
+    wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
     AppOp.broadcastEvent( nodeD );
     if( !data->crossing )
       __checkAction((iOBlock)inst, "enter");
@@ -1667,6 +1675,7 @@ static void _inBlock( iIBlockBase inst, const char* id ) {
     wBlock.setlocid( nodeD, id );
     wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
     wBlock.setacceptident(nodeD, data->acceptident);
+    wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
     AppOp.broadcastEvent( nodeD );
     if( !data->crossing )
       __checkAction((iOBlock)inst, "occupied");
@@ -1753,7 +1762,7 @@ static Boolean _link( iIBlockBase inst, iIBlockBase linkto ) {
  * Ignore all events wenn the crossing flag is set.
  */
 static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, const char* routeid,
-    Boolean crossing, Boolean reset, Boolean reverse, int indelay )
+    Boolean crossing, Boolean reset, Boolean reverse, int indelay, const char* masterId )
 {
   iOBlockData data = NULL;
   Boolean ok = False;
@@ -1804,7 +1813,7 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
         const char* blockid = StrTokOp.nextToken( tok );
         iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
         if( bk != NULL ) {
-          if( !bk->lock( bk, id, blockid, routeid, True, reset, reverse, indelay ) ) {
+          if( !bk->lock( bk, id, blockid, routeid, True, reset, reverse, indelay, wBlock.getid(data->props) ) ) {
             TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "virtual block [%s] could not lock slave block [%s]", wBlock.getid(data->props), blockid );
             Locked = False;
             break;
@@ -1868,10 +1877,16 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
       }
     }
 
+    if( masterId != NULL )
+      wBlock.setmasterid(data->props, masterId);
+    else
+      wBlock.setmasterid(data->props, "");
+
     /* Broadcast to clients. */
     if( ok && !fifo ) {
       iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
       wBlock.setid( nodeD, data->id );
+      wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
       wBlock.setreserved( nodeD, True );
       wBlock.setreserved( data->props, True );
       wBlock.setlocid( nodeD, id );
@@ -1962,6 +1977,7 @@ static Boolean _lockForGroup( iIBlockBase inst, const char* id ) {
       wBlock.setreserved( nodeD, False );
     else
       wBlock.setreserved( nodeD, True );
+    wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
     wBlock.setlocid( nodeD, id );
     wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
     wBlock.setacceptident(nodeD, data->acceptident);
@@ -2183,6 +2199,7 @@ static Boolean _unLock( iIBlockBase inst, const char* id, const char* routeId ) 
         }
       }
 
+      wBlock.setmasterid(data->props, "");
 
       /* FiFO */
       if( wBlock.getfifosize(data->props) > 0 && ListOp.size(data->fifoList) > 0 ) {
@@ -2210,6 +2227,7 @@ static Boolean _unLock( iIBlockBase inst, const char* id, const char* routeId ) 
             {
               iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
               wBlock.setid( nodeD, data->id );
+              wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
               wBlock.setreserved( nodeD, False );
               wBlock.setreserved( data->props, False );
               wBlock.setlocid( nodeD, data->locId );
@@ -2286,6 +2304,7 @@ static Boolean _unLock( iIBlockBase inst, const char* id, const char* routeId ) 
             __checkAction((iOBlock)inst, "reserved");
           }
           wBlock.setacceptident(nodeD, data->acceptident);
+          wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
           AppOp.broadcastEvent( nodeD );
         }
         /* Set signal. */
@@ -2395,6 +2414,7 @@ static Boolean _unLockForGroup( iIBlockBase inst, const char* id ) {
         wBlock.setlocid( nodeD, "" );
         wBlock.setacceptident(nodeD, data->acceptident);
         wBlock.setstate( nodeD, wBlock.getstate( data->props ) );
+        wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
         AppOp.broadcastEvent( nodeD );
       }
 
@@ -2454,12 +2474,18 @@ static void _init( iIBlockBase inst ) {
 static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
   iOBlockData data = Data(inst);
   iOModel model = AppOp.getModel(  );
-  Boolean occUpdate = False;
+  Boolean occUpdate  = False;
+  Boolean slaveBlock = False;
 
   /* Cmds: lcid="" state="" */
   const char* locid = wBlock.getlocid( nodeA );
   const char* state = wBlock.getstate( nodeA );
   const char* cmd   = wBlock.getcmd( nodeA );
+
+  if( wBlock.getmasterid(data->props) != NULL && StrOp.len( wBlock.getmasterid(data->props) ) > 0 ) {
+    if( !wBlock.ismastercmd(nodeA) )
+      slaveBlock = True;
+  }
 
   if( cmd != NULL && (StrOp.equals(cmd, wBlock.nop) || StrOp.equals(cmd, wBlock.bsp) || StrOp.equals(cmd, wBlock.bsm) ) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block [%s] cmd=%s", data->id, cmd);
@@ -2467,14 +2493,14 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     return True;
   }
 
-  if( cmd != NULL && StrOp.equals(cmd, wBlock.resetwc) ) {
+  if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.resetwc) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset wheel count in [%s] from %d to 0", data->id, data->wheelcount);
     data->wheelcount = 0;
     NodeOp.base.del(nodeA);
     return True;
   }
 
-  if( cmd != NULL && StrOp.equals(cmd, wBlock.resetfifo) ) {
+  if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.resetfifo) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset FiFo list in [%s]", data->id);
     ListOp.clear(data->fifoList);
     __dumpFiFo(inst);
@@ -2489,7 +2515,7 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     else
       inst->acceptIdent(inst, wBlock.isacceptident(nodeA));
   }
-  else if( locid != NULL ) {
+  else if( !slaveBlock && locid != NULL ) {
     iOLocation location = ModelOp.getBlockLocation( AppOp.getModel(), data->id);
     iOLoc loco = NULL;
 
@@ -2530,13 +2556,28 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
       __dumpFiFo(inst);
     }
 
+    if( wBlock.isvirtual(data->props) ) {
+      iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(data->props), ',' );
+
+      while( StrTokOp.hasMoreTokens(tok) ) {
+        const char* blockid = StrTokOp.nextToken( tok );
+        iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
+        if( bk != NULL ) {
+          iONode slaveCmd = (iONode)NodeOp.base.clone(nodeA);
+          wBlock.setmastercmd(slaveCmd, True);
+          bk->cmd(bk, slaveCmd);
+        }
+      };
+      StrTokOp.base.del(tok);
+    }
+
   }
 
-  if( locid == NULL || StrOp.len(locid) == 0 ) {
+  if( !slaveBlock && ( locid == NULL || StrOp.len(locid) == 0 ) ) {
     _resetTD(inst);
   }
 
-  if( state != NULL ) {
+  if( !slaveBlock && state != NULL ) {
     if( StrOp.equals( wBlock.closed, state ) ) {
       if( data->locId != NULL && StrOp.len( data->locId ) > 0 ) {
         TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "close block request; already reserved by [%s]", data->locId );
@@ -2557,7 +2598,9 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s state=%s", NodeOp.getStr( data->props, "id", "" ), state );
   }
 
-  _init( inst );
+  if( !slaveBlock ) {
+    _init( inst );
+  }
 
   /* Broadcast to clients. */
   wBlock.setid(nodeA, data->id );
@@ -2565,6 +2608,7 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
   wBlock.setstate( nodeA, wBlock.getstate( data->props ) );
   if( occUpdate )
     wBlock.setcmd(nodeA, wBlock.loc);
+  wBlock.setmasterid(nodeA, wBlock.getmasterid(data->props));
   AppOp.broadcastEvent( nodeA );
 
   if( occUpdate )
@@ -2877,6 +2921,7 @@ static void _acceptIdent( iIBlockBase inst, Boolean accept ) {
     iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
     wBlock.setid( nodeD, data->id );
     wBlock.setacceptident(nodeD, data->acceptident);
+    wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
     AppOp.broadcastEvent( nodeD );
 
     wBlock.setacceptident(data->props, data->acceptident);
