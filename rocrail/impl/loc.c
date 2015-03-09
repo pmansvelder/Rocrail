@@ -1403,6 +1403,7 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
       data->step = 0;
       if( data->curSpeed == 0 && data->drvSpeed > 0 )
         data->curSpeed = data->drvSpeed;
+
       TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "*****Vcur=%d Vdrv=%d mode=[%s]", data->curSpeed, data->drvSpeed, wLoc.getmode(data->props) );
       if( data->curSpeed > data->drvSpeed ) {
         int dif = data->curSpeed - data->drvSpeed;
@@ -1415,11 +1416,6 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
           cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
         wLoc.setV( cmd, data->curSpeed );
       }
-    }
-    else if( cmd != NULL ) {
-      /* Initial speed change. */
-      wLoc.setV( cmd, data->curSpeed );
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "Initial V=%d", data->curSpeed );
     }
   }
 
@@ -1818,6 +1814,7 @@ static void __BBT(iOLoc loc) {
       StrOp.free(key0);
       StrOp.free(keyV);
       data->bbtSpeed = data->drvSpeed;
+      data->curSpeed = data->drvSpeed;
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "BBT-ENTER interval=%d block=%s V_enter=%d",
           bbt != NULL ? wBBT.getinterval(bbt):100, data->bbtEnterBlock, data->bbtSpeed );
     }
@@ -1841,6 +1838,7 @@ static void __BBT(iOLoc loc) {
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "BBT-SPEED V=%d id=%s mode=%s atminspeed=%d",
           speed, wLoc.getid(data->props), wLoc.getmode(data->props), data->bbtAtMinSpeed  );
 
+      data->curSpeed = speed;
       wLoc.setV( cmd, speed );
       wLoc.setdir( cmd, wLoc.isdir( data->props ) );
       LocOp.cmd( loc, cmd );
@@ -1866,6 +1864,7 @@ static void __BBT(iOLoc loc) {
       TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999,
           "BBT-GENERATE-IN id=%s: Block [%s] does not exist; Stop loco", wLoc.getid(data->props), data->bbtEnterBlock );
       iONode cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
+      data->curSpeed = 0;
       wLoc.setV( cmd, 0 );
       wLoc.setdir( cmd, wLoc.isdir( data->props ) );
       LocOp.cmd( loc, cmd );
