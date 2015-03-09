@@ -275,7 +275,7 @@ void statusEnter( iILcDriverInt inst, Boolean re_enter ) {
           if( data->loc->isReduceSpeedAtEnter( data->loc) ) {
             if( !StrOp.equals( wLoc.getV_hint( cmd), wLoc.min ) && data->next2Route->hasThrownSwitch(data->next2Route) ) {
               TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "reduce speed at enter for thrown switches");
-              if( data->loc->compareVhint( data->loc, wLoc.mid) == -1 || data->loc->getV( data->loc ) == 0 )
+              if( data->loc->compareVhint( data->loc, wLoc.mid) <= 0 || data->loc->getV( data->loc ) == 0 )
                 wLoc.setV_hint( cmd, wLoc.mid );
             }
           }
