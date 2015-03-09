@@ -1174,6 +1174,12 @@ static Boolean _isFreeBlockOnEnter( iIBlockBase inst ) {
 /**  */
 static int _isSuited( iIBlockBase inst ,iOLoc loc, int* restlen, Boolean checkprev ) {
   iOStageData data = Data(inst);
+
+  if( StrOp.equals( wLoc.engine_electric, wLoc.getengine( loc->base.properties( loc ) ) ) && !wStage.iselectrified( data->props ) ) {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,"Stageblock [%s] is not electrified; E-Loco [%s] can not use it.", data->id, LocOp.getId( loc ) );
+    return suits_not;
+  }
+
   if( __willLocoFit(inst, LocOp.getId(loc), False) ) {
     return wStage.issuitswell(data->props)?suits_well:suits_ok;
   }

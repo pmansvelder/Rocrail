@@ -241,6 +241,7 @@ void StageDlg::initLabels() {
   m_SuitsWell->SetLabel( wxGetApp().getMsg( "bestchoice" ) );
   m_InAtLen->SetLabel( wxGetApp().getMsg( "inatlen" ) );
   m_UseWD->SetLabel( wxGetApp().getMsg( "watchdog" ) );
+  m_Electrified->SetLabel( wxGetApp().getMsg( "electrified" ) );
 
   m_SpeedBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "speed" ) );
   m_ArriveSpeed->SetLabel( wxGetApp().getMsg( "arrive" ) );
@@ -316,6 +317,7 @@ bool StageDlg::evaluate() {
   wStage.setsuitswell( m_Props, m_SuitsWell->IsChecked() ? True:False );
   wStage.setinatlen( m_Props, m_InAtLen->IsChecked() ? True:False );
   wStage.setusewd( m_Props, m_UseWD->IsChecked() ? True:False );
+  wStage.setelectrified( m_Props, m_Electrified->GetValue()?True:False );
 
   return true;
 }
@@ -427,6 +429,7 @@ void StageDlg::initValues() {
   m_SuitsWell->SetValue( wStage.issuitswell( m_Props ) ? true:false );
   m_InAtLen->SetValue( wStage.isinatlen( m_Props ) ? true:false );
   m_UseWD->SetValue( wStage.isusewd( m_Props ) ? true:false );
+  m_Electrified->SetValue( wStage.iselectrified(m_Props) );
 
   initSections();
 

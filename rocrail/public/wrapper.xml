@@ -2372,6 +2372,7 @@
         <var name="cmd" vt="string" defval="NULL" range="*"/>
         <var name="secid" vt="string" defval="NULL" range="*"/>
         <var name="randomrate" vt="int" defval="10" range="0-*" remark="Rate of randomness. 0=Not used"/>
+        <var name="electrified" vt="bool" defval="false" remark="Stage is open for electric locs."/>
         <section cardinality="n" wrappername="StageSection">
           <var name="id" vt="string" defval="?" range="*" required="true"/>
           <var name="lcid" vt="string" defval="NULL" range="*" remark=""/>
