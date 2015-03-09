@@ -1398,14 +1398,16 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
     }
   }
 
-  if(wLoc.isregulated(data->props) && wLoc.getdecelerate( data->props ) > 0 && (StrOp.equals( wLoc.mode_auto, wLoc.getmode(data->props)) || ! wLoc.isusebbt(data->props) ) ) {
+  else if(wLoc.isregulated(data->props) && wLoc.getdecelerate( data->props ) > 0 &&
+      (StrOp.equals( wLoc.mode_auto, wLoc.getmode(data->props)) || ! wLoc.isusebbt(data->props) ) )
+  {
     if( data->step >= wLoc.getV_step( data->props ) ) {
       data->step = 0;
-      if( data->curSpeed == 0 && data->drvSpeed > 0 )
+      if( data->curSpeed == 0 && data->drvSpeed )
         data->curSpeed = data->drvSpeed;
 
       TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "*****Vcur=%d Vdrv=%d mode=[%s]", data->curSpeed, data->drvSpeed, wLoc.getmode(data->props) );
-      if( data->curSpeed > data->drvSpeed ) {
+      if( data->curSpeed > data->drvSpeed  > 0 && data->curSpeed > wLoc.getV_min(data->props) ) {
         int dif = data->curSpeed - data->drvSpeed;
         int Vdif = (dif * wLoc.getdecelerate(data->props)) / 100;
         if( Vdif < 1 )
@@ -1419,6 +1421,14 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
     }
   }
 
+  else {
+    if( cmd != NULL ) {
+      if( wLoc.getV( cmd ) == -1 )
+        data->curSpeed = data->drvSpeed;
+      else
+        data->curSpeed = wLoc.getV(cmd);
+    }
+  }
 
   /* Send the command to the controller with all mandatory attributes: */
   if( cmd != NULL && control != NULL )
