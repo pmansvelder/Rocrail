@@ -2545,6 +2545,9 @@ void Symbol::OnSelect(wxCommandEvent& event) {
 
 
 void Symbol::OnRotate(wxCommandEvent& event) {
+  if( !wxGetApp().getFrame()->isEditMode() )
+    return;
+
   const char* ori = wItem.getori( m_Props );
 
   if( event.GetId() == ME_North )
@@ -2655,6 +2658,8 @@ void Symbol::OnCopy(wxCommandEvent& event) {
 
 
 void Symbol::OnDelete(wxCommandEvent& event) {
+  if( !wxGetApp().getFrame()->isEditMode() )
+    return;
 
   wxGetApp().pushUndoItem( (iONode)NodeOp.base.clone( m_Props ) );
 
