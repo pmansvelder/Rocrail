@@ -155,11 +155,15 @@ static void __ArtPollReply(iODMXArtNet inst, iOSocket socket) {
   msg[16] = vmajor;
   msg[17] = vminor;
 
+  // Rocrail OEM 0x1180
+  msg[20] = 0x11;
+  msg[21] = 0x80;
+
   msg[24] = 'R';
   msg[25] = 'R';
 
   StrOp.copy((char*)(msg+26), "Rocrail");
-  StrOp.copy((char*)(msg+45), "Rocrail.net DMX");
+  StrOp.copy((char*)(msg+45), "Rocrail DMX Daylight");
   StrOp.copy((char*)(msg+108), "Ready and running");
 
   if( socket != NULL ) {
