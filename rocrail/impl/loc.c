@@ -1406,7 +1406,7 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
       if( data->curSpeed == 0 && data->drvSpeed )
         data->curSpeed = data->drvSpeed;
 
-      if( data->curSpeed > data->drvSpeed && data->curSpeed > wLoc.getV_min(data->props) ) {
+      if( data->curSpeed > data->drvSpeed && data->curSpeed > wLoc.getV_min(data->props) && data->drvSpeed > wLoc.getV_min(data->props) ) {
         data->curSpeed -= wLoc.getdecelerate(data->props);
         if( data->curSpeed < data->drvSpeed )
           data->curSpeed = data->drvSpeed;
