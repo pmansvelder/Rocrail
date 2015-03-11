@@ -598,8 +598,8 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
         bidibnode = data->defaultswitch;
     }
     if( bidibnode != NULL ) {
-      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "switch %d:%d %s",
-          wSwitch.getbus( node ), wSwitch.getaddr1( node ), wSwitch.getcmd(node) );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "switch %d:%d %s accessory=%d prot=%s",
+          wSwitch.getbus( node ), wSwitch.getaddr1( node ), wSwitch.getcmd(node), wSwitch.isaccessory(node), wSwitch.getprot( node ) );
 
       if( wSwitch.isaccessory(node) && StrOp.equals( wSwitch.getprot( node ), wSwitch.prot_N ) ) {
         if( wSwitch.issinglegate(node) ) {

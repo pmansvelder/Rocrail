@@ -445,6 +445,10 @@ static Boolean __cmd_digitalbahn( iOTT inst, iONode nodeA ) {
       if( iid != NULL )
         wSwitch.setiid( cmd, iid );
 
+      wOutput.setbus( cmd, wTurntable.getbus( data->props ) );
+      wOutput.setaccessory( cmd, True );
+      wSwitch.setprot( cmd, wTurntable.getprot( data->props ) );
+
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set direction address=%d, port=%d, gate=%s",
           addr, DIGITALBAHN_DIR, ttdir ? DIGITALBAHN_DIR_CCW:DIGITALBAHN_DIR_CW );
       int addrCmd = (addr-1 + DIGITALBAHN_DIR) / 4 + 1; /* address bug correction */
@@ -471,6 +475,9 @@ static Boolean __cmd_digitalbahn( iOTT inst, iONode nodeA ) {
     if( iid != NULL )
       wSwitch.setiid( cmd, iid );
 
+    wOutput.setbus( cmd, wTurntable.getbus( data->props ) );
+    wOutput.setaccessory( cmd, True );
+    wSwitch.setprot( cmd, wTurntable.getprot( data->props ) );
 
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set position address=%d, port=%d, gate=%s",
         addr, port, cmdstr );
