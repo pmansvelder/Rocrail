@@ -1407,12 +1407,10 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
         data->curSpeed = data->drvSpeed;
 
       if( data->curSpeed > data->drvSpeed && data->curSpeed > wLoc.getV_min(data->props) ) {
-        int dif = data->curSpeed - data->drvSpeed;
-        int Vdif = (dif * wLoc.getdecelerate(data->props)) / 100;
-        if( Vdif < 1 )
-          Vdif = 1;
-        data->curSpeed -= Vdif;
-        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "Vcur=%d Vdrv=%d Vdif=%d", data->curSpeed, data->drvSpeed, Vdif );
+        data->curSpeed -= wLoc.getdecelerate(data->props);
+        if( data->curSpeed < data->drvSpeed )
+          data->curSpeed = data->drvSpeed;
+        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "Vcur=%d Vdrv=%d decelerate=%d", data->curSpeed, data->drvSpeed, wLoc.getdecelerate(data->props) );
         if( cmd == NULL )
           cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
         wLoc.setV( cmd, data->curSpeed );
