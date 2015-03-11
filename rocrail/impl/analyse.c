@@ -151,6 +151,7 @@ For the Analyzer to work the Plan has to fullfill:
 #include "rocrail/wrapper/public/Night.h"
 #include "rocrail/wrapper/public/WeatherTheme.h"
 #include "rocrail/wrapper/public/Variable.h"
+#include "rocrail/wrapper/public/Dec.h"
 
 #include "rocrail/public/app.h"
 #include "rocrail/public/model.h"
@@ -3150,7 +3151,8 @@ static Boolean zlevelCheck( iOAnalyse inst, Boolean repair ) {
           StrOp.equals( wSunset.name(), NodeOp.getName(item) ) ||
           StrOp.equals( wNight.name(), NodeOp.getName(item) ) ||
           StrOp.equals( wWeatherTheme.name(), NodeOp.getName(item) ) ||
-          StrOp.equals( itemName, wMVTrack.name() )
+          StrOp.equals( itemName, wMVTrack.name() ) ||
+          StrOp.equals( itemName, wDec.name() )
         ) {
         /* Ignore */
         continue;
