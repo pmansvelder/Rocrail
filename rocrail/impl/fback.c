@@ -507,7 +507,7 @@ static void _event( iOFBack inst, iONode nodeC ) {
     wFeedback.setdirection(node, wFeedback.isdirection(nodeC) );
     while( listener != NULL ) {
       hasListener = True;
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "fb [%s](%s) ident=%d val=%d count=%d call listener 0x%08X...",
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "fb [%s](%s) ident=%s val=%d count=%d call listener 0x%08X...",
                    FBackOp.getId(inst), data->state?"ON":"OFF", wFeedback.getidentifier( nodeC ),
                    wFeedback.getval( nodeC ), data->counter, listener );
       listener->event( listener, node );
@@ -800,8 +800,7 @@ static void _doTimedOff( iOFBack inst ) {
       data->state = False;
       data->timer = -1;
 
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
-          "timed off event for %s", FBackOp.getId( inst ));
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "timed off event for %s", FBackOp.getId( inst ));
 
       if( data->listenerFun != NULL ) {
         data->listenerFun( data->listenerObj, data->state, FBackOp.getId( inst ), NULL, NULL, NULL, NULL, 0, 0, True );
@@ -825,7 +824,10 @@ static void _doTimedOff( iOFBack inst ) {
 
       {
         obj listener = ListOp.first( data->listeners );
+        wFeedback.setstate( data->props, data->state );
         while( listener != NULL ) {
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "fb [%s](%s) val=%d count=%d call listener %X...",
+                       FBackOp.getId(inst), data->state?"ON":"OFF", wFeedback.getval(data->props), data->counter, listener );
           listener->event( listener, data->props );
           listener = ListOp.next( data->listeners );
         };
