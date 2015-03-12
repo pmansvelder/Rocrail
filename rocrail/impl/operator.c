@@ -366,7 +366,10 @@ static const char* _getClass( struct OOperator* inst ) {
 
 static void _setClass( struct OOperator* inst, const char* newclass ) {
   iOOperatorData data = Data(inst);
+  iONode clone = NULL;
   wOperator.setclass(data->props, newclass);
+  clone = (iONode)NodeOp.base.clone( data->props );
+  AppOp.broadcastEvent( clone );
 }
 
 

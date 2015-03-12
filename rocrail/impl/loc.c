@@ -4038,9 +4038,18 @@ static Boolean _isCheck2In( iOLoc inst ) {
 
 static void _setClass( iOLoc inst, const char* p_Class ) {
   iOLocData data = Data(inst);
-  wLoc.setclass(data->props, p_Class);
-  /* Broadcast to clients. */
-  AppOp.broadcastEvent( (iONode)NodeOp.base.clone( data->props ) );
+
+  if( wLoc.gettrain( data->props) != NULL && StrOp.len(wLoc.gettrain( data->props)) > 0 ) {
+    iOOperator train = ModelOp.getOperator(AppOp.getModel(), wLoc.gettrain( data->props) );
+    if( train != NULL ) {
+      OperatorOp.setClass(train, p_Class);
+    }
+  }
+  else {
+    wLoc.setclass(data->props, p_Class);
+    /* Broadcast to clients. */
+    AppOp.broadcastEvent( (iONode)NodeOp.base.clone( data->props ) );
+  }
 }
 
 static void _setMaxKmh( iOLoc inst, int maxkmh ) {
