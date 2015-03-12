@@ -63,6 +63,7 @@
 #include "rocdigs/impl/bidib/bidibutils.h"
 
 #include "rocutils/public/vendors.h"
+#include "rocutils/public/addr.h"
 
 #include <time.h>
 
@@ -581,8 +582,12 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
   else if( StrOp.equals( NodeOp.getName( node ), wSwitch.name() ) ) {
     int delay = wSwitch.getdelay(node) > 0 ? wSwitch.getdelay(node):data->swtime;
     int addr = wSwitch.getaddr1( node );
+    int port = wSwitch.getport1( node );
     if( addr == 0 )
       addr = wSwitch.getport1( node );
+    else if( addr > 0 && port > 0 ) {
+      addr = AddrOp.toPADA(addr, port);
+    }
 
     StrOp.fmtb( uidKey, "0x%08X", wSwitch.getbus(node) );
     bidibnode = (iOBiDiBNode)MapOp.get( data->nodemap, uidKey );
@@ -691,11 +696,15 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
   /* Signal command. */
   else if( StrOp.equals( NodeOp.getName( node ), wSignal.name() ) ) {
     byte cmd[5];
-    int addr = wSignal.getaddr(node);
+    int addr   = wSignal.getaddr(node);
+    int port   = wSignal.getport1(node);
     int aspect = wSignal.getaspect(node);
 
     if( addr == 0 )
       addr = wSignal.getport1(node);
+    else if( addr > 0 && port > 0 ) {
+      addr = AddrOp.toPADA(addr, port);
+    }
 
     StrOp.fmtb( uidKey, "0x%08X", wSignal.getbus(node) );
     bidibnode = (iOBiDiBNode)MapOp.get( data->nodemap, uidKey );
@@ -734,10 +743,14 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
     Boolean on       = StrOp.equals( wOutput.getcmd( node ), wOutput.on );
     Boolean setvalue = StrOp.equals( wOutput.getcmd( node ), wOutput.value );
     int addr  = wOutput.getaddr( node );
+    int port  = wOutput.getport( node );
     int value = wOutput.getvalue( node );
 
     if( addr == 0 )
       addr = wOutput.getport(node);
+    else if( addr > 0 && port > 0 ) {
+      addr = AddrOp.toPADA(addr, port);
+    }
 
 
     StrOp.fmtb( uidKey, "0x%08X", wOutput.getbus(node) );
