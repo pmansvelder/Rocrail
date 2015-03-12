@@ -110,15 +110,12 @@ class wxGrid;
 #define ID_TEXTCTRL_V_MIN 10014
 #define wxID_STATIC_V_MAX 10027
 #define ID_TEXTCTRL_V_MAX 10015
-#define wxID_STATIC_LOC_V_STEP 10033
-#define ID_TEXTCTRL_LOC_ACCEL 10034
 #define wxID_STATIC_MASS 10028
 #define ID_TEXTCTRL_MASS 10029
 #define wxID_STATIC_LOC_V_MODE 10116
 #define ID_CHECKBOX_LOC_CONTROLLED 10117
 #define wxID_STATIC_LOC_PLACING 10118
 #define ID_CHECKBOX_LOC_PLACING 10119
-#define ID_LOC_REGULATED 10375
 #define ID_PANEL_DETAILS 10030
 #define wxID_STATIC_BLOCKWAIT 10031
 #define ID_TEXTCTRL_BLOCKWAIT 10032
@@ -159,6 +156,8 @@ class wxGrid;
 #define ID_GRID_LOC_CV 10346
 #define ID_BUTTON_LC_CV_DESC 10347
 #define ID_PANEL_LOC_BBT 10337
+#define wxID_STATIC_LOC_V_STEP 10033
+#define ID_LOC_REGULATED 10375
 #define ID_LOC_BBTLIST2 10427
 #define ID_BBT_ADD 10457
 #define ID_BUTTON_BBT_DELETE 10424
@@ -284,9 +283,6 @@ public:
     /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTCTRL_SPEEDSTEPS
     void OnTextctrlSpeedstepsEnter( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LOC_REGULATED
-    void OnLocRegulatedClick( wxCommandEvent& event );
-
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_F0
     void OnButtonF0Click( wxCommandEvent& event );
 
@@ -349,6 +345,9 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_LC_CV_DESC
     void OnButtonLcCvDescClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LOC_REGULATED
+    void OnLocRegulatedClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_LOC_BBTLIST2
     void OnLocBbtlist2Selected( wxListEvent& event );
@@ -508,8 +507,6 @@ public:
     wxTextCtrl* m_VmaxSec;
     wxStaticText* m_Label_V_Rmax;
     wxTextCtrl* m_V_Rmax;
-    wxStaticText* m_LabelV_step;
-    wxTextCtrl* m_Accel;
     wxStaticBox* m_OptionsBox;
     wxStaticText* m_Label_Mass;
     wxTextCtrl* m_Mass;
@@ -520,7 +517,6 @@ public:
     wxStaticText* m_LabelPlacing;
     wxCheckBox* m_Placing;
     wxCheckBox* m_Info4Throttle;
-    wxCheckBox* m_Regulated;
     wxStaticBox* m_AccelerationBox;
     wxCheckBox* m_AdjustAccel;
     wxStaticText* m_labMaxLoad;
@@ -529,8 +525,6 @@ public:
     wxSpinCtrl* m_MinAccel;
     wxStaticText* m_labMaxAccel;
     wxSpinCtrl* m_MaxAccel;
-    wxStaticText* m_labDecelerate;
-    wxSpinCtrl* m_Decelerate;
     wxPanel* m_DetailsPanel;
     wxStaticText* m_Label_Blockwait;
     wxTextCtrl* m_Blockwait;
@@ -681,6 +675,11 @@ public:
     wxSpinCtrl* m_BBTCorrection;
     wxStaticText* m_labBBTPer;
     wxRadioBox* m_BBTKey;
+    wxStaticText* m_labDecelerate;
+    wxSpinCtrl* m_Decelerate;
+    wxStaticText* m_LabelV_step;
+    wxSpinCtrl* m_Accel;
+    wxCheckBox* m_Regulated;
     wxStaticText* m_labBBTCalculation;
     wxListCtrl* m_BBTList2;
     wxStaticText* m_labBBTFromBlock;
