@@ -818,7 +818,8 @@ static void __resetFeedbackEvents( iOBlock inst ) {
     Boolean endpuls = wFeedbackEvent.isendpuls( fbevt );
     iOFBack fb = ModelOp.getFBack( model, fbid );
 
-    FBackOp.removeListener( fb, (obj)inst );
+    if( fb != NULL )
+      FBackOp.removeListener( fb, (obj)inst );
 
     fbevt = wBlock.nextfbevent( data->props, fbevt );
   }
