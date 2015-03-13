@@ -79,10 +79,10 @@ WeatherDlg::WeatherDlg( wxWindow* parent, iONode props ):WeatherDlgGen( parent )
       initValues();
       initThemeIndex();
       m_SelectedRow = wxGetApp().getFrame()->GetHour();
-      m_RGBWPanel->setWeather(m_Props, m_SelectedRow, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
+      m_RGBWPanel->setWeather(m_Props, m_SelectedRow*2, m_ColorWhite->IsChecked(), m_ColorBrightness->IsChecked(), m_ColorSaturation->IsChecked(), m_ColorWhite2->IsChecked());
       m_RGBWPanel->setDayTime(m_SelectedRow, 0);
-      m_ColorGrid->SelectRow(m_SelectedRow);
-      m_ColorGrid->MakeCellVisible(m_SelectedRow, 0);
+      m_ColorGrid->SelectRow(m_SelectedRow*2);
+      m_ColorGrid->MakeCellVisible(m_SelectedRow*2, 0);
     }
   }
 
