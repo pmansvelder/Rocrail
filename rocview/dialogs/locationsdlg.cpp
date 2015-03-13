@@ -208,7 +208,7 @@ void LocationsDialog::initIndex() {
     }
   }
 
-  if( selected != wxNOT_FOUND && m_LocationList->GetCount() >  0 ) {
+  if( selected != wxNOT_FOUND && m_LocationList->GetCount() >  0 && selected < m_LocationList->GetCount() ) {
     m_LocationList->SetSelection( selected );
     m_Props = (iONode)m_LocationList->GetClientData( selected );
   }
