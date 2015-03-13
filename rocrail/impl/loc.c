@@ -59,6 +59,7 @@
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/Stage.h"
 #include "rocrail/wrapper/public/BBT.h"
+#include "rocrail/wrapper/public/SBT.h"
 #include "rocrail/wrapper/public/Program.h"
 #include "rocrail/wrapper/public/Action.h"
 #include "rocrail/wrapper/public/BinStateCmd.h"
@@ -72,6 +73,7 @@ static void __swapConsist( iOLoc inst, iONode cmd );
 static int __getFnAddr( iOLoc inst, int function, int* mappedfn);
 static void __doSound(iOLoc inst, iONode cmd);
 static void __initBBTmap( iOLoc loc );
+static void __initSBTmap( iOLoc loc );
 static void __initCVmap( iOLoc loc );
 static Boolean __loadDriver( iOLoc inst );
 
@@ -1398,19 +1400,19 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
     }
   }
 
-  else if(wLoc.isregulated(data->props) && wLoc.getdecelerate( data->props ) > 0 &&
+  else if(wLoc.isregulated(data->props) && data->sbtDecelerate > 0 &&
       (StrOp.equals( wLoc.mode_auto, wLoc.getmode(data->props)) || ! wLoc.isusebbt(data->props) ) )
   {
-    if( data->step >= wLoc.getV_step( data->props ) ) {
+    if( data->step >= data->sbtInterval ) {
       data->step = 0;
       if( data->curSpeed == 0 && data->drvSpeed )
         data->curSpeed = data->drvSpeed;
 
       if( data->curSpeed > data->drvSpeed && data->curSpeed > wLoc.getV_min(data->props) && data->drvSpeed > wLoc.getV_min(data->props) ) {
-        data->curSpeed -= wLoc.getdecelerate(data->props);
+        data->curSpeed -= data->sbtDecelerate;
         if( data->curSpeed < data->drvSpeed )
           data->curSpeed = data->drvSpeed;
-        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "Vcur=%d Vdrv=%d decelerate=%d", data->curSpeed, data->drvSpeed, wLoc.getdecelerate(data->props) );
+        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "SBT Vcur=%d Vdrv=%d decelerate=%d", data->curSpeed, data->drvSpeed, data->sbtDecelerate );
         if( cmd == NULL )
           cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
         wLoc.setV( cmd, data->curSpeed );
@@ -2321,6 +2323,22 @@ static void _event( iOLoc inst, obj emitter, int evt, int timer, Boolean forcewa
 
   if( id != NULL && StrOp.len(id) > 0 && StrOp.equals("eventtimeout", id) ) {
     __checkAction(inst, "eventtimeout" );
+  }
+
+  if( evt == enter_event && block != NULL && !StrOp.equals(blockid, data->sbtEnterBlock) ) {
+    data->sbtEnterBlock = blockid;
+    /* default SBT */
+    data->sbtInterval   = wLoc.getV_step(data->props);
+    data->sbtDecelerate = wLoc.getdecelerate(data->props);
+
+    /* block related SBT */
+    if( MapOp.haskey(data->sbtMap, blockid ) ) {
+      iONode sbt = (iONode)MapOp.get(data->sbtMap, blockid);
+      data->sbtInterval   = wSBT.getinterval(sbt);
+      data->sbtDecelerate = wSBT.getdecelerate(sbt);
+    }
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "SBT enter block=%s interval=%d decelerate=%d",
+        data->sbtEnterBlock, data->sbtInterval, data->sbtDecelerate );
   }
 
   /* BBT timers */
@@ -3499,6 +3517,7 @@ static void _modify( iOLoc inst, iONode props ) {
   data->secondnextblock = wLoc.issecondnextblock( data->props );
 
   __initBBTmap(inst);
+  __initSBTmap(inst);
 
   __initCVmap(inst);
 
@@ -3695,6 +3714,18 @@ static const char* _getIdent( iOLoc loc ) {
   return wLoc.getidentifier( data->props );
 }
 
+
+static void __initSBTmap( iOLoc loc ) {
+  iOLocData data = Data(loc);
+  iONode sbt = NodeOp.findNode( data->props, wSBT.name() );
+  MapOp.clear(data->sbtMap);
+  while( sbt != NULL ) {
+    char* key  = NULL;
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "add SBT record with key [%s]", wSBT.getbk(sbt));
+    MapOp.put( data->sbtMap, wSBT.getbk(sbt), (obj)sbt );
+    sbt = NodeOp.findNextNode( data->props, sbt );
+  };
+}
 
 static void __initBBTmap( iOLoc loc ) {
   iOLocData data = Data(loc);
@@ -4073,6 +4104,7 @@ static iOLoc _inst( iONode props ) {
   data->timedfn = -1; /* function 0 is also used */
   data->released = True;
   data->bbtMap = MapOp.inst();
+  data->sbtMap = MapOp.inst();
   data->muxEngine = MutexOp.inst( NULL, True );
   data->muxCmd = MutexOp.inst( NULL, True );
   data->destBlock = NULL;
@@ -4110,6 +4142,7 @@ static iOLoc _inst( iONode props ) {
 
   __initCVmap( loc );
   __initBBTmap( loc );
+  __initSBTmap( loc );
 
   ModelOp.addSysEventListener( AppOp.getModel(), (obj)loc );
 

@@ -863,6 +863,10 @@
       <var name="bbtExternalStop" vt="Boolean"/>
       <var name="bbtGenerateIn" vt="Boolean"/>
       <var name="bbtDelay" vt="int"/>
+      <var name="sbtMap" vt="iOMap"/>
+      <var name="sbtEnterBlock" vt="const char*"/>
+      <var name="sbtInterval" vt="int"/>
+      <var name="sbtDecelerate" vt="int"/>
       <var name="lastfncmd" vt="long"/>
       <var name="govirtual" vt="Boolean"/>
       <var name="muxEngine" vt="iOMutex"/>

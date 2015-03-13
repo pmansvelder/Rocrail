@@ -2931,6 +2931,11 @@
           <var name="count" vt="int" defval="0" remark="Counter for dynamically adjust the correction factor."/>
           <var name="delay" vt="int" defval="0" unit="10ms" range="0-*"/>
         </bbt>
+        <sbt cardinality="n" wrappername="SBT">
+          <var name="bk" vt="string" defval="" range="*" remark="Block ID."/>
+          <var name="interval" vt="int" defval="1" range="1-*" unit="100ms" remark="Brake interval."/>
+          <var name="decelerate" vt="int" defval="0" range="0-*"/>
+        </sbt>
       </lc>
     </lclist>
 
