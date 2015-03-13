@@ -3376,6 +3376,8 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       wLoc.setmanual(data->props, False);
       broadcast = True;
     }
+    else if( StrOp.equals( wLoc.shunting, cmd ) ) {
+    }
 
 
 

@@ -2850,7 +2850,9 @@
         <const name="bidikmh" vt="string" val="bidikmh" remark="Reported speed by bidi decoder."/>
         <const name="fieldcmd" vt="string" val="fieldcmd" remark="Command from field; RocMouse."/>
         <const name="discover" vt="string" val="discover"/>
+        <const name="shunting" vt="string" val="shunting"/>
         <var name="cmd" vt="string" defval="NULL" range="*" remark="Loc command."/>
+        <var name="shuntingdiv" vt="int" defval="0" range="0-*" remark="Shunting divider."/>
         <var name="tourid" vt="string" defval="NULL" range="*" remark="Current tour ID."/>
         <var name="scheduleid" vt="string" defval="NULL" range="*" remark="Current schedule ID."/>
         <var name="startupscid" vt="string" defval="NULL" range="*" remark="Startup schedule ID."/>

@@ -7811,3 +7811,9 @@ msgstr ""
 msgid "Decelerate"
 msgstr ""
 
+#. 
+# id="shuntingdiv"
+#, c-format
+msgid "Shunting divider"
+msgstr ""
+
