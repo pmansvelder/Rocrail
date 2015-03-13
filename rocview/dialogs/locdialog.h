@@ -156,8 +156,6 @@ class wxGrid;
 #define ID_GRID_LOC_CV 10346
 #define ID_BUTTON_LC_CV_DESC 10347
 #define ID_PANEL_LOC_BBT 10337
-#define wxID_STATIC_LOC_V_STEP 10033
-#define ID_LOC_REGULATED 10375
 #define ID_LOC_BBTLIST2 10427
 #define ID_BBT_ADD 10457
 #define ID_BUTTON_BBT_DELETE 10424
@@ -167,6 +165,13 @@ class wxGrid;
 #define ID_BBT_EXPORT 10459
 #define ID_BBT_IMPORT 10460
 #define ID_BBT_GENATE_IN 10456
+#define ID_PANEL_LOC_SBT 10470
+#define wxID_STATIC_LOC_V_STEP 10033
+#define ID_LOC_REGULATED 10375
+#define ID_SBT_LIST 10471
+#define ID_SBT_ADD 10472
+#define ID_SBT_DELETE 10473
+#define ID_SBT_MODIFY 10474
 #define SYMBOL_LOCDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_LOCDIALOG_TITLE _("Dialog")
 #define SYMBOL_LOCDIALOG_IDNAME ID_DIALOG_LOC
@@ -210,6 +215,9 @@ class LocDialog: public wxDialog, public BaseDialog
   int m_BBTSortCol;
   iOList m_BBTList;
   iOList sortBBT();
+  int m_SBTSortCol;
+  iOList m_SBTList;
+  iOList sortSBT();
 
 public:
     /// Constructors
@@ -225,6 +233,7 @@ public:
     void SelectNext();
     void SelectPrev();
     void initBBT();
+    void initSBT();
     bool OnApply();
 
 ////@begin LocDialog event handler declarations
@@ -346,9 +355,6 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_LC_CV_DESC
     void OnButtonLcCvDescClick( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LOC_REGULATED
-    void OnLocRegulatedClick( wxCommandEvent& event );
-
     /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_LOC_BBTLIST2
     void OnLocBbtlist2Selected( wxListEvent& event );
 
@@ -378,6 +384,24 @@ public:
 
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_BBT_GENATE_IN
     void OnBbtGenateInClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LOC_REGULATED
+    void OnLocRegulatedClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_SBT_LIST
+    void OnSbtListSelected( wxListEvent& event );
+
+    /// wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_SBT_LIST
+    void OnSbtListColLeftClick( wxListEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SBT_ADD
+    void OnSbtAddClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SBT_DELETE
+    void OnSbtDeleteClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SBT_MODIFY
+    void OnSbtModifyClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
     void OnCancelClick( wxCommandEvent& event );
@@ -675,11 +699,6 @@ public:
     wxSpinCtrl* m_BBTCorrection;
     wxStaticText* m_labBBTPer;
     wxRadioBox* m_BBTKey;
-    wxStaticText* m_labDecelerate;
-    wxSpinCtrl* m_Decelerate;
-    wxStaticText* m_LabelV_step;
-    wxSpinCtrl* m_Accel;
-    wxCheckBox* m_Regulated;
     wxStaticText* m_labBBTCalculation;
     wxListCtrl* m_BBTList2;
     wxStaticText* m_labBBTFromBlock;
@@ -703,12 +722,30 @@ public:
     wxButton* m_BBTImport;
     wxCheckBox* m_BBTFixed;
     wxCheckBox* m_BBTGenerateIn;
+    wxPanel* m_SBTPanel;
+    wxStaticBox* m_SBTDefaultBox;
+    wxStaticText* m_labDecelerate;
+    wxSpinCtrl* m_Decelerate;
+    wxStaticText* m_LabelV_step;
+    wxSpinCtrl* m_Accel;
+    wxCheckBox* m_Regulated;
+    wxListCtrl* m_SBTList2;
+    wxStaticText* m_labSBTBlock;
+    wxTextCtrl* m_SBTBlock;
+    wxStaticText* m_labSBTInterval;
+    wxSpinCtrl* m_SBTInterval;
+    wxStaticText* m_labSBTDecelerate;
+    wxSpinCtrl* m_SBTDecelerate;
+    wxButton* m_SBTAdd;
+    wxButton* m_SBTDelete;
+    wxButton* m_SBTModify;
     wxButton* m_Cancel;
     wxButton* m_Apply;
     wxButton* m_OK;
     iONode m_Props;
 ////@end LocDialog member variables
     int m_iBBTSel;
+    int m_iSBTSel;
 };
 
 /*!

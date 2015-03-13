@@ -58,6 +58,7 @@
 #include "rocrail/wrapper/public/Schedule.h"
 #include "rocrail/wrapper/public/Tour.h"
 #include "rocrail/wrapper/public/BBT.h"
+#include "rocrail/wrapper/public/SBT.h"
 #include "rocrail/wrapper/public/Block.h"
 #include "rocrail/wrapper/public/Route.h"
 
@@ -114,7 +115,6 @@ BEGIN_EVENT_TABLE( LocDialog, wxDialog )
     EVT_BUTTON( ID_BUTTON_LOC_CONSIST_DELETE, LocDialog::OnButtonLocConsistDeleteClick )
     EVT_GRID_CELL_LEFT_CLICK( LocDialog::OnCVCellLeftClick )
     EVT_BUTTON( ID_BUTTON_LC_CV_DESC, LocDialog::OnButtonLcCvDescClick )
-    EVT_CHECKBOX( ID_LOC_REGULATED, LocDialog::OnLocRegulatedClick )
     EVT_LIST_ITEM_SELECTED( ID_LOC_BBTLIST2, LocDialog::OnLocBbtlist2Selected )
     EVT_LIST_COL_CLICK( ID_LOC_BBTLIST2, LocDialog::OnLocBbtlist2ColLeftClick )
     EVT_BUTTON( ID_BBT_ADD, LocDialog::OnBbtAddClick )
@@ -125,6 +125,12 @@ BEGIN_EVENT_TABLE( LocDialog, wxDialog )
     EVT_BUTTON( ID_BBT_EXPORT, LocDialog::OnBbtExportClick )
     EVT_BUTTON( ID_BBT_IMPORT, LocDialog::OnBbtImportClick )
     EVT_CHECKBOX( ID_BBT_GENATE_IN, LocDialog::OnBbtGenateInClick )
+    EVT_CHECKBOX( ID_LOC_REGULATED, LocDialog::OnLocRegulatedClick )
+    EVT_LIST_ITEM_SELECTED( ID_SBT_LIST, LocDialog::OnSbtListSelected )
+    EVT_LIST_COL_CLICK( ID_SBT_LIST, LocDialog::OnSbtListColLeftClick )
+    EVT_BUTTON( ID_SBT_ADD, LocDialog::OnSbtAddClick )
+    EVT_BUTTON( ID_SBT_DELETE, LocDialog::OnSbtDeleteClick )
+    EVT_BUTTON( ID_SBT_MODIFY, LocDialog::OnSbtModifyClick )
     EVT_BUTTON( wxID_CANCEL, LocDialog::OnCancelClick )
     EVT_BUTTON( wxID_APPLY, LocDialog::OnApplyClick )
     EVT_BUTTON( wxID_OK, LocDialog::OnOkClick )
@@ -139,6 +145,7 @@ END_EVENT_TABLE()
  */
 
 static bool ms_BBTSort = true;
+static bool ms_SBTSort = true;
 
 LocDialog::LocDialog(  wxWindow* parent, iONode p_Props, bool save )
 {
@@ -161,6 +168,7 @@ LocDialog::LocDialog(  wxWindow* parent, iONode p_Props, bool save )
   m_FunctionPanel->GetSizer()->Layout();
   m_CVPanel->GetSizer()->Layout();
   m_BBTPanel->GetSizer()->Layout();
+  m_SBTPanel->GetSizer()->Layout();
   m_ConsistsPanel->GetSizer()->Layout();
 
   m_Notebook->Fit();
@@ -286,7 +294,6 @@ void LocDialog::initLabels() {
   m_V_Rmin->SetToolTip( wxGetApp().getTip( "v_rmin" ) );
   m_V_Rmax->SetToolTip( wxGetApp().getTip( "v_rmax" ) );
 
-  m_LabelV_step->SetLabel( wxGetApp().getMsg( "v_step" ) );
   m_LabelV_mode->SetLabel( wxGetApp().getMsg( "v_mode" ) );
   m_V_mode_percent->SetLabel( wxGetApp().getMsg( "percent" ) );
   m_Label_Mass->SetLabel( wxGetApp().getMsg( "mass" ) );
@@ -294,8 +301,6 @@ void LocDialog::initLabels() {
   m_Placing->SetLabel( wxGetApp().getMsg( "default" ) );
   m_labDirPause->SetLabel( wxGetApp().getMsg( "dirpause" ) );
   m_DirPause->SetToolTip( wxGetApp().getTip( "dirpause" ) );
-  m_Regulated->SetLabel( wxGetApp().getMsg( "regulated" ) );
-  m_Regulated->SetToolTip( wxGetApp().getTip( "regulated" ) );
   m_RestoreFx->SetLabel( wxGetApp().getMsg( "restorefx" ) );
   m_RestoreSpeed->SetLabel( wxGetApp().getMsg( "restorespeed" ) );
   m_Info4Throttle->SetLabel( wxGetApp().getMsg( "info4throttle" ) );
@@ -306,7 +311,6 @@ void LocDialog::initLabels() {
   m_VelocityBox->SetLabel( wxGetApp().getMsg( "speed" ) );
   m_OptionsBox->SetLabel( wxGetApp().getMsg( "options" ) );
   m_AccelerationBox->SetLabel( wxGetApp().getMsg( "acceleration" ) );
-  m_labDecelerate->SetLabel( wxGetApp().getMsg( "decelerate" ) );
 
   // Details
   m_Label_Blockwait->SetLabel( wxGetApp().getMsg( "blockwait" ) );
@@ -470,6 +474,8 @@ void LocDialog::initLabels() {
   m_BBTDelete->SetLabel( wxGetApp().getMsg( "delete" ) );
   m_BBTCopy->SetLabel( wxGetApp().getMsg( "copy" ) );
   m_BBTDeleteAll->SetLabel( wxGetApp().getMsg( "deleteall" ) );
+  m_BBTAdd->SetLabel( wxGetApp().getMsg( "add" ) );
+
   m_BBTKey->SetLabel( wxGetApp().getMsg( "use" ) );
   m_BBTKey->SetString( 0, wxGetApp().getMsg( "block" ) );
   m_BBTKey->SetString( 1, wxGetApp().getMsg( "fromblock" ) );
@@ -520,6 +526,21 @@ void LocDialog::initLabels() {
   m_BBTImport->SetLabel( wxGetApp().getMsg( "import" ) + wxT("...") );
   m_BBTExport->SetLabel( wxGetApp().getMsg( "export" ) + wxT("...") );
 
+  // SBT
+  m_SBTDefaultBox->SetLabel( wxGetApp().getMsg( "default" ) );
+  m_labDecelerate->SetLabel( wxGetApp().getMsg( "decelerate" ) );
+  m_LabelV_step->SetLabel( wxGetApp().getMsg( "interval" ) );
+  m_Regulated->SetLabel( wxGetApp().getMsg( "regulated" ) );
+  m_Regulated->SetToolTip( wxGetApp().getTip( "regulated" ) );
+  m_labSBTBlock->SetLabel( wxGetApp().getMsg( "block" ) );
+  m_labSBTInterval->SetLabel( wxGetApp().getMsg( "interval" ) );
+  m_labSBTDecelerate->SetLabel( wxGetApp().getMsg( "decelerate" ) );
+  m_SBTModify->SetLabel( wxGetApp().getMsg( "modify" ) );
+  m_SBTDelete->SetLabel( wxGetApp().getMsg( "delete" ) );
+  m_SBTAdd->SetLabel( wxGetApp().getMsg( "add" ) );
+  m_SBTList2->InsertColumn(0, wxGetApp().getMsg( "block" ), wxLIST_FORMAT_LEFT );
+  m_SBTList2->InsertColumn(1, wxGetApp().getMsg( "interval" ), wxLIST_FORMAT_RIGHT );
+  m_SBTList2->InsertColumn(2, wxGetApp().getMsg( "decelerate" ), wxLIST_FORMAT_RIGHT );
 
   // Buttons
   m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
@@ -994,6 +1015,7 @@ void LocDialog::InitValues() {
   m_BBTKey->SetSelection(wLoc.getbbtkey( m_Props ));
 
   initBBT();
+  initSBT();
 
   m_BBTDelete->Enable(false);
   m_BBTCopy->Enable(false);
@@ -1599,11 +1621,6 @@ bool LocDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption
     m_BBTCorrection = NULL;
     m_labBBTPer = NULL;
     m_BBTKey = NULL;
-    m_labDecelerate = NULL;
-    m_Decelerate = NULL;
-    m_LabelV_step = NULL;
-    m_Accel = NULL;
-    m_Regulated = NULL;
     m_labBBTCalculation = NULL;
     m_BBTList2 = NULL;
     m_labBBTFromBlock = NULL;
@@ -1627,6 +1644,23 @@ bool LocDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption
     m_BBTImport = NULL;
     m_BBTFixed = NULL;
     m_BBTGenerateIn = NULL;
+    m_SBTPanel = NULL;
+    m_SBTDefaultBox = NULL;
+    m_labDecelerate = NULL;
+    m_Decelerate = NULL;
+    m_LabelV_step = NULL;
+    m_Accel = NULL;
+    m_Regulated = NULL;
+    m_SBTList2 = NULL;
+    m_labSBTBlock = NULL;
+    m_SBTBlock = NULL;
+    m_labSBTInterval = NULL;
+    m_SBTInterval = NULL;
+    m_labSBTDecelerate = NULL;
+    m_SBTDecelerate = NULL;
+    m_SBTAdd = NULL;
+    m_SBTDelete = NULL;
+    m_SBTModify = NULL;
     m_Cancel = NULL;
     m_Apply = NULL;
     m_OK = NULL;
@@ -2830,39 +2864,8 @@ void LocDialog::CreateControls()
     m_BBTKey->SetSelection(0);
     itemBoxSizer343->Add(m_BBTKey, 0, wxALIGN_TOP|wxALL, 5);
 
-    wxStaticBox* itemStaticBoxSizer358Static = new wxStaticBox(m_BBTPanel, wxID_ANY, _("SBT"));
-    wxStaticBoxSizer* itemStaticBoxSizer358 = new wxStaticBoxSizer(itemStaticBoxSizer358Static, wxVERTICAL);
-    itemBoxSizer343->Add(itemStaticBoxSizer358, 0, wxALIGN_TOP|wxALL, 5);
-    wxFlexGridSizer* itemFlexGridSizer359 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemStaticBoxSizer358->Add(itemFlexGridSizer359, 0, wxGROW, 5);
-    m_labDecelerate = new wxStaticText( m_BBTPanel, wxID_ANY, _("Decelerate"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer359->Add(m_labDecelerate, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_Decelerate = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 50, 0 );
-    itemFlexGridSizer359->Add(m_Decelerate, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_LabelV_step = new wxStaticText( m_BBTPanel, wxID_STATIC_LOC_V_STEP, _("V_step:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer359->Add(m_LabelV_step, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 2);
-
-    wxFlexGridSizer* itemFlexGridSizer363 = new wxFlexGridSizer(0, 2, 0, 0);
-    itemFlexGridSizer359->Add(itemFlexGridSizer363, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    m_Accel = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 10, 0 );
-    itemFlexGridSizer363->Add(m_Accel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxStaticText* itemStaticText365 = new wxStaticText( m_BBTPanel, wxID_ANY, _("* 100ms"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer363->Add(itemStaticText365, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-
-    wxStaticText* itemStaticText366 = new wxStaticText( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer359->Add(itemStaticText366, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_Regulated = new wxCheckBox( m_BBTPanel, ID_LOC_REGULATED, _("regulated"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_Regulated->SetValue(false);
-    itemFlexGridSizer359->Add(m_Regulated, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 2);
-
-    itemFlexGridSizer359->AddGrowableCol(1);
-
-    wxStaticLine* itemStaticLine368 = new wxStaticLine( m_BBTPanel, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-    itemBoxSizer342->Add(itemStaticLine368, 0, wxGROW|wxALL, 5);
+    wxStaticLine* itemStaticLine358 = new wxStaticLine( m_BBTPanel, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+    itemBoxSizer342->Add(itemStaticLine358, 0, wxGROW|wxALL, 5);
 
     m_labBBTCalculation = new wxStaticText( m_BBTPanel, wxID_ANY, _("Calculation"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer342->Add(m_labBBTCalculation, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
@@ -2870,103 +2873,176 @@ void LocDialog::CreateControls()
     m_BBTList2 = new wxListCtrl( m_BBTPanel, ID_LOC_BBTLIST2, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
     itemBoxSizer342->Add(m_BBTList2, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer371 = new wxFlexGridSizer(0, 8, 0, 0);
-    itemBoxSizer342->Add(itemFlexGridSizer371, 0, wxGROW, 5);
+    wxFlexGridSizer* itemFlexGridSizer361 = new wxFlexGridSizer(0, 8, 0, 0);
+    itemBoxSizer342->Add(itemFlexGridSizer361, 0, wxGROW, 5);
     m_labBBTFromBlock = new wxStaticText( m_BBTPanel, wxID_ANY, _("From block"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer371->Add(m_labBBTFromBlock, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer361->Add(m_labBBTFromBlock, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_BBTFromBlockStrings;
     m_BBTFromBlock = new wxComboBox( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BBTFromBlockStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer371->Add(m_BBTFromBlock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer361->Add(m_BBTFromBlock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTBlock = new wxStaticText( m_BBTPanel, wxID_ANY, _("Block"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer371->Add(m_labBBTBlock, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer361->Add(m_labBBTBlock, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_BBTBlockStrings;
     m_BBTBlock = new wxComboBox( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BBTBlockStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer371->Add(m_BBTBlock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer361->Add(m_BBTBlock, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTInterval = new wxStaticText( m_BBTPanel, wxID_ANY, _("Interval"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer371->Add(m_labBBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer361->Add(m_labBBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_BBTInterval = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
-    itemFlexGridSizer371->Add(m_BBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer361->Add(m_BBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTRoute = new wxStaticText( m_BBTPanel, wxID_ANY, _("Route"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer371->Add(m_labBBTRoute, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer361->Add(m_labBBTRoute, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxArrayString m_BBTRouteStrings;
     m_BBTRoute = new wxComboBox( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_BBTRouteStrings, wxCB_DROPDOWN );
-    itemFlexGridSizer371->Add(m_BBTRoute, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer361->Add(m_BBTRoute, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTSpeed = new wxStaticText( m_BBTPanel, wxID_ANY, _("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer371->Add(m_labBBTSpeed, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer361->Add(m_labBBTSpeed, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_BBTSpeed = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 1000, 0 );
-    itemFlexGridSizer371->Add(m_BBTSpeed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer361->Add(m_BBTSpeed, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     m_labBBTDelay = new wxStaticText( m_BBTPanel, wxID_ANY, _("Delay"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer371->Add(m_labBBTDelay, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+    itemFlexGridSizer361->Add(m_labBBTDelay, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_BBTDelay = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(65, -1), wxSP_ARROW_KEYS, 0, 1000, 0 );
-    itemFlexGridSizer371->Add(m_BBTDelay, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    itemFlexGridSizer361->Add(m_BBTDelay, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
-    itemFlexGridSizer371->AddGrowableCol(1);
-    itemFlexGridSizer371->AddGrowableCol(3);
-    itemFlexGridSizer371->AddGrowableCol(7);
+    itemFlexGridSizer361->AddGrowableCol(1);
+    itemFlexGridSizer361->AddGrowableCol(3);
+    itemFlexGridSizer361->AddGrowableCol(7);
 
-    wxBoxSizer* itemBoxSizer384 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer342->Add(itemBoxSizer384, 0, wxALIGN_LEFT|wxALL, 5);
+    wxBoxSizer* itemBoxSizer374 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer342->Add(itemBoxSizer374, 0, wxALIGN_LEFT|wxALL, 5);
     m_BBTAdd = new wxButton( m_BBTPanel, ID_BBT_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTAdd, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTAdd, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTDelete = new wxButton( m_BBTPanel, ID_BUTTON_BBT_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTDelete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTDelete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTCopy = new wxButton( m_BBTPanel, ID_BBT_COPY, _("Copy"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTCopy, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTCopy, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTDeleteAll = new wxButton( m_BBTPanel, ID_BUTTON_BBT_DELETEALL, _("Delete all"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTDeleteAll, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTDeleteAll, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTModify = new wxButton( m_BBTPanel, ID_BBT_MODIFY, _("Modify"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTModify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTModify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTExport = new wxButton( m_BBTPanel, ID_BBT_EXPORT, _("Export"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTExport, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTExport, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTImport = new wxButton( m_BBTPanel, ID_BBT_IMPORT, _("Import"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer384->Add(m_BBTImport, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTImport, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTFixed = new wxCheckBox( m_BBTPanel, wxID_ANY, _("Fixed"), wxDefaultPosition, wxDefaultSize, 0 );
     m_BBTFixed->SetValue(false);
-    itemBoxSizer384->Add(m_BBTFixed, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTFixed, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTGenerateIn = new wxCheckBox( m_BBTPanel, ID_BBT_GENATE_IN, _("Generate IN"), wxDefaultPosition, wxDefaultSize, 0 );
     m_BBTGenerateIn->SetValue(false);
-    itemBoxSizer384->Add(m_BBTGenerateIn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer374->Add(m_BBTGenerateIn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_Notebook->AddPage(m_BBTPanel, _("BBT / SBT"));
+    m_Notebook->AddPage(m_BBTPanel, _("BBT"));
+
+    m_SBTPanel = new wxPanel( m_Notebook, ID_PANEL_LOC_SBT, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+    wxBoxSizer* itemBoxSizer385 = new wxBoxSizer(wxVERTICAL);
+    m_SBTPanel->SetSizer(itemBoxSizer385);
+
+    m_SBTDefaultBox = new wxStaticBox(m_SBTPanel, wxID_ANY, _("Default"));
+    wxStaticBoxSizer* itemStaticBoxSizer386 = new wxStaticBoxSizer(m_SBTDefaultBox, wxVERTICAL);
+    itemBoxSizer385->Add(itemStaticBoxSizer386, 0, wxALIGN_LEFT|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer387 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemStaticBoxSizer386->Add(itemFlexGridSizer387, 0, wxGROW, 5);
+    m_labDecelerate = new wxStaticText( m_SBTPanel, wxID_ANY, _("Decelerate"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer387->Add(m_labDecelerate, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_Decelerate = new wxSpinCtrl( m_SBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 50, 0 );
+    itemFlexGridSizer387->Add(m_Decelerate, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_LabelV_step = new wxStaticText( m_SBTPanel, wxID_STATIC_LOC_V_STEP, _("V_step:"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer387->Add(m_LabelV_step, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 2);
+
+    wxFlexGridSizer* itemFlexGridSizer391 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemFlexGridSizer387->Add(itemFlexGridSizer391, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    m_Accel = new wxSpinCtrl( m_SBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 10, 0 );
+    itemFlexGridSizer391->Add(m_Accel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    wxStaticText* itemStaticText393 = new wxStaticText( m_SBTPanel, wxID_ANY, _("* 100ms"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer391->Add(itemStaticText393, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+
+    wxStaticText* itemStaticText394 = new wxStaticText( m_SBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer387->Add(itemStaticText394, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_Regulated = new wxCheckBox( m_SBTPanel, ID_LOC_REGULATED, _("regulated"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_Regulated->SetValue(false);
+    itemFlexGridSizer387->Add(m_Regulated, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+    itemFlexGridSizer387->AddGrowableCol(1);
+
+    m_SBTList2 = new wxListCtrl( m_SBTPanel, ID_SBT_LIST, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
+    itemBoxSizer385->Add(m_SBTList2, 1, wxGROW|wxALL, 5);
+
+    wxFlexGridSizer* itemFlexGridSizer397 = new wxFlexGridSizer(0, 6, 0, 0);
+    itemBoxSizer385->Add(itemFlexGridSizer397, 0, wxGROW|wxALL, 5);
+    m_labSBTBlock = new wxStaticText( m_SBTPanel, wxID_ANY, _("Block"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer397->Add(m_labSBTBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SBTBlock = new wxTextCtrl( m_SBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer397->Add(m_SBTBlock, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_labSBTInterval = new wxStaticText( m_SBTPanel, wxID_ANY, _("Interval"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer397->Add(m_labSBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SBTInterval = new wxSpinCtrl( m_SBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 10, 0 );
+    itemFlexGridSizer397->Add(m_SBTInterval, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+
+    m_labSBTDecelerate = new wxStaticText( m_SBTPanel, wxID_ANY, _("Decelerate"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer397->Add(m_labSBTDecelerate, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SBTDecelerate = new wxSpinCtrl( m_SBTPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(80, -1), wxSP_ARROW_KEYS, 0, 50, 0 );
+    itemFlexGridSizer397->Add(m_SBTDecelerate, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+
+    itemFlexGridSizer397->AddGrowableCol(1);
+
+    wxBoxSizer* itemBoxSizer404 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer385->Add(itemBoxSizer404, 0, wxALIGN_LEFT|wxALL, 5);
+    m_SBTAdd = new wxButton( m_SBTPanel, ID_SBT_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer404->Add(m_SBTAdd, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SBTDelete = new wxButton( m_SBTPanel, ID_SBT_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer404->Add(m_SBTDelete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SBTModify = new wxButton( m_SBTPanel, ID_SBT_MODIFY, _("Modify"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer404->Add(m_SBTModify, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_Notebook->AddPage(m_SBTPanel, _("SBT"));
 
     itemBoxSizer2->Add(m_Notebook, 1, wxGROW|wxALL, 5);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer394 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer408 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer394, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer408, 0, wxGROW|wxALL, 5);
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer394->AddButton(m_Cancel);
+    itemStdDialogButtonSizer408->AddButton(m_Cancel);
 
     m_Apply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer394->AddButton(m_Apply);
+    itemStdDialogButtonSizer408->AddButton(m_Apply);
 
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     m_OK->SetDefault();
-    itemStdDialogButtonSizer394->AddButton(m_OK);
+    itemStdDialogButtonSizer408->AddButton(m_OK);
 
-    wxButton* itemButton398 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer394->AddButton(itemButton398);
+    wxButton* itemButton412 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer408->AddButton(itemButton412);
 
-    itemStdDialogButtonSizer394->Realize();
+    itemStdDialogButtonSizer408->Realize();
 
     // Connect events and objects
     m_F0Icon->Connect(ID_LOC_ICONF0, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocIconf0), NULL, this);
@@ -3801,6 +3877,40 @@ void LocDialog::OnLocBbtlist2Selected( wxListEvent& event )
 }
 
 
+static int __sortSBTBlock(obj* _a, obj* _b)
+{
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = wSBT.getbk( a );
+    const char* idB = wSBT.getbk( b );
+    return ms_SBTSort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
+
+
+static int __sortSBTInterval(obj* _a, obj* _b)
+{
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    if( wSBT.getinterval(a) > wSBT.getinterval(b) )
+      return ms_SBTSort ? 1:-1;
+    if( wSBT.getinterval(a) < wSBT.getinterval(b) )
+      return ms_SBTSort ? -1:1;
+    return 0;
+}
+
+
+static int __sortSBTDecelerate(obj* _a, obj* _b)
+{
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    if( wSBT.getinterval(a) > wSBT.getdecelerate(b) )
+      return ms_SBTSort ? 1:-1;
+    if( wSBT.getinterval(a) < wSBT.getdecelerate(b) )
+      return ms_SBTSort ? -1:1;
+    return 0;
+}
+
+
 static int __sortBBTFromBlock(obj* _a, obj* _b)
 {
     iONode a = (iONode)*_a;
@@ -3891,6 +4001,37 @@ static int __sortBBTFixed(obj* _a, obj* _b)
 }
 
 
+iOList LocDialog::sortSBT() {
+  if( m_Props == NULL ) {
+    return NULL;
+  }
+
+  iOList list = ListOp.inst();
+  iONode sbt = wLoc.getsbt( m_Props );
+
+  while( sbt != NULL ) {
+    ListOp.add(list, (obj)sbt);
+    sbt = wLoc.nextsbt( m_Props, sbt );
+  };
+
+  if( m_SBTSortCol == 1 ) {
+    ListOp.sort(list, &__sortSBTInterval);
+  }
+  else if( m_SBTSortCol == 2 ) {
+    ListOp.sort(list, &__sortSBTDecelerate);
+  }
+  else {
+    ListOp.sort(list, &__sortSBTBlock);
+  }
+
+  if( m_SBTList != NULL ) {
+    ListOp.base.del(m_SBTList);
+  }
+  m_SBTList = list;
+  return m_SBTList;
+}
+
+
 iOList LocDialog::sortBBT() {
   if( m_Props == NULL ) {
     return NULL;
@@ -3936,6 +4077,38 @@ iOList LocDialog::sortBBT() {
   return m_BBTList;
 }
 
+
+void LocDialog::initSBT() {
+  m_SBTList2->DeleteAllItems();
+
+  if( m_Props == NULL )
+    return;
+
+  m_iSBTSel = wxNOT_FOUND;
+  m_SBTBlock->SetValue( wxT(""));
+  m_SBTInterval->SetValue(0);
+  m_SBTDecelerate->SetValue(0);
+
+  iOList list = sortSBT();
+
+  int cnt = ListOp.size(list);
+  for( int i = 0; i < cnt; i++ ) {
+    iONode sbt = (iONode)ListOp.get(list, i);
+    m_SBTList2->InsertItem( i, wxString(wSBT.getbk(sbt),wxConvUTF8) );
+    m_SBTList2->SetItem( i, 1, wxString::Format(wxT("%d"), wSBT.getinterval(sbt)) );
+    m_SBTList2->SetItem( i, 2, wxString::Format(wxT("%d"), wSBT.getdecelerate(sbt)) );
+    TraceOp.trc( "locdlg", TRCLEVEL_INFO, __LINE__, 9999, "sbt[%d]=%lx", i, sbt );
+  }
+  // resize
+  for( int n = 0; n < 3; n++ ) {
+    m_SBTList2->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+    int autoheadersize = m_SBTList2->GetColumnWidth(n);
+    m_SBTList2->SetColumnWidth(n, wxLIST_AUTOSIZE);
+    int autosize = m_SBTList2->GetColumnWidth(n);
+    if(autoheadersize > autosize )
+      m_SBTList2->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+  }
+}
 
 void LocDialog::initBBT() {
   m_BBTList2->DeleteAllItems();
@@ -4315,5 +4488,111 @@ void LocDialog::OnBbtImportClick( wxCommandEvent& event ) {
     }
   }
   fdlg->Destroy();
+}
+
+
+/*!
+ * wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_SBT_LIST
+ */
+
+void LocDialog::OnSbtListSelected( wxListEvent& event )
+{
+  if( m_Props != NULL ) {
+    m_iSBTSel = event.GetIndex();
+    if( m_iSBTSel != wxNOT_FOUND) {
+      sortSBT();
+      iONode l_SBTSel = (iONode)ListOp.get(m_SBTList, m_iSBTSel);
+      TraceOp.trc( "locdlg", TRCLEVEL_INFO, __LINE__, 9999, "selected sbt=%d node=%lx", m_iSBTSel, l_SBTSel );
+      m_SBTDelete->Enable(true);
+      m_SBTBlock->SetValue( wxString(wSBT.getbk(l_SBTSel),wxConvUTF8));
+      m_SBTInterval->SetValue(wSBT.getinterval(l_SBTSel));
+      m_SBTDecelerate->SetValue(wSBT.getdecelerate(l_SBTSel));
+    }
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SBT_ADD
+ */
+
+void LocDialog::OnSbtAddClick( wxCommandEvent& event )
+{
+  if( m_Props != NULL) {
+    iONode sbtrec = NodeOp.inst(wSBT.name(), m_Props, ELEMENT_NODE);
+    NodeOp.addChild( m_Props, sbtrec );
+    initSBT();
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SBT_DELETE
+ */
+
+void LocDialog::OnSbtDeleteClick( wxCommandEvent& event )
+{
+  if( m_Props != NULL) {
+    // re-init the list to update the bbt pointers
+    sortSBT();
+    if(  m_iSBTSel != wxNOT_FOUND ) {
+      iONode l_SBTSel = (iONode)ListOp.get(m_SBTList, m_iSBTSel);
+
+      if( l_SBTSel != NULL ) {
+        NodeOp.removeChild( m_Props, l_SBTSel );
+        l_SBTSel = NULL;
+        initSBT();
+
+        if( NodeOp.getChildCnt(m_Props) == 0 ) {
+          // ToDo: Work aroud for forcing the loco objects to remove all child nodes...
+          iONode node = NodeOp.inst( wCVByte.name(), m_Props, ELEMENT_NODE);
+          NodeOp.addChild( m_Props, node );
+        }
+
+        if( m_SBTList2->GetItemCount() == 0 ) {
+          m_SBTDelete->Enable(false);
+        }
+      }
+    }
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SBT_MODIFY
+ */
+
+void LocDialog::OnSbtModifyClick( wxCommandEvent& event )
+{
+  if( m_Props != NULL && m_iSBTSel != wxNOT_FOUND) {
+    // re-init the list to update the bbt pointers
+    sortSBT();
+    iONode l_SBTSel = (iONode)ListOp.get(m_SBTList, m_iSBTSel);
+
+    wSBT.setinterval(l_SBTSel, m_SBTInterval->GetValue());
+    wSBT.setbk(l_SBTSel, m_SBTBlock->GetValue().mb_str(wxConvUTF8));
+    wSBT.setdecelerate(l_SBTSel, m_SBTDecelerate->GetValue());
+
+    int sel = m_iSBTSel;
+    initSBT();
+    m_iSBTSel = sel;
+    m_SBTList2->SetItemState(m_iSBTSel, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_SBT_LIST
+ */
+
+void LocDialog::OnSbtListColLeftClick( wxListEvent& event )
+{
+  if(m_SBTSortCol == event.GetColumn())
+    ms_SBTSort = !ms_SBTSort;
+  else
+    ms_SBTSort = true;
+
+  m_SBTSortCol = event.GetColumn();
+  initSBT();
 }
 
