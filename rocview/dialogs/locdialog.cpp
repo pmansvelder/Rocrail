@@ -499,6 +499,7 @@ void LocDialog::initLabels() {
       const char* id = (const char*)ListOp.get( list, i );
       m_BBTFromBlock->Append( wxString(id,wxConvUTF8) );
       m_BBTBlock->Append( wxString(id,wxConvUTF8) );
+      m_SBTBlock->Append( wxString(id,wxConvUTF8) );
     }
   }
   ListOp.base.del(list);
@@ -2994,7 +2995,8 @@ void LocDialog::CreateControls()
     m_labSBTBlock = new wxStaticText( m_SBTPanel, wxID_ANY, _("Block"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer397->Add(m_labSBTBlock, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_SBTBlock = new wxTextCtrl( m_SBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    wxArrayString m_SBTBlockStrings;
+    m_SBTBlock = new wxComboBox( m_SBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_SBTBlockStrings, wxCB_DROPDOWN );
     itemFlexGridSizer397->Add(m_SBTBlock, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labSBTInterval = new wxStaticText( m_SBTPanel, wxID_ANY, _("Interval"), wxDefaultPosition, wxDefaultSize, 0 );
