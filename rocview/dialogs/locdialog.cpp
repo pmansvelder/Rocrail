@@ -156,7 +156,9 @@ LocDialog::LocDialog(  wxWindow* parent, iONode p_Props, bool save )
   m_iSelectedCV = -1;
   m_iFunGroup = 0;
   m_iBBTSel = wxNOT_FOUND;
+  m_iSBTSel = wxNOT_FOUND;
   m_BBTList = NULL;
+  m_SBTList = NULL;
 
   initLabels();
   initCVDesc();
