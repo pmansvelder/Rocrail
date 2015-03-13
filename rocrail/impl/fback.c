@@ -176,6 +176,19 @@ static void __checkAction( iOFBack inst ) {
         if( StrOp.equals( BlockOp.base.name(), data->listenerObj->name() ) )
           wActionCtrl.setlcid(fbaction, bk->getLoc(bk) );
       }
+      else if( ListOp.size(data->listeners) > 0 ) {
+        obj object = ListOp.first( data->listeners );
+        while( object != NULL ) {
+          if( StrOp.equals( BlockOp.base.name(), object->name() ) ) {
+            iIBlockBase bk = (iIBlockBase)object;
+            wActionCtrl.setlcid(fbaction, bk->getLoc(bk) );
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "using lc [%s] from block [%s]", bk->getLoc(bk), object->id(object));
+            break;
+          }
+          object = ListOp.next( data->listeners );
+        };
+      }
+
       iOAction action = ModelOp.getAction(model, wActionCtrl.getid( fbaction ));
       if( action != NULL )
         ActionOp.exec(action, fbaction);
