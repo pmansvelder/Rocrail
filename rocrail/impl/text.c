@@ -257,6 +257,7 @@ static char* __addLocoProperties(iOMap map, iOLoc lc, char* hour, char* min) {
   char* scidxStr = StrOp.fmt("%d", scidx);
   __evaluateSchedule(sc, scidx, map, hour, min);
   MapOp.put(map, "lcid", (obj)LocOp.getId(lc));
+  MapOp.put(map, "lcclass", (obj)LocOp.getClass(lc));
   MapOp.put(map, "lcident", (obj)wLoc.getidentifier(lcprops));
   MapOp.put(map, "lcdest", (obj)LocOp.getDestination(lc));
   MapOp.put(map, "lcscid", (obj)scid);

@@ -137,8 +137,15 @@ static void __checkAction( iOTT inst, const char* cmd ) {
       if( action != NULL ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "turntable action: %s", wActionCtrl.getid( ttaction ));
 
-        if( wAction.getoid( ttaction) == NULL || StrOp.len(wAction.getoid( ttaction)) == 0 )
+        if( wAction.getoid( ttaction) == NULL || StrOp.len(wAction.getoid( ttaction)) == 0 ) {
           wActionCtrl.setlcid( ttaction, data->lockedId );
+          if(data->lockedId != NULL && StrOp.len(data->lockedId) > 0 ) {
+            iOLoc lc = ModelOp.getLoc( AppOp.getModel(), data->lockedId, NULL, False );
+            if( lc != NULL ) {
+              wActionCtrl.setlcclass(ttaction, LocOp.getClass(lc));
+            }
+          }
+        }
 
         wActionCtrl.setbkid(ttaction, wTurntable.getid( data->props ));
 

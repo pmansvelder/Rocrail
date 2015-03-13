@@ -207,6 +207,13 @@ static void __checkAction( iOStage inst, const char* state, const char* substate
         if( Action != NULL ) {
           wActionCtrl.setbkid(action, "");
           wActionCtrl.setlcid(action, lcid != NULL ? lcid:"");
+          if(lcid != NULL && StrOp.len(lcid) > 0 ) {
+            iOLoc lc = ModelOp.getLoc( AppOp.getModel(), lcid, NULL, False );
+            if( lc != NULL ) {
+              wActionCtrl.setlcclass(action, LocOp.getClass(lc));
+            }
+          }
+
           ActionOp.exec(Action, action);
         }
       }

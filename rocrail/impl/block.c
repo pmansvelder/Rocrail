@@ -182,9 +182,14 @@ static void __checkAction( iOBlock inst, const char* state ) {
 
       iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));
       if( Action != NULL ) {
+        iOLoc lc = ModelOp.getLoc( AppOp.getModel(), data->locId, NULL, False );
+        if( lc != NULL ) {
+          wActionCtrl.setlcclass(action, LocOp.getClass(lc));
+        }
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block action [%s-%s]", data->id, data->locId );
         wActionCtrl.setbkid(action, data->id);
         wActionCtrl.setlcid(action, data->locId);
+
         ActionOp.exec(Action, action);
       }
     }

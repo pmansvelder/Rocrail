@@ -1524,6 +1524,7 @@
     <var name="manual" vt="bool" defval="true" remark="Activate in manual mode."/>
     <var name="deact" vt="string" defval="none" range="none,enter,in" remark="Deactivation event."/>
     <var name="lcid" vt="string" defval="" range="*"/>
+    <var name="lcclass" vt="string" defval="" range="*"/>
     <var name="bkid" vt="string" defval="" range="*"/>
     <var name="counter" vt="int" defval="0" range="0-*"/>
     <var name="countedcars" vt="int" defval="0" range="0-*"/>

@@ -1152,6 +1152,14 @@ static void __checkAction( iOSignal inst ) {
           if( bk != NULL ) {
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "signal in block %s with loco %s", bk->base.id(bk), bk->getLoc(bk) );
             wActionCtrl.setlcid(sgaction, bk->getLoc(bk) );
+
+            if(wActionCtrl.getlcid(sgaction) != NULL && StrOp.len(wActionCtrl.getlcid(sgaction)) > 0 ) {
+              iOLoc lc = ModelOp.getLoc( AppOp.getModel(), wActionCtrl.getlcid(sgaction), NULL, False );
+              if( lc != NULL ) {
+                wActionCtrl.setlcclass(sgaction, LocOp.getClass(lc));
+              }
+            }
+
           }
 
           ActionOp.exec(action, sgaction);

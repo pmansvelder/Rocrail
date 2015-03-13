@@ -189,6 +189,13 @@ static void __checkAction( iOFBack inst ) {
         };
       }
 
+      if(wActionCtrl.getlcid(fbaction) != NULL && StrOp.len(wActionCtrl.getlcid(fbaction)) > 0 ) {
+        iOLoc lc = ModelOp.getLoc( AppOp.getModel(), wActionCtrl.getlcid(fbaction), NULL, False );
+        if( lc != NULL ) {
+          wActionCtrl.setlcclass(fbaction, LocOp.getClass(lc));
+        }
+      }
+
       iOAction action = ModelOp.getAction(model, wActionCtrl.getid( fbaction ));
       if( action != NULL )
         ActionOp.exec(action, fbaction);

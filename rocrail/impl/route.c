@@ -304,6 +304,12 @@ static void __checkAction( iORoute inst, const char* state ) {
       iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));
       if( Action != NULL ) {
         wActionCtrl.setlcid(action, data->lockedId);
+        if(data->lockedId != NULL && StrOp.len(data->lockedId) > 0 ) {
+          iOLoc lc = ModelOp.getLoc( AppOp.getModel(), data->lockedId, NULL, False );
+          if( lc != NULL ) {
+            wActionCtrl.setlcclass(action, LocOp.getClass(lc));
+          }
+        }
         ActionOp.exec(Action, action);
       }
     }
@@ -646,6 +652,7 @@ static int __getSpeedCondPercent(iORoute inst, iOLoc loco) {
           char* key = StrOp.fmt( "%s%s", varid, subid );
           iOMap map = MapOp.inst();
           MapOp.put(map, "lcid", (obj)LocOp.getId(loco));
+          MapOp.put(map, "lcclass", (obj)LocOp.getClass(loco));
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "speed condition variable key: [%s]", key);
           char* resolvedKey = TextOp.replaceAllSubstitutions(key, map);
           StrOp.free(key);

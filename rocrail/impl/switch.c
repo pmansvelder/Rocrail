@@ -317,8 +317,15 @@ static void __checkAction( iOSwitch inst ) {
       if( action != NULL ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch action: %s", wActionCtrl.getid( swaction ));
 
-        if( wAction.getoid( swaction) == NULL || StrOp.len(wAction.getoid( swaction)) == 0 )
+        if( wAction.getoid( swaction) == NULL || StrOp.len(wAction.getoid( swaction)) == 0 ) {
           wActionCtrl.setlcid( swaction, data->lockedId );
+          if(data->lockedId != NULL && StrOp.len(data->lockedId) > 0 ) {
+            iOLoc lc = ModelOp.getLoc( AppOp.getModel(), data->lockedId, NULL, False );
+            if( lc != NULL ) {
+              wActionCtrl.setlcclass(swaction, LocOp.getClass(lc));
+            }
+          }
+        }
         ActionOp.exec(action, swaction);
       }
     }

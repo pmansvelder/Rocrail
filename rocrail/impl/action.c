@@ -423,6 +423,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
             char* key = StrOp.fmt( "%s-%s", id, subid );
             iOMap map = MapOp.inst();
             MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
+            MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
             MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
             char* resolvedKey = TextOp.replaceAllSubstitutions(key, map);
             StrOp.free(key);
@@ -439,6 +440,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
             if( StrOp.len(state) > 0 ) {
               iOMap map = MapOp.inst();
               MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
+              MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
               MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
               int stateVal = VarOp.getValue(state+1, map);
               MapOp.base.del(map);
@@ -744,6 +746,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       char* key = StrOp.fmt( "%s%s", oid, suboid );
       iOMap map = MapOp.inst();
       MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
+      MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
       MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
       char* resolvedKey = TextOp.replaceAllSubstitutions(key, map);
       StrOp.free(key);
