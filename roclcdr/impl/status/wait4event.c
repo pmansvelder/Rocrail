@@ -68,11 +68,9 @@ void statusWait4Event( iILcDriverInt inst ) {
           if( data->loc->compareVhint( data->loc, wLoc.mid) == -1 )
             wLoc.setV_hint( cmd, wLoc.mid );
           wLoc.setdir( cmd, wLoc.isdir( data->loc->base.properties( data->loc ) ) );
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201, "Slow down for **not set** route running %s", data->loc->getId( data->loc ) );
           data->loc->cmd( data->loc, cmd );
           data->slowdown4route = True;
-          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
-              "Slow down for **not set** route running %s",
-              data->loc->getId( data->loc ) );
         }
       }
       else if(data->slowdown4route) {
@@ -83,11 +81,9 @@ void statusWait4Event( iILcDriverInt inst ) {
           wLoc.setV_hint( cmd, getBlockV_hint(inst, data->next1Block, False, data->next1Route, !data->next1RouteFromTo, &maxkmh ) );
           wLoc.setdir( cmd, wLoc.isdir( data->loc->base.properties( data->loc ) ) );
           wLoc.setV_maxkmh(cmd, maxkmh);
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201, "Restore normale velocity running %s", data->loc->getId( data->loc ) );
           data->loc->cmd( data->loc, cmd );
           data->slowdown4route = False;
-          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
-              "Restore normale velocity running %s",
-              data->loc->getId( data->loc ) );
         }
       }
     }
