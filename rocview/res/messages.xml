@@ -25303,7 +25303,7 @@
     <it txt="Assegnare segnali ai blocchi"/>
     <fr txt="Assigner des signaux aux blocs"/>
     <es txt="Asignar señales a los bloques"/>
-    <de txt="SIgnale zu Blöcken zuordnen"/>
+    <de txt="Signale zu Blöcken zuordnen"/>
     <sr_latin txt="Dodela signala blokovima"/>
     <sv txt="Knyt signaler till block"/>
     <zh_CN txt="为阻塞区间设置信号灯"/>
@@ -29581,6 +29581,7 @@
     <en_GB txt="Generate IN event"/>
     <it txt="Generare evento IN"/>
     <sr_latin txt="Generiši \&quot;IN\&quot; događaj"/>
+    <ru txt="Генерировать событие IN"/>
   </Msg>
   <Msg id="framerate">
     <en txt="Frame rate"/>
@@ -29601,6 +29602,7 @@
     <en_GB txt="Block state"/>
     <it txt="Stato blocco"/>
     <sr_latin txt="Stanje bloka"/>
+    <ru txt="Состояние Блока"/>
   </Msg>
   <Msg id="statesignal">
     <en txt="State signal"/>
@@ -29611,6 +29613,7 @@
     <pt_BR txt="Sinal de estado"/>
     <sl txt="Signal stanja"/>
     <sr_latin txt="Stanje signala"/>
+    <ru txt="Состояние сигнала"/>
   </Msg>
   <Msg id="bounce">
     <en txt="Bounce"/>
@@ -29639,6 +29642,7 @@
     <pt_BR txt="Saturação"/>
     <sl txt="Nasičenost"/>
     <sr_latin txt="Zasićenje"/>
+    <it txt="Saturazione"/>
   </Msg>
   <Msg id="available">
     <en txt="Available"/>
@@ -29648,6 +29652,7 @@
     <de txt="Verfügbar"/>
     <sl txt="Na voljo"/>
     <sr_latin txt="Dostupno"/>
+    <it txt="Disponibile"/>
   </Msg>
   <Msg id="bridge">
     <en txt="Bridge"/>
@@ -29657,6 +29662,7 @@
     <de txt="Bridge"/>
     <sl txt="Most"/>
     <sr_latin txt="Most"/>
+    <ru txt="Мост"/>
   </Msg>
   <Msg id="mapwhite">
     <en txt="Map white"/>
@@ -29711,6 +29717,7 @@
     <pt_BR txt="V 0 em parada de emergência"/>
     <sl txt="V 0 ob prekinitvi v sili"/>
     <sr_latin txt="Brz. 0 kod hitnog zaustavljnja"/>
+    <ru txt="При экстренной остановке V=0"/>
   </Msg>
   <Msg id="restorechannels">
     <en txt="Restore channels"/>
@@ -29720,20 +29727,44 @@
     <pt_BR txt="Restabelecer canais"/>
     <sl txt="Ponastavi kanale"/>
     <sr_latin txt="Povrati kanale"/>
+    <ru txt="Восстановить каналы"/>
   </Msg>
   <Msg id="reducespeedatenter">
     <en txt="Reduce speed at enter"/>
+    <de txt="Reduziere Geschwindigkeit bei Enter"/>
+    <en_GB txt="Reduce speed at enter"/>
+    <nl txt="Reduceer snelheid bij enter"/>
+    <pt_BR txt="Reduzir velocidade na entrada"/>
+    <ru txt="Уменьшить скорость при входе"/>
+    <sl txt="Zmanjšaj hitrost ob vstopu"/>
+    <sr_latin txt="Smanji brzinu na ulazu"/>
   </Msg>
   <Msg id="slaveblocks">
     <en txt="Slave blocks"/>
+    <de txt="Slave-Blöcke"/>
+    <en_GB txt="Slave blocks"/>
+    <nl txt="Slaaf blokken"/>
+    <pt_BR txt="Blocos secundários"/>
+    <sl txt="Podrejeni odseki"/>
+    <sr_latin txt="Uslužni blokovi"/>
   </Msg>
   <Msg id="texttable" dialog="true">
     <en txt="Text table" alttxt="Text" tip="Text table"/>
+    <de txt="Text-Tabelle"/>
+    <en_GB txt="Text table"/>
+    <nl txt="Teksten"/>
+    <pt_BR txt="Tabela de texto"/>
+    <sl txt="Tabela tekstov"/>
+    <sr_latin txt="Tekstualna tabela"/>
   </Msg>
   <Msg id="decelerate">
     <en txt="Decelerate"/>
+    <de txt="Abbremsen"/>
+    <nl txt="Vertraging"/>
   </Msg>
   <Msg id="shuntingdiv">
     <en txt="Shunting divider"/>
+    <de txt="Rangier-Teiler"/>
+    <nl txt="Rangeer deler"/>
   </Msg>
 </Messages>
