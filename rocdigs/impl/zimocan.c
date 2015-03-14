@@ -378,9 +378,17 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
         slot->shunting = False;
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set shunting for loco %s to %s", slot->id, slot->shunting?"ON":"OFF" );
       }
+      else if( StrOp.equals( wLoc.manualon, wLoc.getcmd(node) ) ) {
+        slot->manual = True;
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set manual for loco %s to %s", slot->id, slot->manual?"ON":"OFF" );
+      }
+      else if( StrOp.equals( wLoc.manualoff, wLoc.getcmd(node) ) ) {
+        slot->manual = False;
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set manual for loco %s to %s", slot->id, slot->manual?"ON":"OFF" );
+      }
       else {
         byte* msg = allocMem(32);
-        int Div = (slot->shunting ?4:1); /* Speed divider */
+        int Div = 1; /* Speed divider */
         int V = 0;
         Boolean dir = wLoc.isdir(node);
 
@@ -391,8 +399,15 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
             V = (wLoc.getV( node ) * 1023) / wLoc.getV_max( node );
         }
 
+        if( slot->shunting ) {
+          V |= 0x2000; // Shunting mode
+        }
+        if( slot->manual ) {
+          V |= 0x4000; // Manual mode
+        }
         msg[0] = __makePacket(msg+1, MOBILE_CONTROL_GROUP, MOBILE_SPEED, MODE_CMD, 6, data->NID, slot->nid, (V&0xFF), (V>>8) | (dir?0x00:0x04), Div, 0, 0, 0);
-        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Set loco speed to %d, dir=%s div=%d for %s", V, dir?"fwd":"rev", Div, slot->id );
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Set loco speed to %d, dir=%s div=%d flags=%X for %s",
+            V & 0x03FF, dir?"fwd":"rev", Div, V & 0xFC00, slot->id );
         ThreadOp.post(data->writer, (obj)msg);
       }
     }

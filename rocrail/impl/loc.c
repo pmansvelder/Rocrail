@@ -3310,6 +3310,18 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send %s", cmd );
       ControlOp.cmd( control, cmdNode, NULL );
     }
+    else if( StrOp.equals( wLoc.manualon, cmd ) || StrOp.equals( wLoc.manualoff, cmd ) ) {
+      iONode cmdNode = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
+      wLoc.setid( cmdNode, wLoc.getid(data->props) );
+      wLoc.setaddr( cmdNode, wLoc.getaddr(data->props) );
+      wLoc.setprot( cmdNode, wLoc.getprot( data->props ) );
+      wLoc.setprotver( cmdNode, wLoc.getprotver( data->props ) );
+      wLoc.setspcnt( cmdNode, wLoc.getspcnt( data->props ) );
+      wLoc.setfncnt( cmdNode, wLoc.getfncnt( data->props ) );
+      wLoc.setcmd( cmdNode, cmd );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send %s", cmd );
+      ControlOp.cmd( control, cmdNode, NULL );
+    }
     else if( StrOp.equals( wLoc.shortid, cmd ) ) {
       /* send short ID to command station */
       if( wLoc.isuseshortid(data->props) )

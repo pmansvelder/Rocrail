@@ -1828,6 +1828,7 @@
       <var name="prot" vt="int"/>
       <var name="fncnt" vt="int"/>
       <var name="shunting" vt="Boolean"/>
+      <var name="manual" vt="Boolean"/>
       <var name="dir" vt="Boolean"/>
       <var name="lights" vt="Boolean"/>
       <var name="f[32]" vt="Boolean"/>

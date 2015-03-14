@@ -2853,6 +2853,8 @@
         <const name="discover" vt="string" val="discover"/>
         <const name="shuntingon" vt="string" val="shuntingon"/>
         <const name="shuntingoff" vt="string" val="shuntingoff"/>
+        <const name="manualon" vt="string" val="manualon"/>
+        <const name="manualoff" vt="string" val="manualoff"/>
         <var name="cmd" vt="string" defval="NULL" range="*" remark="Loc command."/>
         <var name="tourid" vt="string" defval="NULL" range="*" remark="Current tour ID."/>
         <var name="scheduleid" vt="string" defval="NULL" range="*" remark="Current schedule ID."/>
