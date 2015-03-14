@@ -2939,6 +2939,7 @@
         </bbt>
         <sbt cardinality="n" wrappername="SBT">
           <var name="bk" vt="string" defval="" range="*" remark="Block ID."/>
+          <var name="train" vt="string" defval="" range="*" remark="Train ID."/>
           <var name="interval" vt="int" defval="1" range="1-*" unit="100ms" remark="Brake interval."/>
           <var name="decelerate" vt="int" defval="0" range="0-*"/>
         </sbt>

@@ -2326,19 +2326,38 @@ static void _event( iOLoc inst, obj emitter, int evt, int timer, Boolean forcewa
   }
 
   if( evt == enter_event && block != NULL && !StrOp.equals(blockid, data->sbtEnterBlock) ) {
+    iONode sbt = NULL;
+    char* key = NULL;
+
     data->sbtEnterBlock = blockid;
     /* default SBT */
     data->sbtInterval   = wLoc.getV_step(data->props);
     data->sbtDecelerate = wLoc.getdecelerate(data->props);
 
+    /* block/train related SBT */
+    if( LocOp.getTrain(inst) != NULL && StrOp.len(LocOp.getTrain(inst)) > 0 ) {
+      key = StrOp.fmt("%s-%s", blockid, LocOp.getTrain(inst));
+      if( MapOp.haskey(data->sbtMap, key ) ) {
+        sbt = (iONode)MapOp.get(data->sbtMap, key);
+      }
+    }
+
     /* block related SBT */
-    if( MapOp.haskey(data->sbtMap, blockid ) ) {
-      iONode sbt = (iONode)MapOp.get(data->sbtMap, blockid);
+    if( sbt == NULL ) {
+      key = StrOp.fmt("%s", blockid);
+      if( MapOp.haskey(data->sbtMap, key ) ) {
+        sbt = (iONode)MapOp.get(data->sbtMap, blockid);
+      }
+    }
+
+    if( sbt != NULL ) {
       data->sbtInterval   = wSBT.getinterval(sbt);
       data->sbtDecelerate = wSBT.getdecelerate(sbt);
     }
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "SBT enter block=%s interval=%d decelerate=%d",
-        data->sbtEnterBlock, data->sbtInterval, data->sbtDecelerate );
+
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "SBT enter block=%s interval=%d decelerate=%d key=%s train=%s",
+        data->sbtEnterBlock, data->sbtInterval, data->sbtDecelerate, key, LocOp.getTrain(inst) );
+    StrOp.free(key);
   }
 
   /* BBT timers */
@@ -3743,8 +3762,15 @@ static void __initSBTmap( iOLoc loc ) {
   MapOp.clear(data->sbtMap);
   while( sbt != NULL ) {
     char* key  = NULL;
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "add SBT record with key [%s]", wSBT.getbk(sbt));
+    if( wSBT.gettrain(sbt) != NULL && StrOp.len(wSBT.gettrain(sbt)) > 0 )
+      key  = StrOp.fmt("%s-%s", wSBT.getbk(sbt), wSBT.gettrain(sbt));
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "add SBT record with keys [%s][%s]", wSBT.getbk(sbt), key==NULL?"":key);
+
     MapOp.put( data->sbtMap, wSBT.getbk(sbt), (obj)sbt );
+    if( key != NULL ) {
+      MapOp.put( data->sbtMap, key, (obj)sbt );
+      StrOp.free(key);
+    }
     sbt = NodeOp.findNextNode( data->props, sbt );
   };
 }

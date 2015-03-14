@@ -732,6 +732,8 @@ public:
     wxListCtrl* m_SBTList2;
     wxStaticText* m_labSBTBlock;
     wxComboBox* m_SBTBlock;
+    wxStaticText* m_labSBTTrain;
+    wxComboBox* m_SBTTrain;
     wxStaticText* m_labSBTInterval;
     wxSpinCtrl* m_SBTInterval;
     wxStaticText* m_labSBTDecelerate;
