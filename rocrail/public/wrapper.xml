@@ -2792,6 +2792,7 @@
         <var name="active" vt="bool" defval="true" remark="Active for running in auto mode."/>
         <var name="restorespeed" vt="bool" defval="false" remark="Restore speed from previouse session."/>
         <var name="manually" vt="bool" defval="false" remark="Manually started; Ignore start all locos."/>
+        <var name="shuntingdiv" vt="int" defval="1" range="1-4" remark="Shunting divider"/>
         
         <var name="fncnt" vt="int" defval="4" range="0-*" remark="number of decoder funktions"/>
         <fundef cardinality="n"/>
@@ -2850,9 +2851,9 @@
         <const name="bidikmh" vt="string" val="bidikmh" remark="Reported speed by bidi decoder."/>
         <const name="fieldcmd" vt="string" val="fieldcmd" remark="Command from field; RocMouse."/>
         <const name="discover" vt="string" val="discover"/>
-        <const name="shunting" vt="string" val="shunting"/>
+        <const name="shuntingon" vt="string" val="shuntingon"/>
+        <const name="shuntingoff" vt="string" val="shuntingoff"/>
         <var name="cmd" vt="string" defval="NULL" range="*" remark="Loc command."/>
-        <var name="shuntingdiv" vt="int" defval="0" range="0-*" remark="Shunting divider."/>
         <var name="tourid" vt="string" defval="NULL" range="*" remark="Current tour ID."/>
         <var name="scheduleid" vt="string" defval="NULL" range="*" remark="Current schedule ID."/>
         <var name="startupscid" vt="string" defval="NULL" range="*" remark="Startup schedule ID."/>

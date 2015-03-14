@@ -133,13 +133,14 @@ static iOSlot __getSlot(iOZimoCAN inst, iONode node) {
   }
 
   slot = allocMem( sizeof( struct slot) );
-  slot->addr    = addr;
-  slot->nid     = addr;
-  slot->id      = StrOp.dup(wLoc.getid(node));
-  slot->lights  = wLoc.isfn(node);
-  slot->dir     = wLoc.isdir(node);
-  slot->steps   = wLoc.getspcnt(node);
-  slot->fncnt   = wLoc.getfncnt(node);
+  slot->addr     = addr;
+  slot->nid      = addr;
+  slot->id       = StrOp.dup(wLoc.getid(node));
+  slot->lights   = wLoc.isfn(node);
+  slot->dir      = wLoc.isdir(node);
+  slot->steps    = wLoc.getspcnt(node);
+  slot->fncnt    = wLoc.getfncnt(node);
+  slot->shunting = False;
 
   if( StrOp.equals( wLoc.prot_M, wLoc.getprot( node ) ) ) {
     /* Motorola */
@@ -369,9 +370,17 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set ID for loco %s with NID=0x%X", slot->id, slot->nid );
         ThreadOp.post(data->writer, (obj)msg);
       }
+      else if( StrOp.equals( wLoc.shuntingon, wLoc.getcmd(node) ) ) {
+        slot->shunting = True;
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set shunting for loco %s to %s", slot->id, slot->shunting?"ON":"OFF" );
+      }
+      else if( StrOp.equals( wLoc.shuntingoff, wLoc.getcmd(node) ) ) {
+        slot->shunting = False;
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set shunting for loco %s to %s", slot->id, slot->shunting?"ON":"OFF" );
+      }
       else {
         byte* msg = allocMem(32);
-        int Div = 1; /* Speed divider */
+        int Div = (slot->shunting ?4:1); /* Speed divider */
         int V = 0;
         Boolean dir = wLoc.isdir(node);
 
@@ -383,7 +392,7 @@ static iONode __translate( iOZimoCAN inst, iONode node ) {
         }
 
         msg[0] = __makePacket(msg+1, MOBILE_CONTROL_GROUP, MOBILE_SPEED, MODE_CMD, 6, data->NID, slot->nid, (V&0xFF), (V>>8) | (dir?0x00:0x04), Div, 0, 0, 0);
-        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Set loco speed to %d, dir=%s for %s", V, dir?"fwd":"rev", slot->id );
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Set loco speed to %d, dir=%s div=%d for %s", V, dir?"fwd":"rev", Div, slot->id );
         ThreadOp.post(data->writer, (obj)msg);
       }
     }

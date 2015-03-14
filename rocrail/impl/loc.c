@@ -3298,6 +3298,18 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       const char* tourid = wLoc.gettourid( nodeA );
       LocOp.useTour( inst, tourid );
     }
+    else if( StrOp.equals( wLoc.shuntingon, cmd ) || StrOp.equals( wLoc.shuntingoff, cmd ) ) {
+      iONode cmdNode = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
+      wLoc.setid( cmdNode, wLoc.getid(data->props) );
+      wLoc.setaddr( cmdNode, wLoc.getaddr(data->props) );
+      wLoc.setprot( cmdNode, wLoc.getprot( data->props ) );
+      wLoc.setprotver( cmdNode, wLoc.getprotver( data->props ) );
+      wLoc.setspcnt( cmdNode, wLoc.getspcnt( data->props ) );
+      wLoc.setfncnt( cmdNode, wLoc.getfncnt( data->props ) );
+      wLoc.setcmd( cmdNode, cmd );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send %s", cmd );
+      ControlOp.cmd( control, cmdNode, NULL );
+    }
     else if( StrOp.equals( wLoc.shortid, cmd ) ) {
       /* send short ID to command station */
       if( wLoc.isuseshortid(data->props) )
@@ -3376,10 +3388,6 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       wLoc.setmanual(data->props, False);
       broadcast = True;
     }
-    else if( StrOp.equals( wLoc.shunting, cmd ) ) {
-    }
-
-
 
     if(broadcast) {
       nodeF = (iONode)NodeOp.base.clone( nodeA );

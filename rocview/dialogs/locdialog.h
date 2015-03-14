@@ -541,8 +541,6 @@ public:
     wxStaticText* m_LabelPlacing;
     wxCheckBox* m_Placing;
     wxCheckBox* m_Info4Throttle;
-    wxStaticText* m_labShuntingDiv;
-    wxSpinCtrl* m_ShuntingDiv;
     wxStaticBox* m_AccelerationBox;
     wxCheckBox* m_AdjustAccel;
     wxStaticText* m_labMaxLoad;
