@@ -334,6 +334,19 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
   };
   StrTokOp.base.del(tok);
 
+  tok = StrTokOp.inst( wWeather.getdeactivate(data->props), ',' );
+  while( StrTokOp.hasMoreTokens(tok) ) {
+    const char* id = StrTokOp.nextToken(tok);
+    iOOutput output = ModelOp.getOutput(model, id);
+    if( output != NULL ) {
+      iONode cmd   = NodeOp.inst( wOutput.name(), NULL, ELEMENT_NODE);
+      wOutput.setaddr(cmd, wOutput.getaddr(OutputOp.base.properties(output)));
+      wOutput.setcmd(cmd, wOutput.off);
+      OutputOp.cmd(output, cmd, True);
+    }
+  };
+  StrTokOp.base.del(tok);
+
   if( ListOp.size(list) > 0 ) {
     iONode sunriseProps = wWeather.getsunrise(data->props);
     iONode noonProps    = wWeather.getnoon(data->props);

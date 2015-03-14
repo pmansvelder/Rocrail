@@ -310,6 +310,7 @@ void WeatherDlg::initLabels() {
 
   // Day
   m_labOutputs->SetLabel( wxGetApp().getMsg( "outputs" ) );
+  m_labDeactivate->SetLabel( wxGetApp().getMsg( "deactivate" ) );
   m_labMaxBri->SetLabel( wxGetApp().getMsg( "maxbri" ) );
   m_labMinBri->SetLabel( wxGetApp().getMsg( "minbri" ) );
   m_labColorSliding->SetLabel( wxGetApp().getMsg( "colorsliding" ) );
@@ -391,6 +392,7 @@ void WeatherDlg::initValues() {
 
   m_ID->SetValue( wxString(wWeather.getid(m_Props),wxConvUTF8) );
   m_Outputs->SetValue( wxString(wWeather.getoutputs(m_Props),wxConvUTF8) );
+  m_Deactivate->SetValue( wxString(wWeather.getdeactivate(m_Props),wxConvUTF8) );
   m_MaxBri->SetValue( wWeather.getmaxbri(m_Props) );
   m_MinBri->SetValue( wWeather.getminbri(m_Props) );
   m_ColorSliding->SetValue( wWeather.getcolorsliding(m_Props) );
@@ -489,6 +491,7 @@ bool WeatherDlg::evaluate() {
 
   wWeather.setid( m_Props, m_ID->GetValue().mb_str(wxConvUTF8) );
   wWeather.setoutputs( m_Props, m_Outputs->GetValue().mb_str(wxConvUTF8) );
+  wWeather.setdeactivate( m_Props, m_Deactivate->GetValue().mb_str(wxConvUTF8) );
   wWeather.setmaxbri(m_Props, m_MaxBri->GetValue() );
   wWeather.setminbri(m_Props, m_MinBri->GetValue() );
   wWeather.setcolorsliding(m_Props, m_ColorSliding->GetValue() );
