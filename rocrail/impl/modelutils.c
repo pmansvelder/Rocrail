@@ -49,6 +49,7 @@
 #include "rocrail/wrapper/public/Location.h"
 #include "rocrail/wrapper/public/LocationList.h"
 #include "rocrail/wrapper/public/Loc.h"
+#include "rocrail/wrapper/public/LocList.h"
 #include "rocrail/wrapper/public/Output.h"
 #include "rocrail/wrapper/public/Stage.h"
 #include "rocrail/wrapper/public/StageList.h"
@@ -66,6 +67,8 @@
 #include "rocrail/wrapper/public/ActionList.h"
 #include "rocrail/wrapper/public/TurntableList.h"
 #include "rocrail/wrapper/public/TextList.h"
+#include "rocrail/wrapper/public/BBT.h"
+#include "rocrail/wrapper/public/SBT.h"
 
 
 #include "rocs/public/mem.h"
@@ -306,6 +309,55 @@ static void __renameBlockDeps(iONode model, const char* id, const char* previd, 
   }
 
 
+  /* Iterate loco BBT records. */
+  list = wPlan.getlclist(model);
+  if( list != NULL ) {
+    iONode item = wLocList.getlc(list);
+    while( item != NULL ) {
+      Boolean modified = False;
+      iONode bbt = wLoc.getbbt(item);
+      while( bbt != NULL ) {
+        const char* bk = wBBT.getbk(bbt);
+        if( bk != NULL && StrOp.len(bk) > 0 && StrOp.equals(bk, previd) ) {
+          wBBT.setbk(bbt, id);
+          modified = True;
+        }
+        bk = wBBT.getfrombk(bbt);
+        if( bk != NULL && StrOp.len(bk) > 0 && StrOp.equals(bk, previd) ) {
+          wBBT.setfrombk(bbt, id);
+          modified = True;
+        }
+        bbt = wLoc.nextbbt(item, bbt);
+      }
+      if( modified ) {
+        __broadcastModifiedItem(item);
+      }
+      item = wLocList.nextlc(list, item);
+    }
+  }
+
+  /* Iterate loco SBT records. */
+  list = wPlan.getlclist(model);
+  if( list != NULL ) {
+    iONode item = wLocList.getlc(list);
+    while( item != NULL ) {
+      Boolean modified = False;
+      iONode sbt = wLoc.getsbt(item);
+      while( sbt != NULL ) {
+        const char* bk = wSBT.getbk(sbt);
+        if( bk != NULL && StrOp.len(bk) > 0 && StrOp.equals(bk, previd) ) {
+          wSBT.setbk(sbt, id);
+          modified = True;
+        }
+        sbt = wLoc.nextsbt(item, sbt);
+      }
+      if( modified ) {
+        __broadcastModifiedItem(item);
+      }
+      item = wLocList.nextlc(list, item);
+    }
+  }
+
 }
 
 
@@ -423,6 +475,29 @@ static void __renameRouteDeps(iONode model, const char* id, const char* previd, 
       item = wActionList.nextac(list, item);
     }
   }
+
+  /* Iterate loco BBT records. */
+  list = wPlan.getlclist(model);
+  if( list != NULL ) {
+    iONode item = wLocList.getlc(list);
+    while( item != NULL ) {
+      Boolean modified = False;
+      iONode bbt = wLoc.getbbt(item);
+      while( bbt != NULL ) {
+        const char* byroute = wBBT.getroute(bbt);
+        if( byroute != NULL && StrOp.len(byroute) > 0 && StrOp.equals(byroute, previd) ) {
+          wBBT.setroute(bbt, id);
+          modified = True;
+        }
+        bbt = wLoc.nextbbt(item, bbt);
+      }
+      if( modified ) {
+        __broadcastModifiedItem(item);
+      }
+      item = wLocList.nextlc(list, item);
+    }
+  }
+
 
 }
 
