@@ -687,9 +687,9 @@ public:
     wxTextCtrl* m_CVDescription;
     wxButton* m_CVDescModify;
     wxPanel* m_BBTPanel;
-    wxStaticText* m_BBTDummy;
+    wxStaticText* m_labBBTSteps;
     wxSpinCtrl* m_BBTSteps;
-    wxStaticText* m_labSteps;
+    wxStaticText* m_labBBTStepsDummy;
     wxStaticText* m_labBBTStartInterval;
     wxSpinCtrl* m_BBTStartInterval;
     wxStaticText* m_labBBTMaxDiff;

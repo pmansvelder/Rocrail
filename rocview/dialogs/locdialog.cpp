@@ -463,6 +463,7 @@ void LocDialog::initLabels() {
   m_BBTList2->InsertColumn(8, wxT( "IN" ), wxLIST_FORMAT_CENTER );
   m_BBTList2->InsertColumn(9, wxGetApp().getMsg( "delay" ), wxLIST_FORMAT_RIGHT );
 
+  m_labBBTSteps->SetLabel( wxGetApp().getMsg( "steps" ) );
   m_labBBTMaxDiff->SetLabel( wxGetApp().getMsg( "maxdiff" ) );
   m_labBBTCorrection->SetLabel( wxGetApp().getMsg( "correction" ) );
   m_labBBTStartInterval->SetLabel( wxGetApp().getMsg( "startinterval" ) );
@@ -1638,9 +1639,9 @@ bool LocDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption
     m_CVDescription = NULL;
     m_CVDescModify = NULL;
     m_BBTPanel = NULL;
-    m_BBTDummy = NULL;
+    m_labBBTSteps = NULL;
     m_BBTSteps = NULL;
-    m_labSteps = NULL;
+    m_labBBTStepsDummy = NULL;
     m_labBBTStartInterval = NULL;
     m_BBTStartInterval = NULL;
     m_labBBTMaxDiff = NULL;
@@ -2848,14 +2849,14 @@ void LocDialog::CreateControls()
     itemBoxSizer342->Add(itemBoxSizer343, 0, wxALIGN_LEFT, 5);
     wxFlexGridSizer* itemFlexGridSizer344 = new wxFlexGridSizer(0, 3, 0, 0);
     itemBoxSizer343->Add(itemFlexGridSizer344, 0, wxALIGN_CENTER_VERTICAL, 5);
-    m_BBTDummy = new wxStaticText( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer344->Add(m_BBTDummy, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_labBBTSteps = new wxStaticText( m_BBTPanel, wxID_ANY, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer344->Add(m_labBBTSteps, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_BBTSteps = new wxSpinCtrl( m_BBTPanel, wxID_ANY, wxT("10"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 4, 16, 10 );
     itemFlexGridSizer344->Add(m_BBTSteps, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_labSteps = new wxStaticText( m_BBTPanel, wxID_ANY, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer344->Add(m_labSteps, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+    m_labBBTStepsDummy = new wxStaticText( m_BBTPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer344->Add(m_labBBTStepsDummy, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labBBTStartInterval = new wxStaticText( m_BBTPanel, wxID_ANY, _("Start interval"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer344->Add(m_labBBTStartInterval, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
