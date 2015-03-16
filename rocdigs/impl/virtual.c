@@ -350,6 +350,18 @@ static iONode __translate( iOVirtual virtual, iONode node ) {
     if( StrOp.equals( wLoc.shortid, wLoc.getcmd(node) ) ) {
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "shortID=[%s] on throttle %d", wLoc.getshortid(node), wLoc.getthrottlenr(node) );
     }
+    else if( StrOp.equals( wLoc.shuntingon, wLoc.getcmd(node) ) ) {
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set shunting for loco %s to ON", id );
+    }
+    else if( StrOp.equals( wLoc.shuntingoff, wLoc.getcmd(node) ) ) {
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set shunting for loco %s to OFF", id );
+    }
+    else if( StrOp.equals( wLoc.manualon, wLoc.getcmd(node) ) ) {
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set manual for loco %s to ON", id );
+    }
+    else if( StrOp.equals( wLoc.manualoff, wLoc.getcmd(node) ) ) {
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set manual for loco %s to OFF", id );
+    }
     else {
       if( wLoc.getV( node ) != -1 ) {
         if( StrOp.equals( wLoc.getV_mode( node ), wLoc.V_mode_percent ) )
