@@ -201,6 +201,9 @@ void CmdRecorder::initList() {
     const char* cmd = StrTokOp.nextToken(tok);
     m_CmdList->Append(wxString(cmd,wxConvUTF8));
   }
+  if( m_CmdList->GetCount() > 0 ) {
+    m_CmdList->SetFirstItem(0);
+  }
 }
 
 void CmdRecorder::onImport( wxCommandEvent& event )
