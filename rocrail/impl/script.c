@@ -205,6 +205,8 @@ static void __stripNewline(char* str) {
   for( i=0; i < len; i++ ) {
     if( str[i] == '\n' )
       str[i] = '\0';
+    if( str[i] == '\r' )
+      str[i] = '\0';
   }
 }
 
