@@ -5357,24 +5357,41 @@ void RocGuiFrame::UpdateLocImage( wxCommandEvent& event ){
 
         const char* imagepath = wGui.getimagepath(m_Ini);
         static char pixpath[256];
-        StrOp.fmtb( pixpath, "%s%c%s", imagepath, SystemOp.getFileSeparator(), FileOp.ripPath( wLoc.getimage( lc ) ) );
+
+        if( !wGui.isfsutf8(m_Ini) ) {
+          char* tmp = SystemOp.utf2latin(FileOp.ripPath( wLoc.getimage( lc ) ));
+          StrOp.fmtb( pixpath, "%s%c%s", imagepath, SystemOp.getFileSeparator(), tmp );
+          StrOp.free(tmp);
+        }
+        else {
+          StrOp.fmtb( pixpath, "%s%c%s", imagepath, SystemOp.getFileSeparator(), FileOp.ripPath( wLoc.getimage( lc ) ) );
+        }
+        TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "UpdateLocImage %s", pixpath );
 
         if( isSupported && FileOp.exist(pixpath)) {
           if( m_LocImage != NULL ) {
             //m_LocImage->SetBitmapLabel( wxBitmap(wxString(pixpath,wxConvUTF8), bmptype) );
-            wxImage img(wxString(pixpath,wxConvUTF8), bmptype);
+            wxImage* img = NULL;
+            if( wGui.isfsutf8(m_Ini) )
+              img = new wxImage(wxString(pixpath,wxConvUTF8), bmptype);
+            else
+              img = new wxImage(wxString((const char*)pixpath), bmptype);
 
-            if( img.IsOk() && img.GetHeight() > MAXLOCOIMAGE_HEIGHT ) {
-              int h = img.GetHeight();
-              int w = img.GetWidth();
+            TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "image OK %s", img->IsOk()?"YES":"NO" );
+
+            if( img->IsOk() && img->GetHeight() > MAXLOCOIMAGE_HEIGHT ) {
+              int h = img->GetHeight();
+              int w = img->GetWidth();
               float scale = (float)h / (float)MAXLOCOIMAGE_HEIGHT;
               float width = (float)w / scale;
-              wxBitmap bmp(img.Scale((int)width, MAXLOCOIMAGE_HEIGHT, wxIMAGE_QUALITY_HIGH));
+              wxBitmap bmp(img->Scale((int)width, MAXLOCOIMAGE_HEIGHT, wxIMAGE_QUALITY_HIGH));
               m_LocImage->SetBitmapLabel( bmp );
             }
-            else if(img.IsOk()) {
-              m_LocImage->SetBitmapLabel( wxBitmap(img) );
+            else if(img->IsOk()) {
+              m_LocImage->SetBitmapLabel( wxBitmap(*img) );
             }
+
+            delete img;
           }
 
         }

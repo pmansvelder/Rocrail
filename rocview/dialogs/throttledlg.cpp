@@ -384,22 +384,37 @@ void ThrottleDlg::updateImage() {
 
     const char* imagepath = wGui.getimagepath(wxGetApp().getIni());
     static char pixpath[256];
-    StrOp.fmtb( pixpath, "%s%c%s", imagepath, SystemOp.getFileSeparator(), FileOp.ripPath( wLoc.getimage( lc ) ) );
+
+    if( !wGui.isfsutf8(wxGetApp().getIni()) ) {
+      char* tmp = SystemOp.utf2latin(FileOp.ripPath( wLoc.getimage( lc ) ));
+      StrOp.fmtb( pixpath, "%s%c%s", imagepath, SystemOp.getFileSeparator(), tmp );
+      StrOp.free(tmp);
+    }
+    else {
+      StrOp.fmtb( pixpath, "%s%c%s", imagepath, SystemOp.getFileSeparator(), FileOp.ripPath( wLoc.getimage( lc ) ) );
+    }
 
     if( isSupported && FileOp.exist(pixpath)) {
       TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "picture [%s]", pixpath );
-      wxImage img(wxString(pixpath,wxConvUTF8), bmptype);
-      if( img.IsOk() && img.GetHeight() > MAXHEIGHT ) {
-        int h = img.GetHeight();
-        int w = img.GetWidth();
+
+      wxImage* img = NULL;
+      if( wGui.isfsutf8(wxGetApp().getIni()) )
+        img = new wxImage(wxString(pixpath,wxConvUTF8), bmptype);
+      else
+        img = new wxImage(wxString((const char*)pixpath), bmptype);
+
+      if( img->IsOk() && img->GetHeight() > MAXHEIGHT ) {
+        int h = img->GetHeight();
+        int w = img->GetWidth();
         float scale = (float)h / (float)MAXHEIGHT;
         float width = (float)w / scale;
-        wxBitmap bmp(img.Scale((int)width, MAXHEIGHT, wxIMAGE_QUALITY_HIGH));
+        wxBitmap bmp(img->Scale((int)width, MAXHEIGHT, wxIMAGE_QUALITY_HIGH));
         m_LocoImage->SetBitmapLabel( bmp );
       }
-      else if(img.IsOk()) {
-        m_LocoImage->SetBitmapLabel( wxBitmap(img) );
+      else if(img->IsOk()) {
+        m_LocoImage->SetBitmapLabel( wxBitmap(*img) );
       }
+      delete img;
     }
     else {
       TraceOp.trc( "throttledlg", TRCLEVEL_WARNING, __LINE__, 9999, "picture [%s] not found", pixpath );

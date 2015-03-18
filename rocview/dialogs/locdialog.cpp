@@ -747,6 +747,8 @@ void LocDialog::InitValues() {
     const char* imagepath = wGui.getimagepath(wxGetApp().getIni());
     const char* imagename = FileOp.ripPath( wLoc.getimage( m_Props ) );
     char* pixpath;
+
+
     pixpath = StrOp.fmt( "%s%c%s", imagepath, SystemOp.getFileSeparator(), imagename );
 
     if( !wGui.isfsutf8(wxGetApp().getIni()) ) {
@@ -757,7 +759,10 @@ void LocDialog::InitValues() {
 
     if( isSupported && imagename != NULL && StrOp.len(imagename) > 0 && FileOp.exist(pixpath)) {
       TraceOp.trc( "locdlg", TRCLEVEL_INFO, __LINE__, 9999, "picture [%s]", pixpath );
-      m_LocImage->SetBitmapLabel( wxBitmap(wxString(pixpath,wxConvUTF8), bmptype) );
+      if( wGui.isfsutf8(wxGetApp().getIni()) )
+        m_LocImage->SetBitmapLabel( wxBitmap(wxString(pixpath,wxConvUTF8), bmptype) );
+      else
+        m_LocImage->SetBitmapLabel( wxBitmap(wxString((const char*)pixpath), bmptype) );
     }
     else {
       TraceOp.trc( "locdlg", TRCLEVEL_WARNING, __LINE__, 9999, "picture [%s] not found", pixpath );
