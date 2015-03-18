@@ -52,6 +52,24 @@ int raspiWriteRegI2C(int descriptor, unsigned char dev_addr, unsigned char reg_a
   return ioctl(descriptor, I2C_RDWR, &packets);
 }
 
+int raspiWriteRegArrayI2C(int descriptor, unsigned char dev_addr, unsigned char reg_addr, unsigned char* data, int len) {
+  unsigned char buff[256];
+  struct i2c_rdwr_ioctl_data packets;
+  struct i2c_msg messages[1];
+  buff[0] = reg_addr;
+  if( len > 255 )
+    len = 255;
+  memcpy(buff+1, data, len);
+  messages[0].addr = dev_addr;
+  messages[0].flags = 0;
+  messages[0].len = sizeof(1 + len);
+  messages[0].buf = buff;
+  packets.msgs = messages;
+  packets.nmsgs = 1;
+  TraceOp.trc( "raspi-i2c", TRCLEVEL_BYTE, __LINE__, 9999, "write array I2C register: addr=0x%02X reg=0x%02X len=%d", dev_addr, reg_addr, len );
+  return ioctl(descriptor, I2C_RDWR, &packets);
+}
+
 int raspiWriteI2C(int descriptor, unsigned char dev_addr, unsigned char data) {
   unsigned char buff[1];
   struct i2c_rdwr_ioctl_data packets;
@@ -113,6 +131,10 @@ int raspiCloseI2C( int i2cdescriptor ) {
 #else
 
 int raspiWriteRegI2C(int descriptor, unsigned char dev_addr, unsigned char reg_addr, unsigned char data) {
+  return -1;
+}
+
+int raspiWriteRegArrayI2C(int descriptor, unsigned char dev_addr, unsigned char reg_addr, unsigned char* data, int len) {
   return -1;
 }
 

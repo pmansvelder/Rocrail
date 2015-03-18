@@ -193,6 +193,34 @@ static byte* __handleClock( iORocNetNode rocnetnode, byte* rn ) {
 }
 
 
+static byte* __handleDisplay( iORocNetNode rocnetnode, byte* rn ) {
+  iORocNetNodeData data       = Data(rocnetnode);
+  int rcpt       = 0;
+  int sndr       = 0;
+  int action     = rnActionFromPacket(rn);
+  int actionType = rnActionTypeFromPacket(rn);
+  byte* msg = NULL;
+
+  rcpt = rnReceipientAddrFromPacket(rn, 0);
+  sndr = rnSenderAddrFromPacket(rn, 0);
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Display request %d from %d to %d", action, sndr, rcpt );
+
+  switch( action ) {
+    case RN_DISPLAY_TEXT:
+    {
+      const char* text = (const char*)&rn[RN_PACKET_DATA + 2];
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Display %d:%d set to [%s]",
+          rn[RN_PACKET_DATA + 0], rn[RN_PACKET_DATA + 1], text );
+      raspiWriteRegArrayI2C(data->i2cdescriptor, rn[RN_PACKET_DATA + 0], rn[RN_PACKET_DATA + 1], text, StrOp.len(text) );
+    }
+    break;
+  }
+
+  return msg;
+}
+
+
 static byte* __handleMobile( iORocNetNode rocnetnode, byte* rn ) {
   iORocNetNodeData data       = Data(rocnetnode);
   int rcpt       = 0;
@@ -1486,6 +1514,10 @@ static void __evaluateRN( iORocNetNode rocnetnode, byte* rn ) {
 
     case RN_GROUP_CLOCK:
       rnReply = __handleClock( rocnetnode, rn );
+      break;
+
+    case RN_GROUP_DISPLAY:
+      rnReply = __handleDisplay( rocnetnode, rn );
       break;
 
     case RN_GROUP_SOUND:

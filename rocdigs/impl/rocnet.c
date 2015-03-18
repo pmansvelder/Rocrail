@@ -949,7 +949,7 @@ static iONode __translate( iOrocNet inst, iONode node ) {
     rn[RN_PACKET_ACTION] = RN_DISPLAY_TEXT;
     rn[RN_PACKET_LEN] = 2 + len;
     rn[RN_PACKET_DATA + 0] = addr;
-    rn[RN_PACKET_DATA + 1] = 0; /* line number */
+    rn[RN_PACKET_DATA + 1] = display;
     MemOp.copy( &rn[RN_PACKET_DATA + 2], text, len );
     rn[RN_PACKET_DATA + 2 + len] = 0; /* the terminating zero byte */
     ThreadOp.post( data->writer, (obj)rn );
