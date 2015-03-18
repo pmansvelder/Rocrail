@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <string.h>
 
 int raspiWriteRegI2C(int descriptor, unsigned char dev_addr, unsigned char reg_addr, unsigned char data) {
   unsigned char buff[2];
