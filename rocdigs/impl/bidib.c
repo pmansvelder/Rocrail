@@ -555,6 +555,7 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
       msgdata[0] = BIDIB_CS_STATE_OFF;
       data->subWrite((obj)inst, bidibnode->path, MSG_CS_SET_STATE, msgdata, 1, bidibnode);
       data->power = False;
+      data->csgo  = False;
       __inform(inst, False);
     }
     else if( data->defaultmain != NULL && StrOp.equals( cmd, wSysCmd.go ) ) {
@@ -1253,7 +1254,7 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
         data->defaultprog = data->defaultmain;
       }
 
-      if( wProgram.ispom(node)) {
+      if( wProgram.ispom(node) && !data->ptflag ) {
         if( wProgram.getcmd( node ) == wProgram.get ) {
           int addr = wProgram.getaddr(node);
           data->cv = wProgram.getcv( node );
@@ -1300,6 +1301,7 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
         if( wProgram.getcmd( node ) == wProgram.pton ) {
           TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "PT ON" );
           if( data->defaultprog != NULL ) {
+            data->ptflag = True;
             msgdata[0] = BIDIB_CS_STATE_PROG;
             data->subWrite((obj)inst, data->defaultmain->path, MSG_CS_SET_STATE, msgdata, 1, data->defaultmain);
           }
@@ -1307,7 +1309,8 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
         else if( wProgram.getcmd( node ) == wProgram.ptoff ) {
           TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "PT OFF" );
           if( data->defaultprog != NULL ) {
-            msgdata[0] = BIDIB_CS_STATE_OFF;
+            data->ptflag = False;
+            msgdata[0] = BIDIB_CS_STATE_GO;
             data->subWrite((obj)inst, data->defaultmain->path, MSG_CS_SET_STATE, msgdata, 1, data->defaultmain);
           }
         }
@@ -2313,7 +2316,9 @@ static void __handleCSStat(iOBiDiB bidib, iOBiDiBNode bidibnode, byte* pdata) {
     const char* stateStr = __csstate2str(pdata[0], &level);
     bidibnode->laststat = pdata[0];
     TraceOp.trc( name, level, __LINE__, 9999, "CS state=0x%02X [%s][%08X]", pdata[0], stateStr, bidibnode!=NULL?bidibnode->uid:0 );
-    data->power = (pdata[0] < BIDIB_CS_STATE_GO) ? False:True;
+    data->power  = (pdata[0] < BIDIB_CS_STATE_GO) ? False:True;
+    data->csgo   = (pdata[0] < BIDIB_CS_STATE_GO) ? False:True;
+    data->ptflag = (pdata[0] == BIDIB_CS_STATE_PROG) ? True:False;
     if( bidibnode != NULL ) {
       bidibnode->stat &= ~BIDIB_BST_STATE_ON;
       bidibnode->stat |= data->power?BIDIB_BST_STATE_ON:0;
@@ -3678,7 +3683,7 @@ static void __watchdogRunner( void* threadinst ) {
     }
     /* use only 80% of the watchdog interval time */
     ThreadOp.sleep(data->watchdogInt * 80);
-    if( data->power && data->defaultmain != NULL ) {
+    if( data->csgo && data->defaultmain != NULL && !data->ptflag ) {
       iOBiDiBNode bidibnode = data->defaultmain;
       TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "watchdog: send BIDIB_CS_STATE_GO" );
       msgdata[0] = BIDIB_CS_STATE_GO;
@@ -3769,6 +3774,7 @@ static struct OBiDiB* _inst( const iONode ini ,const iOTrace trc ) {
   data->bidibini = wDigInt.getbidib(data->ini);
   data->iid      = StrOp.dup( wDigInt.getiid( ini ) );
 
+  data->ptflag   = False;
   data->run      = True;
 
   data->commOK  = False;
