@@ -279,10 +279,10 @@ static void __stateEvent( obj inst, iONode event ) {
         wBooster.setshortcut( booster, shortcut );
         __informClientOfShortcut(inst, booster, !shortcut);
 
-        if( wBooster.isscopt_repoweron(booster) || shortcut ) {
+        if( !wBooster.isscopt_repoweron(booster) && shortcut ) {
           iONode pwrcmd = NodeOp.inst( wPwrCmd.name(), NULL, ELEMENT_NODE );
           wPwrCmd.setid( pwrcmd, wBooster.getid(booster) );
-          wPwrCmd.setcmd( pwrcmd, shortcut?wPwrCmd.off:wPwrCmd.on );
+          wPwrCmd.setcmd( pwrcmd, wPwrCmd.off );
           PowerManOp.cmd((iOPowerMan)inst, pwrcmd);
         }
 
