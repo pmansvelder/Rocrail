@@ -762,7 +762,7 @@ void LocDialog::InitValues() {
       if( wGui.isfsutf8(wxGetApp().getIni()) )
         m_LocImage->SetBitmapLabel( wxBitmap(wxString(pixpath,wxConvUTF8), bmptype) );
       else
-        m_LocImage->SetBitmapLabel( wxBitmap(wxString((const char*)pixpath), bmptype) );
+        m_LocImage->SetBitmapLabel( wxBitmap(wxString::From8BitData((const char*)pixpath), bmptype) );
     }
     else {
       TraceOp.trc( "locdlg", TRCLEVEL_WARNING, __LINE__, 9999, "picture [%s] not found", pixpath );

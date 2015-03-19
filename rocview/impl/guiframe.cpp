@@ -5375,7 +5375,7 @@ void RocGuiFrame::UpdateLocImage( wxCommandEvent& event ){
             if( wGui.isfsutf8(m_Ini) )
               img = new wxImage(wxString(pixpath,wxConvUTF8), bmptype);
             else
-              img = new wxImage(wxString((const char*)pixpath), bmptype);
+              img = new wxImage(wxString::From8BitData((const char*)pixpath), bmptype);
 
             TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "image OK %s", img->IsOk()?"YES":"NO" );
 

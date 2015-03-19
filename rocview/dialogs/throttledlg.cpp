@@ -401,7 +401,7 @@ void ThrottleDlg::updateImage() {
       if( wGui.isfsutf8(wxGetApp().getIni()) )
         img = new wxImage(wxString(pixpath,wxConvUTF8), bmptype);
       else
-        img = new wxImage(wxString((const char*)pixpath), bmptype);
+        img = new wxImage(wxString::From8BitData((const char*)pixpath), bmptype);
 
       if( img->IsOk() && img->GetHeight() > MAXHEIGHT ) {
         int h = img->GetHeight();
