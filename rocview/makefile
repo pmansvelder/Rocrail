@@ -43,10 +43,10 @@ COPY=cp
 REMOVE=rm -f
 GENSUFFIX=
 MKDIR=mkdir -p
-WXSUBINCL=/wx-2.8
+WXSUBINCL=/wx-3.0
 WXMSVCINCL=
 WXCONFIG=wx-config
-wxversion=2.8
+wxversion=3.0
 LINKTOOL=g++
 
 ifeq ($(NATIVE),WIN32)
