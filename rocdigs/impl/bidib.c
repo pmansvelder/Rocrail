@@ -342,6 +342,22 @@ static void __SoD( iOBiDiB inst, iOBiDiBNode bidibnode ) {
   }
 }
 
+static void __SoD4Key( iOBiDiB inst, iOBiDiBNode bidibnode ) {
+  iOBiDiBData data = Data(inst);
+  byte msgdata[127];
+
+  if( bidibnode != NULL ) {
+    int i;
+    data->subWrite((obj)inst, bidibnode->path, MSG_SYS_ENABLE, NULL, 0, bidibnode);
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Start of Day: uid=0x%08X %d inputs", bidibnode->uid, bidibnode->inputcnt );
+    ThreadOp.sleep(10);
+    for( i=0; i < bidibnode->inputcnt; i++ ) {
+      msgdata[0] = i;
+      data->subWrite((obj)inst, bidibnode->path, MSG_LC_KEY_QUERY, msgdata, 1, bidibnode);
+    }
+    bidibnode->sod4key = True;
+  }
+}
 
 static Boolean __accessoryCommand(iOBiDiB inst, iONode node) {
   iOBiDiBData data = Data(inst);
@@ -2162,7 +2178,10 @@ static void __handleNodeFeature(iOBiDiB bidib, iOBiDiBNode bidibnode, byte Type,
         }
       }
 
-      if( feature == FEATURE_CTRL_INPUT_COUNT ) {
+      if( feature == FEATURE_CTRL_INPUT_COUNT && !bidibnode->sod4key) {
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "setting input count to %d for %08X", value, bidibnode->uid );
+        bidibnode->inputcnt = value;
+        __SoD4Key(bidib, bidibnode);
         if( child!= NULL ) {
           wBiDiBnode.setinputcnt(child, value);
         }

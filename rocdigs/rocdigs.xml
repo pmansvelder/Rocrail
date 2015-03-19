@@ -1348,6 +1348,8 @@
       <var name="bmload[128]" vt="int" remark=""/>
       <var name="sensorcnt" vt="int"/>
       <var name="sod" vt="Boolean"/>
+      <var name="inputcnt" vt="int"/>
+      <var name="sod4key" vt="Boolean"/>
       <var name="pendingfeature" vt="int"/>
       <var name="username[128]" vt="char" remark=""/>
     </struct>
