@@ -220,7 +220,7 @@ static Boolean _setListener( iOFBack inst, obj listenerObj, const fback_listener
   data->listenerObj = listenerObj;
   data->listenerFun = listenerFun;
   if( listenerObj != NULL ) {
-    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "%s listener set for %s",
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s listener set for %s",
       FBackOp.getId( inst ),
       listenerObj->toString(listenerObj) );
   }
@@ -229,6 +229,16 @@ static Boolean _setListener( iOFBack inst, obj listenerObj, const fback_listener
 
 static Boolean _addListener( iOFBack inst, obj listener ) {
   iOFBackData data = Data(inst);
+  obj l_listener = ListOp.first( data->listeners );
+  while( l_listener != NULL ) {
+    if( l_listener == listener ) {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s: listener [%s] already registered", FBackOp.getId( inst ), listener->toString(listener) );
+      return True;
+    }
+    l_listener = ListOp.next( data->listeners );
+  };
+
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s listener added for %s", FBackOp.getId( inst ), listener->toString(listener) );
   ListOp.add( data->listeners, listener );
   return True;
 }
@@ -240,9 +250,7 @@ static Boolean _removeListener( iOFBack inst, obj listener ) {
 
 static Boolean _addBlock( iOFBack inst, iIBlockBase listener ) {
   iOFBackData data = Data(inst);
-  /* TODO: use own list? */
-  ListOp.add( data->listeners, (obj)listener );
-  return True;
+  return _addListener(inst, (obj)listener);
 }
 static Boolean _removeBlock( iOFBack inst, iIBlockBase listener ) {
   iOFBackData data = Data(inst);
