@@ -46,6 +46,7 @@ void resetSignals(iOLcDriver inst ) {
   iOLcDriverData data = Data(inst);
   Boolean reverse = False;
   Boolean signalpair = False; /* default false for the forwards signals */
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "reset signals for [%s]...", data->curBlock->base.id(data->curBlock) );
   __checkSignalPair(inst, data->next1Route, data->curBlock, data->next1RouteFromTo, &signalpair);
 
   /* signal current block */
@@ -121,11 +122,15 @@ static Boolean __checkSignalPair(iOLcDriver inst, iORoute route, iIBlockBase blo
     const char* blockid = block->base.id(block);
     int sgpair = 0;
 
-    *signalpair = route->getFromBlockSide(route);
+    *signalpair = route->getBlockSignalSide(route, block->base.id(block));
     if( *signalpair )
       sgpair = wRoute.getsgb(route->base.properties(route));
     else
       sgpair = wRoute.getsga(route->base.properties(route));
+
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "check signal pair: route=%s block=%s fromTo=%s signalpair=%s sgpair=%d",
+        route->getId(route), blockid, fromTo?"true":"false", *signalpair?"true":"false", sgpair);
+
     return sgpair == 2 ? False:True;
 
   }
@@ -216,6 +221,7 @@ Boolean setSignals(iOLcDriver inst, Boolean onEnter ) {
   else if( data->curBlock != NULL && data->next1Block != NULL && data->next2Block == NULL &&
       data->curBlock != data->next1Block )
   {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "no second next block available: YELLOW" );
     if( __checkSignalPair(inst, data->next1Route, data->curBlock, data->next1RouteFromTo, &signalpair) ) {
 
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4202,
@@ -275,6 +281,8 @@ Boolean setSignals(iOLcDriver inst, Boolean onEnter ) {
   if( data->next1Block != NULL && data->next2Block != NULL && data->next3Block != NULL &&
       data->next1Block != data->next2Block && data->next2Block != data->next3Block )
   {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "set signals in block [%s]", data->next1Block->base.id(data->next1Block) );
+
     if( data->next2Route != NULL && data->next2Route->hasThrownSwitch(data->next2Route) ) {
       if( __checkSignalPair(inst, data->next2Route, data->next1Block, data->next2RouteFromTo, &signalpair) ) {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4202,
@@ -308,6 +316,7 @@ Boolean setSignals(iOLcDriver inst, Boolean onEnter ) {
       hasThrownSwitches = True;
     }
 
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "set signals in block [%s]", data->next1Block->base.id(data->next1Block) );
     if( __checkSignalPair(inst, data->next2Route, data->next1Block, data->next2RouteFromTo, &signalpair) ) {
       if( hasThrownSwitches ) {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4202,
@@ -336,6 +345,7 @@ Boolean setSignals(iOLcDriver inst, Boolean onEnter ) {
   }
   else if( data->next1Block != NULL )
   {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "set signals in block [%s]", data->next1Block->base.id(data->next1Block) );
     if( __checkSignalPair(inst, data->next1Route, data->next1Block, data->next1RouteFromTo, &signalpair) ) {
       if( data->model->getStage(data->model, data->next1Block->base.id(data->next1Block) ) == NULL ) {
         /* only set signals to red on non staging (real) blocks */
@@ -354,6 +364,7 @@ Boolean setSignals(iOLcDriver inst, Boolean onEnter ) {
   if( data->next2Block != NULL && data->next3Block != NULL &&
       data->next2Block != data->next3Block )
   {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "set signals in block [%s]", data->next2Block->base.id(data->next2Block) );
     if( __checkSignalPair(inst, data->next3Route, data->next2Block, data->next3RouteFromTo, &signalpair) ) {
       if( data->next3Route->hasThrownSwitch(data->next3Route) ) {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4202,
@@ -374,6 +385,7 @@ Boolean setSignals(iOLcDriver inst, Boolean onEnter ) {
   }
   else if( data->next2Block != NULL )
   {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "set signals in block [%s]", data->next2Block->base.id(data->next2Block) );
     if( data->model->getStage(data->model, data->next2Block->base.id(data->next2Block) ) == NULL ) {
       /* only set signals to red on non staging (real) blocks */
       if( __checkSignalPair(inst, data->next2Route, data->next2Block, data->next2RouteFromTo, &signalpair) ) {

@@ -585,6 +585,18 @@ static const char* _getToBlock( iORoute inst ) {
   return wRoute.getbkb( o->props );
 }
 
+static Boolean _getBlockSignalSide( iORoute inst, const char* bkid ) {
+  iORouteData o = Data(inst);
+  if( StrOp.equals( wRoute.getbka(o->props), bkid)) {
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "blockid [%s] in route [%s] is %s (from)", bkid, RouteOp.getId(inst), wRoute.isbkaside( o->props )?"+":"-" );
+    return wRoute.isbkaside( o->props );
+  }
+  else {
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "blockid [%s] in route [%s] is %s (to)", bkid, RouteOp.getId(inst), wRoute.isbkaside( o->props )?"+":"-" );
+    return !wRoute.isbkbside( o->props );
+  }
+}
+
 static Boolean _getToBlockSide( iORoute inst ) {
   iORouteData o = Data(inst);
   return wRoute.isbkbside( o->props );
