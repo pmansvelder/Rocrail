@@ -5,7 +5,7 @@
   <!-- Ausleuchtung grau -->
     <path stroke="rgb(255,0,0)" fill="rgb(255,0,0)" d="M 8,14 L 23,14 L 23,17 L 8,17 z " />
   <!-- signal -->
-    <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 1,5 L 4,2 L 28,2 L 32,5 L 28,9 L 4,9 L 1,6 z " />
+    <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 1,4 L 3,1 L 30,1 L32,4 L 32,7 L 30,10 L 3,10 L 1,7 z " />
   <!-- Gruene Lampe -->
     <path stroke="rgb(0,255,0)" fill="rgb(0,255,0)" d="M 5,4 L 7,4 L 8,5 L 8,6 L 7,7 L 5,7 L 4,6 L 4,5 z " />
   <!-- Rote Lampe -->
@@ -13,6 +13,6 @@
   <!-- Gelbe Lampe -->  
     <path stroke="rgb(255,255,0)" fill="rgb(255,255,0)" d="M 19,4 L 21,4 L 22,5 L 22,6 L 21,7 L 19,7 L 18,6 L 18,5 z " />
   <!-- weisse Lampe -->  
-    <path stroke="rgb(90,90,90)" fill="rgb(90,90,90)" d="M 26,4 L 28,4 L 29,5 L 29,6 L 28,7 L 26,7 L 25,6 L 25,5 z " />    
+    <path stroke="rgb(90,90,90)" fill="rgb(90,90,90)" d="M 24,4 L 24,2 L 30,6 L 30,8 z" />    
   </g>
 </svg>
