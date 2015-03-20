@@ -488,40 +488,43 @@ static void __restoreFx( void* threadinst ) {
     for( i = 0; i < 28; i++ ) {
       int f = (1 << i);
       if( fx & f ) {
+        int group = (i+1) / 4;
+        if( (i+1) % 4 != 0 )
+          group++;
+
         iONode fcmd = NodeOp.inst( wFunCmd.name(), NULL, ELEMENT_NODE );
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "restoring function %d for %s", i+1, wLoc.getid(data->props) );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "restoring function %d for %s fg=%d fx=%X", i+1, wLoc.getid(data->props), group, fx );
         wFunCmd.setf0 ( fcmd, wLoc.isfn(data->props));
+        wFunCmd.setgroup ( fcmd, group );
         wFunCmd.setfnchanged( fcmd, i + 1);
-        switch( i ) {
-          case 0 : wFunCmd.setf1 ( fcmd, True); break;
-          case 1 : wFunCmd.setf2 ( fcmd, True); break;
-          case 2 : wFunCmd.setf3 ( fcmd, True); break;
-          case 3 : wFunCmd.setf4 ( fcmd, True); break;
-          case 4 : wFunCmd.setf5 ( fcmd, True); break;
-          case 5 : wFunCmd.setf6 ( fcmd, True); break;
-          case 6 : wFunCmd.setf7 ( fcmd, True); break;
-          case 7 : wFunCmd.setf8 ( fcmd, True); break;
-          case 8 : wFunCmd.setf9 ( fcmd, True); break;
-          case 9 : wFunCmd.setf10( fcmd, True); break;
-          case 10: wFunCmd.setf11( fcmd, True); break;
-          case 11: wFunCmd.setf12( fcmd, True); break;
-          case 12: wFunCmd.setf13( fcmd, True); break;
-          case 13: wFunCmd.setf14( fcmd, True); break;
-          case 14: wFunCmd.setf15( fcmd, True); break;
-          case 15: wFunCmd.setf16( fcmd, True); break;
-          case 16: wFunCmd.setf17( fcmd, True); break;
-          case 17: wFunCmd.setf18( fcmd, True); break;
-          case 18: wFunCmd.setf19( fcmd, True); break;
-          case 19: wFunCmd.setf20( fcmd, True); break;
-          case 20: wFunCmd.setf21( fcmd, True); break;
-          case 21: wFunCmd.setf22( fcmd, True); break;
-          case 22: wFunCmd.setf23( fcmd, True); break;
-          case 23: wFunCmd.setf24( fcmd, True); break;
-          case 24: wFunCmd.setf25( fcmd, True); break;
-          case 25: wFunCmd.setf26( fcmd, True); break;
-          case 26: wFunCmd.setf27( fcmd, True); break;
-          case 27: wFunCmd.setf28( fcmd, True); break;
-        }
+        wFunCmd.setf1 ( fcmd, fx & 0x01);
+        wFunCmd.setf2 ( fcmd, fx & 0x02);
+        wFunCmd.setf3 ( fcmd, fx & 0x04);
+        wFunCmd.setf4 ( fcmd, fx & 0x08);
+        wFunCmd.setf5 ( fcmd, fx & 0x10);
+        wFunCmd.setf6 ( fcmd, fx & 0x20);
+        wFunCmd.setf7 ( fcmd, fx & 0x40);
+        wFunCmd.setf8 ( fcmd, fx & 0x80);
+        wFunCmd.setf9 ( fcmd, fx & 0x0100);
+        wFunCmd.setf10( fcmd, fx & 0x0200);
+        wFunCmd.setf11( fcmd, fx & 0x0400);
+        wFunCmd.setf12( fcmd, fx & 0x0800);
+        wFunCmd.setf13( fcmd, fx & 0x1000);
+        wFunCmd.setf14( fcmd, fx & 0x2000);
+        wFunCmd.setf15( fcmd, fx & 0x4000);
+        wFunCmd.setf16( fcmd, fx & 0x8000);
+        wFunCmd.setf17( fcmd, fx & 0x010000);
+        wFunCmd.setf18( fcmd, fx & 0x020000);
+        wFunCmd.setf19( fcmd, fx & 0x040000);
+        wFunCmd.setf20( fcmd, fx & 0x080000);
+        wFunCmd.setf21( fcmd, fx & 0x100000);
+        wFunCmd.setf22( fcmd, fx & 0x200000);
+        wFunCmd.setf23( fcmd, fx & 0x400000);
+        wFunCmd.setf24( fcmd, fx & 0x800000);
+        wFunCmd.setf25( fcmd, fx & 0x01000000);
+        wFunCmd.setf26( fcmd, fx & 0x02000000);
+        wFunCmd.setf27( fcmd, fx & 0x04000000);
+        wFunCmd.setf28( fcmd, fx & 0x08000000);
         LocOp.cmd(loc, fcmd);
         ThreadOp.sleep(500);
       }
