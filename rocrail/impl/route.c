@@ -1146,9 +1146,11 @@ static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID,
   if( incl != NULL ) {
     Boolean included = False;
     while( incl != NULL ) {
-      if( StrOp.equals( id, wPermInclude.getid(incl) ) || StrOp.equals( train, wPermInclude.getid(incl) ) ) {
-        included = True;
-        break;
+      if( StrOp.len( wPermInclude.getid(incl) ) > 0 ) {
+        if( StrOp.equals( id, wPermInclude.getid(incl) ) || StrOp.equals( train, wPermInclude.getid(incl) ) ) {
+          included = True;
+          break;
+        }
       }
       incl = wRoute.nextincl( data->props, incl );
     };
@@ -1164,9 +1166,11 @@ static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID,
   if( excl != NULL ) {
     Boolean excluded = False;
     while( excl != NULL ) {
-      if( StrOp.equals( id, wPermExclude.getid(excl) ) || StrOp.equals( train, wPermExclude.getid(excl) ) ) {
-        excluded = True;
-        break;
+      if( StrOp.len( wPermExclude.getid(excl) ) > 0 ) {
+        if( StrOp.equals( id, wPermExclude.getid(excl) ) || StrOp.equals( train, wPermExclude.getid(excl) ) ) {
+          excluded = True;
+          break;
+        }
       }
       excl = wRoute.nextexcl( data->props, excl );
     };

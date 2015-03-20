@@ -1454,9 +1454,11 @@ static int _isSuited( iIBlockBase inst, iOLoc loc, int* restlen, Boolean checkPr
   if( incl != NULL ) {
     Boolean included = False;
     while( incl != NULL ) {
-      if( StrOp.equals( id, wPermInclude.getid(incl) ) || StrOp.equals( train, wPermInclude.getid(incl) ) ) {
-        included = True;
-        break;
+      if( StrOp.len( wPermInclude.getid(incl) ) > 0 ) {
+        if( StrOp.equals( id, wPermInclude.getid(incl) ) || StrOp.equals( train, wPermInclude.getid(incl) ) ) {
+          included = True;
+          break;
+        }
       }
       incl = wBlock.nextincl( data->props, incl );
     };
@@ -1472,9 +1474,11 @@ static int _isSuited( iIBlockBase inst, iOLoc loc, int* restlen, Boolean checkPr
   if( excl != NULL ) {
     Boolean excluded = False;
     while( excl != NULL ) {
-      if( StrOp.equals( id, wPermExclude.getid(excl) ) || StrOp.equals( train, wPermExclude.getid(excl) ) ) {
-        excluded = True;
-        break;
+      if( StrOp.len( wPermExclude.getid(excl) ) > 0 ) {
+        if( StrOp.equals( id, wPermExclude.getid(excl) ) || StrOp.equals( train, wPermExclude.getid(excl) ) ) {
+          excluded = True;
+          break;
+        }
       }
       excl = wBlock.nextexcl( data->props, excl );
     };
