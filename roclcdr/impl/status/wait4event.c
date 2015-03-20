@@ -75,7 +75,7 @@ void statusWait4Event( iILcDriverInt inst ) {
         }
       }
       else if(data->slowdown4route) {
-        if( !data->gomanual ) {
+        if( !data->gomanual && !data->next2Route->hasThrownSwitch(data->next2Route) ) {
           /* set the velocity back */
           iONode cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
           int maxkmh = 0;
