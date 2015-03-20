@@ -444,6 +444,7 @@ public:
     wxButton* m_ImportLocos;
     wxCheckBox* m_GuestImport;
     wxCheckBox* m_RestoreFx;
+    wxCheckBox* m_RestoreFxAlways;
     wxCheckBox* m_RestoreSpeed;
     wxCheckBox* m_LocManually;
     wxCheckBox* m_Show;

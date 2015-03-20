@@ -586,7 +586,7 @@ static void __sysEvent( obj inst, iONode evtNode ) {
       ThreadOp.start(th);
     }
   }
-  else if( wLoc.isshow(data->props) && StrOp.equals( wSysCmd.go, cmd ) && !data->fxrestored ) {
+  else if( wLoc.isshow(data->props) && StrOp.equals( wSysCmd.go, cmd ) && (!data->fxrestored||wLoc.isrestorefxalways(data->props)) ) {
     /* restore fx */
     data->fxrestored = True;
     data->fxrestoredbythread = False;

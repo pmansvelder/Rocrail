@@ -2790,6 +2790,7 @@
         <var name="ignorefn" vt="bool" defval="false" remark="Ignore lights."/>
         <var name="fx" vt="int" defval="0" remark="Function status bits for display only."/>
         <var name="restorefx" vt="bool" defval="false" remark="Restore functions from previouse session."/>
+        <var name="restorefxalways" vt="bool" defval="false" remark="Restore functions from previouse session at each power on command."/>
         <var name="active" vt="bool" defval="true" remark="Active for running in auto mode."/>
         <var name="restorespeed" vt="bool" defval="false" remark="Restore speed from previouse session."/>
         <var name="manually" vt="bool" defval="false" remark="Manually started; Ignore start all locos."/>
