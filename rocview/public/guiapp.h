@@ -96,6 +96,9 @@ public:
   iOList getSensorEvents(){return m_SensorEvents;}
   void sensorEvent(iONode event);
   void setSensorEventListener(wxDialog* listener) {m_SensorEventListener=listener;}
+#ifdef __APPLE__
+  void MacOpenFile( const wxString& fileName);
+#endif
 
   iORCon        m_RCon;
   const char*   m_Host;

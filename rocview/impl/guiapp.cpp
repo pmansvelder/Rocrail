@@ -1824,3 +1824,16 @@ bool RocGui::sendToRocrail( char* szCmd, bool wait4rr, bool disconnect, bool sho
   return true;
 
 }
+
+#ifdef __APPLE__
+void RocGui::MacOpenFile( const wxString& fileName) {
+  TraceOp.trc( "app", TRCLEVEL_INFO, __LINE__, 9999, "local file OSX: %s", (const char*)wxString(fileName).mb_str(wxConvUTF8) );
+  m_LocalPlan = fileName;
+  m_bStayOffline = true;
+  m_Frame->setLocalPlan( m_LocalPlan );
+  m_Frame->SetStatusText( getMsg("offline"), status_rcon );
+  m_bOffline = true;
+}
+#endif
+
+
