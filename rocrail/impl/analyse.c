@@ -3032,6 +3032,194 @@ static Boolean blockCheck( iOAnalyse inst, Boolean repair ) {
 }
 
 
+/* do all staging blocks have a valid enter at least 1 section and each section a valid fb */
+static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
+  iOAnalyseData data = Data(inst);
+  iONode list = wPlan.getsblist(data->plan);
+  int checkedTotal = 0;
+  int numProblems = 0;
+  int modifications = 0;
+  int numModifiedItems = 0;
+  int listSize = 0;
+  int lengthOk = False;
+
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "stagingBlockCheck: Checking [%08.8X]", list );
+  /* TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "LRLRLR stagingBlockCheck: Checking [%08.8X]", list ); */
+  if( list != NULL ) {
+    listSize = NodeOp.getChildCnt( list );
+  }
+  if( listSize > 0 ) {
+    iONode node;
+    const char* listType = NodeOp.getName( NodeOp.getChild(list, 0));
+    int i = 0;
+    Boolean thisNodeChanged ;
+
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "stagingBlockCheck: Checking %d %s nodes", listSize, listType );
+    /* TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "LRLRLR stagingBlockCheck: Checking %d %s nodes", listSize, listType );*/
+    for( i = 0 ; i < listSize ; i++ ) {
+      node = NodeOp.getChild(list, i);
+      if( node ) {
+        thisNodeChanged = False;
+        int lengthOk = True;
+        const char* id = wStage.getid( node);
+        const char* fbenterid = wStage.getfbenterid( node );
+        const int minocc = wStage.getminocc( node );
+        int slen = wStage.getslen( node );
+        const int gap = wStage.getgap( node);
+        Boolean inatlen = wStage.isinatlen( node);
+        int numSections = 0;
+        /*TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "LRLRLR stagingBlockCheck: SB[%s] fbenterid[%s] minocc[%d] slen[%d] gap[%d] inatlen[%d]", id, fbenterid, minocc, slen, gap, inatlen );*/
+
+        if( StrOp.len( fbenterid ) == 0 ) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] missing enter sensor",
+               id );
+          numProblems++;
+        } else {
+          /* try to find fb in plan */
+          if( StrOp.len( fbenterid ) > 0 ) {
+            iOFBack fb = ModelOp.getFBack( data->model, fbenterid );
+            if( fb == NULL ) {
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] unknown enter sensor [%s]",
+                   id, fbenterid );
+              if( repair ) {
+                TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "staging block check: sb[%s] clean enter sensor", id );
+                wStage.setfbenterid( node, "" );
+                modifications++;
+                thisNodeChanged = True;
+              }
+              numProblems++;
+            }
+          }
+        }
+        checkedTotal++;
+
+        if( slen < 0 ) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] SB section length below zero [%d]", id, slen );
+          numProblems++;
+          if( repair ) {
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "staging block check: sb[%s] set section length to 0",
+                id );
+            slen = 0;
+            wStage.setslen( node, slen );
+            modifications++;
+            thisNodeChanged = True;
+          }
+        }
+        checkedTotal++;
+
+        iONode section = wStage.getsection( node );
+        if( section == NULL ) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: sb[%s] has no sections",
+              id );
+          numProblems++;
+        }
+
+        while( section != NULL ) {
+          const char* secaction = wStageSection.getaction( section );
+          const char* secfbid = wStageSection.getfbid( section );
+          const char* secfbidocc = wStageSection.getfbidocc( section );
+          const char* secid = wStageSection.getid( section );
+          int seclen = wStageSection.getlen( section );
+          const int secnr = wStageSection.getnr( section );
+          /*TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "LRLRLR stagingBlockCheck:   action[%s] fbid[%s] fbidocc[%s] id[%s] len[%d] nr[%d]", secaction, secfbid, secfbidocc, secid, seclen, secnr );*/
+
+          numSections++;
+
+          if( seclen < 0 ) {
+            TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: sb[%s] section[%d]-id[%s] section length below zero [%d]",
+                id, secnr, secid, seclen );
+            numProblems++;
+            if( repair ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "staging block check: sb[%s] section[%d]-id[%s] set section length to 0",
+                  id, secnr, secid );
+              seclen = 0;
+              wStageSection.setlen( section, seclen );
+              modifications++;
+              thisNodeChanged = True;
+            }
+          }
+
+          if( (slen == 0)  && (seclen == 0) ) {
+            TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] SB section length and length of section[%d]-id[%s] are 0", id, secnr, secid );
+            numProblems++;
+          }
+          checkedTotal++;
+
+          /* check mandatory in sensor */
+          if( StrOp.len( secfbid ) == 0 ) {
+            TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] section[%d]-id[%s] missing in sensor", id, secnr, secid );
+            numProblems++;
+          } else {
+            /* try to find fb in plan */
+            if( StrOp.len( secfbid ) > 0 ) {
+              iOFBack fb = ModelOp.getFBack( data->model, secfbid );
+              if( fb == NULL ) {
+                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] section[%d]-id[%s] unknown in sensor[%s]",
+                     id, secid, secfbid );
+                if( repair ) {
+                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "staging block check: sb[%s] section[%d]-id[%s] clean in sensor",
+                      id, secid, secfbid );
+                  wStageSection.setfbid( section, "" );
+                  modifications++;
+                  thisNodeChanged = True;
+                }
+                numProblems++;
+              }
+            }
+          }
+          checkedTotal++;
+
+
+          /* check optional occupation sensor */
+          if( StrOp.len( secfbidocc ) > 0 ) {
+            /* try to find fb in plan */
+            if( StrOp.len( secfbidocc ) > 0 ) {
+              iOFBack fb = ModelOp.getFBack( data->model, secfbidocc );
+              if( fb == NULL ) {
+                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] section[%d]-id[%s] unknown occupation sensor[%s]",
+                     id, secid, secfbidocc );
+                if( repair ) {
+                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "staging block check: sb[%s] section[%d]-id[%s] clean occupation sensor",
+                      id, secid, secfbidocc );
+                  wStageSection.setfbid( section, "" );
+                  modifications++;
+                  thisNodeChanged = True;
+                }
+                numProblems++;
+              }
+            }
+          }
+          checkedTotal++;
+
+          section = wStage.nextsection( node, section );
+        }
+
+        if( numSections <= 1 ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: stagingBlockCheck: sb[%s] has only [%d] sections",
+              id, numSections );
+        }
+
+        if( thisNodeChanged == True ) {
+          numModifiedItems++ ;
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: something is wrong with stageblock[%s] (see previous lines)",
+              id );
+        }
+      }
+    }
+
+    /* statistics */
+    if( repair ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "staging block: repaired [%5d/%5d] problems in [%4d] items in [/%4d] nodes",
+          modifications, checkedTotal, numModifiedItems, listSize );
+      return modifications;
+    } else { /* check only */
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "staging block: detected [%5d] problems in [%4d] items in [%d] nodes",
+          numProblems, checkedTotal, listSize );
+    }
+  }
+  return numProblems;
+}
+
 /* is the given z level valid inside our plan (no special handling for zlevel 0 !) */
 static Boolean isValidZlevel( iOAnalyse inst, int z ) {
   iOAnalyseData data = Data(inst);
@@ -8891,6 +9079,11 @@ static Boolean _checkExtended(iOAnalyse inst) {
     res = blockRouteFbValidation( inst, False );
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Block route/feedback validation: %s problems detected", res?"no":"some" );
 
+    /* do all staging blocks have a valid enter at least 1 section and each section a valid fb */
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Staging Block test: in progress..." );
+    res = stagingBlockCheck( inst, False );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Staging Block test: %s problems detected", res?"no":"some" );
+
     /* check for fbevent entries of deleted routes */
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Selection table route/feedback validation: in progress..." );
     res = seltabRouteFbValidation( inst, False );
@@ -9092,6 +9285,12 @@ static Boolean _cleanExtended(iOAnalyse inst) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Block route feedback validation: Clean/repair in progress..." );
       res = blockRouteFbValidation( inst, True );
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Block route feedback validation: %s problems cleaned", res?"no":"some" );
+      if( res == False )
+        planChanged = True;
+
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Staging Block test: Clean/repair in progress..." );
+      res = stagingBlockCheck( inst, True );
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Staging Block test: %s problems cleaned", res?"no":"some" );
       if( res == False )
         planChanged = True;
 
