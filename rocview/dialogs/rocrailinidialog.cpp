@@ -2255,6 +2255,8 @@ void RocrailIniDialog::OnButtonRrPropsClick( wxCommandEvent& event )
     m_CSDialog = new ECoSCtrlDialog(this,m_Controller,devices);
   else if( StrOp.equals( wDigInt.dmxartnet, wDigInt.getlib( m_Controller ) ) )
     m_CSDialog = new DmxDlg(this,m_Controller);
+  else if( StrOp.equals( wDigInt.dmx4all, wDigInt.getlib( m_Controller ) ) )
+    m_CSDialog = new BarJuTCntrlDlg(this,m_Controller, devices);
   else
     m_CSDialog = new GenericCtrlDlg(this,m_Controller,wDigInt.getlib( m_Controller ), 0, NULL, devices);
 

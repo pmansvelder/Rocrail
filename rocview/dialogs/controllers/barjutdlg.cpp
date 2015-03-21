@@ -78,9 +78,11 @@ BarJuTCntrlDlg::BarJuTCntrlDlg()
 
 BarJuTCntrlDlg::BarJuTCntrlDlg( wxWindow* parent, iONode props, const char* devices )
 {
+  int isBARJUT  = StrOp.equals( wDigInt.barjut, wDigInt.getlib(props) );
   int isSPROGII = StrOp.equals( wDigInt.sprog, wDigInt.getlib(props) );
   int isDCC232  = StrOp.equals( wDigInt.dcc232, wDigInt.getlib(props) );
-  Create(parent, -1, isSPROGII ? _T("SPROG"):(isDCC232?_T("DCC232"):_T("BarJut")));
+  int isDMX4ALL = StrOp.equals( wDigInt.dmx4all, wDigInt.getlib(props) );
+  Create(parent, -1, wxString::From8BitData(wDigInt.getlib(props)).Upper() );
   m_Props = props;
   m_Devices = devices;
   initLabels();
@@ -90,7 +92,7 @@ BarJuTCntrlDlg::BarJuTCntrlDlg( wxWindow* parent, iONode props, const char* devi
   GetSizer()->SetSizeHints(this);
 
   initValues();
-  m_Polling->Enable(!isSPROGII && !isDCC232);
+  m_Polling->Enable(isBARJUT);
 }
 
 void BarJuTCntrlDlg::initLabels() {
