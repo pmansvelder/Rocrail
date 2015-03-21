@@ -152,6 +152,8 @@ For the Analyzer to work the Plan has to fullfill:
 #include "rocrail/wrapper/public/WeatherTheme.h"
 #include "rocrail/wrapper/public/Variable.h"
 #include "rocrail/wrapper/public/Dec.h"
+#include "rocrail/wrapper/public/PermInclude.h"
+#include "rocrail/wrapper/public/PermExclude.h"
 
 #include "rocrail/public/app.h"
 #include "rocrail/public/model.h"
@@ -499,6 +501,24 @@ iONode findCarById( iONode model, const char* carid ) {
 
       if( id != NULL && StrOp.equals( carid, id ) ) {
         return car;
+      }
+    }
+  }
+  return NULL;
+}
+
+
+iONode findLcById( iONode model, const char* lcid ) {
+  iONode lclist = wPlan.getlclist( model );
+  if( lclist != NULL ) {
+    int cnt = NodeOp.getChildCnt( lclist );
+    int i;
+    for( i=0 ; i<cnt ; i++ ) {
+      iONode lc = NodeOp.getChild( lclist, i );
+      const char* id = wLoc.getid( lc );
+
+      if( id != NULL && StrOp.equals( lcid, id ) ) {
+        return lc;
       }
     }
   }
@@ -3019,7 +3039,82 @@ static Boolean blockCheck( iOAnalyse inst, Boolean repair ) {
       }
       ListOp.base.del(delList);
 
-      bk =  wBlockList.nextbk( bklist, bk );
+      delList = ListOp.inst();
+      /* test permissions */
+      iONode incl = wBlock.getincl( bkNode );
+      while( incl != NULL ) {
+        const char* lcid = wPermInclude.getid(incl);
+        if( StrOp.len( lcid ) == 0 ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] empty include permission",
+              NodeOp.getName(bkNode), wItem.getid(bkNode) );
+          if( repair ) {
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add empty include permission to delList" );
+            ListOp.add( delList, (obj)incl );
+          }
+          numProblems++;
+        }
+        else {
+          iONode lc = findLcById( data->plan, lcid );
+          if( lc == NULL ) {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] include permission for non existent loco [%s]",
+                NodeOp.getName(bkNode), wItem.getid(bkNode), lcid );
+            if( repair ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add include permission for loco[%s] to delList", lcid );
+              ListOp.add( delList, (obj)incl );
+            }
+            numProblems++;
+          }
+        }
+        incl = wBlock.nextincl( bkNode, incl );
+      }
+      iONode excl = wBlock.getexcl( bkNode );
+      while( excl != NULL ) {
+        const char* lcid = wPermInclude.getid(excl);
+        if( StrOp.len( lcid ) == 0 ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] empty exclude permission",
+              NodeOp.getName(bkNode), wItem.getid(bkNode) );
+          if( repair ) {
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add empty include permission to delList" );
+            ListOp.add( delList, (obj)excl );
+          }
+          numProblems++;
+        }
+        else {
+          iONode lc = findLcById( data->plan, lcid );
+          if( lc == NULL ) {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] exclude permission for non existent loco [%s]",
+                NodeOp.getName(bkNode), wItem.getid(bkNode), lcid );
+            if( repair ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add exclude permission for loco[%s] to delList", lcid );
+              ListOp.add( delList, (obj)excl );
+            }
+            numProblems++;
+          }
+        }
+        excl = wBlock.nextexcl( bkNode, excl );
+      }
+      if( repair ) {
+        /* remove all marked permissions */
+        int delListSize = ListOp.size(delList);
+        if( delListSize > 0 ) {
+          iONode perm;
+          const char* permId;
+          int i;
+          for( i = 0 ; i < delListSize ; i++ ) {
+            perm = (iONode)ListOp.get( delList, i);
+            permId = wItem.getid( perm );
+            if( StrOp.len( permId ) == 0 )
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "block check: bl[%s] Deleting empty permisison", bkid );
+            else
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "block check: bl[%s] Deleting permisison for[%s]", bkid, permId );
+            NodeOp.removeChild( bkNode, perm );
+            NodeOp.base.del(perm);
+          }
+        }
+      }
+      ListOp.base.del(delList);
+
+      bk = wBlockList.nextbk( bklist, bk );
     }
   }
 
@@ -8829,6 +8924,82 @@ static Boolean routeCheck( iOAnalyse inst, Boolean repair ) {
             }
           }
           ListOp.base.del(delList);
+
+          delList = ListOp.inst();
+          /* test permissions */
+          iONode incl = wRoute.getincl( stNode );
+          while( incl != NULL ) {
+            const char* lcid = wPermInclude.getid(incl);
+            if( StrOp.len( lcid ) == 0 ) {
+              TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] empty include permission",
+                  NodeOp.getName(stNode), wItem.getid(stNode) );
+              if( repair ) {
+                TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add empty include permission to delList" );
+                ListOp.add( delList, (obj)incl );
+              }
+              numProblems++;
+            }
+            else {
+              iONode lc = findLcById( data->plan, lcid );
+              if( lc == NULL ) {
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] include permission for non existent loco [%s]",
+                    NodeOp.getName(stNode), wItem.getid(stNode), lcid );
+                if( repair ) {
+                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add include permission for loco[%s] to delList", lcid );
+                  ListOp.add( delList, (obj)incl );
+                }
+                numProblems++;
+              }
+            }
+            incl = wRoute.nextincl( stNode, incl );
+          }
+          iONode excl = wRoute.getexcl( stNode );
+          while( excl != NULL ) {
+            const char* lcid = wPermInclude.getid(excl);
+            if( StrOp.len( lcid ) == 0 ) {
+              TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] empty exclude permission",
+                  NodeOp.getName(stNode), wItem.getid(stNode) );
+              if( repair ) {
+                TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add empty include permission to delList" );
+                ListOp.add( delList, (obj)excl );
+              }
+              numProblems++;
+            }
+            else {
+              iONode lc = findLcById( data->plan, lcid );
+             if( lc == NULL ) {
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] exclude permission for non existent loco [%s]",
+                    NodeOp.getName(stNode), wItem.getid(stNode), lcid );
+                if( repair ) {
+                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add exclude permission for loco[%s] to delList", lcid );
+                  ListOp.add( delList, (obj)excl );
+                }
+                numProblems++;
+              }
+            }
+            excl = wRoute.nextexcl( stNode, excl );
+          }
+          if( repair ) {
+            /* remove all marked permissions */
+            int delListSize = ListOp.size(delList);
+            if( delListSize > 0 ) {
+              iONode perm;
+              const char* permId;
+              int i;
+              for( i = 0 ; i < delListSize ; i++ ) {
+                perm = (iONode)ListOp.get( delList, i);
+                permId = wItem.getid( perm );
+                if( StrOp.len( permId ) == 0 )
+                  TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "route check: bl[%s] Deleting empty permisison", stid );
+                else
+                  TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "route check: bl[%s] Deleting permisison for[%s]", stid, permId );
+                NodeOp.removeChild( stNode, perm );
+                NodeOp.base.del(perm);
+              }
+            }
+          }
+          ListOp.base.del(delList);
+
 
           if( ! repair ) {
             /* checks that don't have a repair part are skipped in repair mode */
