@@ -1152,6 +1152,9 @@ static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID,
           break;
         }
       }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "empty include permission in route [%s]", wRoute.getid(data->props) );
+      }
       incl = wRoute.nextincl( data->props, incl );
     };
     if( !included ) {
@@ -1171,6 +1174,9 @@ static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID,
           excluded = True;
           break;
         }
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "empty exclude permission in route [%s]", wRoute.getid(data->props) );
       }
       excl = wRoute.nextexcl( data->props, excl );
     };

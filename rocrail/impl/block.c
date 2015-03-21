@@ -1460,6 +1460,9 @@ static int _isSuited( iIBlockBase inst, iOLoc loc, int* restlen, Boolean checkPr
           break;
         }
       }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "empty include permission in block [%s]", data->id );
+      }
       incl = wBlock.nextincl( data->props, incl );
     };
     if( !included ) {
@@ -1479,6 +1482,9 @@ static int _isSuited( iIBlockBase inst, iOLoc loc, int* restlen, Boolean checkPr
           excluded = True;
           break;
         }
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "empty exclude permission in block [%s]", data->id );
       }
       excl = wBlock.nextexcl( data->props, excl );
     };
