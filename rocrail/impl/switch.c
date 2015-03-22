@@ -682,6 +682,7 @@ static Boolean _unLock( iOSwitch inst, const char* id, iORoute route, Boolean fo
   iOSwitchData data = Data(inst);
   if( force || (StrOp.equals( id, data->lockedId ) && (route != NULL ? (data->route == route):True )) ) {
     data->lockedId = NULL;
+    data->route    = NULL;
     data->savepostimer = wCtrl.getsavepostime( wRocRail.getctrl( AppOp.getIni(  ) ) ) * 10;
     /* Broadcast to clients. Node6 */
     {
