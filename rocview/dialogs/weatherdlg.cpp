@@ -799,7 +799,7 @@ void WeatherDlg::onColorExport( wxCommandEvent& event ) {
     iOFile f = FileOp.inst( path.mb_str(wxConvUTF8), OPEN_WRITE );
     if( f != NULL ) {
       for( int hour = 0; hour < 48; hour++) {
-        FileOp.fmt( f, "%d,%d,%d,%d,%d,%d\n",
+        FileOp.fmt( f, "%d,%d,%d,%d,%d,%d,%d\n",
             atoi(m_ColorGrid->GetCellValue(hour, 0).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 1).mb_str(wxConvUTF8)),
             atoi(m_ColorGrid->GetCellValue(hour, 2).mb_str(wxConvUTF8)),
