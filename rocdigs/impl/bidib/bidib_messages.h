@@ -62,6 +62,20 @@
 //            2014-06-11       kw  added FEATURE_GEN_START_STATE
 //            2014-06-25       kw  added Makrocommand BIDIB_MSYS_SERVOMOVE_QUERY
 //            2014-08-13       kw  changed: XPOM (enums, type)
+//            2014-08-24       kw  added FEATURE_CTRL_PORT_REMAPPING, MGS_LC_MAPPING_CFG, MSG_LC_MAPPING (test only)
+//                             kw  added BIDIB_ERR_RESET_REQUIRED
+//            2014-09-25       kw  added MSG_LOCAL_ACCESSORY
+//            2014-10-26 V0.18 kw  added MSG_LC_CONFIGX_SET, MSG_LC_CONFIGX_GET, MSG_LC_CONFIGX
+//                                 added defines for port config enums
+//            2014-10-28       kw  added stretch value to backlight_cfg
+//                             kw  changed: BIDIB_VERSION 0.5 to 0.6
+//            2014-12-03       kw  added BIDIB_MSYS_FLAG_QUERY0, renamed BIDIB_MSYS_FLAG_QUERY to BIDIB_MSYS_FLAG_QUERY1
+//            2015-01-30       kw  added more defines for BIDIB_PCFG_*
+//            2015-02-05       ab  removed test-only REMAPPING messages
+//                                 added FEATURE_CTRL_PORT_FLAT_MODEL, BIDIB_PCFG_RECONFIG instead
+//            2015-02-12       ab  renamed: SPORT, LPORT, ANALOG to SWITCH, LIGHT, ANALOGOUT (in porttypes, features, structs)
+//                                 renamed OUTTYPE to PORTTYPE, added INPUT
+//            2015-02-28       kw  added MSG_LC_CONFIGX_GET_ALL, added BIDIB_ERR_LC_PORT_*
 //
 //===============================================================================
 //
@@ -101,7 +115,7 @@
 //===============================================================================
 
 //                              Mainversion   Subversion
-#define BIDIB_VERSION           (0 * 256 +    5)
+#define BIDIB_VERSION           (0 * 256 +    6)
 
 #define BIDIB_SYS_MAGIC         0xAFFE                  // full featured BiDiB-Node
 #define BIDIB_BOOT_MAGIC        0xB00D                  // reduced Node, bootloader only
@@ -145,7 +159,7 @@
 #define MSG_VENDOR_GET          (MSG_DFC + 0x07)        // V_NAME
 #define MSG_SYS_CLOCK           (MSG_DFC + 0x08)     //*// 1:TCODE0, 2:TCODE1, 3:TCODE2, 4:TCODE3
 #define MSG_STRING_GET          (MSG_DFC + 0x09)        // 1:Nspace, 2:ID
-#define MSG_STRING_SET          (MSG_DFC + 0x0a)        // 1:Nspace, 2:ID, 3:Strsize, 4...n: string 
+#define MSG_STRING_SET          (MSG_DFC + 0x0a)        // 1:Nspace, 2:ID, 3:Strsize, 4...n: string
 
 //-- occupancy messages
 #define MSG_DBM                 (MSG_DSTRM + 0x20)
@@ -176,6 +190,9 @@
 #define MSG_LC_CONFIG_GET       (MSG_DLC + 0x02)        // 1:type, 2:port
 #define MSG_LC_KEY_QUERY        (MSG_DLC + 0x03)        // 1:port
 #define MSG_LC_OUTPUT_QUERY     (MSG_DLC + 0x04)        // 1:type, 2:port
+#define MSG_LC_CONFIGX_GET_ALL  (MSG_DLC + 0x05)        // -
+#define MSG_LC_CONFIGX_SET      (MSG_DLC + 0x06)        // 1:type, 2:port, [3:p_enum, 4:p_val]  (up to 16)
+#define MSG_LC_CONFIGX_GET      (MSG_DLC + 0x07)        // 1:type, 2:port
 
 //-- macro messages
 #define MSG_DMAC                (MSG_DSTRM + 0x48)
@@ -187,21 +204,22 @@
 
 //-- dcc gen messages
 #define MSG_DGEN                (MSG_DSTRM + 0x60)
-#define  MSG_CS_ALLOCATE        (MSG_DGEN + 0x00)
-#define  MSG_CS_SET_STATE       (MSG_DGEN + 0x02)
-#define  MSG_CS_DRIVE           (MSG_DGEN + 0x04)       // 1:addrl, 2:addrh, 3:format, 4:active, 5:speed, 6:1-4, 7:5-12, 8:13-20, 9:21-28
-#define  MSG_CS_ACCESSORY       (MSG_DGEN + 0x05)       // 1:addrl, 2:addrh, 3:data(aspect), 4:time_l, 5:time_h
-#define  MSG_CS_BIN_STATE       (MSG_DGEN + 0x06)       // 1:addrl, 2:addrh, 3:bin_statl, 4:bin_stath
-#define  MSG_CS_POM             (MSG_DGEN + 0x07)       // 1..4:addr, 5:MID, 6:opcode, 7:cv_l, 8:cv_h, 9:cv_x, 10..13: data
+#define MSG_CS_ALLOCATE         (MSG_DGEN + 0x00)
+#define MSG_CS_SET_STATE        (MSG_DGEN + 0x02)       // 1:state
+#define MSG_CS_DRIVE            (MSG_DGEN + 0x04)       // 1:addrl, 2:addrh, 3:format, 4:active, 5:speed, 6:1-4, 7:5-12, 8:13-20, 9:21-28
+#define MSG_CS_ACCESSORY        (MSG_DGEN + 0x05)       // 1:addrl, 2:addrh, 3:data(aspect), 4:time_l, 5:time_h
+#define MSG_CS_BIN_STATE        (MSG_DGEN + 0x06)       // 1:addrl, 2:addrh, 3:bin_statl, 4:bin_stath
+#define MSG_CS_POM              (MSG_DGEN + 0x07)       // 1..4:addr, 5:MID, 6:opcode, 7:cv_l, 8:cv_h, 9:cv_x, 10..13: data
                                                         // 1:did[0], 2:did[1], 3:did[2], 4:did[4]
 //-- service mode
-#define  MSG_CS_PROG            (MSG_DGEN + 0x0F)       // 1:opcode, 2:cv_l, 3:cv_h, 4: data
+#define MSG_CS_PROG             (MSG_DGEN + 0x0F)       // 1:opcode, 2:cv_l, 3:cv_h, 4: data
 
 //-- local message
 #define MSG_DLOCAL              (MSG_DSTRM + 0x70)      // only locally used
 #define MSG_LOGON_ACK           (MSG_DLOCAL + 0x00)     // 1:node_addr, 2..8:unique_id
 #define MSG_LOCAL_PING          (MSG_DLOCAL + 0x01)
 #define MSG_LOGON_REJECTED      (MSG_DLOCAL + 0x02)     // 1..7:unique_id
+#define MSG_LOCAL_ACCESSORY     (MSG_DLOCAL + 0x03)  //*// 1:statusflag, 2,3: DCC-accessory addr
 
 //===============================================================================
 //
@@ -212,7 +230,7 @@
 #define MSG_USTRM  0x80
 
 //-- system messages
-#define MSG_USYS                (MSG_USTRM +  0x00)
+#define MSG_USYS                (MSG_USTRM + 0x00)
 #define MSG_SYS_MAGIC           (MSG_USYS + 0x01)       // 1:0xFE 2:0xAF
 #define MSG_SYS_PONG            (MSG_USYS + 0x02)       // 1:mirrored dat
 #define MSG_SYS_P_VERSION       (MSG_USYS + 0x03)       // 1:proto-ver_l, 2:proto-ver_h
@@ -230,21 +248,21 @@
 #define MSG_FW_UPDATE_STAT      (MSG_USYS + 0x0f)       // 1:stat, 2:timeout
 
 //-- feature and user config messages
-#define MSG_UFC                 (MSG_USTRM +  0x10)
+#define MSG_UFC                 (MSG_USTRM + 0x10)
 #define MSG_FEATURE             (MSG_UFC + 0x00)        // 1:feature_num, 2:data
 #define MSG_FEATURE_NA          (MSG_UFC + 0x01)        // 1:feature_num
 #define MSG_FEATURE_COUNT       (MSG_UFC + 0x02)        // 1:count
 #define MSG_VENDOR              (MSG_UFC + 0x03)        // 1..n: length,'string',length,'value'
 #define MSG_VENDOR_ACK          (MSG_UFC + 0x04)        // 1:ack
-#define MSG_STRING              (MSG_UFC + 0x05)        // 1:Nspace, 2:ID, 3:Strsize, 4...n: string 
+#define MSG_STRING              (MSG_UFC + 0x05)        // 1:Nspace, 2:ID, 3:Strsize, 4...n: string
 
 //-- occupancy messages
-#define MSG_UBM                 (MSG_USTRM +  0x20)
+#define MSG_UBM                 (MSG_USTRM + 0x20)
 #define MSG_BM_OCC              (MSG_UBM + 0x00)        // 1:mnum
 #define MSG_BM_FREE             (MSG_UBM + 0x01)        // 1:mnum
 #define MSG_BM_MULTIPLE         (MSG_UBM + 0x02)        // 1:base, 2:size; 3..n:data
 #define MSG_BM_ADDRESS          (MSG_UBM + 0x03)        // 1:mnum, [2,3:addr_l, addr_h]
-#define MSG_BM_ACCESSORY        (MSG_UBM + 0x04)        //
+#define MSG_BM_ACCESSORY        (MSG_UBM + 0x04)        // 1:mnum, [2,3:addr_l, addr_h]
 #define MSG_BM_CV               (MSG_UBM + 0x05)        // 1:addr_l, 2:addr_h, 3:cv_addr_l, 4:cv_addr_h, 5:cv_dat
 #define MSG_BM_SPEED            (MSG_UBM + 0x06)        // 1:addr_l, 2:addr_h, 3:speed_l, 4:speed_h (from loco)
 #define MSG_BM_CURRENT          (MSG_UBM + 0x07)        // 1:mnum, 2:current
@@ -253,7 +271,7 @@
 #define MSG_BM_DYN_STATE        (MSG_UBM + 0x0a)        // 1:mnum, 2:addr_l, 3:addr_h, 4:dyn_num, 5:value (from loco)
 
 //-- booster messages
-#define MSG_UBST                (MSG_USTRM +  0x30)
+#define MSG_UBST                (MSG_USTRM + 0x30)
 #define MSG_BOOST_STAT          (MSG_UBST + 0x00)       // 1:state (see defines below)
 #define MSG_BOOST_CURRENT       (MSG_UBST + 0x01)       // 1:current
 #define MSG_BOOST_DIAGNOSTIC    (MSG_UBST + 0x02)       // [1:enum, 2:value],[3:enum, 4:value] ...
@@ -268,35 +286,37 @@
 #define MSG_ACCESSORY_NOTIFY    (MSG_UACC + 0x02)       // 1:port, 2:aspect, 3:total, 4:execute, 5:wait (Spontan)
 
 //-- switch/light control messages
-#define MSG_ULC                 (MSG_USTRM +  0x40)
+#define MSG_ULC                 (MSG_USTRM + 0x40)
 #define MSG_LC_STAT             (MSG_ULC + 0x00)        // 1:type, 2:port, 3:state
-#define MSG_LC_NA               (MSG_ULC + 0x01)        // 1:type, 2:port
+#define MSG_LC_NA               (MSG_ULC + 0x01)        // 1:type, 2:port, [3:errcause]
 #define MSG_LC_CONFIG           (MSG_ULC + 0x02)        // 1:type, 2:port, 3:off_val, 4:on_val, 5:dimm_off, 6:dimm_on
 #define MSG_LC_KEY              (MSG_ULC + 0x03)        // 1:port, 2:state
 #define MSG_LC_WAIT             (MSG_ULC + 0x04)        // 1:type, 2:port, 3:time
+//                              (MSG_ULC + 0x05)        was reserved for MGS_LC_MAPPING (deprecated)
+#define MSG_LC_CONFIGX          (MSG_ULC + 0x06)        // 1:type, 2:port, [3:p_enum, 4:p_val]  (up to 16)
 
 //-- macro messages
-#define MSG_UMAC                (MSG_USTRM +  0x48)
+#define MSG_UMAC                (MSG_USTRM + 0x48)
 #define MSG_LC_MACRO_STATE      (MSG_UMAC + 0x00)
 #define MSG_LC_MACRO            (MSG_UMAC + 0x01)
 #define MSG_LC_MACRO_PARA       (MSG_UMAC + 0x02)
 
 //-- dcc control messages
-#define MSG_UGEN                (MSG_USTRM +  0x60)
+#define MSG_UGEN                (MSG_USTRM + 0x60)
 #define MSG_CS_ALLOC_ACK        (MSG_UGEN + 0x00)       // noch genauer zu klaeren
 #define MSG_CS_STATE            (MSG_UGEN + 0x01)
 #define MSG_CS_DRIVE_ACK        (MSG_UGEN + 0x02)
-#define MSG_CS_ACCESSORY_ACK    (MSG_UGEN + 0x03)       // 1:addrl, 2:addrh, 3:data 
-#define MSG_CS_POM_ACK          (MSG_UGEN + 0x04)       // 1:addrl, 2:addrh, 3:addrxl, 4:addrxh, 5:mid, 6:data 
+#define MSG_CS_ACCESSORY_ACK    (MSG_UGEN + 0x03)       // 1:addrl, 2:addrh, 3:data
+#define MSG_CS_POM_ACK          (MSG_UGEN + 0x04)       // 1:addrl, 2:addrh, 3:addrxl, 4:addrxh, 5:mid, 6:data
 #define MSG_CS_DRIVE_MANUAL     (MSG_UGEN + 0x05)       // 1:addrl, 2:addrh, 3:format, 4:active, 5:speed, 6:1-4, 7:5-12, 8:13-20, 9:21-28
 #define MSG_CS_DRIVE_EVENT      (MSG_UGEN + 0x06)       // 1:addrl, 2:addrh, 3:eventtype, Parameters
-#define MSG_CS_ACCESSORY_MANUAL (MSG_UGEN + 0x07)       // 1:addrl, 2:addrh, 3:data 
+#define MSG_CS_ACCESSORY_MANUAL (MSG_UGEN + 0x07)       // 1:addrl, 2:addrh, 3:data
 
 //-- service mode
 #define MSG_CS_PROG_STATE       (MSG_UGEN + 0x0F)       // 1: state, 2:time, 3:cv_l, 4:cv_h, 5:data
 
 //-- local message
-#define MSG_ULOCAL              (MSG_USTRM +  0x70)     // only locally used
+#define MSG_ULOCAL              (MSG_USTRM + 0x70)     // only locally used
 #define MSG_LOGON               (MSG_ULOCAL + 0x00)
 #define MSG_LOCAL_PONG          (MSG_ULOCAL + 0x01)     // only locally used
 
@@ -322,39 +342,50 @@ typedef struct
             unsigned char class_occupancy: 1;
             unsigned char class_bridge: 1;
           };
-        unsigned char  class_id;
+        unsigned char class_id;
       };
-    unsigned char  classx_id;
-    unsigned char  dcc_vendor;
+    unsigned char classx_id;
+    unsigned char dcc_vendor;
     union
       {
         struct
           {
-            unsigned int   product_id;
-            unsigned int   product_serial;
+            unsigned int product_id;
+            unsigned int product_serial;
           };
         unsigned long vendor32;
       };
   } t_bidib_unique_id;
 
+// typedef for control operations - portnum
+typedef struct
+  {
+    unsigned char type;                  // BIDIB_PORTTYPE_*
+    unsigned char portnum;               // out number, 0 ... n
+  } t_bidib_port_idx;
+
 // typedef for control operations - execute
 typedef struct
   {
-    unsigned char type;                  // BIDIB_OUTTYPE_*
+    unsigned char type;                  // BIDIB_PORTTYPE_*
     unsigned char portnum;               // out number, 0 ... n
     unsigned char portstat;              // state of this output
-  }  t_bidib_port;
+  } t_bidib_port;
 
-// typedef for control operations - config
+// typedefs for control operations - config (deprecated by configx)
+// note: this structure is deprecated
 typedef struct
   {
     unsigned char portnum;
     unsigned char portmode;             // operation mode of port - default state?
     unsigned char pulstime;             // Holdtime for outputs
-    unsigned char reserved1;            // 
-    unsigned char reserved2;            // 
-  } t_bidib_sport_cfg;                  // for Switch PORTs
+    unsigned char reserved1;            //
+    unsigned char reserved2;            //
+  } t_bidib_switch_cfg;                 // for SWITCH ports
 
+typedef t_bidib_switch_cfg t_bidib_sport_cfg; // deprecated name (as of revision 1.24), do not use
+
+// note: this structure is deprecated
 typedef struct
   {
     unsigned char portnum;
@@ -362,17 +393,23 @@ typedef struct
     unsigned char brightness_on;        // Brightness in state ON, range 0..255
     unsigned char dimm_off;             // time for dimming towards OFF: 0=fast ... 255=slow
     unsigned char dimm_on;              // time for dimming towards ON: 0=fast ... 255=slow
-  } t_bidib_lport_cfg;                  // for Light PORTs
+  } t_bidib_light_cfg;                  // for LIGHT ports
 
+typedef t_bidib_light_cfg t_bidib_lport_cfg; // deprecated name (as of revision 1.24), do not use
+
+// note: this structure is deprecated
 typedef struct
   {
     unsigned char portnum;
     unsigned char dimm_off;             // time for dimming towards OFF: 0=fast ... 255=slow
     unsigned char dimm_on;              // time for dimming towards ON: 0=fast ... 255=slow
     unsigned char channel;              // mapping to physical channel
-    unsigned char reserved0;            // 
-  } t_bidib_backlport_cfg;              // for BACKLIGHT
+    unsigned char stretch;              // stretch (make timing slower)
+  } t_bidib_backlight_cfg;              // for BACKLIGHT
 
+typedef t_bidib_backlight_cfg t_bidib_backlport_cfg; // deprecated name (as of revision 1.24), do not use
+
+// note: this structure is deprecated
 typedef struct
   {
     unsigned char portnum;
@@ -381,13 +418,15 @@ typedef struct
     unsigned char speed;
     unsigned char reserved0;
   } t_bidib_servo_cfg;                  // for Servos
-  
-typedef struct 
+
+// typedefs for accessory operations
+typedef struct
   {
     unsigned char fb_state;             // state of the execution
     unsigned char error_code;           // 0 or error code
   } t_bidib_accessory_state;            // for accessory state messages
 
+// typedefs for command station operations
 typedef struct                              //  t_bidib_cs_accessory
   {
     union
@@ -397,7 +436,7 @@ typedef struct                              //  t_bidib_cs_accessory
             unsigned char addrl;            // low byte of addr
             unsigned char addrh;            // high byte of addr
           };
-        unsigned int  addr;                 // true dcc address (start with 0)
+        unsigned int addr;                  // true dcc address (start with 0)
       };
     union
       {
@@ -408,12 +447,12 @@ typedef struct                              //  t_bidib_cs_accessory
             unsigned char control_mode: 1;  // 0: direct coil control; 1:aspect mode
             unsigned char ext_accessory: 1; // 0: classic dcc; 1:extended accessory control
           };
-        unsigned char  control;
+        unsigned char control;
       };
-    unsigned char  time;
+    unsigned char time;
   } t_bidib_cs_accessory;
 
-typedef struct                              //  t_bidib_bin_states
+typedef struct                              //  t_bidib_bin_state
   {
     union
       {
@@ -422,16 +461,16 @@ typedef struct                              //  t_bidib_bin_states
             unsigned char addrl;            // low byte of addr
             unsigned char addrh;            // high byte of addr
           };
-        unsigned int  addr;                 // true dcc address (start with 0)
+        unsigned int addr;                  // true dcc address (start with 0)
       };
     union
       {
         struct
           {
-            unsigned char bin_numl;         // low byte of state  (this is little endian, DCC is big endian)
+            unsigned char bin_numl;         // low byte of state (this is little endian, DCC is big endian)
             unsigned char bin_numh;         // high byte of state
           };
-        unsigned int  bin_num;
+        unsigned int bin_num;
       };
     unsigned char data;
   } t_bidib_bin_state;
@@ -445,7 +484,7 @@ typedef struct                              // t_bidib_cs_drive
             unsigned char addrl;            // low byte of addr
             unsigned char addrh;            // high byte of addr
           };
-        unsigned int  addr;                 // true dcc address (start with 0)
+        unsigned int addr;                  // true dcc address (start with 0)
       };
     unsigned char format;                   // BIDIB_CS_DRIVE_FORMAT_DCC14, _DCC28, _DCC128
     unsigned char active;                   // BIDIB_CS_DRIVE_SPEED_BIT,
@@ -462,7 +501,7 @@ typedef struct                              // t_bidib_cs_drive
             unsigned char f4_f1: 4;         // functions f4..f1
             unsigned char light: 1;         // f0
           };
-        unsigned char  f4_f0;
+        unsigned char f4_f0;
       };
     union
       {
@@ -471,7 +510,7 @@ typedef struct                              // t_bidib_cs_drive
             unsigned char f8_f5: 4;         // functions f8..f5
             unsigned char f12_f9: 4;        // functions f12..f9
           };
-        unsigned char  f12_f5;
+        unsigned char f12_f5;
       };
     union
       {
@@ -480,7 +519,7 @@ typedef struct                              // t_bidib_cs_drive
             unsigned char f16_f13: 4;       // functions f16..f13
             unsigned char f20_f17: 4;       // functions f20..f17
           };
-        unsigned char  f20_f13;
+        unsigned char f20_f13;
       };
     union
       {
@@ -489,10 +528,11 @@ typedef struct                              // t_bidib_cs_drive
             unsigned char f24_f21: 4;       // functions f24..f21
             unsigned char f28_f25: 4;       // functions f28..f25
           };
-        unsigned char  f28_f21;
+        unsigned char f28_f21;
       };
   } t_bidib_cs_drive;
 
+// typedefs for command station operations - pom and service mode
 typedef struct                              // t_bidib_cs_pom
   {
     union
@@ -506,13 +546,13 @@ typedef struct                              // t_bidib_cs_pom
                     unsigned char addrl;    // low byte of addr
                     unsigned char addrh;    // high byte of addr
                   };
-                unsigned int  addr;         // true dcc address (start with 0)
+                unsigned int addr;          // true dcc address (start with 0)
               };
             unsigned char addrxl;           // 0 for normal POM
             unsigned char addrxh;           // 0 for normal POM
             unsigned char mid;              // manufactorer ID: 0 for normal POM, else VendorID like DCC
           };
-        unsigned char did[5];                 // true dcc address (start with 0)
+        unsigned char did[5];               // true dcc address (start with 0)
       };
     unsigned char opcode;                   // 0=RdBlock, 1=RdByte, 2=WrBit, 3=WrByte
                                             // 80=XRdBlock, 81=XRdByte, 82=XWrBit, 83=XWrByte
@@ -524,13 +564,13 @@ typedef struct                              // t_bidib_cs_pom
             unsigned char cv_addrl;         // low byte of cv addr
             unsigned char cv_addrh;         // high byte of cv addr
           };
-        unsigned int  cv_addr;              // true cv address (start with 0)
+        unsigned int cv_addr;               // true cv address (start with 0)
       };
     unsigned char cv_addrx;                 //
     unsigned char data[4];
   } t_bidib_cs_pom;
 
-typedef struct                              // t_bidib_cs_pom
+typedef struct                              // t_bidib_cs_prog
   {
     unsigned char opcode;                   // 0=Break, 1=RdByte, 2=WrBit, 3=WrByte
     union
@@ -540,15 +580,15 @@ typedef struct                              // t_bidib_cs_pom
             unsigned char cv_addrl;         // low byte of cv addr
             unsigned char cv_addrh;         // high byte of cv addr
           };
-        unsigned int  cv_addr;              // true cv address (start with 0)
+        unsigned int cv_addr;               // true cv address (start with 0)
       };
     unsigned char data;
   } t_bidib_cs_prog;
 
-typedef struct                              // t_bidib_cs_pom
+typedef struct                              // t_bidib_cs_prog_state
   {
-    unsigned char result;                   // 
-    unsigned char time;                   // 
+    unsigned char result;                   //
+    unsigned char time;                     //
     union
       {
         struct
@@ -556,7 +596,7 @@ typedef struct                              // t_bidib_cs_pom
             unsigned char cv_addrl;         // low byte of cv addr
             unsigned char cv_addrh;         // high byte of cv addr
           };
-        unsigned int  cv_addr;              // true cv address (start with 0)
+        unsigned int cv_addr;               // true cv address (start with 0)
       };
     unsigned char data;
   } t_bidib_cs_prog_state;
@@ -600,7 +640,6 @@ typedef struct                              // t_bidib_cs_pom
 //-- booster/occupancy2
 #define FEATURE_BM_DYN_STATE_INTERVAL      28   // transmit interval of MSG_BM_DYN_STATE (unit 100ms)
 
-
 //-- accessory
 #define FEATURE_ACCESSORY_COUNT            40   // number of objects
 #define FEATURE_ACCESSORY_SURVEILLED       41   // 1: annouce if operated outside bidib
@@ -609,13 +648,13 @@ typedef struct                              // t_bidib_cs_pom
 //-- control
 #define FEATURE_CTRL_INPUT_COUNT           50   // number of inputs for keys
 #define FEATURE_CTRL_INPUT_NOTIFY          51   // 1: report a keystroke to host
-#define FEATURE_CTRL_SPORT_COUNT           52   // number of switch ports (direct controlled)
-#define FEATURE_CTRL_LPORT_COUNT           53   // number of light ports (direct controlled)
+#define FEATURE_CTRL_SWITCH_COUNT          52   // number of switch ports (direct controlled)
+#define FEATURE_CTRL_LIGHT_COUNT           53   // number of light ports (direct controlled)
 #define FEATURE_CTRL_SERVO_COUNT           54   // number of servo ports (direct controlled)
 #define FEATURE_CTRL_SOUND_COUNT           55   // number of sound ports (direct controlled)
 #define FEATURE_CTRL_MOTOR_COUNT           56   // number of motor ports (direct controlled)
-#define FEATURE_CTRL_ANALOG_COUNT          57   // number of analog ports (direct controlled)
-#define FEATURE_CTRL_STRETCH_DIMM          58   // additional time stretch for dimming (for LPORT)
+#define FEATURE_CTRL_ANALOGOUT_COUNT       57   // number of analog ports (direct controlled)
+#define FEATURE_CTRL_STRETCH_DIMM          58   // additional time stretch for dimming (for light ports)
 #define FEATURE_CTRL_BACKLIGHT_COUNT       59   // number of backlight ports (intensity direct controlled)
 #define FEATURE_CTRL_MAC_LEVEL             60   // supported macro level
 #define FEATURE_CTRL_MAC_SAVE              61   // number of permanent storage places for macros
@@ -624,7 +663,14 @@ typedef struct                              // t_bidib_cs_pom
 #define FEATURE_CTRL_MAC_START_MAN         64   // (local) manual control of macros enabled
 #define FEATURE_CTRL_MAC_START_DCC         65   // (local) dcc control of macros enabled
 #define FEATURE_CTRL_PORT_QUERY_AVAILABLE  66   // 1: node will answer to MSG_LC_OUTPUT_QUERY
-#define FEATURE_SPORT_CONFIG_AVAILABLE     67   // 1: node has possibility to configure SPORTs
+#define FEATURE_SWITCH_CONFIG_AVAILABLE    67   // (deprecated, version >= 0.6 uses availability of PCFG_IO_CTRL) 1: node has possibility to configure switch ports
+#define FEATURE_CTRL_PORT_FLAT_MODEL       70   // node uses flat port model, number or addressable ports
+/* deprecated names (as of revision 1.24), do not use */
+#define FEATURE_CTRL_SPORT_COUNT           52   // (deprecated)
+#define FEATURE_CTRL_LPORT_COUNT           53   // (deprecated)
+#define FEATURE_CTRL_ANALOG_COUNT          57   // (deprecated)
+#define FEATURE_SPORT_CONFIG_AVAILABLE     67   // (deprecated)
+
 
 //-- dcc gen
 #define FEATURE_GEN_SPYMODE                100  // 1: watch bidib handsets
@@ -649,7 +695,8 @@ typedef struct                              // t_bidib_cs_pom
 // 5. Error Codes
 //
 //===============================================================================
-
+//
+// a) general error codes
 #define BIDIB_ERR_NONE                    0x00  // void
 #define BIDIB_ERR_TXT                     0x01  // general text error
 #define BIDIB_ERR_CRC                     0x02  // received crc was errornous
@@ -664,6 +711,17 @@ typedef struct                              // t_bidib_cs_pom
 #define BIDIB_ERR_SUBPAKET                0x15  // Message in Subsystem Paket Size Error
 #define BIDIB_ERR_OVERRUN                 0x16  // Message buffer in downstream overrun, messages lost.
 #define BIDIB_ERR_HW                      0x20  // self test failed
+#define BIDIB_ERR_RESET_REQUIRED          0x21  // reset needed (ie. due to reconfiguration)
+//
+// b) error cause (2nd parameter)
+// for MSG_LC_NA
+#define BIDIB_ERR_LC_PORT_NONE            0x00  // no (more) error (internal use in nodes)
+#define BIDIB_ERR_LC_PORT_GENERAL         0x01  // unknown cause
+#define BIDIB_ERR_LC_PORT_UNKNOWN         0x02  // port or type unknown - completely
+#define BIDIB_ERR_LC_PORT_INACTIVE        0x03  // port not usabe
+#define BIDIB_ERR_LC_PORT_EXEC            0x04  // exec not possible
+#define BIDIB_ERR_LC_PORT_BROKEN          0x7F  // hardware failure
+
 
 //===============================================================================
 //
@@ -817,17 +875,53 @@ typedef struct                              // t_bidib_cs_pom
 #define BIDIB_ACC_STATE_ERROR_SERVO     0x20   // servo broken
 #define BIDIB_ACC_STATE_ERROR_SELFTEST  0x3F   // internal error
 
-// Macro / Switch Pointparameters
+// Macro / Output Portparameters
 // type codes
-#define BIDIB_OUTTYPE_SPORT          0     // standard port
-#define BIDIB_OUTTYPE_LPORT          1     // light port
-#define BIDIB_OUTTYPE_SERVO          2
-#define BIDIB_OUTTYPE_SOUND          3
-#define BIDIB_OUTTYPE_MOTOR          4
-#define BIDIB_OUTTYPE_ANALOG         5
-#define BIDIB_OUTTYPE_BACKLIGHT      6
+#define BIDIB_PORTTYPE_SWITCH        0     // standard port (on/off)
+#define BIDIB_PORTTYPE_LIGHT         1     // light port
+#define BIDIB_PORTTYPE_SERVO         2     // servo port
+#define BIDIB_PORTTYPE_SOUND         3     // sound
+#define BIDIB_PORTTYPE_MOTOR         4     // motor
+#define BIDIB_PORTTYPE_ANALOGOUT     5     // analog
+#define BIDIB_PORTTYPE_BACKLIGHT     6     // backlight (different operation then light port)
+#define BIDIB_PORTTYPE_INPUT        15     // simple input (open/closed)
+/* deprecated names (as of revision 1.24), do not use! */
+#define BIDIB_OUTTYPE_SPORT          0     // (deprecated) standard port
+#define BIDIB_OUTTYPE_LPORT          1     // (deprecated) light port
+#define BIDIB_OUTTYPE_SERVO          2     // (deprecated) servo port
+#define BIDIB_OUTTYPE_SOUND          3     // (deprecated) sound
+#define BIDIB_OUTTYPE_MOTOR          4     // (deprecated) motor
+#define BIDIB_OUTTYPE_ANALOG         5     // (deprecated) analog
+#define BIDIB_OUTTYPE_BACKLIGHT      6     // (deprecated) backlight
 
-// control codes  - limited to one nibble, here for PORTs
+// Port configuration ENUMs (P_ENUM)
+// P_ENUM 0..63: byte values 8 bits
+// P_ENUM 64..127: int values 16 bits
+// P_ENUM 128..191: int values 24 bits
+#define BIDIB_PCFG_NONE              0x00      // uint8   no parameters available / error code
+#define BIDIB_PCFG_LEVEL_PORT_ON     0x01      // uint8   'analog' value for ON
+#define BIDIB_PCFG_LEVEL_PORT_OFF    0x02      // uint8   'analog' value for OFF
+#define BIDIB_PCFG_DIMM_UP           0x03      // uint8   step width for dimm up [unit 10ms]
+#define BIDIB_PCFG_DIMM_DOWN         0x04      // uint8   step width for dimm down [unit 10ms]
+#define BIDIB_PCFG_DIMM_STRETCH      0x05      // uint8   scale up step width (deprecated!)
+#define BIDIB_PCFG_OUTPUT_MAP        0x06      // uint8   if there is a output mapping (like DMX)
+#define BIDIB_PCFG_SERVO_ADJ_L       0x07      // uint8   Servo Adjust Low
+#define BIDIB_PCFG_SERVO_ADJ_H       0x08      // uint8   Servo Adjust High
+#define BIDIB_PCFG_SERVO_SPEED       0x09      // uint8   Servo Speed
+#define BIDIB_PCFG_IO_CTRL           0x0a      // uint8   IO setup
+#define BIDIB_PCFG_TICKS             0x0b      // uint8   puls time for output [unit 10ms]
+// 16 bit values
+#define BIDIB_PCFG_DIMM_UP_8_8       0x43      // uint16  step width for dimm up as 8.8 float [unit 2560ms] (1= one step up in 2.56s; 256 = one step up in 10ms)
+#define BIDIB_PCFG_DIMM_DOWN_8_8     0x44      // uint16  step width for dimm down as 8.8 float [unit 2560ms]
+// 24 bit values
+#define BIDIB_PCFG_RGB               0x80      // uint24  RGB value of a coloured output. first byte R, second G, third B
+#define BIDIB_PCFG_RECONFIG          0x81      // uint24  Reconfiguration: ACT_TYPE PORTMAP_L PORTMAP_H (only if FEATURE_CTRL_PORT_FLAT_MODEL > 0)
+// special
+#define BIDIB_PCFG_CONTINUE          0xFF      // none    an addtional message will follow
+
+
+
+// control codes - limited to one nibble, here for PORTs
 
 #define BIDIB_PORT_TURN_OFF          0      // for standard
 #define BIDIB_PORT_TURN_ON           1      // for standard
@@ -858,12 +952,13 @@ typedef struct                              // t_bidib_cs_pom
 #define BIDIB_MSYS_BEGIN_CRITCAL    252     // current macro will ignore stop requests
 #define BIDIB_MSYS_END_CRITCAL      251     // current macro can be stopped by a stop (default)
 
-#define BIDIB_MSYS_FLAG_QUERY       250     // query flag and pause as long as flag is not set
+#define BIDIB_MSYS_FLAG_QUERY       250     // deprecated
+#define BIDIB_MSYS_FLAG_QUERY1      250     // query flag and pause as long as flag is not set (advance if set)
 #define BIDIB_MSYS_FLAG_SET         249     // set flag
 #define BIDIB_MSYS_FLAG_CLEAR       248     // reset flag
 
-#define BIDIB_MSYS_INPUT_QUERY1     247     // query input for 'pressed / activated'
-#define BIDIB_MSYS_INPUT_QUERY0     246     // query input for 'released'
+#define BIDIB_MSYS_INPUT_QUERY1     247     // query input for 'pressed / activated' and advance, if input is set
+#define BIDIB_MSYS_INPUT_QUERY0     246     // query input for 'released' and and advance, if input is released
 #define BIDIB_MSYS_DELAY_RANDOM     245     // make a random delay
 #define BIDIB_MSYS_DELAY_FIXED      244     // make a fixed delay
 
@@ -871,6 +966,8 @@ typedef struct                              // t_bidib_cs_pom
 #define BIDIB_MSYS_ACC_OKAY_QIN0    242     // query input for 'released' and send okay to accessory-module, if pressed, else send nok. (not waiting)
 #define BIDIB_MSYS_ACC_OKAY_NF      241     // send okay to accessory-module, no feedback available
 #define BIDIB_MSYS_SERVOMOVE_QUERY  240     // query servo movement and pause as long as moving
+
+#define BIDIB_MSYS_FLAG_QUERY0      239     // query flag and pause as long as flag is set (advance if not set)
 
 // Macro global parameters
 #define BIDIB_MACRO_PARA_SLOWDOWN   0x01
