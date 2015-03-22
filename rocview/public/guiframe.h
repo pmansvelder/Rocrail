@@ -350,6 +350,7 @@ public:
 
   Symbol* GetItem( const char* key );
 
+  void UpdateSlaveBlocks(iONode block, iONode loco);
   bool isEditMode() { return m_bEditMode; }
   void setEditMode( bool editmode ) { m_bEditMode = editmode; }
   bool isEditModPlan() { return m_bEditModPlan; }

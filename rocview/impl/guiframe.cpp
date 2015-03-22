@@ -1594,6 +1594,44 @@ Symbol* RocGuiFrame::GetItem( const char* key ) {
 }
 
 
+void RocGuiFrame::UpdateSlaveBlocks(iONode block, iONode loco) {
+  /* Update slave blocks in case the block is virtual. */
+  if( wBlock.isvirtual(block) ) {
+    TraceOp.trc( "frame", TRCLEVEL_DEBUG, __LINE__, 9999, "Virtual block [%s] slaves[%s]", wBlock.getid(block), wBlock.getslaveblocks(block));
+  }
+  else {
+    return;
+  }
+
+  if( wBlock.isvirtual(block) && StrOp.len(wBlock.getslaveblocks(block)) > 0 ) {
+    iOStrTok tok = StrTokOp.inst( wBlock.getslaveblocks(block), ',' );
+
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* blockid = StrTokOp.nextToken( tok );
+      iONode slaveblock = findBlock(blockid);
+      if( slaveblock != NULL ) {
+        TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "Update slave block [%s] enterside locid=%s", blockid, wLoc.getid( loco ));
+        wBlock.setupdateenterside(slaveblock, True);
+
+        if( m_ModPanel != NULL) {
+          m_ModPanel->modelEvent( slaveblock );
+        }
+        else {
+          int pagecnt = getNotebook()->GetPageCount();
+          for( int i = 0; i < pagecnt; i++ ) {
+            PlanPanel* p = (PlanPanel*)wxGetApp().getFrame()->getNotebook()->GetPage(i);
+            if( p->getZ() == wBlock.getz(slaveblock))
+              p->modelEvent( slaveblock );
+          }
+        }
+
+      }
+    };
+    StrTokOp.base.del(tok);
+  }
+
+}
+
 void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
   // Get copied node:
   iONode node = (iONode)event.GetClientData();
@@ -1703,7 +1741,8 @@ void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
             wBlock.setupdateenterside(block, True);
             if( m_ModPanel != NULL) {
               m_ModPanel->modelEvent( block );
-            } else {
+            }
+            else {
               int pagecnt = getNotebook()->GetPageCount();
               for( int i = 0; i < pagecnt; i++ ) {
                 PlanPanel* p = (PlanPanel*)wxGetApp().getFrame()->getNotebook()->GetPage(i);
@@ -1711,6 +1750,8 @@ void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
                   p->modelEvent( block );
               }
             }
+            UpdateSlaveBlocks(block, node);
+
           }
           else {
             //m_ActiveLocs->SetCellValue( i, LOC_COL_BLOCK, wxT("") );
@@ -1739,6 +1780,9 @@ void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
                   p->modelEvent( block );
               }
             }
+
+            UpdateSlaveBlocks(block, node);
+
           }
 
         }
