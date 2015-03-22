@@ -114,6 +114,7 @@ For the Analyzer to work the Plan has to fullfill:
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/ActionCond.h"
 #include "rocrail/wrapper/public/Location.h"
+#include "rocrail/wrapper/public/LocationList.h"
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/Output.h"
 #include "rocrail/wrapper/public/StageList.h"
@@ -2891,7 +2892,71 @@ static Boolean blockFbackUniqueCheck( iOAnalyse inst, Boolean repair ) {
 }
 
 
-/* do all fbevents of blocks have a valid fb id and valid from/byroute */
+/* check location */
+static Boolean locationCheck( iOAnalyse inst, Boolean repair ) {
+  iOAnalyseData data = Data(inst);
+  iONode locationlist = wPlan.getlocationlist(data->plan);
+  iONode bklist = wPlan.getbklist(data->plan);
+  int numProblems = 0;
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " location check start" );
+
+  if( locationlist != NULL ) {
+    iONode location = wLocationList.getlocation( locationlist );
+    while( location != NULL ) {
+      int numBlocks = 0;
+      const char* locationid = wItem.getid(location);
+      int minocc = wLocation.getminocc(location);
+      const char* blocks= wLocation.getblocks(location);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " location check: location[%s] minoccc[%d] blocks[%s]", locationid, minocc, blocks );
+
+      /* check blocks of location */
+      if( blocks != NULL && StrOp.len( blocks ) > 0 ) {
+        iOStrTok tok = StrTokOp.inst( blocks, ',' );
+        while( StrTokOp.hasMoreTokens(tok) ) {
+          const char* bk = StrTokOp.nextToken( tok );
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "locationCheck: location[%s] block[%s] [%d/%d]", locationid, bk, numBlocks, minocc );
+          iIBlockBase blockBase = ModelOp.getBlock( data->model, bk );
+          if( blockBase != NULL ) {
+            numBlocks++;
+            iONode bkNode = BlockOp.base.properties( blockBase );
+            Boolean isMainline = wBlock.ismainline( bkNode );
+            if( isMainline ) {
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "locationCheck: location[%s] block[%s] : mainline is active",
+                  locationid, bk );
+            }
+          }else {
+            TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: location[%s] blocks[%s] invalid/non existent block [%s]",
+                locationid, blocks, bk);
+            numProblems++;
+          }
+        }
+        StrTokOp.base.del(tok);
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: location[%s] has no blocks defined", locationid );
+        numProblems++;
+      }
+
+      if( minocc > numBlocks ) {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: location[%s] minocc[%d] blocks configured[%d] (blocks[%s])",
+            locationid, minocc, numBlocks, blocks);
+        numProblems++;
+      }
+
+      location = wLocationList.nextlocation( locationlist, location );
+    }
+  }
+
+  if( numProblems ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "location check: %d problematic entries", numProblems );
+    return False;
+  }
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "location check: %d problematic enries", numProblems );
+  return True;
+}
+
+/* do all fbevents of blocks have a valid fb id and valid from/byroute ; check permoissions */
 static Boolean blockCheck( iOAnalyse inst, Boolean repair ) {
   iOAnalyseData data = Data(inst);
   iONode bklist = wPlan.getbklist(data->plan);
@@ -9041,7 +9106,7 @@ static Boolean routeCheck( iOAnalyse inst, Boolean repair ) {
                     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "routeCheck: [%s] crossing block [%s]",
                         wRoute.getid(stNode), bk );
                 }else {
-                  TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: routeCheck: [%s] crossing blocks[%s] invalid/non existant block [%s]",
+                  TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: routeCheck: [%s] crossing blocks[%s] invalid/non existent block [%s]",
                       wRoute.getid(stNode), bkc, bk);
                   numProblems++;
                 }
@@ -9264,6 +9329,11 @@ static Boolean _checkExtended(iOAnalyse inst) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Feedback unique check: in progress..." );
     res = blockFbackUniqueCheck( inst, False );
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Feedback unique check: %s problems detected", res?"no":"some" );
+
+    /* check locations (valid blocks,...) */
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Location check: in progress..." );
+    res = locationCheck( inst, False );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Location check: %s problems detected", res?"no":"some" );
 
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Block checks finished" );
   }
@@ -10299,7 +10369,7 @@ static struct OAnalyse* _inst() {
   /* set option value */
   data->maxRecursionDepth = wAnaOpt.getmaxRecursionDepth( anaOpt ) ;
 
-  /* set options to current value or initialize with default (creates non existant entries in rocrail.ini) */
+  /* set options to current value or initialize with default (creates non existent entries in rocrail.ini) */
   /* basic analyzer jobs */
   wAnaOpt.setsetRouteId( anaOpt, wAnaOpt.issetRouteId( anaOpt ) ) ;
   wAnaOpt.setsetBlockId( anaOpt, wAnaOpt.issetBlockId( anaOpt ) ) ;
