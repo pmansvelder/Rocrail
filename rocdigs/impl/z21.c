@@ -1613,7 +1613,7 @@ static struct OZ21* _inst( const iONode ini ,const iOTrace trc ) {
   data->swmap  = MapOp.inst();
   data->swmux  = MutexOp.inst( NULL, True );
 
-  data->zerobased = (wDigInt.getprotver( ini ) == 0);
+  data->zerobased = False;
 
   if( wDigInt.getport( data->ini ) == 0 ) {
     wDigInt.setport( data->ini, 21105 );
@@ -1627,7 +1627,6 @@ static struct OZ21* _inst( const iONode ini ,const iOTrace trc ) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%d.%d.%d", vmajor, vminor, patch );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Z21 IP address [%s]", wDigInt.gethost( data->ini )  );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Z21 UDP port [%d]", wDigInt.getport( data->ini )  );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Addressing is %szero based", data->zerobased?"":"none "  );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "----------------------------------------" );
 
   data->rwUDP = SocketOp.inst( wDigInt.gethost(data->ini), wDigInt.getport(data->ini), False, True, False );
