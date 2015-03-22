@@ -53,6 +53,8 @@
 
 #include "rocview/xpm/nopict.xpm"
 
+static bool ms_Sort = true;
+
 CarDlg::CarDlg( wxWindow* parent, iONode p_Props, bool save, const char* train, const char* consist, const char* locality )
   :cardlggen( parent )
 {
@@ -174,13 +176,14 @@ void CarDlg::initLabels() {
   m_ID->Enable( m_bSave );
 
   m_CarList2->InsertColumn(0, wxGetApp().getMsg( "id" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(1, wxGetApp().getMsg( "roadname" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(2, wxGetApp().getMsg( "number" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(3, wxGetApp().getMsg( "type" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(4, wxGetApp().getMsg( "subtype" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(5, wxGetApp().getMsg( "length" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(6, wxGetApp().getMsg( "place" ), wxLIST_FORMAT_LEFT );
-  m_CarList2->InsertColumn(7, wxGetApp().getMsg( "train" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(1, wxGetApp().getMsg( "address" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(2, wxGetApp().getMsg( "roadname" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(3, wxGetApp().getMsg( "number" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(4, wxGetApp().getMsg( "type" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(5, wxGetApp().getMsg( "subtype" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(6, wxGetApp().getMsg( "length" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(7, wxGetApp().getMsg( "place" ), wxLIST_FORMAT_LEFT );
+  m_CarList2->InsertColumn(8, wxGetApp().getMsg( "train" ), wxLIST_FORMAT_LEFT );
 
   // General
   m_labID->SetLabel( wxGetApp().getMsg( "id" ) );
@@ -270,7 +273,7 @@ static int __sortID(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = wItem.getid( a );
     const char* idB = wItem.getid( b );
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 static int __sortRoadName(obj* _a, obj* _b)
 {
@@ -278,7 +281,7 @@ static int __sortRoadName(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = wCar.getroadname( a );
     const char* idB = wCar.getroadname( b );
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 static int __sortNumber(obj* _a, obj* _b)
 {
@@ -286,7 +289,7 @@ static int __sortNumber(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = wCar.getnumber( a );
     const char* idB = wCar.getnumber( b );
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 static int __sortType(obj* _a, obj* _b)
 {
@@ -294,7 +297,7 @@ static int __sortType(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = wCar.gettype( a );
     const char* idB = wCar.gettype( b );
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 static int __sortSubType(obj* _a, obj* _b)
 {
@@ -302,16 +305,26 @@ static int __sortSubType(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = wCar.getsubtype( a );
     const char* idB = wCar.getsubtype( b );
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 static int __sortLen(obj* _a, obj* _b)
 {
     iONode a = (iONode)*_a;
     iONode b = (iONode)*_b;
     if( wCar.getlen(a) > wCar.getlen(b) )
-      return 1;
+      return ms_Sort?1:-1;
     if( wCar.getlen(a) < wCar.getlen(b) )
-      return -1;
+      return ms_Sort?-1:1;
+    return 0;
+}
+static int __sortAddr(obj* _a, obj* _b)
+{
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    if( wCar.getlen(a) > wCar.getaddr(b) )
+      return ms_Sort?1:-1;
+    if( wCar.getlen(a) < wCar.getaddr(b) )
+      return ms_Sort?-1:1;
     return 0;
 }
 static int __sortLocation(obj* _a, obj* _b)
@@ -320,7 +333,7 @@ static int __sortLocation(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = wCar.getlocation( a );
     const char* idB = wCar.getlocation( b );
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 static int __sortTrain(obj* _a, obj* _b)
 {
@@ -328,7 +341,7 @@ static int __sortTrain(obj* _a, obj* _b)
     iONode b = (iONode)*_b;
     const char* idA = CarDlg::findTrain(wCar.getid( a ));
     const char* idB = CarDlg::findTrain(wCar.getid( b ));
-    return strcmp( idA, idB );
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
 
 
@@ -380,21 +393,24 @@ void CarDlg::initIndex(){
         ListOp.sort(list, &__sortRoadName);
       }
       else if( m_SortCol == 2 ) {
-        ListOp.sort(list, &__sortNumber);
+        ListOp.sort(list, &__sortAddr);
       }
       else if( m_SortCol == 3 ) {
-        ListOp.sort(list, &__sortType);
+        ListOp.sort(list, &__sortNumber);
       }
       else if( m_SortCol == 4 ) {
-        ListOp.sort(list, &__sortSubType);
+        ListOp.sort(list, &__sortType);
       }
       else if( m_SortCol == 5 ) {
-        ListOp.sort(list, &__sortLen);
+        ListOp.sort(list, &__sortSubType);
       }
       else if( m_SortCol == 6 ) {
-        ListOp.sort(list, &__sortLocation);
+        ListOp.sort(list, &__sortLen);
       }
       else if( m_SortCol == 7 ) {
+        ListOp.sort(list, &__sortLocation);
+      }
+      else if( m_SortCol == 8 ) {
         ListOp.sort(list, &__sortTrain);
       }
       else {
@@ -435,19 +451,20 @@ void CarDlg::initIndex(){
           continue;
 
         m_CarList2->InsertItem( idx, wxString(id,wxConvUTF8) );
-        m_CarList2->SetItem( idx, 1, wxString(wCar.getroadname( car ), wxConvUTF8) );
-        m_CarList2->SetItem( idx, 2, wxString(wCar.getnumber( car ), wxConvUTF8) );
-        m_CarList2->SetItem( idx, 3, StrOp.len(wCar.gettype( car )) > 0 ? wxGetApp().getMsg( wCar.gettype( car ) ):wxT("") );
-        m_CarList2->SetItem( idx, 4, StrOp.len(wCar.getsubtype( car )) > 0 ? wxGetApp().getMsg(wCar.getsubtype( car )):wxT("") );
-        m_CarList2->SetItem( idx, 5, wxString::Format(wxT("%d"), wCar.getlen( car )) );
-        m_CarList2->SetItem( idx, 6, wxString(wCar.getlocation( car ), wxConvUTF8) );
-        m_CarList2->SetItem( idx, 7, wxString(findTrain(id), wxConvUTF8) );
+        m_CarList2->SetItem( idx, 1, wxString::Format(wxT("%d"), wCar.getaddr( car )) );
+        m_CarList2->SetItem( idx, 2, wxString(wCar.getroadname( car ), wxConvUTF8) );
+        m_CarList2->SetItem( idx, 3, wxString(wCar.getnumber( car ), wxConvUTF8) );
+        m_CarList2->SetItem( idx, 4, StrOp.len(wCar.gettype( car )) > 0 ? wxGetApp().getMsg( wCar.gettype( car ) ):wxT("") );
+        m_CarList2->SetItem( idx, 5, StrOp.len(wCar.getsubtype( car )) > 0 ? wxGetApp().getMsg(wCar.getsubtype( car )):wxT("") );
+        m_CarList2->SetItem( idx, 6, wxString::Format(wxT("%d"), wCar.getlen( car )) );
+        m_CarList2->SetItem( idx, 7, wxString(wCar.getlocation( car ), wxConvUTF8) );
+        m_CarList2->SetItem( idx, 8, wxString(findTrain(id), wxConvUTF8) );
         m_CarList2->SetItemPtrData(idx, (wxUIntPtr)car);
         idx++;
 
       }
       // resize
-      for( int n = 0; n < 6; n++ ) {
+      for( int n = 0; n < 7; n++ ) {
         m_CarList2->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
         int autoheadersize = m_CarList2->GetColumnWidth(n);
         m_CarList2->SetColumnWidth(n, wxLIST_AUTOSIZE);
@@ -1041,6 +1058,11 @@ void CarDlg::onDoc( wxCommandEvent& event )
 }
 
 void CarDlg::onListColClick( wxListEvent& event ) {
+  if(m_SortCol == event.GetColumn())
+    ms_Sort = !ms_Sort;
+  else
+    ms_Sort = true;
+
   m_SortCol = event.GetColumn();
   initIndex();
 }

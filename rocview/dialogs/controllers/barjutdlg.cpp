@@ -93,6 +93,7 @@ BarJuTCntrlDlg::BarJuTCntrlDlg( wxWindow* parent, iONode props, const char* devi
 
   initValues();
   m_Polling->Enable(isBARJUT);
+  m_labPolling->Enable(isBARJUT);
 }
 
 void BarJuTCntrlDlg::initLabels() {
