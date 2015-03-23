@@ -98,7 +98,7 @@ void statusIn( iILcDriverInt inst ) {
   }
   else {
     /* set the block departure velocity: */
-    if( !data->gomanual ) {
+    if( !data->gomanual && !data->didReduceSpeedAtEnter) {
       iONode cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
       int maxkmh = 0;
       wLoc.setV_hint( cmd, getBlockV_hint(inst, data->next1Block, True, data->next1Route, !data->next1RouteFromTo, &maxkmh ) );
@@ -113,6 +113,7 @@ void statusIn( iILcDriverInt inst ) {
       wLoc.setdir( cmd, wLoc.isdir( data->loc->base.properties( data->loc ) ) );
       data->loc->cmd( data->loc, cmd );
     }
+    data->didReduceSpeedAtEnter = False;
 
     data->next1Block = data->next2Block;
     data->next2Block = data->next3Block;
