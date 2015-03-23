@@ -46,6 +46,7 @@
 #include "rocrail/wrapper/public/BoosterList.h"
 #include "rocrail/wrapper/public/OperatorList.h"
 #include "rocrail/wrapper/public/VariableList.h"
+#include "rocrail/wrapper/public/WeatherList.h"
 
 #include "rocrail/wrapper/public/Block.h"
 #include "rocrail/wrapper/public/Stage.h"
@@ -805,6 +806,7 @@ static Boolean __mergeRoutes( iOModPlanData data, iONode model, const char* fnam
     _mergeList(wWaybillList.name() , model, root, -1, 0,0,0, False);
     _mergeList(wTourList.name()    , model, root, -1, 0,0,0, False);
     _mergeList(wSystemActions.name(), model, root, -1, 0,0,0, False);
+    _mergeList(wWeatherList.name() , model, root, -1, 0,0,0, False);
 
     NodeOp.base.del( root );
 
