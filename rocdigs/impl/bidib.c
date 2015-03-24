@@ -56,6 +56,7 @@
 #include "rocrail/wrapper/public/State.h"
 #include "rocrail/wrapper/public/Clock.h"
 #include "rocrail/wrapper/public/Accessory.h"
+#include "rocrail/wrapper/public/Color.h"
 
 #include "rocdigs/impl/bidib/bidib_messages.h"
 #include "rocdigs/impl/bidib/serial.h"
@@ -170,6 +171,23 @@ Boolean __getFState(iONode fcmd, int fn) {
     case 28: return wFunCmd.isf28(fcmd);
   }
   return False;
+}
+
+static void __writeChannel( iOBiDiB inst, iOBiDiBNode bidibnode, int addr, int val ) {
+  iOBiDiBData data = Data(inst);
+  byte msgdata[127];
+
+  if( (bidibnode->dmxchannel == NULL) || (addr > 513) || (addr < 1) )
+    return;
+
+  if( bidibnode->dmxchannel[addr] != val ) {
+
+    bidibnode->dmxchannel[addr] = val;
+    msgdata[0] = BIDIB_OUTTYPE_BACKLIGHT;
+    msgdata[1] = addr-1;
+    msgdata[2] = val;
+    data->subWrite((obj)inst, bidibnode->path, MSG_LC_OUTPUT, msgdata, 3, bidibnode);
+  }
 }
 
 static iOSlot __getSlot(iOBiDiB inst, iONode node) {
@@ -805,7 +823,61 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
         data->subWrite((obj)inst, bidibnode->path, MSG_ACCESSORY_SET, msgdata, 2, bidibnode);
       }
       else {
-        if( wOutput.getporttype(node) == wProgram.porttype_macro ) {
+        if( wOutput.iscolortype(node) ) {
+          int val       = wOutput.getvalue( node );
+          iONode  color = wOutput.getcolor( node );
+
+          int redChannel    = wOutput.getredChannel(node);
+          int greenChannel  = wOutput.getgreenChannel(node);
+          int blueChannel   = wOutput.getblueChannel(node);
+          int briChannel    = wOutput.getbrightnessChannel(node);
+          int whiteChannel  = wOutput.getwhiteChannel(node);
+          int white2Channel = wOutput.getwhite2Channel(node);
+          int r  = 0;
+          int g  = 0;
+          int b  = 0;
+          int w  = 0;
+          int w2 = 0;
+
+          if( bidibnode->dmxchannel == NULL ) {
+            bidibnode->dmxchannel = allocMem(513);
+            MemOp.set( bidibnode->dmxchannel, 0, 513 );
+          }
+
+          if( color != NULL ) {
+            r  = wColor.getred(color);
+            g  = wColor.getgreen(color);
+            b  = wColor.getblue(color);
+            w  = wColor.getwhite(color);
+            w2 = wColor.getwhite2(color);
+          }
+
+          if( briChannel < 1 ) {
+            r  = (r  * val) / 255;
+            g  = (g  * val) / 255;
+            b  = (b  * val) / 255;
+            w  = (w  * val) / 255;
+            w2 = (w2 * val) / 255;
+          }
+
+
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, 
+            "lc %d:%d set to %s cmd=%s bri=%d briChannel(%d) RGBWW=%d,%d,%d,%d,%d RGBWWChannels(%d,%d,%d,%d,%d)", 
+            wSwitch.getbus(node), addr-1, val>0?"on":"off", wOutput.getcmd( node ), val, briChannel, r, g, b, w, w2, 
+            redChannel, greenChannel, blueChannel, whiteChannel, white2Channel );
+
+          if( redChannel > 0 )
+            __writeChannel( inst, bidibnode, addr + redChannel-1, r );
+          if( greenChannel > 0 )
+            __writeChannel( inst, bidibnode, addr + greenChannel-1, g );
+          if( blueChannel > 0 )
+            __writeChannel( inst, bidibnode, addr + blueChannel-1, b );
+          if( whiteChannel > 0 )
+            __writeChannel( inst, bidibnode, addr + whiteChannel-1, w );
+          if( white2Channel > 0 )
+            __writeChannel( inst, bidibnode, addr + white2Channel-1, w2 );
+        }
+        else if( wOutput.getporttype(node) == wProgram.porttype_macro ) {
           msgdata[0] = addr-1; // Null offset.
           msgdata[1] = on ? BIDIB_MACRO_START:BIDIB_MACRO_OFF;
           TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "macro %d:%d set to %d",
@@ -2036,6 +2108,7 @@ static iOBiDiBNode __addNode(iOBiDiB bidib, byte* pdata, byte* path) {
     node->uid = uid;
     node->vendorid = vid;
     node->pendingfeature = -1;
+    node->dmxchannel = NULL;
 
 
     MemOp.copy(node->path, path, 4);

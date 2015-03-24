@@ -149,4 +149,7 @@ install:
   ifeq ($(PLATFORM),LINUX)
 	-cp -p $(OUTDIR)$(FS)lcdriver.so $(DESTDIR)
   endif
+  ifeq ($(PLATFORM),MACOSX)
+	-cp -p $(OUTDIR)$(FS)lcdriver.dylib $(DESTDIR)
+  endif
 

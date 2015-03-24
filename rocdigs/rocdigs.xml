@@ -1351,6 +1351,7 @@
       <var name="inputcnt" vt="int"/>
       <var name="sod4key" vt="Boolean"/>
       <var name="pendingfeature" vt="int"/>
+      <var name="dmxchannel" vt="char*"/>
       <var name="username[128]" vt="char" remark=""/>
     </struct>
     <struct name="QBiDiBCmd" typedef="*iQBiDiBCmd" remark="Queue command.">

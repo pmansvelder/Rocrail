@@ -264,6 +264,7 @@ const char* bidibGetFeatureName(int feature) {
   if( feature == FEATURE_CTRL_MOTOR_COUNT ) return "motor port count";
   if( feature == FEATURE_CTRL_ANALOG_COUNT ) return "analog port count";
   if( feature == FEATURE_CTRL_STRETCH_DIMM ) return "time stretch for dimming";
+  if( feature == FEATURE_CTRL_BACKLIGHT_COUNT ) return "backlight port count";
   if( feature == FEATURE_CTRL_MAC_LEVEL ) return "MAC level";
   if( feature == FEATURE_CTRL_MAC_SAVE ) return "MAC save";
   if( feature == FEATURE_CTRL_MAC_COUNT ) return "MAC count";
