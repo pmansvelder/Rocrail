@@ -21887,7 +21887,7 @@
   <Msg id="analyze">
     <en txt="Analyze" alttxt="Analyse" tip="Analyse track plan for generating routes."/>
     <nl txt="Analyseren" tip="Analyseer het baan plan om rijwegen te genereren"/>
-    <fr txt="analyser" tip="analyser  le plan des voies pour générer des itinéraires"/>
+    <fr txt="analyser" tip="Analyser le plan pour générer les routes"/>
     <de txt="Analysieren" tip="Für Fahrstraßen-Erzeugung Gleisplan analysieren"/>
     <em_GB txt="Analyze" tip="Analyze track plan for generating routes."/>
     <em_AU txt="Analyze" tip="Analyze track plan for generating routes."/>
@@ -28020,6 +28020,7 @@
     <pt_BR txt="Intervalo do sensor"/>
     <zh_CN txt="传感器范围"/>
     <fr txt="Limites des détecteurs"/>
+    <sv txt="Sensoravstånd"/>
   </Msg>
   <Msg id="gridfontsizeadjust">
     <en txt="Grid fontsize adjust"/>
@@ -28305,6 +28306,7 @@
     <ru txt="Освободить предыдущий блок по событию Enter"/>
     <fi txt="Vapauta edellinen raideosuus siirryttäessä"/>
     <pl txt="Zwolnij poprzedni blok na Enter"/>
+    <sv txt="Frigör tidigare block vid enter"/>
   </Msg>
   <Msg id="buslength">
     <en txt="Bus %d length"/>
@@ -28544,7 +28546,7 @@
     <nl txt="Rechte verbinder"/>
     <pt_BR txt="Conector de trilho reto"/>
     <en_GB txt="Straight track connector"/>
-    <fr txt="Voie connecteur droite"/>
+    <fr txt="Connecteur de voie droit"/>
     <ru txt="Соединитель уровней прямой"/>
     <sl txt="Ravni priključek tira"/>
     <sr_latin txt="Vezna šina pravo"/>
@@ -28557,7 +28559,7 @@
     <nl txt="Gebogen verbinder rechts"/>
     <pt_BR txt="Conector de trilho curvo para direita"/>
     <en_GB txt="Curved track connector right"/>
-    <fr txt="Voie connecteur courbe droite"/>
+    <fr txt="Connecteur de voie courbe droite"/>
     <ru txt="Соединитель уровней правый"/>
     <sl txt="Priključek tira v odklonu desni"/>
     <sr_latin txt="Vezna kriva šina desno"/>
@@ -28570,7 +28572,7 @@
     <nl txt="Gebogen verbinder links"/>
     <pt_BR txt="Conector de trilho curvo para esquerda"/>
     <en_GB txt="Curved track connector left"/>
-    <fr txt="Voie connecteur courbe gauche"/>
+    <fr txt="Connecteur de voie courbe gauche"/>
     <ru txt="Соединитель уровней левый"/>
     <sl txt="Priključek tira v odklonu levi"/>
     <sr_latin txt="Vezna kriva šina levo"/>
@@ -28747,7 +28749,7 @@
     <nl txt="Overweg"/>
     <pt_BR txt="Passagem de nível"/>
     <en_GB txt="Level crossing"/>
-    <fr txt="PAssage à niveau"/>
+    <fr txt="Passage à niveau"/>
     <ru txt="Переезд"/>
     <sl txt="Nivojski prehod"/>
     <sr_latin txt="Ukrštanje nivoa"/>
@@ -29139,6 +29141,7 @@
     <pt_BR txt="Exibir rotas nos desvios"/>
     <sr_latin txt="Prikaži rute na skretnicama"/>
     <fi txt="Näytä kulkutiet vaihteissa"/>
+    <sv txt="Visa rutter i växlar"/>
   </Msg>
   <Msg id="userandomrate">
     <en txt="Use random block rate"/>
@@ -29250,6 +29253,7 @@
     <sl txt="V0 ob zamenjavi"/>
     <sr_latin txt="Brz. 0 kod zamene pravca"/>
     <fi txt="V0 vaihtaessa"/>
+    <fr txt="V0 lors du changement de sens"/>
   </Msg>
   <Msg id="swapstraight">
     <en txt="Swap straight"/>
@@ -29271,6 +29275,7 @@
     <sl txt="Prosti odseki"/>
     <sr_latin txt="Slobodni blokovi"/>
     <fi txt="Vapaat raideosuudet"/>
+    <sv txt="Lediga block"/>
   </Msg>
   <Msg id="modroutes">
     <en txt="Module routes"/>
@@ -29306,6 +29311,7 @@
     <it txt="Fermare orologio allo spegnimento"/>
     <sr_latin txt="Zaustavi sat kod isključenja"/>
     <sv txt="Stanna klockan vid strömlöst"/>
+    <fr txt="Arrêter l’horloge lorsque l'alimentation est coupée"/>
   </Msg>
   <Msg id="showtrainidinblock">
     <en txt="Show train ID in block"/>
@@ -29317,6 +29323,7 @@
     <it txt="Mostrare ID treno nel blocco"/>
     <sr_latin txt="Prikaži ID voza u bloku"/>
     <sv txt="Visa tåg-ID i block"/>
+    <fr txt="Afficher l'ID du train dans le bloc"/>
   </Msg>
   <Msg id="sensormonitorauto">
     <en txt="Sensor monitor in automatic mode"/>
@@ -29328,6 +29335,7 @@
     <sr_latin txt="Nadgledanje senzora u automatskom modu"/>
     <sl txt="Spremljanje senzorjev v avtomatskem načinu"/>
     <ru txt="Монитор датчиков в автоматическом режиме"/>
+    <fr txt="Moniteur de capteur en mode automatique"/>
   </Msg>
   <Msg id="userid">
     <en txt="User ID"/>
@@ -29340,6 +29348,7 @@
     <ru txt="ID пользователя"/>
     <sl txt="ID uporabnika"/>
     <sv txt="Användar-id"/>
+    <fr txt="ID Utilisateur"/>
   </Msg>
   <Msg id="weather" dialog="true">
     <en txt="Weather" tip="Weather setup"/>
@@ -29352,6 +29361,7 @@
     <sl txt="Vreme" tip="Nastavitev vremena"/>
     <sv txt="Väder" tip="Väderinställningar"/>
     <pt_BR txt="Condições do tempo" tip="Configuração das condições do tempo"/>
+    <fr txt="Météo" tip="Paramétrage du climat"/>
   </Msg>
   <Msg id="outputs">
     <en txt="Outputs"/>
@@ -29364,6 +29374,7 @@
     <sl txt="Izhodi"/>
     <sv txt="Utgångar"/>
     <pt_BR txt="Relatórios de saída"/>
+    <fr txt="Sorties"/>
   </Msg>
   <Msg id="minbri">
     <en txt="Min. brightness"/>
@@ -29376,6 +29387,7 @@
     <sl txt="Min. svetlost"/>
     <sv txt="Min. ljusstyrka"/>
     <pt_BR txt="Brilho mínimo"/>
+    <fr txt="Luninosité mini."/>
   </Msg>
   <Msg id="maxbri">
     <en txt="Max. brightness"/>
@@ -29388,6 +29400,7 @@
     <sl txt="Maks. svetlost"/>
     <sv txt="Max. ljusstyrka"/>
     <pt_BR txt="Brilho máximo"/>
+    <fr txt="Luminosité maxi."/>
   </Msg>
   <Msg id="sunrise">
     <en txt="Sunrise"/>
@@ -29400,6 +29413,7 @@
     <sl txt="Sončni vzhod"/>
     <sv txt="Soluppgång"/>
     <pt_BR txt="Nascer do sol"/>
+    <fr txt="Lever du soleil"/>
   </Msg>
   <Msg id="sunset">
     <en txt="Sunset"/>
@@ -29412,6 +29426,7 @@
     <sl txt="Sončni zahod"/>
     <sv txt="Solnedgång"/>
     <pt_BR txt="Pôr do sol"/>
+    <fr txt="Coucher du soleil"/>
   </Msg>
   <Msg id="watchnodes">
     <en txt="Watch nodes"/>
@@ -29434,6 +29449,7 @@
     <sl txt="Ponoči"/>
     <sv txt="Natt"/>
     <pt_BR txt="Noite"/>
+    <fr txt="Nuit"/>
   </Msg>
   <Msg id="brightness">
     <en txt="Brightness"/>
@@ -29446,6 +29462,7 @@
     <sl txt="Svetlost"/>
     <sv txt="Ljusstyrka"/>
     <pt_BR txt="Controle de brilho"/>
+    <fr txt="Luminosité"/>
   </Msg>
   <Msg id="rgb">
     <en txt="RGB"/>
@@ -29457,6 +29474,7 @@
     <sr_latin txt="RGB"/>
     <sv txt="RGB"/>
     <pt_BR txt="Cores (RGB)"/>
+    <fr txt="RVB"/>
   </Msg>
   <Msg id="slidingdaylight">
     <en txt="Sliding daylight"/>
@@ -29467,6 +29485,7 @@
     <sl txt="Dnevni prehod"/>
     <sr_latin txt="Podešavanje osvetljenja"/>
     <pt_BR txt="Regulagem de cores do dia"/>
+    <fr txt="Glissement de la lumière du jour"/>
   </Msg>
   <Msg id="colorsliding">
     <en txt="Color sliding"/>
@@ -29488,6 +29507,7 @@
     <it txt="Mezzogiorno"/>
     <sv txt="Middag"/>
     <pt_BR txt="Meio-dia"/>
+    <fr txt="Midi"/>
   </Msg>
   <Msg id="blue">
     <en txt="blue"/>
@@ -29499,6 +29519,7 @@
     <it txt="blu"/>
     <sv txt="blå"/>
     <pt_BR txt="azul"/>
+    <fr txt="bleu"/>
   </Msg>
   <Msg id="dim">
     <en txt="Dim"/>
@@ -29541,6 +29562,7 @@
     <sr_latin txt="Potraži"/>
     <sv txt="Sök"/>
     <pt_BR txt="Pesquisar"/>
+    <fr txt="Chercher"/>
   </Msg>
   <Msg id="shutdownonexit">
     <en txt="Shutdown on exit"/>
@@ -29551,6 +29573,7 @@
     <sv txt="Stäng ner vid avslut"/>
     <en_GB txt="Shutdown on exit"/>
     <pt_BR txt="Desligar quando sair"/>
+    <fr txt="Eteindre lors de la sortie"/>
   </Msg>
   <Msg id="milliseconds">
     <en txt="ms"/>
@@ -29561,6 +29584,8 @@
     <pt_BR txt="milissegundos"/>
     <sl txt="ms"/>
     <it txt="ms"/>
+    <fr txt="ms"/>
+    <sv txt="ms"/>
   </Msg>
   <Msg id="devicechannels">
     <en txt="Device channels"/>
@@ -29582,6 +29607,8 @@
     <it txt="Generare evento IN"/>
     <sr_latin txt="Generiši \&quot;IN\&quot; događaj"/>
     <ru txt="Генерировать событие IN"/>
+    <fr txt="Générer l’événement IN"/>
+    <sv txt="Generera IN händelse"/>
   </Msg>
   <Msg id="framerate">
     <en txt="Frame rate"/>
@@ -29603,6 +29630,7 @@
     <it txt="Stato blocco"/>
     <sr_latin txt="Stanje bloka"/>
     <ru txt="Состояние Блока"/>
+    <fr txt="Etat du bloc"/>
   </Msg>
   <Msg id="statesignal">
     <en txt="State signal"/>
@@ -29614,6 +29642,7 @@
     <sl txt="Signal stanja"/>
     <sr_latin txt="Stanje signala"/>
     <ru txt="Состояние сигнала"/>
+    <fr txt="Signal d'état"/>
   </Msg>
   <Msg id="bounce">
     <en txt="Bounce"/>
@@ -29633,6 +29662,8 @@
     <pt_BR txt="Tabela de cores"/>
     <sl txt="Tabela barv"/>
     <sr_latin txt="Tabela boja"/>
+    <fr txt="Table des couleurs"/>
+    <sv txt="Färgtabell"/>
   </Msg>
   <Msg id="saturation">
     <en txt="Saturation"/>
@@ -29643,6 +29674,7 @@
     <sl txt="Nasičenost"/>
     <sr_latin txt="Zasićenje"/>
     <it txt="Saturazione"/>
+    <fr txt="Saturation"/>
   </Msg>
   <Msg id="available">
     <en txt="Available"/>
@@ -29653,6 +29685,8 @@
     <sl txt="Na voljo"/>
     <sr_latin txt="Dostupno"/>
     <it txt="Disponibile"/>
+    <fr txt="Disponible"/>
+    <sv txt="Tillgänglig"/>
   </Msg>
   <Msg id="bridge">
     <en txt="Bridge"/>
@@ -29663,6 +29697,7 @@
     <sl txt="Most"/>
     <sr_latin txt="Most"/>
     <ru txt="Мост"/>
+    <sv txt="Brygga"/>
   </Msg>
   <Msg id="mapwhite">
     <en txt="Map white"/>
@@ -29681,6 +29716,8 @@
     <pt_BR txt="marcado"/>
     <sl txt="izbrano"/>
     <sr_latin txt="izabran"/>
+    <fr txt="sélectionné"/>
+    <sv txt="vald"/>
   </Msg>
   <Msg id="deselected">
     <en txt="deselected"/>
@@ -29689,7 +29726,9 @@
     <nl txt="gedeselecteerd"/>
     <pt_BR txt="desmarcado"/>
     <sl txt="odznačeno"/>
-    <sr_latin txt="slobodan za izbor"/>
+    <sr_latin txt="Neoznačeno"/>
+    <fr txt="déselectionné"/>
+    <sv txt="avmarkerad"/>
   </Msg>
   <Msg id="offatshutdown">
     <en txt="Off at shutdown"/>
@@ -29699,6 +29738,7 @@
     <pt_BR txt="Desligado ao encerrar"/>
     <sl txt="Izklopi ob izhodu"/>
     <sr_latin txt="Ugasi pri isključenju"/>
+    <fr txt="Eteint lors de l'arrêt"/>
   </Msg>
   <Msg id="substate">
     <en txt="Sub state"/>
@@ -29707,7 +29747,8 @@
     <nl txt="Sub status"/>
     <pt_BR txt="Sub-estado"/>
     <sl txt="Podrejeno stanje"/>
-    <sr_latin txt="Pod stanje"/>
+    <sr_latin txt="Niži nivo"/>
+    <fr txt="Sous-état"/>
   </Msg>
   <Msg id="v0onebreak">
     <en txt="V 0 on emergency break"/>
@@ -29716,8 +29757,9 @@
     <nl txt="Zend 0 snelheid bij noodstop"/>
     <pt_BR txt="V 0 em parada de emergência"/>
     <sl txt="V 0 ob prekinitvi v sili"/>
-    <sr_latin txt="Brz. 0 kod hitnog zaustavljnja"/>
+    <sr_latin txt="Brz. 0 kod hitnog zaustavljanja"/>
     <ru txt="При экстренной остановке V=0"/>
+    <fr txt="V0 lors d'un arrêt d'urgence"/>
   </Msg>
   <Msg id="restorechannels">
     <en txt="Restore channels"/>
@@ -29738,6 +29780,8 @@
     <ru txt="Уменьшить скорость при входе"/>
     <sl txt="Zmanjšaj hitrost ob vstopu"/>
     <sr_latin txt="Smanji brzinu na ulazu"/>
+    <fr txt="Réduire la vitesse en entrant"/>
+    <sv txt="Reducera hastighet vid in"/>
   </Msg>
   <Msg id="slaveblocks">
     <en txt="Slave blocks"/>
@@ -29747,6 +29791,8 @@
     <pt_BR txt="Blocos secundários"/>
     <sl txt="Podrejeni odseki"/>
     <sr_latin txt="Uslužni blokovi"/>
+    <fr txt="Blocs esclaves"/>
+    <sv txt="slavblock"/>
   </Msg>
   <Msg id="texttable" dialog="true">
     <en txt="Text table" alttxt="Text" tip="Text table"/>
@@ -29755,16 +29801,25 @@
     <nl txt="Teksten"/>
     <pt_BR txt="Tabela de texto"/>
     <sl txt="Tabela tekstov"/>
-    <sr_latin txt="Tekstualna tabela"/>
+    <sr_latin txt="Tabela teksta"/>
+    <sv txt="Texttabell"/>
   </Msg>
   <Msg id="decelerate">
     <en txt="Decelerate"/>
     <de txt="Abbremsen"/>
     <nl txt="Vertraging"/>
+    <fr txt="Décélérer"/>
+    <pt_BR txt="Desacelerar"/>
+    <sl txt="Upočasnjevanje"/>
+    <sr_latin txt="Usporavanje"/>
+    <sv txt="Deacceleration"/>
   </Msg>
   <Msg id="shuntingdiv">
     <en txt="Shunting divider"/>
     <de txt="Rangier-Teiler"/>
     <nl txt="Rangeer deler"/>
+    <pt_BR txt="Divisor de manobras"/>
+    <sl txt="Delilnik za ranžiranje"/>
+    <sr_latin txt="Ranžirni razdelnik"/>
   </Msg>
 </Messages>
