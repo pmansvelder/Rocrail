@@ -477,6 +477,7 @@
       <const name="dccar" vt="string" val="dccar"/>
       <const name="dmxartnet" vt="string" val="dmxartnet"/>
       <const name="dmx4all" vt="string" val="dmx4all"/>
+      <const name="raptor" vt="string" val="raptor"/>
       <var name="lib" vt="string" defval="virtual"/>
 
       <var name="libpath" vt="string" defval="."/>
