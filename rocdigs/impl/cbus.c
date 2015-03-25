@@ -2059,7 +2059,7 @@ static iONode __translate( iOCBUS cbus, iONode node ) {
       byte* frame = allocMem(32);
       cmd[0] = OPC_DSPD;
       cmd[1] = slot->session;
-      cmd[2] = speed | (slot->dir ? 0x00:0x80);
+      cmd[2] = speed | (slot->dir ? 0x80:0x00);
       makeFrame(frame, PRIORITY_NORMAL, cmd, 2, data->cid, False );
       slot->lastkeep = SystemOp.getTick();
       ThreadOp.post(data->writer, (obj)frame);
@@ -2070,7 +2070,7 @@ static iONode __translate( iOCBUS cbus, iONode node ) {
       qcmd->slot = slot;
       cmd[0] = OPC_DSPD;
       cmd[1] = slot->session;
-      cmd[2] = speed | (slot->dir ? 0x00:0x80);
+      cmd[2] = speed | (slot->dir ? 0x80:0x00);
       makeFrame(qcmd->out, PRIORITY_NORMAL, cmd, 2, data->cid, False );
       ThreadOp.post( data->timedqueue, (obj)qcmd );
     }
