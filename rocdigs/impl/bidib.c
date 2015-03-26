@@ -841,7 +841,7 @@ static iONode __translate( iOBiDiB inst, iONode node ) {
 
           if( bidibnode->dmxchannel == NULL ) {
             bidibnode->dmxchannel = allocMem(513);
-            MemOp.set( bidibnode->dmxchannel, -1, 513 );
+            MemOp.set( bidibnode->dmxchannel, 0, 513 );
           }
 
           if( color != NULL ) {
@@ -2486,13 +2486,6 @@ static void __handleBoosterStat(iOBiDiB bidib, iOBiDiBNode bidibnode, byte* pdat
     TraceOp.trc( name, level, __LINE__, 9999,
         "booster %08X state=0x%02X [%s]", bidibnode->uid, pdata[0], msg );
     shortcut = bidibnode->shortcut;
-    /* map Emergency Key to Sensor Addr 128/129 */
-    if( bidibnode->stat == BIDIB_BST_STATE_ON_STOP_REQ ) {
-      __handleSensor(bidib, bidibnode, 128, True, 0, -1, 0);
-    }
-    else if( bidibnode->stat == BIDIB_BST_STATE_OFF_GO_REQ ) {
-      __handleSensor(bidib, bidibnode, 129, True, 0, -1, 0);
-    }
   }
   else {
     TraceOp.trc( name, level, __LINE__, 9999,
@@ -2775,10 +2768,7 @@ static void __handleStat(iOBiDiB bidib, iOBiDiBNode bidibnode, byte* pdata) {
 
     wSwitch.setstate( nodeC, pdata[2]?wSwitch.turnout:wSwitch.straight );
     wSwitch.setgatevalue(nodeC, pdata[2]);
-    if( pdata[0] >= 6 ) /* macro already had type 6 */
-      wSwitch.setporttype(nodeC, pdata[0]+1);
-    else
-      wSwitch.setporttype(nodeC, pdata[0]);
+    wSwitch.setporttype(nodeC, pdata[0]);
 
     data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_INFO );
   }
