@@ -123,6 +123,8 @@ static void __setChannel(iODMXEUROLITE inst, int addr, int red, int green, int b
       data->dmxchannel[addr+white2Channel-1] = white2;
     }
 
+    TraceOp.setDumpsize(NULL, 512);
+    TraceOp.dump( name, TRCLEVEL_INFO, (char*)data->dmxchannel, 512 );
 
     MutexOp.post(data->mux);
   }
@@ -184,6 +186,7 @@ static iONode _cmd( obj inst ,const iONode cmd ) {
   iONode rsp = __translate( (iODMXEUROLITE)inst, cmd );
   /* Cleanup Node1 */
   cmd->base.del(cmd);
+  return rsp;
 }
 
 
@@ -272,6 +275,7 @@ static void __transactor( void* threadinst ) {
     buffer[3] = 0x02;
     MemOp.copy(buffer+4, data->dmxchannel, 512);
     buffer[3+512] = 0xE7;
+    //TraceOp.dump ( name, TRCLEVEL_INFO, (char*)buffer, 4 + 512 + 1 );
     if( !SerialOp.write( data->serial, buffer, 4 + 512 + 1 ) ) {
       SerialOp.base.del(data->serial);
       data->serial = NULL;
