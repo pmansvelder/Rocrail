@@ -62,8 +62,7 @@ static void __writer( void* threadinst ) {
           /* ToDo: Resend? */
         }
       }
-      else
-        ThreadOp.sleep(10);
+      ThreadOp.sleep(10);
     }
     else {
       TraceOp.trc( "bidib", TRCLEVEL_INFO, __LINE__, 9999, "waiting for connection..." );
