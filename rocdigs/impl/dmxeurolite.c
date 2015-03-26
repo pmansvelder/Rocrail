@@ -197,6 +197,7 @@ static byte* _cmdRaw( obj inst ,const byte* cmd ) {
 static void _halt( obj inst ,Boolean poweroff ,Boolean shutdown ) {
   iODMXEUROLITEData data = Data(inst);
   data->run = False;
+  ThreadOp.sleep(600);
 }
 
 
@@ -253,7 +254,7 @@ static void __transactor( void* threadinst ) {
 
     if( !serialOK ) {
       data->serial = SerialOp.inst( wDigInt.getdevice( data->ini ) );
-      SerialOp.setFlow( data->serial, 0 );
+      SerialOp.setFlow( data->serial, cts );
       SerialOp.setLine( data->serial, 115200, 8, 1, none, wDigInt.isrtsdisabled( data->ini ) );
       SerialOp.setTimeout( data->serial, wDigInt.gettimeout(data->ini), wDigInt.gettimeout(data->ini) );
       serialOK = SerialOp.open( data->serial );
@@ -270,16 +271,18 @@ static void __transactor( void* threadinst ) {
     buffer[1] = 0x06;
     buffer[2] = 0x01;
     buffer[3] = 0x02;
-    MemOp.copy(buffer+4, data->dmxchannel, 512);
-    buffer[3+512] = 0xE7;
-    //TraceOp.dump ( name, TRCLEVEL_INFO, (char*)buffer, 4 + 512 + 1 );
-    if( !SerialOp.write( data->serial, buffer, 4 + 512 + 1 ) ) {
+    buffer[4] = 0x00;
+    MemOp.copy(buffer+5, data->dmxchannel, 512);
+    buffer[5+512] = 0xE7;
+    //TraceOp.setDumpsize(NULL, 520);
+    //TraceOp.dump ( name, TRCLEVEL_INFO, (char*)buffer, 5 + 512 + 1 );
+    if( !SerialOp.write( data->serial, (char*)buffer, 5 + 512 + 1 ) ) {
       SerialOp.base.del(data->serial);
       data->serial = NULL;
       serialOK = False;
     }
 
-    ThreadOp.sleep(30);
+    ThreadOp.sleep(500);
   };
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Transactor ended." );
