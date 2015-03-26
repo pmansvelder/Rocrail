@@ -94,40 +94,37 @@ static void __setChannel(iODMXEUROLITE inst, int addr, int red, int green, int b
     Boolean active, int redChannel, int greenChannel, int blueChannel, int briChannel, int whiteChannel, int white2Channel)
 {
   iODMXEUROLITEData data = Data(inst);
-  if( MutexOp.wait( data->mux ) ) {
-    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999,
-        "device=%d active=%d bri=%d RGBW=%d,%d,%d,%d", addr, active, brightness, red, green, blue, white );
-    if( briChannel > 0 )
-      data->dmxchannel[addr+briChannel-1] = brightness;
-    else {
-      red    = (red    * brightness) / 255;
-      green  = (green  * brightness) / 255;
-      blue   = (blue   * brightness) / 255;
-      white  = (white  * brightness) / 255;
-      white2 = (white2 * brightness) / 255;
-    }
-
-    if( redChannel > 0 ) {
-      data->dmxchannel[addr+redChannel-1] = red;
-    }
-    if( greenChannel > 0 ) {
-      data->dmxchannel[addr+greenChannel-1] = green;
-    }
-    if( blueChannel > 0 ) {
-      data->dmxchannel[addr+blueChannel-1] = blue;
-    }
-    if( whiteChannel > 0 ) {
-      data->dmxchannel[addr+whiteChannel-1] = white;
-    }
-    if( white2Channel > 0 ) {
-      data->dmxchannel[addr+white2Channel-1] = white2;
-    }
-
-    TraceOp.setDumpsize(NULL, 512);
-    TraceOp.dump( name, TRCLEVEL_INFO, (char*)data->dmxchannel, 512 );
-
-    MutexOp.post(data->mux);
+  TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999,
+      "device=%d active=%d bri=%d RGBW=%d,%d,%d,%d", addr, active, brightness, red, green, blue, white );
+  if( briChannel > 0 )
+    data->dmxchannel[addr+briChannel-1] = brightness;
+  else {
+    red    = (red    * brightness) / 255;
+    green  = (green  * brightness) / 255;
+    blue   = (blue   * brightness) / 255;
+    white  = (white  * brightness) / 255;
+    white2 = (white2 * brightness) / 255;
   }
+
+  if( redChannel > 0 ) {
+    data->dmxchannel[addr+redChannel-1] = red;
+  }
+  if( greenChannel > 0 ) {
+    data->dmxchannel[addr+greenChannel-1] = green;
+  }
+  if( blueChannel > 0 ) {
+    data->dmxchannel[addr+blueChannel-1] = blue;
+  }
+  if( whiteChannel > 0 ) {
+    data->dmxchannel[addr+whiteChannel-1] = white;
+  }
+  if( white2Channel > 0 ) {
+    data->dmxchannel[addr+white2Channel-1] = white2;
+  }
+
+  TraceOp.setDumpsize(NULL, 512);
+  TraceOp.dump( name, TRCLEVEL_INFO, (char*)data->dmxchannel, 512 );
+
 }
 
 
