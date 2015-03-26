@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Sep 12 2010)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -452,10 +452,10 @@ cbusnodedlggen::cbusnodedlggen( wxWindow* parent, wxWindowID id, const wxString&
 	m_GC1eMAC1 = new wxSpinCtrl( m_CANGC1ePanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize( 65,-1 ), wxSP_ARROW_KEYS, 0, 255, 0 );
 	fgSizer24->Add( m_GC1eMAC1, 0, wxALL, 5 );
 	
-	m_GC1eMAC2 = new wxSpinCtrl( m_CANGC1ePanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize( 65,-1 ), wxSP_ARROW_KEYS, 0, 255, 0 );
+	m_GC1eMAC2 = new wxSpinCtrl( m_CANGC1ePanel, wxID_ANY, wxT("4"), wxDefaultPosition, wxSize( 65,-1 ), wxSP_ARROW_KEYS, 0, 255, 4 );
 	fgSizer24->Add( m_GC1eMAC2, 0, wxALL, 5 );
 	
-	m_GC1eMAC3 = new wxSpinCtrl( m_CANGC1ePanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize( 65,-1 ), wxSP_ARROW_KEYS, 0, 255, 0 );
+	m_GC1eMAC3 = new wxSpinCtrl( m_CANGC1ePanel, wxID_ANY, wxT("163"), wxDefaultPosition, wxSize( 65,-1 ), wxSP_ARROW_KEYS, 0, 255, 163 );
 	fgSizer24->Add( m_GC1eMAC3, 0, wxALL, 5 );
 	
 	m_GC1eMAC4 = new wxSpinCtrl( m_CANGC1ePanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize( 65,-1 ), wxSP_ARROW_KEYS, 0, 255, 0 );
