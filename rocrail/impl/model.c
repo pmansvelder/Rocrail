@@ -3031,6 +3031,34 @@ static iOSignal _getSgByAddress( iOModel inst, const char* iid, int bus, int add
 }
 
 
+static iOOutput _getCoByAddress( iOModel inst, const char* iid, int bus, int addr, int port, int type, const char* uidname ) {
+  iOModelData o = Data(inst);
+  iOOutput co = (iOOutput)MapOp.first( o->outputMap );
+  while( co != NULL ) {
+    iONode props = OutputOp.base.properties(co);
+
+    if( iid != NULL && wItem.getiid(props) != NULL && StrOp.len(wItem.getiid(props)) > 0 ) {
+      if( !StrOp.equals(iid, wItem.getiid(props)) ) {
+        co = (iOOutput)MapOp.next( o->outputMap );
+        continue;
+      }
+    }
+
+    if( wOutput.getbus(props) == bus || (StrOp.len(uidname) > 0 && StrOp.equals(wItem.getuidname(props), uidname)) ) {
+      int coaddr = wOutput.getaddr( props );
+      int coport = wOutput.getport( props );
+      int cotype = wOutput.getporttype( props );
+      if( cotype == type && __isAddres( addr, port, 0, coaddr, coport, 0, False ) )
+        return co;
+    }
+
+    co = (iOOutput)MapOp.next( o->outputMap );
+  };
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "no output found by address [%d,%d,%d] type=%d uidname=[%s]", bus, addr, port, type, uidname );
+  return NULL;
+}
+
+
 static iOLoc _getLocByAddress( iOModel inst, int addr, const char* iid ) {
   iOModelData o = Data(inst);
   int i = 0;
@@ -4077,9 +4105,7 @@ static void _event( iOModel inst, iONode nodeC ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "trying to match output event: %d:%d:%d type=%d uidname=[%s]", bus, addr, port, type, uidname );
 
     const char* iid = wOutput.getiid( nodeC );
-    char* key = OutputOp.createAddrKey( bus, addr, port, type, iid );
-    iOOutput co = (iOOutput)MapOp.get( o->coAddrMap, key );
-    StrOp.free( key );
+    iOOutput co = ModelOp.getCoByAddress( inst, iid, bus, addr, port, type, uidname );
 
     if( co != NULL ) {
       if( StrOp.equals( wSwitch.turnout, wSwitch.getstate(nodeC)) || StrOp.equals( wSwitch.straight, wSwitch.getstate(nodeC)) )
