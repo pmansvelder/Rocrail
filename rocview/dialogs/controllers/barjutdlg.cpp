@@ -277,5 +277,11 @@ void BarJuTCntrlDlg::OnHelpClick( wxCommandEvent& event )
     wxGetApp().openLink( "barjut" );
   else if( StrOp.equals( wDigInt.sprog, wDigInt.getlib( m_Props ) ) )
     wxGetApp().openLink( "sprog" );
+  else if( StrOp.equals( wDigInt.dmx4all, wDigInt.getlib( m_Props ) ) )
+    wxGetApp().openLink( "dmx:dmx4all" );
+  else if( StrOp.equals( wDigInt.dmxeurolite, wDigInt.getlib( m_Props ) ) )
+    wxGetApp().openLink( "dmx:dmxeurolite" );
+  else if( StrOp.equals( wDigInt.raptor, wDigInt.getlib( m_Props ) ) )
+    wxGetApp().openLink( "raptor:raptor" );
 }
 
