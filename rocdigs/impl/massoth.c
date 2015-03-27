@@ -49,6 +49,7 @@ static int instCnt = 0;
 /* declarations */
 static void __evaluatePacket(iOMassothData data, byte* in);
 static void __handleSystem(iOMassothData data, byte* in);
+static void __flush( iOMassoth inst );
 
 
 /** ----- OBase ----- */
@@ -165,6 +166,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
     else {
       /* error reading header */
       TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "error reading header" );
+      data->serialOK = False;
     }
 
 
@@ -908,6 +910,7 @@ static void __handleSensor(iOMassothData data, byte* in) {
   addr += in[3] >> 1;
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "sensor report: addr=%d state=%s", addr, state?"occupied":"free" );
+  TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, 32 );
   nodeC = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
   wFeedback.setaddr( nodeC, addr );
   wFeedback.setstate( nodeC, state );
@@ -1078,6 +1081,26 @@ static void __reader( void* threadinst ) {
   out[6] = 0xF4;
 
   while( data->run ) {
+
+    if( !data->serialOK ) {
+      data->serial = SerialOp.inst( data->device );
+      SerialOp.setFlow( data->serial, cts );
+      SerialOp.setLine( data->serial, 57600, 8, 1, none, wDigInt.isrtsdisabled( data->ini ) );
+      SerialOp.setTimeout( data->serial, wDigInt.gettimeout(data->ini), wDigInt.gettimeout(data->ini) );
+      data->serialOK = SerialOp.open( data->serial );
+      if( !data->serialOK ) {
+        SerialOp.base.del(data->serial);
+        data->serial = NULL;
+        data->initialized = False;
+        ThreadOp.sleep(2500);
+        continue;
+      }
+      else {
+        __flush(massoth);
+      }
+    }
+
+
     if( !data->initialized ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "sending interface configuration..." );
       data->initialized = __transact( data, out, NULL, 0, NULL );
@@ -1100,6 +1123,12 @@ static void __reader( void* threadinst ) {
 
         if( SerialOp.available( data->serial ) ) {
           evaluate = __readPacket(data, in);
+          if( !data->serialOK ) {
+            SerialOp.base.del(data->serial);
+            data->serial = NULL;
+            data->initialized = False;
+            evaluate = False;
+          }
         }
 
         MutexOp.post( data->mux );
