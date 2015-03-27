@@ -143,6 +143,12 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
         offset = 1;
       }
 
+      if( insize > 8 ) {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "invalid packet size=%d", insize );
+        TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, offset );
+        return False;
+      }
+
       if( rc ) {
         rc = SerialOp.read( data->serial, (char*)(in+offset), insize );
         if( rc ) {
@@ -152,6 +158,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
         else {
           /* error reading data */
           TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "error reading data" );
+          TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, insize+offset );
         }
       }
     }
@@ -204,6 +211,7 @@ static Boolean __transact( iOMassothData data, byte* out, byte* in, byte id, Boo
           }
 
         }
+        ThreadOp.sleep(10);
       }
     }
     MutexOp.post( data->mux );
@@ -720,6 +728,12 @@ static iONode _cmd( obj inst ,const iONode cmd ) {
 /**  */
 static void _halt( obj inst, Boolean poweroff, Boolean shutdown ) {
   iOMassothData data = Data(inst);
+  int timeout = 0;
+  data->shutdown = True;
+  while( !data->allPurged && timeout < 50) {
+    ThreadOp.sleep(100);
+    timeout++;
+  }
   data->run = False;
   ThreadOp.sleep(100);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutting down <%s>...", data->iid );
@@ -1164,17 +1178,22 @@ static void __purger( void* threadinst ) {
     if( MutexOp.wait( data->lcmux ) ) {
       iOSlot slot = (iOSlot)MapOp.first(data->lcmap);
       while( slot != NULL ) {
-        if( slot->speed == 0 && ( SystemOp.getTick() - slot->idle ) > 3000 ) {
+        if( (slot->speed == 0 && ( SystemOp.getTick() - slot->idle ) > 3000) || data->shutdown ) {
           byte cmd[32];
+          byte rsp[32];
+          Boolean gotid = False;
           cmd[0] = 0x64;
           cmd[1] = 0; /*xor*/
           cmd[2] = slot->addr >> 8;
           cmd[3] = slot->addr & 0x00FF;
           cmd[4] = 0x00;
 
-          if( __transact( data, cmd, NULL, 0, NULL ) ) {
+          if( __transact( data, cmd, rsp, 0x60, &gotid ) ) {
             TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "slot purged for %s", slot->id );
             MapOp.remove(data->lcmap, slot->id );
+          }
+          else {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "could not purge slot for %s", slot->id );
           }
           break;
         }
@@ -1186,7 +1205,50 @@ static void __purger( void* threadinst ) {
     ThreadOp.sleep(100);
   };
 
+  data->allPurged = True;
+
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "purger ended." );
+}
+
+
+static void __stressRunner( void* threadinst ) {
+  iOThread th = (iOThread)threadinst;
+  iOMassoth massoth = (iOMassoth)ThreadOp.getParm( th );
+  iOMassothData data = Data(massoth);
+  byte out[32] = {0x10,0x00};
+  int addr = 136;
+  Boolean straight = True;
+
+  ThreadOp.sleep(5000);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "stress runner started." );
+
+  /* try to get the system status: */
+  while( data->run ) {
+    out[0] = 0x4A;
+    out[1] = 0; /*xor*/
+    out[2] = (addr >> 6);
+    out[3] = (addr << 2) & 0xFC;
+    if( straight )
+      out[3] |= 1;
+    out[3] |= 0x02; /* port on */
+    straight = !straight;
+    __transact( data, out, NULL, 0, NULL );
+    ThreadOp.sleep(5);
+  };
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "stress runner ended." );
+}
+
+
+static void __flush( iOMassoth inst ) {
+  iOMassothData data = Data(inst);
+  Boolean ok = False;
+  byte buffer[256];
+  while( SerialOp.available(data->serial) ) {
+    char b = 0;
+    SerialOp.read( data->serial, &b, 1 );
+    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Flushing %d byte 0x%02X", b);
+  }
 }
 
 
@@ -1210,16 +1272,6 @@ static struct OMassoth* _inst( const iONode ini ,const iOTrace trc ) {
   data->fbreset    = wDigInt.isfbreset(ini);
   data->systeminfo = wDigInt.issysteminfo(ini);
   data->useParallelFunctions = True;
-  data->flow       = 0;
-
-  if( StrOp.equals( wDigInt.dsr, wDigInt.getflow( ini ) ) )
-    data->flow = dsr;
-  else if( StrOp.equals( wDigInt.cts, wDigInt.getflow( ini ) ) )
-    data->flow = cts;
-  else if( StrOp.equals( wDigInt.xon, wDigInt.getflow( ini ) ) )
-    data->flow = xon;
-
-
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "----------------------------------------" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Massoth %d.%d.%d", vmajor, vminor, patch );
@@ -1227,7 +1279,6 @@ static struct OMassoth* _inst( const iONode ini ,const iOTrace trc ) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "iid           = %s", data->iid );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "device        = %s", data->device );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "baudrate      = 57600 (fix)" );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "flow          = %s", wDigInt.getflow( ini ) );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset sensors = %s", data->fbreset ? "yes":"no" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "system info   = %s", data->systeminfo ? "yes":"no" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "----------------------------------------" );
@@ -1235,13 +1286,14 @@ static struct OMassoth* _inst( const iONode ini ,const iOTrace trc ) {
   data->serialOK = False;
   if( !data->dummyio ) {
     data->serial = SerialOp.inst( data->device );
-    SerialOp.setFlow( data->serial, data->flow );
+    SerialOp.setFlow( data->serial, cts );
     SerialOp.setLine( data->serial, 57600, 8, 1, none, wDigInt.isrtsdisabled( ini ) );
     SerialOp.setTimeout( data->serial, wDigInt.gettimeout(ini), wDigInt.gettimeout(ini) );
     data->serialOK = SerialOp.open( data->serial );
   }
 
   if(data->serialOK) {
+    __flush(__Massoth);
     data->run = True;
     data->reader = ThreadOp.inst( "dimaxreader", &__reader, __Massoth );
     ThreadOp.start( data->reader );
@@ -1254,6 +1306,11 @@ static struct OMassoth* _inst( const iONode ini ,const iOTrace trc ) {
       data->ticker = ThreadOp.inst( thname, &__ContactTicker, __Massoth );
       StrOp.free(thname),
       ThreadOp.start( data->ticker );
+    }
+
+    if( wDigInt.isstress(ini) ) {
+      data->stressRunner = ThreadOp.inst( "dimaxstress", &__stressRunner, __Massoth );
+      ThreadOp.start( data->stressRunner );
     }
   }
   else {
