@@ -467,15 +467,10 @@ void PlanPanel::OnPanelHelp(wxCommandEvent& event) {
 
 void PlanPanel::OnModProps(wxCommandEvent& event) {
   // Get the copied node:
-  iONode ini = (iONode)event.GetClientData();
-
-  if( ini == NULL || !StrOp.equals( wModule.name(), NodeOp.getName( ini ) ) )
-    return;
-
-
+  iONode ini    = (iONode)event.GetClientData();
   iONode zlevel = (ini!=NULL ? NodeOp.findNode(ini, wZLevel.name() ) : NULL);
 
-  if( StrOp.equals( wModule.cmd_state, wModule.getcmd(ini) ) ) {
+  if( ini != NULL && StrOp.equals( wModule.cmd_state, wModule.getcmd(ini) ) ) {
     if( StrOp.equals( wModule.state_shortcut, wModule.getstate(ini) ) && m_ShowSc ) {
       SetBackgroundColor( m_ScRed, m_ScGreen, m_ScBlue, false);
     }
