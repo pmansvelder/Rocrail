@@ -264,9 +264,16 @@ static void __transactor( void* threadinst ) {
         ThreadOp.sleep(2500);
         continue;
       }
+      buffer[0] = 0x7E;
+      buffer[1] = 0x0A; /* request serial number... */
+      buffer[2] = 0x00;
+      buffer[3] = 0x00;
+      buffer[4] = 0xE7;
+      TraceOp.dump ( name, TRCLEVEL_BYTE, (char*)buffer, 5 );
+      SerialOp.write( data->serial, (char*)buffer, 5 );
     }
 
-    // Die einzige von dem Geraet verstandene Message ist daher in Hex: 7E 06 01 02 00 [512 * Channel Data] E7
+    // The only understood message is label 6: in Hex: 7E 06 01 02 00 [512 * Channel Data] E7
     buffer[0] = 0x7E;
     buffer[1] = 0x06;
     buffer[2] = 0x01;
@@ -280,6 +287,14 @@ static void __transactor( void* threadinst ) {
       SerialOp.base.del(data->serial);
       data->serial = NULL;
       serialOK = False;
+    }
+
+    if( serialOK ) {
+      while( SerialOp.available(data->serial) ) {
+        char b[2] = {'\0'};
+        SerialOp.read( data->serial, &b[0], 1 );
+        TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "read : %02X", b[0] );
+      }
     }
 
     ThreadOp.sleep(500);
