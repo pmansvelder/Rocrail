@@ -1276,11 +1276,20 @@ static void __stressRunner( void* threadinst ) {
 static void __flush( iOMassoth inst ) {
   iOMassothData data = Data(inst);
   Boolean ok = False;
-  byte buffer[256];
-  while( SerialOp.available(data->serial) ) {
-    char b = 0;
-    SerialOp.read( data->serial, &b, 1 );
-    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Flushing %d byte 0x%02X", b);
+  char buffer[256];
+  int idx = 0;
+  ThreadOp.sleep(100);
+  while( SerialOp.available(data->serial) && idx < 256 ) {
+    SerialOp.read( data->serial, buffer+idx, 1 );
+    idx++;
+  }
+  if( idx > 0 ) {
+    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Flushing %d bytes", idx);
+    TraceOp.dump( name, TRCLEVEL_INFO, buffer, idx );
+    if( idx == 256 ) {
+      TraceOp.trc(name, TRCLEVEL_WARNING, __LINE__, 9999, "Flushing recursive...");
+      __flush(inst);
+    }
   }
 }
 
