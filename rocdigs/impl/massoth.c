@@ -1049,6 +1049,7 @@ static void __evaluatePacket(iOMassothData data, byte* in) {
     break;
   default:
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "message 0x%02X not evaluated", in[0] );
+    TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, 32 );
     break;
   }
 }
@@ -1202,6 +1203,9 @@ static void __purger( void* threadinst ) {
       MutexOp.post(data->lcmux);
     }
 
+    if( data->shutdown && MapOp.size(data->lcmap) == 0 ) {
+      break;
+    }
     ThreadOp.sleep(100);
   };
 
