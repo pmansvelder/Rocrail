@@ -1796,6 +1796,12 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
 
   data = Data(inst);
 
+  if( id != NULL && data->locId != NULL && StrOp.equals( id, data->locId ) ) {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block [%s] already locked for loco [%s]", data->id, id );
+    return True;
+  }
+
+
   if( wBlock.isremote(data->props) ) {
     iOR2Rnet r2rnet = ControlOp.getR2Rnet(AppOp.getControl());
     if( r2rnet != NULL ) {
