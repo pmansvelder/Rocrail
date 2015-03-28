@@ -42,6 +42,8 @@
 #include "rocrail/wrapper/public/FbInfo.h"
 #include "rocrail/wrapper/public/FbMods.h"
 
+#include "rocdigs/impl/massoth/massoth_const.h"
+
 #include "rocutils/public/addr.h"
 
 static int instCnt = 0;
@@ -492,13 +494,6 @@ static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
       out[0] = 0x10;
       data->power = True;
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Power ON" );
-      /* load test */
-      /*
-      {
-        byte tmp[32] = {0x00, 0x00, 0x05, 0x00, 0x03, 0x00, 0x00, 0x00};
-        __handleSystem(data, tmp);
-      }
-      */
       return True;
     }
   }
@@ -832,15 +827,15 @@ static void __handleVehicle(iOMassothData data, byte* in) {
 
 
 static void __handleError(iOMassothData data, byte* in) {
-  if( in[2] == 0x01 && in[3] == 0xFF ) {
+  if( in[2] == CS_ERROR_XOR_DATA1 && in[3] == CS_ERROR_XOR_DATA2 ) {
     /* XOR error in transmission */
     TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "XOR error in transmission" );
   }
 }
 
 static void __handleSystem(iOMassothData data, byte* in) {
-  if( in[2] == 0x01 ) {
-    data->power = (in[3] & 0x03) == 0x02 ? True:False;
+  if( in[2] == CS_SYSTEM_DATA1 ) {
+    data->power = (in[3] & 0x03) == 0x00 ? True:False;
 
     iONode node = NodeOp.inst( wState.name(), NULL, ELEMENT_NODE );
     if( data->iid != NULL )
@@ -851,12 +846,12 @@ static void __handleSystem(iOMassothData data, byte* in) {
     wState.setaccessorybus( node, data->power );
     wState.setload( node, data->load );
 
-    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "system status=0x%02X", in[3] );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "system status=0x%02X power=%s", in[3], data->power?"ON":"OFF" );
 
     if( data->listenerFun != NULL && data->listenerObj != NULL )
       data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
   }
-  else if( in[2] == 0x05 ) {
+  else if( in[2] == CS_LOAD_DATA1 ) {
     /* extended system info
      * 0x00 0x00 0x05 0x00 0x03 0x00 0x00 0x00 */
     if( data->load != in[4] * 100 ) {
@@ -905,12 +900,11 @@ static void __handleSwitch(iOMassothData data, byte* in) {
  */
 static void __handleSensor(iOMassothData data, byte* in) {
   iONode nodeC = NULL;
-  Boolean state = in[3] & 0x01 ? True:False;
+  Boolean state = in[3] & 0x01 ? False:True;
   int addr = in[2] << 7;
   addr += in[3] >> 1;
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "sensor report: addr=%d state=%s", addr, state?"occupied":"free" );
-  TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, 32 );
   nodeC = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
   wFeedback.setaddr( nodeC, addr );
   wFeedback.setstate( nodeC, state );
@@ -1015,38 +1009,38 @@ static void __handleLocoFunctions( iOMassothData data, byte* in) {
 
 static void __evaluatePacket(iOMassothData data, byte* in) {
   switch( in[0] ) {
-  case 0x00:
+  case CS_SYSTEM:
     /* system status */
     __handleSystem(data, in);
     break;
-  case 0x20:
+  case CS_ERROR_XOR:
     /* error */
     __handleError(data, in);
     break;
-  case 0x4A:
+  case SW_COMMAND:
     __handleSwitch(data, in);
     break;
-  case 0x40:
-  case 0x60:
+  case CS_LC_FREE:
+  case CS_LC_LOGOUT:
     /* vehicle report */
     __handleVehicle(data, in);
     break;
-  case 0x61:
+  case LC_SPEEDDATA:
     /* loco speed */
     __handleLocoSpeed(data, in);
     break;
-  case 0x62:
+  case LC_FUNCTIONDATA:
     /* loco functions */
     __handleLocoFunctions(data, in);
     break;
-  case 0x4B:
+  case FB_EVENT:
     /* sensor report */
     if( data->fbreset)
       __handleContact(data, in);
     else
       __handleSensor(data, in);
     break;
-  case 0x80:
+  case CS_PROG_ACK:
     /* programming report */
     __handlePT(data, in);
     break;
