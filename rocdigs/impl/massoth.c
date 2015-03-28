@@ -309,7 +309,8 @@ static iOSlot __configureVehicle(iOMassothData data, iONode node) {
       MapOp.put( data->lcmap, wLoc.getid(node), (obj)slot);
       MutexOp.post(data->lcmux);
     }
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "slot created for %s, protver=%d", wLoc.getid(node), protver );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "slot created for %s, protver=%d locoimage=%d",
+        wLoc.getid(node), protver, wLoc.getimagenr(node) );
   }
 
   return slot;

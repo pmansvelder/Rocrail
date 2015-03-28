@@ -1522,6 +1522,7 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
         wLoc.getV(cmd), wLoc.isdir(cmd)?"fwd":"rev", wLoc.isusesecaddr(cmd)?"true":"false" );
 
     if( cmdFn != NULL ) {
+      wLoc.setimagenr( cmdFn, wLoc.getimagenr(data->props) );
       if( wLoc.getaddr( cmdFn ) == 0 && !StrOp.equals( wLoc.prot_A, wLoc.getprot( data->props ))) {
         wLoc.setaddr( cmdFn, wLoc.getaddr(data->props) );
       }
@@ -1537,6 +1538,7 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
       wLoc.setspcnt( cmd, wLoc.getsecspcnt(data->props));
       wLoc.setV_mode( cmd, wLoc.V_mode_step);
     }
+    wLoc.setimagenr( cmd, wLoc.getimagenr(data->props) );
     ControlOp.cmd( control, cmd, NULL );
 
     if( cmdTD != NULL ) {
