@@ -122,6 +122,23 @@ static int __addChecksum(byte* out) {
 }
 
 
+static Boolean __checkChecksum(byte* in) {
+  int len = in[2] + 1;
+  int i = 0;
+  byte bXor = in[0];
+
+  for ( i = 0; i < len; i++ ) {
+    bXor ^= in[i+2];
+  }
+  if( bXor != in[1] ) {
+    TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "checksum error in packet 0x%02X: in[1]=0x%02X bXor=0x%02X", in[0], in[1], bXor );
+    TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, 2 + len );
+    return False;
+  }
+  return True;
+}
+
+
 static Boolean __readPacket( iOMassothData data, byte* in ) {
   Boolean rc = data->dummyio;
 
@@ -157,6 +174,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
         if( rc ) {
           TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "%s packet read:", isInfo ? "info":"command" );
           TraceOp.dump( name, TRCLEVEL_BYTE, (char*)in, insize+offset );
+          rc = __checkChecksum(in);
         }
         else {
           /* error reading data */
@@ -833,6 +851,15 @@ static void __handleError(iOMassothData data, byte* in) {
   }
 }
 
+static const char* __getCSString(int cs) {
+  if( cs == 1 ) return "DiMAX1200Z";
+  if( cs == 2 ) return "DiMAX800Z";
+  if( cs == 5 ) return "MZS3";
+  if( cs == 9 ) return "XPressNet";
+  if( cs == 10 ) return "LocoNet";
+  return "unknown CS";
+}
+
 static void __handleSystem(iOMassothData data, byte* in) {
   if( in[2] == CS_SYSTEM_DATA1 ) {
     data->power = (in[3] & 0x03) == 0x00 ? True:False;
@@ -854,6 +881,12 @@ static void __handleSystem(iOMassothData data, byte* in) {
   else if( in[2] == CS_LOAD_DATA1 ) {
     /* extended system info
      * 0x00 0x00 0x05 0x00 0x03 0x00 0x00 0x00 */
+    if( !data->didShowInfo || data->freeslots != in[7]) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "system load=%dmA loadMax=%dA version=%d.%d freeSlots=%d CS=%s",
+          data->load, in[3]&0x0F, in[6] >> 4, in[6] & 0x0F, in[7], __getCSString(in[5]) );
+      data->didShowInfo = True;
+      data->freeslots = in[7];
+    }
     if( data->load != in[4] * 100 ) {
       data->load = in[4] * 100; /* load in steps of 100mA */
 
@@ -1066,7 +1099,7 @@ static void __reader( void* threadinst ) {
 
 
   /* sending the interface configuration: must be the first packet */
-  out[0] = 0xB8;
+  out[0] = INTERFACE_REGISTER;
   out[1] = 0x00; /* XOR */
   out[2] = data->systeminfo ? 0x01:0x00; /* extended info */
   out[3] = 0x00;

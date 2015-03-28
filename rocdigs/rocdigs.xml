@@ -1254,9 +1254,11 @@
       <var name="ptval" vt="int"/>
       <var name="power" vt="Boolean"/>
       <var name="load" vt="int"/>
+      <var name="freeslots" vt="int"/>
       <var name="shutdown" vt="Boolean"/>
       <var name="allPurged" vt="Boolean"/>
       <var name="stressRunner" vt="iOThread"/>
+      <var name="didShowInfo" vt="Boolean"/>
     </data>
   </object>
 
