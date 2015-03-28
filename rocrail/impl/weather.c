@@ -322,7 +322,8 @@ static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown,
     return;
   }
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "do daylight at %02d:%02d (%d) on %s", hour, min, minutes, wWeather.getoutputs(data->props) );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "do daylight at %02d:%02d (%d) on %s (shutdown=%s)",
+      hour, min, minutes, wWeather.getoutputs(data->props), shutdown?"true":"false" );
 
   iOStrTok tok = StrTokOp.inst( wWeather.getoutputs(data->props), ',' );
   while( StrTokOp.hasMoreTokens(tok) ) {
@@ -811,6 +812,8 @@ static void __makeWeather( void* threadinst ) {
   iOControl control = AppOp.getControl();
   int lastMin = 0;
   int loopCnt = 10;
+  int hour    = 0;
+  int min     = 0;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "make weather started..." );
   ThreadOp.sleep(1000);
@@ -821,8 +824,8 @@ static void __makeWeather( void* threadinst ) {
   while( data->run ) {
     long t = ControlOp.getTime(control);
     struct tm* ltm = localtime( &t );
-    int hour = ltm->tm_hour;
-    int min  = ltm->tm_min;
+    hour = ltm->tm_hour;
+    min  = ltm->tm_min;
 
     if( loopCnt >= 10 ) {
       loopCnt = 0;
@@ -843,7 +846,7 @@ static void __makeWeather( void* threadinst ) {
     }
     ThreadOp.sleep(100);
   }
-  __doDaylight(weather, 0, 0, wWeather.isoffatshutdown(data->props), False );
+  __doDaylight(weather, hour, min, wWeather.isoffatshutdown(data->props), False );
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "make weather ended..." );
 
