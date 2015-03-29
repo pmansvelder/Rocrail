@@ -525,7 +525,25 @@ iONode findLcById( iONode model, const char* lcid ) {
   }
   return NULL;
 }
-                                                      
+
+
+iONode findScById( iONode model, const char* scid ) {
+  iONode sclist = wPlan.getsclist( model );
+  if( sclist != NULL ) {
+    int cnt = NodeOp.getChildCnt( sclist );
+    int i;
+    for( i=0 ; i<cnt ; i++ ) {
+      iONode sc = NodeOp.getChild( sclist, i );
+      const char* id = wSchedule.getid( sc );
+
+      if( id != NULL && StrOp.equals( scid, id ) ) {
+        return sc;
+      }
+    }
+  }
+  return NULL;
+}
+
 
 /* check loco attributes */
 static Boolean checkLocos( iOAnalyse inst, Boolean repair ) {
@@ -3204,7 +3222,6 @@ static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
   int lengthOk = False;
 
   TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "stagingBlockCheck: Checking [%08.8X]", list );
-  /* TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "LRLRLR stagingBlockCheck: Checking [%08.8X]", list ); */
   if( list != NULL ) {
     listSize = NodeOp.getChildCnt( list );
   }
@@ -3215,7 +3232,6 @@ static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
     Boolean thisNodeChanged ;
 
     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "stagingBlockCheck: Checking %d %s nodes", listSize, listType );
-    /* TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "LRLRLR stagingBlockCheck: Checking %d %s nodes", listSize, listType );*/
     for( i = 0 ; i < listSize ; i++ ) {
       node = NodeOp.getChild(list, i);
       if( node ) {
@@ -3228,7 +3244,6 @@ static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
         const int gap = wStage.getgap( node);
         Boolean inatlen = wStage.isinatlen( node);
         int numSections = 0;
-        /*TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "LRLRLR stagingBlockCheck: SB[%s] fbenterid[%s] minocc[%d] slen[%d] gap[%d] inatlen[%d]", id, fbenterid, minocc, slen, gap, inatlen );*/
 
         if( StrOp.len( fbenterid ) == 0 ) {
           TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: stagingBlockCheck: [%s] missing enter sensor",
@@ -3281,7 +3296,6 @@ static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
           const char* secid = wStageSection.getid( section );
           int seclen = wStageSection.getlen( section );
           const int secnr = wStageSection.getnr( section );
-          /*TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "LRLRLR stagingBlockCheck:   action[%s] fbid[%s] fbidocc[%s] id[%s] len[%d] nr[%d]", secaction, secfbid, secfbidocc, secid, seclen, secnr );*/
 
           numSections++;
 
@@ -9132,6 +9146,163 @@ static Boolean routeCheck( iOAnalyse inst, Boolean repair ) {
 }
 
 
+static Boolean scheduleCheck( iOAnalyse inst, Boolean repair ) {
+  iOAnalyseData data = Data(inst);
+  iONode list = wPlan.getsclist(data->plan);
+  Boolean retVal = True;
+  int numProblems = 0;
+  int listSize = 0;
+
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: Checking [%08.8X]", list );
+  if( list != NULL ) {
+    listSize = NodeOp.getChildCnt( list );
+  }
+
+  if( listSize > 0 ) {
+    iONode sc;
+    const char* listType = NodeOp.getName( NodeOp.getChild(list, 0));
+    int i = 0;
+
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: Checking %d %s nodes", listSize, listType );
+    for( i = 0 ; i < listSize ; i++ ) {
+      sc = NodeOp.getChild(list, i);
+      if( sc ) {
+        const char* scid = wSchedule.getid( sc );
+        int scEntries = NodeOp.getChildCnt( sc );
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] #entries[%d]",
+            scid, scEntries );
+
+        if( StrOp.len( scid ) == 0 ) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule with empty id found" );
+          numProblems++ ;
+        }
+
+        /* loop over all routes */
+        int j;
+        for( j = 0 ; j < scEntries ; j++ ) {
+          iONode entry = NodeOp.getChild( sc, j );
+          if( entry != NULL ) {
+            const char* blockid = wScheduleEntry.getblock( entry );
+            const char* locationid = wScheduleEntry.getlocation( entry );
+            TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck:  entry[%d/%d] block[%s] location[%s]",
+                j+1, scEntries, blockid, locationid );
+            if( blockid != NULL && StrOp.len( blockid ) > 0 ) {
+              iIBlockBase block = ModelOp.getBlock( data->model, blockid );
+              if( block == NULL ) {
+                numProblems++;
+                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] block[%s] does not exist",
+                    scid, j+1, scEntries, blockid );
+              }
+              else {
+                TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] block[%s] OK",
+                    scid, j+1, scEntries, blockid );
+              }
+            }
+            else if( locationid != NULL && StrOp.len( locationid ) > 0 ) {
+              iOLocation location = ModelOp.getLocation( data->model, locationid );
+              if( location == NULL ) {
+                numProblems++;
+                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] location[%s] does not exist",
+                    scid, j+1, scEntries, locationid );
+              }
+              else {
+                TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] location[%s] OK",
+                    scid, j+1, scEntries, locationid );
+              }
+            }
+            else {
+              numProblems++;
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] no block or location",
+                  scid, j+1, scEntries );
+            }
+          }
+        }
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: invalid schedule in schedule list" );
+        numProblems++ ;
+      }
+    }
+  }
+
+  if( numProblems ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "schedule check: %d problematic entries", numProblems );
+    return False;
+  }
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "schedule check: %d problematic enries", numProblems );
+  return retVal;
+}
+
+static Boolean tourCheck( iOAnalyse inst, Boolean repair ) {
+  iOAnalyseData data = Data(inst);
+  iONode list = wPlan.gettourlist(data->plan);
+  Boolean retVal = True;
+  int numProblems = 0;
+  int listSize = 0;
+
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "tourCheck: Checking [%08.8X]", list );
+  if( list != NULL ) {
+    listSize = NodeOp.getChildCnt( list );
+  }
+
+  if( listSize > 0 ) {
+    iONode tour;
+    const char* listType = NodeOp.getName( NodeOp.getChild(list, 0));
+    int i = 0;
+
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "tourCheck: Checking %d %s nodes", listSize, listType );
+    for( i = 0 ; i < listSize ; i++ ) {
+      tour = NodeOp.getChild(list, i);
+      if( tour ) {
+        const char* tourid = wTour.getid( tour );
+        const recycle = wTour.isrecycle( tour );
+        const char* schedules = wTour.getschedules( tour );
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "tourCheck: tour[%s] recycle[%s] schedules[%s]",
+            tourid, recycle?"yes":"no", schedules );
+        if( StrOp.len( tourid ) == 0 ) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: tour with empty id found" );
+          numProblems++ ;
+        }
+        if( StrOp.len( schedules ) > 0 ) {
+          iOStrTok tok = StrTokOp.inst( schedules, ',');
+          while( StrTokOp.hasMoreTokens(tok) ) {
+            const char* scId = StrTokOp.nextToken(tok);
+            TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "tourCheck: Checking tour[%s] schedule[%s]", tourid, scId );
+            iONode sc = findScById( data->plan, scId );
+            if( sc == NULL ) {
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: tour[%s]: schedule[%s] not found", tourid, scId );
+              numProblems++ ;
+            }
+            else if( StrOp.len( scId ) > 0 ) {
+              TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "tourCheck: tour[%s]: schedule[%s] is OK", tourid, scId );
+            }
+            else {
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: tour[%s] has a schedule with empty id", tourid );
+              numProblems++ ;
+            }
+          }
+          StrTokOp.base.del(tok);
+        }
+        else {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: tour[%s] has no schedules.", tourid );
+          numProblems++ ;
+        }
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: invalid tour in tour list." );
+        numProblems++ ;
+      }
+    }
+  }
+
+  if( numProblems ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "tour check: %d problematic entries", numProblems );
+    return False;
+  }
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "tour check: %d problematic enries", numProblems );
+  return retVal;
+}
+
 /* check valid and unique iid of all command stations */
 static Boolean checkDigints( iOAnalyse inst ) {
   iOAnalyseData data = Data(inst);
@@ -9346,6 +9517,14 @@ static Boolean _checkExtended(iOAnalyse inst) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Route test: in progress..." );
     res = routeCheck( inst, False );
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Route test: %s problems detected", res?"no":"some" );
+
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Schedule test: in progress..." );
+    res = scheduleCheck( inst, False );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Schedule test: %s problems detected", res?"no":"some" );
+
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Tour test: in progress..." );
+    res = tourCheck( inst, False );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, " Tour test: %s problems detected", res?"no":"some" );
 
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Route checks finished" );
   }
