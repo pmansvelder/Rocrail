@@ -122,12 +122,12 @@ static int __addChecksum(byte* out) {
 }
 
 
-static Boolean __checkChecksum(byte* in) {
-  int len = in[2] + 1;
+static Boolean __checkChecksum(byte* in, int len) {
+  //int len = in[2] + 1;
   int i = 0;
   byte bXor = in[0];
 
-  for ( i = 0; i < len; i++ ) {
+  for ( i = 0; i < len-2; i++ ) {
     bXor ^= in[i+2];
   }
   if( bXor != in[1] ) {
@@ -146,13 +146,17 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
     Boolean isInfo = False;
     int insize = 0;
     int offset = 0;
+    int totallen = 0;
     rc = SerialOp.read( data->serial, (char*)in, 1 );
+    totallen = 1;
     if( rc ) {
 
       if( (in[0] & 0x1F) == 0 ) {
         /* info or answer received */
         rc = SerialOp.read( data->serial, (char*)(in+1), 2 );
+        totallen += 2;
         insize = in[2];
+        totallen += insize;
         offset = 3;
         isInfo = True;
       }
@@ -160,6 +164,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
         /* command received */
         insize = in[0] >> 5;
         insize++; /* XOR byte */
+        totallen += insize;
         offset = 1;
       }
 
@@ -174,7 +179,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
         if( rc ) {
           TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "%s packet read:", isInfo ? "info":"command" );
           TraceOp.dump( name, TRCLEVEL_BYTE, (char*)in, insize+offset );
-          rc = __checkChecksum(in);
+          rc = __checkChecksum(in, totallen);
         }
         else {
           /* error reading data */
@@ -958,10 +963,10 @@ static void __handleContact(iOMassothData data, byte* in) {
   addr += in[3] >> 2;
   addr = addr * 2 - 1 + state;
 
-  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "contact report: addr=%d", addr );
+  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "contact report: addr=%d state=true (set)", addr );
   nodeC = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
   wFeedback.setaddr( nodeC, addr );
-  wFeedback.setstate( nodeC, data->fbreset?True:state );
+  wFeedback.setstate( nodeC, True );
   if( data->iid != NULL )
     wFeedback.setiid( nodeC, data->iid );
 
@@ -1209,6 +1214,7 @@ static void __ContactTicker( void* threadinst ) {
         if( data->iid != NULL )
           wFeedback.setiid( evt, data->iid );
 
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "contact addr=%d state=false (reset)", wFeedback.getaddr(evt) );
         data->listenerFun( data->listenerObj, evt, TRCLEVEL_INFO );
         ListOp.removeObj(list, (obj)node);
         NodeOp.base.del(node);
