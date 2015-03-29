@@ -1539,6 +1539,7 @@
     <var name="param" vt="string" defval="" range="*"/>
     <var name="desc" vt="string" defval="" range="*"/>
     <var name="mvspeed" vt="float" defval="0.0" range="*"/>
+    <var name="allconditions" vt="bool" defval="true" remark="All conditions must be true."/>
     <actioncond cardinality="n" remark="Optional condition." wrappername="ActionCond">
       <var name="id" vt="string" defval="" range="*" required="true"/>
       <var name="subid" vt="string" defval="" range="*"/>

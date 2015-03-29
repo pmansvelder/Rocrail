@@ -198,6 +198,7 @@ public:
     wxStaticText* m_labDesc;
     wxTextCtrl* m_Desc;
     wxCheckBox* m_Reset;
+    wxCheckBox* m_AllConditions;
     wxRadioBox* m_Auto;
     wxButton* m_Add;
     wxButton* m_Delete;

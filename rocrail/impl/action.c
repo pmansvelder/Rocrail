@@ -382,11 +382,12 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
   iOModel model = AppOp.getModel();
   Boolean automode = ModelOp.isAuto(model);
   Boolean rc = True;
+  Boolean allconditions = wActionCtrl.isallconditions(actionctrl);
 
   if( actionctrl != NULL ) {
     iONode actionCond = wActionCtrl.getactioncond(actionctrl);
     if( (automode && wActionCtrl.isauto(actionctrl)) || (!automode && wActionCtrl.ismanual(actionctrl)) ) {
-      while( actionCond != NULL && rc ) {
+      while( actionCond != NULL && (rc || !allconditions) ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Action condition: [%s-%s:%s] ",
             wActionCond.gettype(actionCond),
             wActionCond.getid(actionCond),
@@ -614,8 +615,13 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
         }
 
         /* */
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, rc?"Condition is true.":"Condition is not true; skip action." );
-
+        if( !allconditions && rc ) {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "One condition is true." );
+          break;
+        }
+        else {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s%s", rc?"Condition is true.":"Condition is not true", allconditions?"; Skip action.":"." );
+        }
 
         actionCond = wActionCtrl.nextactioncond(actionctrl, actionCond);
       }

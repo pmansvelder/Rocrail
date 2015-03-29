@@ -7817,3 +7817,9 @@ msgstr ""
 msgid "Shunting divider"
 msgstr ""
 
+#. 
+# id="allconditions"
+#, c-format
+msgid "All conditions must be true"
+msgstr ""
+

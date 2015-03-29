@@ -29822,4 +29822,7 @@
     <sl txt="Delilnik za ranžiranje"/>
     <sr_latin txt="Ranžirni razdelnik"/>
   </Msg>
+  <Msg id="allconditions">
+    <en txt="All conditions must be true"/>
+  </Msg>
 </Messages>
