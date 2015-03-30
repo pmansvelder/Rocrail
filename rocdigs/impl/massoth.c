@@ -131,9 +131,9 @@ static Boolean __checkChecksum(byte* in, int len) {
     bXor ^= in[i+2];
   }
   if( bXor != in[1] ) {
-    TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "checksum error in packet 0x%02X: in[1]=0x%02X bXor=0x%02X", in[0], in[1], bXor );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "checksum error in packet 0x%02X: in[1]=0x%02X bXor=0x%02X", in[0], in[1], bXor );
     TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, len );
-    return False;
+    return True;
   }
   return True;
 }
