@@ -2867,8 +2867,6 @@ static void _stop( iOLoc inst, Boolean resume ) {
   data->go = False;
   data->released = False;
 
-  LocOp.resetBBT(inst);
-
   if( data->driver != NULL )
     data->driver->stop( data->driver );
 
