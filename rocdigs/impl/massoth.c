@@ -132,7 +132,7 @@ static Boolean __checkChecksum(byte* in, int len) {
   }
   if( bXor != in[1] ) {
     TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "checksum error in packet 0x%02X: in[1]=0x%02X bXor=0x%02X", in[0], in[1], bXor );
-    TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, 2 + len );
+    TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, len );
     return False;
   }
   return True;
@@ -620,6 +620,7 @@ static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "loc=%s addr=%d speed=%d steps=%d lights=%s dir=%s",
         wLoc.getid(node), wLoc.getaddr(node), speed, spcnt, fn?"on":"off", dir?"forwards":"reverse" );
 
+    slot->speed = speed;
     slot->idle = SystemOp.getTick();
 
     out[0] = 0x61;
@@ -1253,7 +1254,7 @@ static void __purger( void* threadinst ) {
           cmd[4] = 0x00;
 
           if( __transact( data, cmd, rsp, 0x60, &gotid ) ) {
-            TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "slot purged for %s", slot->id );
+            TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "slot purged for %s speed=%d", slot->id, slot->speed );
             MapOp.remove(data->lcmap, slot->id );
           }
           else {
