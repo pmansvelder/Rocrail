@@ -1,10 +1,7 @@
 /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
-
- 
-
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -428,7 +425,7 @@ static int __logo( void ) {
   TraceOp.println( " rrr     ooo ooo ccc    rrr     aaa aaa iii lll   " );
   TraceOp.println( " rrr      ooooo   ccccc rrr      aaaaaa iii  lll  " );
   TraceOp.println( "--------------------------------------------------" );
-  TraceOp.println( " TM and Copyright 2002-2014 Rob Versluis."          );
+  TraceOp.println( " TM and Copyright 2002-2015 Rob Versluis."          );
   TraceOp.println( " All Rights Reserved."                              );
   TraceOp.println( "   r.j.versluis@rocrail.net"                        );
   TraceOp.println( "   http://www.rocrail.net"                          );

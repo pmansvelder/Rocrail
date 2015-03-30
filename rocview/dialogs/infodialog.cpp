@@ -1,10 +1,7 @@
 /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
-
- 
-
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -88,7 +85,7 @@ InfoDialog::InfoDialog( wxWindow* parent, wxWindowID id, const wxString& caption
   StrOp.free( str );
 
   m_Home->SetLabel( _T("http://www.rocrail.net") );
-  m_Support->SetLabel( _T("TM and Copyright 2002-2014 Rob Versluis.") );
+  m_Support->SetLabel( _T("TM and Copyright 2002-2015 Rob Versluis.") );
   m_labLic->SetLabel( _T("All Rights Reserved. License: GNU GPL V3") );
   //m_ThanksLine->SetLabel( wxGetApp().getMsg( "license" ) );
   m_ThanksLine->SetLabel( _T("") );
