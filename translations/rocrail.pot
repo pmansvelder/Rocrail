@@ -7823,3 +7823,9 @@ msgstr ""
 msgid "All conditions must be true"
 msgstr ""
 
+#. 
+# id="mustbetrue"
+#, c-format
+msgid "Must be true"
+msgstr ""
+

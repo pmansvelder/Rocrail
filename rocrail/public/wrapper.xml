@@ -1546,6 +1546,7 @@
       <var name="subid" vt="string" defval="" range="*"/>
       <var name="type" vt="string" defval="" range="co,sw,sg,fb,lc,bk" required="true"/>
       <var name="state" vt="string" defval="" range="*" remark="Activation state, empty is always."/>
+      <var name="mustbetrue" vt="bool" defval="false" remark="This condition must be true, also in case allconditions is false."/>
     </actioncond>
   </actionctrl>
 

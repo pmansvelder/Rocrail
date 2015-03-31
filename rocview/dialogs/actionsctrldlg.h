@@ -205,6 +205,7 @@ public:
     wxButton* m_Modify;
     wxPanel* m_ConditionsPanel;
     wxListCtrl* m_Conditions;
+    wxCheckBox* m_CondMust;
     wxStaticText* m_labCondType;
     wxChoice* m_CondType;
     wxStaticText* m_labCondID;

@@ -29825,4 +29825,7 @@
   <Msg id="allconditions">
     <en txt="All conditions must be true"/>
   </Msg>
+  <Msg id="mustbetrue">
+    <en txt="Must be true"/>
+  </Msg>
 </Messages>

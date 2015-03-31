@@ -382,6 +382,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
   iOModel model = AppOp.getModel();
   Boolean automode = ModelOp.isAuto(model);
   Boolean rc = True;
+  Boolean oneconditiontrue = False;
   Boolean allconditions = wActionCtrl.isallconditions(actionctrl);
 
   if( actionctrl != NULL ) {
@@ -625,6 +626,11 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
         /* */
         if( !allconditions && rc ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "One condition is true." );
+          oneconditiontrue = True;
+        }
+        else if( !allconditions && !rc && wActionCond.ismustbetrue(actionCond) ) {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "One 'must' condition is not true; Skip action." );
+          oneconditiontrue = False;
           break;
         }
         else {
@@ -645,7 +651,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
     }
   }
 
-  return rc;
+  return (oneconditiontrue | rc);
 }
 
 
