@@ -907,7 +907,7 @@ void ActionsCtrlDlg::CreateControls()
     itemFlexGridSizer26->Add(m_Reset, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_AllConditions = new wxCheckBox( m_IndexPanel, wxID_ANY, _("All conditions must be true"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_AllConditions->SetValue(false);
+    m_AllConditions->SetValue(true);
     itemFlexGridSizer26->Add(m_AllConditions, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxArrayString m_AutoStrings;
