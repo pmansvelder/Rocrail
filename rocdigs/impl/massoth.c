@@ -204,7 +204,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
 static Boolean __transact( iOMassothData data, byte* out, byte* in, byte id, Boolean *gotid ) {
   Boolean rc = data->dummyio;
 
-  if( MutexOp.wait( data->mux ) ) {
+  if( MutexOp.trywait( data->mux, 2500 ) ) {
     int outsize = (out[0] >> 5) + 2;
     int insize  = 0;
     __addChecksum(out);
@@ -836,17 +836,23 @@ static void __handlePT(iOMassothData data, byte* in) {
 
 
 static void __handleVehicle(iOMassothData data, byte* in) {
-  if( in[0] == 0x60 ) {
+  if( in[0] == CS_LC_LOGOUT ) {
     int addr = in[3] * 256 + in[4];
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d logged out from device %d", addr, in[5] );
   }
-  else if( in[0] == 0x40 && in[2] == 0x08 ) {
+  else if( in[0] == CS_LC_INVALID && in[2] == 0x08 ) {
     int addr = in[3] * 256 + in[4];
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d not in use", addr );
   }
-  else if( in[0] == 0x40 && in[2] == 0x04 ) {
+  else if( in[0] == CS_LC_INVALID && in[2] == 0x04 ) {
     int addr = in[4] * 256 + in[5];
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d in use by device %d", addr, in[6] );
+  }
+  else if( in[0] == LC_REGISTER ) {
+    /* A13 .. A0 = Lokadresse (0..10239) - k7 = [1] bedingungslose Anmeldung – k6 aktiv (1) / passiv (0) Abmelden - k4 = Anmelden (1) / Abmelden (0) */
+    byte reg = in[4];
+    int addr = (in[2]&0x3F) * 256 + in[3];
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d did %s", addr, (reg&0x10)?"register":"deregister" );
   }
 }
 
@@ -1062,6 +1068,7 @@ static void __evaluatePacket(iOMassothData data, byte* in) {
     break;
   case CS_LC_FREE:
   case CS_LC_LOGOUT:
+  case LC_REGISTER:
     /* vehicle report */
     __handleVehicle(data, in);
     break;
