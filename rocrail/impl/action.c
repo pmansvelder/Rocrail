@@ -393,6 +393,9 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
             wActionCond.getid(actionCond),
             wActionCond.getstate(actionCond) );
 
+        if( !allconditions )
+          rc = True;
+
         /* Block */
         if( StrOp.equals( wBlock.name(), wActionCond.gettype(actionCond) ) ) {
           const char* id = wActionCond.getid( actionCond );
@@ -535,6 +538,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
               rc = False;
             }
             else if( StrOp.equals(state, "=") && !StrOp.equals(id, stid) ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route condition [%s] != [%s]", id, stid );
               rc = False;
             }
           }
