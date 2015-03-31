@@ -517,6 +517,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
 
         /* Route */
         else if( StrOp.equals( wRoute.name(), wActionCond.gettype(actionCond) ) ) {
+          const char* stid = wActionCtrl.getstid(actionctrl);
           const char* id = wActionCond.getid( actionCond );
           iORoute st = ModelOp.getRoute( model, id );
           if( st != NULL ) {
@@ -531,6 +532,9 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
               rc = False;
             }
             else if( RouteOp.isClosed(st) && StrOp.equals(state, "open") ) {
+              rc = False;
+            }
+            else if( StrOp.equals(state, "=") && !StrOp.equals(id, stid) ) {
               rc = False;
             }
           }

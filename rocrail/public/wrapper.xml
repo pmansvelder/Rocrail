@@ -1528,6 +1528,7 @@
     <var name="lcid" vt="string" defval="" range="*"/>
     <var name="lcclass" vt="string" defval="" range="*"/>
     <var name="bkid" vt="string" defval="" range="*"/>
+    <var name="stid" vt="string" defval="" range="*"/>
     <var name="counter" vt="int" defval="0" range="0-*"/>
     <var name="countedcars" vt="int" defval="0" range="0-*"/>
     <var name="carcount" vt="int" defval="0" range="0-*"/>

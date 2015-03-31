@@ -189,6 +189,7 @@ static void __checkAction( iOBlock inst, const char* state ) {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block action [%s-%s]", data->id, data->locId );
         wActionCtrl.setbkid(action, data->id);
         wActionCtrl.setlcid(action, data->locId);
+        wActionCtrl.setstid(action, data->byRouteId);
 
         ActionOp.exec(Action, action);
       }
