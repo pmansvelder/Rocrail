@@ -290,7 +290,7 @@ static iOSlot __configureVehicle(iOMassothData data, iONode node) {
   int nsteps = __normalizeSteps(steps);
   int protver = wLoc.getprotver(node);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s not configured", wLoc.getid(node) );
-  cmd[0] = 0x85;
+  cmd[0] = LC_CONFIGURE;
   cmd[1] = 0; /*xor*/
   cmd[2] = addr >> 8;
   cmd[3] = addr & 0x00FF;
@@ -854,6 +854,10 @@ static void __handleVehicle(iOMassothData data, byte* in) {
     int addr = (in[2]&0x3F) * 256 + in[3];
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d did %s", addr, (reg&0x10)?"register":"deregister" );
   }
+  else if( in[0] == LC_CONFIGURE ) {
+    int addr = (in[2]&0x3F) * 256 + in[3];
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d configured, config=0x%02X type=%d", addr, in[4], in[5] );
+  }
 }
 
 
@@ -1069,6 +1073,7 @@ static void __evaluatePacket(iOMassothData data, byte* in) {
   case CS_LC_FREE:
   case CS_LC_LOGOUT:
   case LC_REGISTER:
+  case LC_CONFIGURE:
     /* vehicle report */
     __handleVehicle(data, in);
     break;
@@ -1090,6 +1095,15 @@ static void __evaluatePacket(iOMassothData data, byte* in) {
   case CS_PROG_ACK:
     /* programming report */
     __handlePT(data, in);
+    break;
+  case EBREAK_SET:
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break set" );
+    break;
+  case EBREAK_RESET:
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break reset" );
+    break;
+  case EBREAK_RESET_PACKET:
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break reset packet" );
     break;
   default:
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "message 0x%02X not evaluated", in[0] );
