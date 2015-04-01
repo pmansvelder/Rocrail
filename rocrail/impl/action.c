@@ -626,7 +626,8 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
         /* */
         if( !allconditions && rc ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "One condition is true." );
-          oneconditiontrue = True;
+          if( !wActionCond.ismustbetrue(actionCond) )
+            oneconditiontrue = True;
         }
         else if( !allconditions && !rc && wActionCond.ismustbetrue(actionCond) ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "One 'must' condition is not true; Skip action." );
@@ -649,6 +650,11 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
           wActionCtrl.getid(actionctrl) );
       rc = False;
     }
+  }
+
+  if( !allconditions && !oneconditiontrue ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "No 'or' condition is not true; Skip action." );
+    rc = False;
   }
 
   return (oneconditiontrue | rc);
