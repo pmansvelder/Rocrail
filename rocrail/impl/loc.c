@@ -3422,6 +3422,11 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       wLoc.setmanual(data->props, False);
       broadcast = True;
     }
+    else if( StrOp.equals( wLoc.consist, cmd ) ) {
+      wLoc.setconsist(data->props, wLoc.getconsist(nodeA));
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco %s consist=[%s]", LocOp.getId(inst), wLoc.getconsist(data->props));
+      broadcast = True;
+    }
 
     if(broadcast) {
       nodeF = (iONode)NodeOp.base.clone( nodeA );
@@ -3538,24 +3543,22 @@ static void _modify( iOLoc inst, iONode props ) {
 
     }
 
-    /* Leave the childs if no new are comming */
-    if( NodeOp.getChildCnt( props ) > 0 ) {
+    cnt = NodeOp.getChildCnt( data->props );
+    while( cnt > 0 ) {
+      iONode child = NodeOp.getChild( data->props, 0 );
+      iONode removedChild = NodeOp.removeChild( data->props, child );
+      if( removedChild != NULL) {
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "remove child node %s of %s", NodeOp.getName(removedChild), LocOp.getId(inst));
+        NodeOp.base.del(removedChild);
+      }
       cnt = NodeOp.getChildCnt( data->props );
-      while( cnt > 0 ) {
-        iONode child = NodeOp.getChild( data->props, 0 );
-        iONode removedChild = NodeOp.removeChild( data->props, child );
-        if( removedChild != NULL) {
-          TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "remove child node %s of %s", NodeOp.getName(removedChild), LocOp.getId(inst));
-          NodeOp.base.del(removedChild);
-        }
-        cnt = NodeOp.getChildCnt( data->props );
-      }
-      cnt = NodeOp.getChildCnt( props );
-      for( i = 0; i < cnt; i++ ) {
-        iONode child = NodeOp.getChild( props, i );
-        NodeOp.addChild( data->props, (iONode)NodeOp.base.clone(child) );
-      }
     }
+    cnt = NodeOp.getChildCnt( props );
+    for( i = 0; i < cnt; i++ ) {
+      iONode child = NodeOp.getChild( props, i );
+      NodeOp.addChild( data->props, (iONode)NodeOp.base.clone(child) );
+    }
+
   }
 
   data->secondnextblock = wLoc.issecondnextblock( data->props );
