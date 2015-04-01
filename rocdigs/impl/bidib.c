@@ -2109,6 +2109,7 @@ static iOBiDiBNode __addNode(iOBiDiB bidib, byte* pdata, byte* path) {
     node->vendorid = vid;
     node->pendingfeature = -1;
     node->dmxchannel = NULL;
+    node->laststat = -1;
 
 
     MemOp.copy(node->path, path, 4);
@@ -2149,6 +2150,10 @@ static iOBiDiBNode __addNode(iOBiDiB bidib, byte* pdata, byte* path) {
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "trying to get FEATURE_GEN_WATCHDOG...");
       msgdata[0] = FEATURE_GEN_WATCHDOG;
       data->subWrite((obj)bidib, data->defaultmain->path, MSG_FEATURE_GET, msgdata, 1, data->defaultmain);
+
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "trying to get CS_STATE...");
+      msgdata[0] = BIDIB_CS_STATE_QUERY;
+      data->subWrite((obj)bidib, data->defaultmain->path, MSG_CS_SET_STATE, msgdata, 1, data->defaultmain);
     }
     if( StrOp.find(classname, wBiDiBnode.class_booster) != NULL ) {
       byte msgdata[32];
