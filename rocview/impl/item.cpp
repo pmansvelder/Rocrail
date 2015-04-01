@@ -3322,6 +3322,7 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
       }
 
       // Check block enterside
+      // ToDo: Update enterside on D&D...
       if( updateEnterside || oncreate ) {
         if( StrOp.len(locoid) > 0 ) {
           iONode loc = wxGetApp().getFrame()->findLoc( locoid );

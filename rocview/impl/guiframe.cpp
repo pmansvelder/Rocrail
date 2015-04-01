@@ -1834,13 +1834,15 @@ void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
 
     if( id != NULL ) {
       if( locid != NULL ) {
-        TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "Block event %s, locid=%s",
-                     NodeOp.getStr(node, "id", "?"), locid );
+        TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "Block event %s, locid=%s cmd=%s",
+            NodeOp.getStr(node, "id", "?"), locid, NodeOp.getStr(node, "cmd", "?") );
         if( locid != NULL && StrOp.len(locid) > 0 )
           block = wxGetApp().getFrame()->findBlock4Loc(locid, id);
       }
 
       if(block != NULL ) {
+        if( wBlock.getlocid(block) == NULL || StrOp.len(wBlock.getlocid(block)) == 0 )
+          wBlock.setlocid(block, wBlock.getlocid(node));
         if( wBlock.getcmd(node) != NULL )
           wBlock.setcmd(block, wBlock.getcmd(node));
         if( m_ModPanel != NULL) {
