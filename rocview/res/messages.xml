@@ -29824,8 +29824,18 @@
   </Msg>
   <Msg id="allconditions">
     <en txt="All conditions must be true"/>
+    <de txt="Alle Bedingungen müssen WAHR sein"/>
+    <nl txt="Alle voorwaarden moeten waar zijn"/>
+    <pt_BR txt="Todas as condições devem ser possíveis"/>
+    <sl txt="Vsi pogoji morajo biti res"/>
+    <sr_latin txt="Svi uslovi moraju biti istiniti"/>
   </Msg>
   <Msg id="mustbetrue">
     <en txt="Must be true"/>
+    <de txt="Muss WAHR sein"/>
+    <nl txt="Moet waar zijn"/>
+    <pt_BR txt="Deve ser possível"/>
+    <sl txt="Mora biti res"/>
+    <sr_latin txt="Mora biti istinito"/>
   </Msg>
 </Messages>
