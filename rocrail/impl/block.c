@@ -1799,6 +1799,10 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
 
   if( id != NULL && data->locId != NULL && StrOp.equals( id, data->locId ) ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block [%s] already locked for loco [%s]", data->id, id );
+    if( data->fromBlockId != blockid || data->byRouteId != routeid || data->crossing != crossing ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "second lock by loco [%s] block [%s] differs with settings!", id, data->id );
+      return False;
+    }
     return True;
   }
 
@@ -2935,6 +2939,7 @@ static void _reset( iIBlockBase inst, Boolean saveCurBlock ) {
 
   _resetTD(inst);
   data->arrivalPending = False;
+  data->crossing = False;
 }
 
 static void _acceptIdent( iIBlockBase inst, Boolean accept ) {
