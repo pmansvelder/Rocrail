@@ -298,6 +298,8 @@ void TrackPickerDlg::initSymbols() {
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s:%s:::,%s,%s", wSignal.name(), wSignal.semaphore, wSignal.shunting, signaltype::semaphoreshunting_2_r, "semaphore_shunting" );
   ListOp.add( m_SymbolList, (obj) symname );
+  symname = StrOp.fmt("%s:%s:%s:::,%s,%s", wSignal.name(), wSignal.light, wSignal.blockstate, signaltype::blockstate, "blockstate_signal" );
+  ListOp.add( m_SymbolList, (obj) symname );
 
   // Block
   symname = StrOp.fmt("%s:::::,%s,%s", wBlock.name(), blocktype::block, "block" );

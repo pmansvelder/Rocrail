@@ -237,7 +237,7 @@ bool PlanPanelDrop::OnDropText(wxCoord x, wxCoord y, const wxString& data) {
           wSwitch.setrectcrossing( node, True );
         if( StrOp.equals(symdir, wSwitch.right))
           wItem.setdir( node, True );
-        if( StrOp.equals(symdir, wSignal.main ) || StrOp.equals(symdir, wSignal.distant ) || StrOp.equals(symdir, wSignal.shunting ) )
+        if( StrOp.equals(symdir, wSignal.main ) || StrOp.equals(symdir, wSignal.distant ) || StrOp.equals(symdir, wSignal.shunting ) || StrOp.equals(symdir, wSignal.blockstate ) )
           wSignal.setsignal( node, symdir );
         if( StrOp.equals(symdir, "curve"))
           wFeedback.setcurve( node, True );
