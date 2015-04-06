@@ -290,7 +290,6 @@ void statusEnter( iILcDriverInt inst, Boolean re_enter ) {
       else {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201, "reset next2Block" );
         resetNext2( (iOLcDriver)inst, False );
-        data->loc->stop(data->loc, False);
       }
     }
   }
