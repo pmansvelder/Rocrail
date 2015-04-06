@@ -2501,6 +2501,10 @@
       <param name="BlockId" vt="const char*"/>
       <param name="LocoId" vt="const char*"/>
     </fun>
+    <fun name="isFree" vt="Boolean">
+      <param name="inst" vt="this" remark="BlockGroup instance"/>
+      <param name="LocoId" vt="const char*"/>
+    </fun>
     <fun name="unlock" vt="Boolean">
       <param name="inst" vt="this" remark="BlockGroup instance"/>
       <param name="LocoId" vt="const char*"/>

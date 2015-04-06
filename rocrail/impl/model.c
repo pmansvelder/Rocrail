@@ -4854,6 +4854,18 @@ static Boolean _lockBlockGroup(iOModel inst, const char* group, const char* Bloc
 
 }
 
+static Boolean __isFree4BlockGroup(iOModel inst, const char* BlockId, const char* LocoId) {
+  iOModelData data = Data(inst);
+  const char* group = ModelOp.checkForBlockGroup(inst, BlockId);
+
+  if( group != NULL ) {
+    iOBlockGroup bg = (iOBlockGroup)MapOp.get( data->blockGroupMap, group );
+    if( bg != NULL )
+      return BlockGroupOp.isFree(bg, LocoId );
+  }
+  return True;
+}
+
 static Boolean _unlockBlockGroup(iOModel inst, const char* group, const char* LocoId) {
   iOModelData data = Data(inst);
 
@@ -5144,7 +5156,7 @@ static iIBlockBase _findDest( iOModel inst, const char* fromBlockId, const char*
           if( block != NULL ) {
             const char* blockId = block->base.id( block );
             /* Is it free? Does it fit? */
-            if( block->isFree( block, LocOp.getId( loc ) ) ) {
+            if( block->isFree( block, LocOp.getId( loc ) ) && __isFree4BlockGroup(inst, blockId, LocOp.getId(loc) ) ) {
               block_suits suits;
               int restlen = 0;
 

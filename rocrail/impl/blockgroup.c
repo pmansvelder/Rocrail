@@ -132,6 +132,35 @@ static void __rewind(struct OBlockGroup* inst, const char* LocoId) {
 }
 
 /**  */
+static Boolean _isFree( struct OBlockGroup* inst, const char* LocoId ) {
+  iOBlockGroupData data = Data(inst);
+  iOModel model  = AppOp.getModel();
+  Boolean groupfree = True;
+
+  if( MapOp.get(data->lockmap, LocoId) != NULL ) {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "loco %s already locked blockgroup %s", LocoId, wLink.getid(data->props));
+    return True;
+  }
+
+  if( MapOp.size(data->lockmap) == 0 ) {
+    iOStrTok tok = StrTokOp.inst( wLink.getdst(data->props), ',' );
+
+    while( StrTokOp.hasMoreTokens(tok) && groupfree ) {
+      const char* id = StrTokOp.nextToken( tok );
+      iIBlockBase gblock = ModelOp.getBlock( model, id );
+      if( gblock != NULL ) {
+        groupfree = gblock->isFree( gblock, LocoId );
+      }
+    };
+    StrTokOp.base.del(tok);
+  }
+
+  if( !groupfree )
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "blockgroup %s is not free for loco %s", wLink.getid(data->props), LocoId);
+  return groupfree;
+}
+
+
 static Boolean _lock( struct OBlockGroup* inst ,const char* BlockId ,const char* LocoId ) {
   iOBlockGroupData data = Data(inst);
   iOModel model  = AppOp.getModel();
