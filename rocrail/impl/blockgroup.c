@@ -132,6 +132,8 @@ static void __rewind(struct OBlockGroup* inst, const char* LocoId) {
 }
 
 /**  */
+
+/* Check is a critical section is free */
 static Boolean _isFree( struct OBlockGroup* inst, const char* LocoId ) {
   iOBlockGroupData data = Data(inst);
   iOModel model  = AppOp.getModel();
@@ -142,7 +144,7 @@ static Boolean _isFree( struct OBlockGroup* inst, const char* LocoId ) {
     return True;
   }
 
-  if( MapOp.size(data->lockmap) == 0 ) {
+  if( wLink.getdst(data->props) != NULL ) {
     iOStrTok tok = StrTokOp.inst( wLink.getdst(data->props), ',' );
 
     while( StrTokOp.hasMoreTokens(tok) && groupfree ) {
