@@ -2553,6 +2553,10 @@
       <param name="inst" vt="this" remark="Location instance"/>
       <param name="LocoId" vt="const char*"/>
     </fun>
+    <fun name="didNotDepart" vt="void">
+      <param name="inst" vt="this" remark="Location instance"/>
+      <param name="LocoId" vt="const char*"/>
+    </fun>
     <fun name="locoDidArrive" vt="void">
       <param name="inst" vt="this" remark="Location instance"/>
       <param name="LocoId" vt="const char*"/>

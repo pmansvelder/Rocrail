@@ -155,6 +155,10 @@
       <param name="LocoId" vt="const char*"/>
       <param name="force" vt="Boolean"/>
     </fun>
+    <fun name="didNotDepart" vt="void">
+      <param name="inst" vt="this"/>
+      <param name="LocoId" vt="const char*"/>
+    </fun>
     <fun name="isReady" vt="Boolean">
       <param name="inst" vt="this"/>
     </fun>

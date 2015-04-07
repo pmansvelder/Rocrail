@@ -138,6 +138,7 @@ void statusFindDest( iILcDriverInt inst ) {
     data->state = LC_WAITBLOCK;
     data->prevState = LC_FINDDEST;
     data->loc->setMode(data->loc, wLoc.mode_wait, wLoc.modereason_nodest);
+    data->curBlock->didNotDepart(data->curBlock, data->loc->getId( data->loc ) );
     if( !data->warningnodestfound ) {
       data->warningnodestfound = True;
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 4101, "No destination found for [%s]; waiting...", data->loc->getId( data->loc ) );

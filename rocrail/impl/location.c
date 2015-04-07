@@ -171,6 +171,31 @@ static void __dumpOcc(iOLocation inst) {
 }
 
 /**  */
+static void _didNotDepart( struct OLocation* inst ,const char* LocoId ) {
+  iOLocationData data = (inst == NULL ? NULL:Data(inst));
+
+  if( inst == NULL || LocoId == NULL ) {
+    TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "NULL parameter" );
+    return;
+  }
+
+  if( !MutexOp.trywait( data->listmux, 100 ) ) {
+    return;
+  }
+
+  if( !data->fifo && data->locoPending ) {
+    if( StrOp.equals( data->locoPendingID, LocoId ) ) {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "loco %s did not depart from location [%s]", LocoId, wLocation.getid( data->props ) );
+      data->locoPending = False;
+      data->locoPendingID = NULL;
+    }
+  }
+
+  MutexOp.post( data->listmux );
+
+}
+
+
 static Boolean _isDepartureAllowed( struct OLocation* inst ,const char* LocoId ) {
   iOLocationData data = (inst == NULL ? NULL:Data(inst));
   int i = 0;

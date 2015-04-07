@@ -2189,6 +2189,15 @@ static Boolean _isDepartureAllowed( iIBlockBase inst, const char* id, Boolean fo
   return True;
 }
 
+static void _didNotDepart( iIBlockBase inst, const char* id ) {
+  iOBlockData data = Data(inst);
+  iOLocation location = ModelOp.getBlockLocation(AppOp.getModel(), data->id );
+
+  if( location != NULL ) {
+    LocationOp.didNotDepart( location, id );
+  }
+}
+
 static Boolean _unLock( iIBlockBase inst, const char* id, const char* routeId ) {
   if( inst != NULL && id != NULL ) {
     iOBlockData data = Data(inst);
