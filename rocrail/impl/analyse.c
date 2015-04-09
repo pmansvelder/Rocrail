@@ -3211,7 +3211,7 @@ static Boolean blockCheck( iOAnalyse inst, Boolean repair ) {
 
 
 /* do all staging blocks have a valid enter at least 1 section and each section a valid fb */
-static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
+static Boolean stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
   iOAnalyseData data = Data(inst);
   iONode list = wPlan.getsblist(data->plan);
   int checkedTotal = 0;
@@ -3385,13 +3385,13 @@ static int stagingBlockCheck( iOAnalyse inst, Boolean repair ) {
     if( repair ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "staging block: repaired [%5d/%5d] problems in [%4d] items in [/%4d] nodes",
           modifications, checkedTotal, numModifiedItems, listSize );
-      return modifications;
+      return( modifications == 0 );
     } else { /* check only */
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "staging block: detected [%5d] problems in [%4d] items in [%d] nodes",
           numProblems, checkedTotal, listSize );
     }
   }
-  return numProblems;
+  return( numProblems == 0 );
 }
 
 /* is the given z level valid inside our plan (no special handling for zlevel 0 !) */
