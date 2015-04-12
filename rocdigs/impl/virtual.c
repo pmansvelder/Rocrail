@@ -563,12 +563,12 @@ static iONode __translate( iOVirtual virtual, iONode node ) {
       }
     }
     else if(  wProgram.getcmd( node ) == wProgram.pton ) {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "PT ON");
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "PT ON");
       rsp = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
       wProgram.setcmd( rsp, wProgram.statusrsp );
     }  // PT off, send: All ON"
     else if( wProgram.getcmd( node ) == wProgram.ptoff ) {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "PT OFF");
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "PT OFF");
       rsp = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
       wProgram.setcmd( rsp, wProgram.statusrsp );
     }
@@ -579,20 +579,20 @@ static iONode __translate( iOVirtual virtual, iONode node ) {
       int addr = wProgram.getaddr( node );
 
       if( wProgram.getlntype(node) == wProgram.lntype_mp ) {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MultiPort addr=%d mask=0x%04X value=%d", addr, cv, value);
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "MultiPort addr=%d mask=0x%04X value=%d", addr, cv, value);
       }
     }
 
     else if( wProgram.getcmd( node ) == wProgram.lncvget ) {
       int cv = wProgram.getcv( node );
       int addr = wProgram.getaddr( node );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "lncvget addr=%d cv=%d", addr, cv);
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "lncvget addr=%d cv=%d", addr, cv);
     }
 
     else if( wProgram.getcmd( node ) == wProgram.writehex ) {
       int i = 0;
       const char* hexfile = wProgram.getfilename(node);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "writehex file=%s", hexfile);
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "writehex file=%s", hexfile);
       for( i = 1; i <= 100; i++ ) {
         rsp = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
         wProgram.setcmd( rsp, wProgram.writehex );
