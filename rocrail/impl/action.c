@@ -74,6 +74,7 @@
 #include "rocrail/wrapper/public/Clock.h"
 #include "rocrail/wrapper/public/Ctrl.h"
 #include "rocrail/wrapper/public/RocRail.h"
+#include "rocrail/wrapper/public/Program.h"
 
 static int instCnt = 0;
 static int levelCnt = 0;
@@ -1391,7 +1392,30 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       }
 
       if( lc != NULL ) {
-        if( StrOp.equals( wAction.loco_class, wAction.getcmd( data->action ) ) ) {
+        if( StrOp.equals( wLoc.pomwrite, wAction.getcmd( data->action ) ) ) {
+          iONode props = LocOp.base.properties(lc);
+          iONode cmd = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+          iOStrTok tok = StrTokOp.inst(wAction.getparam(data->action), ',');
+          int cv  = 0;
+          int val = 0;
+          if( StrTokOp.hasMoreTokens(tok) )
+            cv = atoi(StrTokOp.nextToken(tok));
+          if( StrTokOp.hasMoreTokens(tok) )
+            val = atoi(StrTokOp.nextToken(tok));
+          StrTokOp.base.del(tok);
+
+          wProgram.setcmd( cmd, wProgram.set );
+          wProgram.setiid( cmd, wLoc.getiid(props) );
+          wProgram.setaddr( cmd, wLoc.getaddr(props) );
+          wProgram.setlongaddr( cmd, (wLoc.getaddr(props) > 127) ? True:False );
+          wProgram.setdecaddr( cmd, wLoc.getaddr(props) );
+          wProgram.setcv( cmd, cv );
+          wProgram.setvalue( cmd, val );
+          wProgram.setpom( cmd, True );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "write pom for loco [%s] %d=%d", LocOp.getId(lc), cv, val );
+          ControlOp.cmd( AppOp.getControl(), cmd, NULL );
+        }
+        else if( StrOp.equals( wAction.loco_class, wAction.getcmd( data->action ) ) ) {
           LocOp.setClass(lc, wAction.getparam( data->action ));
         }
         else if( StrOp.equals(wLoc.consist, wAction.getcmd(data->action) ) ) {

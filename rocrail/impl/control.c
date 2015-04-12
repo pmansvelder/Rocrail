@@ -1724,7 +1724,7 @@ static void __clockticker( void* threadinst ) {
       if( data->devider > 1 )
         data->time += 1;
       else {
-        if( abs(data->time - time(NULL)) > 60 )
+        if( abs((int)(data->time - time(NULL))) > 60 )
           data->time += 1;
         else
           data->time = time(NULL);
