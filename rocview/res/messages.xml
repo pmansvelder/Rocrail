@@ -29838,4 +29838,7 @@
     <sl txt="Mora biti res"/>
     <sr_latin txt="Mora biti istinito"/>
   </Msg>
+  <Msg id="showpending">
+    <en txt="Show pending switches" tip="Show pending switches with a red background color."/>
+  </Msg>
 </Messages>

@@ -7829,3 +7829,15 @@ msgstr ""
 msgid "Must be true"
 msgstr ""
 
+#. 
+# id="showpending"
+#, c-format
+msgid "Show pending switches"
+msgstr ""
+
+#. 
+# id="showpending"
+#, c-format
+msgid "Show pending switches with a red background color."
+msgstr ""
+

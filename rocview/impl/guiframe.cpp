@@ -390,6 +390,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( ME_ShowID         , RocGuiFrame::OnShowID)
     EVT_MENU( ME_ShowCounters   , RocGuiFrame::OnShowCounters)
     EVT_MENU( ME_ShowLocked     , RocGuiFrame::OnShowLocked)
+    EVT_MENU( ME_ShowPending    , RocGuiFrame::OnShowPending)
     EVT_MENU( ME_FullScreen     , RocGuiFrame::OnFullScreen)
     EVT_MENU( ME_FlipFullScreen , RocGuiFrame::OnFlipFullScreen)
     EVT_MENU( ME_Raster         , RocGuiFrame::OnRaster)
@@ -2321,6 +2322,7 @@ void RocGuiFrame::initFrame() {
   menuView->AppendCheckItem( ME_ShowID, wxGetApp().getMenu("showid"), wxGetApp().getTip("showid") );
   menuView->AppendCheckItem( ME_ShowCounters, wxGetApp().getMenu("showcounters"), wxGetApp().getTip("showcounters") );
   menuView->AppendCheckItem( ME_ShowLocked, wxGetApp().getMenu("showlocked"), wxGetApp().getTip("showlocked") );
+  menuView->AppendCheckItem( ME_ShowPending, wxGetApp().getMenu("showpending"), wxGetApp().getTip("showpending") );
   menuView->AppendCheckItem( ME_Raster, wxGetApp().getMenu("raster"), wxGetApp().getTip("raster") );
   menuView->AppendCheckItem( ME_Tooltip, wxGetApp().getMenu("tooltip"), wxGetApp().getTip("tooltip") );
   menuView->AppendCheckItem( ME_FullScreen, wxGetApp().getMenu("fullscreen"), wxGetApp().getTip("fullscreen") );
@@ -2639,6 +2641,7 @@ void RocGuiFrame::create() {
   m_bShowID = (wPlanPanel.isshowid( wGui.getplanpanel( m_Ini ) ) ? true:false);
   m_bShowCounters = (wPlanPanel.isshowcounters( wGui.getplanpanel( m_Ini ) ) ? true:false);
   m_bShowLocked = (wPlanPanel.isshowlocked( wGui.getplanpanel( m_Ini ) ) ? true:false);
+  m_bShowPending = (wPlanPanel.isshowpending( wGui.getplanpanel( m_Ini ) ) ? true:false);
   m_bRaster = (wPlanPanel.israster( wGui.getplanpanel( m_Ini ) ) ? true:false);
   m_bTooltip = (wPlanPanel.istooltip( wGui.getplanpanel( m_Ini ) ) ? true:false);
   m_bToolBar = (wGui.istoolbar(m_Ini) ? true:false);
@@ -3686,6 +3689,18 @@ void RocGuiFrame::OnShowLocked( wxCommandEvent& event ) {
 }
 
 
+void RocGuiFrame::OnShowPending( wxCommandEvent& event ) {
+  wxMenuItem* mi_showpending = menuBar->FindItem(ME_ShowPending);
+  m_bShowPending = mi_showpending->IsChecked();
+
+  int pages = m_PlanNotebook->GetPageCount();
+  for( int i = 0; i < pages; i++ ) {
+    BasePanel* p = (BasePanel*)m_PlanNotebook->GetPage(i);
+    p->reScale( m_Scale );
+  }
+}
+
+
 void RocGuiFrame::OnFlipFullScreen( wxCommandEvent& event ) {
   wxMenuItem* mi_fullscreen = menuBar->FindItem(ME_FullScreen);
   TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "flip full screen..." );
@@ -4655,6 +4670,8 @@ void RocGuiFrame::OnMenu( wxMenuEvent& event ) {
   mi_showcounters->Check( m_bShowCounters );
   wxMenuItem* mi_showlocked  = menuBar->FindItem(ME_ShowLocked);
   mi_showlocked->Check( m_bShowLocked );
+  wxMenuItem* mi_showpending  = menuBar->FindItem(ME_ShowPending);
+  mi_showpending->Check( m_bShowPending );
   wxMenuItem* mi_raster  = menuBar->FindItem(ME_Raster);
   mi_raster->Check( m_bRaster );
   wxMenuItem* mi_tooltip  = menuBar->FindItem(ME_Tooltip);

@@ -321,6 +321,7 @@ public:
   void OnShowID(wxCommandEvent& event);
   void OnShowCounters(wxCommandEvent& event);
   void OnShowLocked(wxCommandEvent& event);
+  void OnShowPending(wxCommandEvent& event);
   void OnRaster(wxCommandEvent& event);
   void OnTooltip(wxCommandEvent& event);
   void OnBackColor(wxCommandEvent& event);
@@ -362,6 +363,7 @@ public:
   bool isShowID() { return m_bShowID; }
   bool isShowCounters() { return m_bShowCounters; }
   bool isShowLocked() { return m_bShowLocked; }
+  bool isShowPending() { return m_bShowPending; }
   bool isRaster() { return m_bRaster; }
   bool isTooltip(bool forThrottle=false);
   bool isInitialized() { return m_bInitialized; }
@@ -464,6 +466,7 @@ private:
   bool  m_bShowID;
   bool  m_bShowCounters;
   bool  m_bShowLocked;
+  bool  m_bShowPending;
   bool  m_bRaster;
   bool  m_bTooltip;
   bool  m_bToolBar;
@@ -674,6 +677,7 @@ enum
     ME_ShowID,
     ME_ShowCounters,
     ME_ShowLocked,
+    ME_ShowPending,
     ME_FullScreen,
     ME_FlipFullScreen,
     ME_Raster,

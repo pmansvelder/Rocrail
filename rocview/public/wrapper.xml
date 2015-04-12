@@ -210,6 +210,7 @@
       <var name="showid" vt="bool" defval="false"/>
       <var name="showcounters" vt="bool" defval="false"/>
       <var name="showlocked" vt="bool" defval="false"/>
+      <var name="showpending" vt="bool" defval="true" remark="Show pending switches with a red background."/>
       <var name="raster" vt="bool" defval="false"/>
       <var name="tooltip" vt="bool" defval="true"/>
       <var name="processrouteevents" vt="bool" defval="true"/>
