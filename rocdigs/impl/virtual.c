@@ -545,25 +545,21 @@ static iONode __translate( iOVirtual virtual, iONode node ) {
 
         // POM ?
         if( wProgram.ispom(node) ) {
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "POM: set CV%d of loc %d to %d...", cv, decaddr, value );
-
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "POM: set CV%d of loc %d to %d", cv, decaddr, value );
           if ( cv == 0 )
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "POM does not allow writing of adress!");
-
-        } else {
-
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set CV%d to %d...", cv, value );
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "POM does not allow writing of adress!");
+        }
+        else {
+          TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "set CV%d to %d", cv, value );
           rsp = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
           wProgram.setdecaddr( rsp, decaddr );
           wProgram.setcv( rsp, cv );
           wProgram.setvalue( rsp, value );
           wProgram.setcmd( rsp, wProgram.statusrsp );
-
-
         }
       }
       else {
-        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "out of range CV%d...", cv );
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "out of range CV%d", cv );
       }
     }
     else if(  wProgram.getcmd( node ) == wProgram.pton ) {
