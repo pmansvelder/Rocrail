@@ -266,6 +266,7 @@ int RocGui::OnExit() {
     wPlanPanel.setraster( wGui.getplanpanel( m_Ini ), m_Frame->isRaster() ? True:False );
     wPlanPanel.settooltip( wGui.getplanpanel( m_Ini ), m_Frame->isTooltip() ? True:False );
     wPlanPanel.setshowlocked( wGui.getplanpanel( m_Ini ), m_Frame->isShowLocked() ? True:False );
+    wPlanPanel.setshowpending( wGui.getplanpanel( m_Ini ), m_Frame->isShowPending() ? True:False );
 
     if( wGui.getsplitpanel( m_Ini ) == NULL ) {
       iONode node = NodeOp.inst( wSplitPanel.name(), m_Ini, ELEMENT_NODE );
