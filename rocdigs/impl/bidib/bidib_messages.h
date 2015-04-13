@@ -984,3 +984,4 @@ typedef struct                              // t_bidib_cs_prog_state
 
 
 #endif // __BIDIB_MESSAGES_H__
+
