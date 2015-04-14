@@ -29841,4 +29841,7 @@
   <Msg id="showpending">
     <en txt="Show pending switches" tip="Show pending switches with a red background color."/>
   </Msg>
+  <Msg id="track_dcurve">
+    <en txt="Double curved track"/>
+  </Msg>
 </Messages>

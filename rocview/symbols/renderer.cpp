@@ -174,10 +174,10 @@ void SymbolRenderer::initSym() {
           m_SvgSym2 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::road_dcurve_occ );
         }
         else {
-          m_SvgSym1 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::curve );
-          m_SvgSym2 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::curve_occ );
-          m_SvgSym3 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::curve_route );
-          m_SvgSym4 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::curve_occroute );
+          m_SvgSym1 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::dcurve );
+          m_SvgSym2 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::dcurve_occ );
+          m_SvgSym3 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::dcurve_route );
+          m_SvgSym4 = (svgSymbol*)MapOp.get( m_SymMap, tracktype::dcurve_occroute );
         }
       }
     }

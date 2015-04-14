@@ -241,6 +241,8 @@ void TrackPickerDlg::initSymbols() {
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s::::,%s,%s", wTrack.name(), wTrack.curve, tracktype::curve, "track_curve" );
   ListOp.add( m_SymbolList, (obj) symname );
+  symname = StrOp.fmt("%s:%s::::,%s,%s", wTrack.name(), wTrack.dcurve, tracktype::dcurve, "track_dcurve" );
+  ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s::::,%s,%s", wTrack.name(), wTrack.buffer, tracktype::buffer, "track_buffer" );
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s::::,%s,%s", wTrack.name(), wTrack.dir, tracktype::dir, "track_dir" );

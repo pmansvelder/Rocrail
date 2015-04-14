@@ -47,6 +47,10 @@ namespace tracktype {
   static const char* curve_occ       = "curve-occ.svg";
   static const char* curve_route     = "curve-route.svg";
   static const char* curve_occroute  = "curve-occroute.svg";
+  static const char* dcurve          = "dcurve.svg";
+  static const char* dcurve_occ      = "dcurve-occ.svg";
+  static const char* dcurve_route    = "dcurve-route.svg";
+  static const char* dcurve_occroute = "dcurve-occroute.svg";
   static const char* buffer          = "buffer.svg";
   static const char* buffer_occ      = "buffer-occ.svg";
   static const char* buffer_route    = "buffer-route.svg";
