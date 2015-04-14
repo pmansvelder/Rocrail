@@ -79,7 +79,7 @@ Starting with block A:
 - following the west side will end up to a dead end.
 - the east side will lead to block B following the tracks and switch
 
-For the Analyzer to work the Plan has to fullfill:
+For the Analyser to work the Plan has to fullfill:
 - all items must be connected without space
 - only one item at one position
  */
@@ -466,6 +466,24 @@ static Boolean isTrackNo3( iONode item ) {
   if( StrOp.equals( NodeOp.getName(item), wTrack.name() ) &&
       StrOp.equals( wItem.gettype(item), wTrack.tracknr ) &&
       ( wTrack.gettknr(item) == 3 )
+    ) {
+    return( True );
+  }
+  return( False );
+}
+
+static Boolean isDcurve( iONode item ) {
+  if( StrOp.equals( NodeOp.getName(item), wTrack.name() ) &&
+      StrOp.equals( wItem.gettype(item), wTrack.dcurve )
+    ) {
+    return( True );
+  }
+  return( False );
+}
+
+static Boolean isCurve90( iONode item ) {
+  if( StrOp.equals( NodeOp.getName(item), wTrack.name() ) &&
+      StrOp.equals( wItem.gettype(item), wTrack.curve90 )
     ) {
     return( True );
   }
@@ -3554,13 +3572,16 @@ static Boolean zlevelCheck( iOAnalyse inst, Boolean repair ) {
           }
         }else{
           const char* type = wItem.gettype(item);
-          if( StrOp.equals( itemName, wTrack.name() )
-            && (  StrOp.equals( type, wTrack.curve90 ) || StrOp.equals( type, wTrack.dcurve  ) )
-            && ( ! wItem.isroad( item ) )
-            ) {
-            /* curve90 or dcurve without attribute "road" -> may be a wrong type of track */
-            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: item[%s] type[%s] at[%d-%d-%d] may be wrong (HINT: change type to curve or set the road attribute)",
-                wItem.getid(item), type==NULL?"":type, wItem.getx(item), wItem.gety(item), wItem.getz(item) );
+          if( isCurve90( item ) ) {
+            if( wItem.isroad( item ) ) {
+              /* "road" curve90 has orientation different from normal curve -> not supported */
+              TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: item[%s] type[%s] at[%d-%d-%d] (road/curve90) not supported by analyser",
+                   wItem.getid(item), type==NULL?"":type, wItem.getx(item), wItem.gety(item), wItem.getz(item) );
+            } else {
+              /* curve90 without attribute "road" -> wrong type of track */
+              TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: item[%s] type[%s] at[%d-%d-%d] may be wrong (HINT: change type to curve or set the road attribute)",
+                  wItem.getid(item), type==NULL?"":type, wItem.getx(item), wItem.gety(item), wItem.getz(item) );
+            }
           }
         }
       }else {
@@ -3988,11 +4009,9 @@ static Boolean __prepare(iOAnalyse inst, iOList list, int modx, int mody) {
       __createKey( key, node, 0+modx, 0+mody, 0);
       TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "  checking key %s for %s type: %s ori: %s name: %s",
           key, NodeOp.getName(node), type==NULL?"":type, ori, wItem.getid(node) );
-      if( StrOp.equals( NodeOp.getName(node), wTrack.name() )
-        && (  StrOp.equals( type, wTrack.curve90 ) || StrOp.equals( type, wTrack.dcurve  ) )
-        && ( ! wItem.isroad( node ) )
+      if( isCurve90( node ) && ( ! wItem.isroad( node ) )
         ) {
-        /* curve90 or dcurve without attribute "road" -> may be a wrong type of track */
+        /* curve90 without attribute "road" -> may be a wrong type of track */
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "   item[%s] type[%s] at[%d-%d-%d] may be wrong (HINT: change type to curve or set the road attribute)",
             wItem.getid(node), type==NULL?"":type, wItem.getx(node), wItem.gety(node), wItem.getz(node) );
       }
@@ -4305,6 +4324,7 @@ static int __getType(iONode item ) {
 
   if(  ( StrOp.equals( type, wTrack.name()    ) && StrOp.equals( subtype, wTrack.curve ) )
     || ( StrOp.equals( type, wFeedback.name() ) && wFeedback.iscurve(item) )
+    || isDcurve( item )
     ) {
     return typeTrackCurve;
   } else if( isRasterSwitch( item ) ) {
@@ -4328,6 +4348,24 @@ static const int dcrossingAhead  = 2000;
 
 static Boolean isIgnoreItem( iONode item, int travel ) {
   const char* itemori = wItem.getori(item);
+
+  if( isDcurve( item ) ) {
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "isIgnoreItem: dcurve id[%s] itemori[%s] travel[%d]", wItem.getid(item), itemori, travel );
+    if( travel == 0 ) {
+      if( StrOp.equals( itemori, wItem.west  ) ) return True;
+      if( StrOp.equals( itemori, wItem.south ) ) return True;
+    } else if( travel == 1 ) {
+      if( StrOp.equals( itemori, wItem.south ) ) return True;
+      if( StrOp.equals( itemori, wItem.east  ) ) return True;
+    } else if( travel == 2 ) {
+      if( StrOp.equals( itemori, wItem.north ) ) return True;
+      if( StrOp.equals( itemori, wItem.east  ) ) return True;
+    } else if( travel == 3 ) {
+      if( StrOp.equals( itemori, wItem.north ) ) return True;
+      if( StrOp.equals( itemori, wItem.west  ) ) return True;
+    }
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "isIgnoreItem: dcurve -> FALSE" );
+  }
 
   return False;
 }
@@ -4353,7 +4391,36 @@ static int __travel( iOAnalyse inst, iONode item, int travel, int turnoutstate, 
     }
 
     /* curve -> change dir */
-    if( __getType(item) == typeTrackCurve  || (StrOp.equals( type, wFeedback.name() ) && wFeedback.iscurve( item))   ) {
+    if( isDcurve( item ) ) {
+      /* a dcurve always fits */
+      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "dcurve id[%s] name[%s] type[%s] itemori[%s]", wItem.getid(item), type, subtype, itemori );
+      if( travel == 0 ) {
+        if( StrOp.equals( itemori, wItem.north ) ) return oriSouth;
+        if( StrOp.equals( itemori, wItem.west  ) ) return oriNorth;
+        if( StrOp.equals( itemori, wItem.south ) ) return oriSouth;
+        if( StrOp.equals( itemori, wItem.east  ) ) return oriNorth;
+      } else if( travel == 1 ) {
+        if( StrOp.equals( itemori, wItem.north ) ) return oriEast;
+        if( StrOp.equals( itemori, wItem.east  ) ) return oriWest;
+        if( StrOp.equals( itemori, wItem.south ) ) return oriEast;
+        if( StrOp.equals( itemori, wItem.west  ) ) return oriWest;
+      } else if( travel == 2 ) {
+        if( StrOp.equals( itemori, wItem.north ) ) return oriNorth;
+        if( StrOp.equals( itemori, wItem.west  ) ) return oriSouth;
+        if( StrOp.equals( itemori, wItem.south ) ) return oriNorth;
+        if( StrOp.equals( itemori, wItem.east  ) ) return oriSouth;
+      } else if( travel == 3 ) {
+        if( StrOp.equals( itemori, wItem.north ) ) return oriWest;
+        if( StrOp.equals( itemori, wItem.west  ) ) return oriEast;
+        if( StrOp.equals( itemori, wItem.south ) ) return oriWest;
+        if( StrOp.equals( itemori, wItem.east  ) ) return oriEast;
+      } else {
+        /* this should never be reached. dcurve must match above ! */
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  -- no valid dcurve for us! [%s]",
+            wItem.getid(item) );
+        return -1; /*end of the game */
+      }
+    } else if( __getType(item) == typeTrackCurve ) {
       /* algebra of Rocrail directions */
       if(        travel == 0 &&  StrOp.equals( itemori, wItem.north )) {
         return oriSouth;
@@ -5791,7 +5858,7 @@ static int __travel( iOAnalyse inst, iONode item, int travel, int turnoutstate, 
         }
       } /* twoway (raster) */
 
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: switch[%s] in raster mode not supported. stop analyzing this route.", wItem.getid(item) );
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: switch[%s] in raster mode not supported. stop analysing this route.", wItem.getid(item) );
     } /* raster switch */
 
     else { /* elements which do not change travel direction */
@@ -6209,12 +6276,13 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
        *  a) with same state it is ok -> no action, ignore
        *  b) different state is not ok -> handled below as evil loop
        */
-    }else if( StrOp.equals( wItem.getid(item), wItem.getid(listitem) ) &&
-        StrOp.equals( NodeOp.getName(item), NodeOp.getName(listitem) ) &&
-        ! StrOp.equals(NodeOp.getName(item), wBlock.name() ) &&
-        ! StrOp.equals(NodeOp.getName(item), wStage.name() ) &&
-        ! StrOp.equals(NodeOp.getName(item), wSelTab.name() ) &&
-        ! isTrackNo3( item )
+    } else if( StrOp.equals( wItem.getid(item), wItem.getid(listitem) )
+        && StrOp.equals( NodeOp.getName(item), NodeOp.getName(listitem) )
+        && ! StrOp.equals(NodeOp.getName(item), wBlock.name() )
+        && ! StrOp.equals(NodeOp.getName(item), wStage.name() )
+        && ! StrOp.equals(NodeOp.getName(item), wSelTab.name() )
+        && ! isTrackNo3( item )
+        && ! isDcurve( item )
         ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "evil loop on [%s] [%s] (depth=%d)",
           wItem.getid(item), NodeOp.getName(item), depth);
@@ -6230,7 +6298,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
     return False;
   }
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analyzing item [%-20s] travel: [%d] name[%s] type[%s] depth[%d] pos[%d-%d-%d]",
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analysing item [%-20s] travel: [%d] name[%s] type[%s] depth[%d] pos[%d-%d-%d]",
       wItem.getid(item), travel, NodeOp.getName(item), wItem.gettype(item), depth, wItem.getx(item), wItem.gety(item), wItem.getz(item) );
 
   if( ( ! StrOp.equals(NodeOp.getName(item), wBlock.name() ) && 
@@ -6415,7 +6483,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
 
     if( (travelp == itemNotInDirection || travelp == -1) && travelp != dcrossingAhead) {
       if( StrOp.equals(NodeOp.getName(nextitem), wTrack.name() ) && StrOp.equals( wItem.gettype(nextitem), wTrack.dir ) ) {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analyzing item [%-20s] travel: [%d] name=%s type=%s",
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analysing item [%-20s] travel: [%d] name=%s type=%s",
             wItem.getid(nextitem), travel, NodeOp.getName(nextitem), wItem.gettype(nextitem) );
 
         /* continue at dir against direction... to get some info for feedbacks, signal, blockid etc. */
@@ -6472,7 +6540,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
               TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, " -> stop: nextNext [%s][%s] not fitting -> end tr[%d] trp[%d] trp2[%d] oI[%d] oNI[%d] oNI2[%d]",
                   NodeOp.getName(nextNextItem), wItem.getid(nextNextItem), travel, travelp, travelp2, __getOri( item ), __getOri( nextitem ), __getOri( nextNextItem ) );
 
-              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analyzing item [%-20s] travel: [%d] name=%s type=%s",
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analysing item [%-20s] travel: [%d] name=%s type=%s",
                   wItem.getid(nextNextItem), travel, NodeOp.getName(nextNextItem), wItem.gettype(nextNextItem) );
               TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " -> stop: [%s][%s] 2nd consecutive dir against direction -> end of search",
                   NodeOp.getName(nextNextItem), wItem.getid(nextNextItem) );
@@ -6499,7 +6567,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
 
     if( StrOp.equals( NodeOp.getName(nextitem), wTrack.name() ) && StrOp.equals( wItem.gettype(nextitem), wTrack.buffer ) ) {
       /* suiting travel direction was already checked above with __travel */
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analyzing item [%-20s] travel: [%d] name=%s type=%s",
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analysing item [%-20s] travel: [%d] name=%s type=%s",
           wItem.getid(nextitem), travel, NodeOp.getName(nextitem), wItem.gettype(nextitem) );
 
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, " buffer detected add route to notRTlist list" );
@@ -6516,7 +6584,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
         StrOp.equals( NodeOp.getName(nextitem), wStage.name() ) ||
         StrOp.equals( NodeOp.getName(nextitem), wSelTab.name() )) {
       /* we reached the end block (bkb) */
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analyzing item [%-20s] travel: [%d] name=%s type=%s",
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analysing item [%-20s] travel: [%d] name=%s type=%s",
           wItem.getid(nextitem), travel, NodeOp.getName(nextitem), wItem.gettype(nextitem) );
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " next is a block: [%s]", wItem.getid(nextitem));
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  -> LIST: block [%s] travel: [%d] depth: [%d] tos: [%d]",
@@ -6626,7 +6694,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
           wItem.getid(item), wItem.getx(item), wItem.gety(item), wItem.getz(item), travel,
           wItem.getid(nextitem), wItem.getx(nextitem), wItem.gety(nextitem), wItem.getz(nextitem), travelp, nextitemOri );
 
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analyzing item [%-20s] travel: [%d] name=%s type=%s",
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analysing item [%-20s] travel: [%d] name=%s type=%s",
           wItem.getid(nextitem), travel, NodeOp.getName(nextitem), wItem.gettype(nextitem) );
 
       /* add nextitem to route fragment */
@@ -6689,7 +6757,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
               StrOp.equals(NodeOp.getName(nextNextItem), wStage.name() ) ||
               StrOp.equals(NodeOp.getName(nextNextItem), wSelTab.name() ) ) {
             /* nextNext is a block -> save route and end search */
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analyzing item [%-20s] travel: [%d] name=%s type=%s",
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analysing item [%-20s] travel: [%d] name=%s type=%s",
                 wItem.getid(nextNextItem), travel, NodeOp.getName(nextNextItem), wItem.gettype(nextNextItem) );
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " next is a block: [%s]", wItem.getid(nextNextItem));
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  -> LIST: block [%s] travel: [%d] depth: [%d] tos: [%d]",
@@ -6720,7 +6788,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
           wItem.getid(item), wItem.getx(item), wItem.gety(item), wItem.getz(item), travel,
           wItem.getid(nextitem), wItem.getx(nextitem), wItem.gety(nextitem), wItem.getz(nextitem), travelp, nextitemOri );
 
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analyzing item [%-20s] travel: [%d] name=%s type=%s",
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analysing item [%-20s] travel: [%d] name=%s type=%s",
           wItem.getid(nextitem), travel, NodeOp.getName(nextitem), wItem.gettype(nextitem) );
 
       /* add nextitem to route fragment */
@@ -6783,7 +6851,7 @@ static Boolean __analyseItem(iOAnalyse inst, iONode item, iOList route, int trav
               StrOp.equals(NodeOp.getName(nextNextItem), wStage.name() ) ||
               StrOp.equals(NodeOp.getName(nextNextItem), wSelTab.name() ) ) {
             /* nextNext is a block -> save route and end search */
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analyzing item [%-20s] travel: [%d] name=%s type=%s",
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end   analysing item [%-20s] travel: [%d] name=%s type=%s",
                 wItem.getid(nextNextItem), travel, NodeOp.getName(nextNextItem), wItem.gettype(nextNextItem) );
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " next is a block: [%s]", wItem.getid(nextNextItem));
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  -> LIST: block [%s] travel: [%d] depth: [%d] tos: [%d]",
@@ -6833,7 +6901,7 @@ static void __analyseBlock(iOAnalyse inst, iONode block, const char* inittravel)
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "--------------------------------------------------");
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analyzing block [%s] in [%s][%d] direction ",
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start analysing block [%s] in [%s][%d] direction ",
       wBlock.getid(block), inittravel, travel);
 
     int xoffset = 0;
@@ -6861,7 +6929,7 @@ static void __analyseBlock(iOAnalyse inst, iONode block, const char* inittravel)
     /* start the recursion */
     int ret = __analyseItem(inst, block, route, travel, 0, 0, True);
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end analyzing block [%s] in [%s] direction returned: %d",
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "end analysing block [%s] in [%s] direction returned: %d",
         wBlock.getid(block), inittravel, ret);
 }
 
@@ -7840,7 +7908,7 @@ static int __generateRoutes(iOAnalyse inst) {
 
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, " ");
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "the analyzer found the routes:");
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "the analyser found the routes:");
 
   int fbcount = 0;
 
@@ -8527,7 +8595,7 @@ static Boolean _checkPlanHealth(iOAnalyse inst) {
                 }
               }
 
-              if( aspects == 4 ) {
+              if( aspects >= 4 ) {
                 __createAccessorymapKeyFromAPGPVIB( key, addr4, port4, gate4, 0, 1, iid, bus );
                 accessoryMapItem = (iONode)MapOp.get( accessoryMap, key );
                 if( accessoryMapItem != NULL ) {
@@ -8702,8 +8770,8 @@ static Boolean _checkPlanHealth(iOAnalyse inst) {
       if( data->maxConnectorDistance < AnalyseOp.MINIMAL_MAX_CONNECTOR_DISTANCE )
         data->maxConnectorDistance = AnalyseOp.MINIMAL_MAX_CONNECTOR_DISTANCE;
 
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "INFO: analyzer: max connector distance is %d (def/min=%d)", data->maxConnectorDistance, AnalyseOp.MINIMAL_MAX_CONNECTOR_DISTANCE );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "INFO: analyzer: min z-level is %d , max z-level is %d", data->minZlevel, data->maxZlevel );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "INFO: analyser: max connector distance is %d (def/min=%d)", data->maxConnectorDistance, AnalyseOp.MINIMAL_MAX_CONNECTOR_DISTANCE );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "INFO: analyser: min z-level is %d , max z-level is %d", data->minZlevel, data->maxZlevel );
     }
   }
   else {
@@ -8958,7 +9026,7 @@ static Boolean routeCheck( iOAnalyse inst, Boolean repair ) {
               if( sw != NULL ) {
                 if( checkSwitchCmd( swcmd ) == False ) {
                   if( isSimpleCrossing( SwitchOp.base.properties(sw) ) ) {
-                    /* simple crossing (no motor) may have any command, also empty or blank(s) (-> analyzer ) */
+                    /* simple crossing (no motor) may have any command, also empty or blank(s) (-> analyser ) */
                     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "routeCheck: route[%s] switch[%s] : simple crossing with any command[%s] is OK",
                         stid, swid, swcmd );
                   }
@@ -10524,7 +10592,7 @@ static struct OAnalyse* _inst() {
   }
 
   if( ! anaOpt ) {
-    /* no analyzer options in ini -> create a node */
+    /* no analyser options in ini -> create a node */
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "_inst: create node %s", wAnaOpt.name() );
     iONode anaOpt = NodeOp.inst( wAnaOpt.name(), aoIni, ELEMENT_NODE );
     if( ! anaOpt ) {
@@ -10549,7 +10617,7 @@ static struct OAnalyse* _inst() {
   data->maxRecursionDepth = wAnaOpt.getmaxRecursionDepth( anaOpt ) ;
 
   /* set options to current value or initialize with default (creates non existent entries in rocrail.ini) */
-  /* basic analyzer jobs */
+  /* basic analyser jobs */
   wAnaOpt.setsetRouteId( anaOpt, wAnaOpt.issetRouteId( anaOpt ) ) ;
   wAnaOpt.setsetBlockId( anaOpt, wAnaOpt.issetBlockId( anaOpt ) ) ;
   wAnaOpt.setaddSignalBlockAssignment( anaOpt, wAnaOpt.isaddSignalBlockAssignment( anaOpt ) ) ;

@@ -7847,3 +7847,9 @@ msgstr ""
 msgid "Double curved track"
 msgstr ""
 
+#. 
+# id="road_dcurve"
+#, c-format
+msgid "Double curved road"
+msgstr ""
+

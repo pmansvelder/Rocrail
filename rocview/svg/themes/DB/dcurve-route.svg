@@ -1,0 +1,11 @@
+<svg width="32" height="32">
+  <g>
+    <path stroke="black" fill="rgb(0,0,255)" d="M 0,16 L 0,20 L 3,23 L 7,19 L 4,16 z " />
+    <path stroke="black" fill="rgb(0,0,255)" d="M 8,28 L 11,31 L 15,31 L 15,27 L 12,24 z " />
+    <path stroke="black" fill="rgb(128,255,255)" d="M 3,23 L 8,28 L 12,24 L 7,19 z " />
+    <!-- other side -->
+    <path stroke="black" fill="rgb(222, 184, 135)" d="M 31,15 L 31,11 L 28,8 L 24,12 L 27,15 z " />
+    <path stroke="black" fill="rgb(222, 184, 135)" d="M 23,3 L 20,0 L 16,0 L 16,4 L 19,7 z " />
+    <path stroke="black" fill="rgb(255, 200, 160)" d="M 28,8 L 23,5 L 19,7 L 24,12 z " />
+  </g>
+</svg>

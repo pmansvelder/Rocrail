@@ -359,6 +359,8 @@ void TrackPickerDlg::initSymbols() {
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s:::road:,%s,%s", wTrack.name(), wTrack.curve, tracktype::road_curve, "road_curve" );
   ListOp.add( m_SymbolList, (obj) symname );
+  symname = StrOp.fmt("%s:%s:::road:,%s,%s", wTrack.name(), wTrack.dcurve, tracktype::road_dcurve, "road_dcurve" );
+  ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s:::road:,%s,%s", wTrack.name(), wTrack.dir, tracktype::road_dir, "road_dir" );
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s:::road:,%s,%s", wTrack.name(), wTrack.dirall, tracktype::road_dirall, "road_dirall" );
