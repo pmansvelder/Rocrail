@@ -4323,6 +4323,7 @@ static int __getType(iONode item ) {
   const char* subtype = wItem.gettype(item);
 
   if(  ( StrOp.equals( type, wTrack.name()    ) && StrOp.equals( subtype, wTrack.curve ) )
+    || ( StrOp.equals( type, wTrack.name()    ) && StrOp.equals( subtype, wTrack.curvenr ) )
     || ( StrOp.equals( type, wFeedback.name() ) && wFeedback.iscurve(item) )
     || isDcurve( item )
     ) {

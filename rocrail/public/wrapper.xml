@@ -2535,6 +2535,7 @@
         <const name="dir" vt="string" val="dir"/>
         <const name="dirall" vt="string" val="dirall"/>
         <const name="tracknr" vt="string" val="tracknr"/>
+        <const name="curvenr" vt="string" val="curvenr"/>
         <const name="connector" vt="string" val="connector"/>
         <const name="concurveright" vt="string" val="concurveright"/>
         <const name="concurveleft" vt="string" val="concurveleft"/>

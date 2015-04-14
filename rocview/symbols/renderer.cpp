@@ -250,6 +250,16 @@ void SymbolRenderer::initSym() {
       StrOp.fmtb( key, tracktype::tracknr_route, wTrack.gettknr( m_Props ) );
       m_SvgSym3 = (svgSymbol*)MapOp.get( m_SymMap, key );
     }
+    else if( StrOp.equals( wTrack.curvenr, wTrack.gettype( m_Props ) ) ) {
+      char key[256];
+      m_iSymSubType = tracktype::i_curvenr;
+      StrOp.fmtb( key, tracktype::curvenr, wTrack.gettknr( m_Props ) );
+      m_SvgSym1 = (svgSymbol*)MapOp.get( m_SymMap, key );
+      StrOp.fmtb( key, tracktype::curvenr_occ, wTrack.gettknr( m_Props ) );
+      m_SvgSym2 = (svgSymbol*)MapOp.get( m_SymMap, key );
+      StrOp.fmtb( key, tracktype::curvenr_route, wTrack.gettknr( m_Props ) );
+      m_SvgSym3 = (svgSymbol*)MapOp.get( m_SymMap, key );
+    }
     else {
       m_iSymSubType = tracktype::i_straight;
       if( m_SymMap != NULL ) {

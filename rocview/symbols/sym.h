@@ -86,6 +86,10 @@ namespace tracktype {
   static const char* tracknr_occ   = "track-%d-occ.svg";
   static const char* tracknr_route = "track-%d-route.svg";
 
+  static const char* curvenr       = "curve-%d.svg";
+  static const char* curvenr_occ   = "curve-%d-occ.svg";
+  static const char* curvenr_route = "curve-%d-route.svg";
+
   static const int i_straight    = 1;
   static const int i_curve       = 2;
   static const int i_buffer      = 3;
@@ -93,6 +97,7 @@ namespace tracktype {
   static const int i_dirall      = 5;
   static const int i_connector   = 6;
   static const int i_tracknr     = 7;
+  static const int i_curvenr     = 8;
 }
 
 namespace switchtype {
