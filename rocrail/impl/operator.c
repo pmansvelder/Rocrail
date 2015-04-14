@@ -168,7 +168,7 @@ static Boolean _cmd( iOOperator inst, iONode nodeA ) {
     __informLocos(inst);
   }
 
-  else if( StrOp.equals( wOperator.emptycar, cmd ) ) {
+  else if( StrOp.equals( wOperator.loadcar, cmd ) ) {
     /* load the carids */
     iOStrTok tok = StrTokOp.inst(wOperator.getcarids(nodeA), ',');
     while( StrTokOp.hasMoreTokens(tok) ) {
