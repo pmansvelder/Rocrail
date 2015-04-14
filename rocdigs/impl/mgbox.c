@@ -1244,7 +1244,7 @@ static void __evaluateMCS2ReadConfig(iOMCS2Data data, byte* in) {
     TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X", addr, index, cv, value);
     if( (index != 0) && (cv == 3) ) {
 
-      if( index == 1 && idname != NULL && StrOp.len(idname) > 0 ) {
+      if( index == 1 && StrOp.len(idname) > 0 ) {
         data->mfxDetectInProgress = True;
         for( i = 0; i < StrOp.len(idname) ; i++ ) {
           idname[i] = '\0';
