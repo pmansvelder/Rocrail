@@ -1877,35 +1877,6 @@ void SymbolRenderer::drawTurnout( wxPaintDC& dc, bool occupied, bool actroute, c
         drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 0, 12, 0.0 );
       }
     }
-    else if( m_iSymSubType == switchtype::i_turnoutright ) {
-      if( StrOp.equals( ori, wItem.south ) ) {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 31, 18, 270.0 );
-      }
-      else if( StrOp.equals( ori, wItem.north ) ) {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 14, 90.0 );
-      }
-      else if( StrOp.equals( ori, wItem.east ) ) {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 20, 0.0 );
-      }
-      else {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 17, 1, 0.0 );
-      }
-    }
-    else if( m_iSymSubType == switchtype::i_turnoutleft ) {
-      if( StrOp.equals( ori, wItem.south ) ) {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 31, 1, 270.0 );
-      }
-      else if( StrOp.equals( ori, wItem.north ) ) {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 32, 90.0 );
-      }
-      else if( StrOp.equals( ori, wItem.east ) ) {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 17, 20, 0.0 );
-      }
-      else {
-        drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 1, 1, 0.0 );
-      }
-    }
-    /* standard switches non raster and raster with lock indicator */
     else if( m_SvgSym16 != NULL ) {
       if( StrOp.equals( ori, wItem.south ) ) {
         drawString( wxString(wItem.getid(m_Props),wxConvUTF8), 32, 17, 270.0 );
