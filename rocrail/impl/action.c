@@ -80,7 +80,7 @@ static int instCnt = 0;
 static int levelCnt = 0;
 static void __doFunction(iOActionData data, iOLoc lc, Boolean fon, int fnaction, int duration);
 static void __doCarFunction(iOActionData data, iOCar car, Boolean fon, int fnaction, int duration);
-static void __doOperatorFunction(iOActionData data, iOOperator opr, Boolean fon, int fnaction, int duration);
+static void __doOperatorFunction(iOActionData data, iOOperator opr, Boolean flip, Boolean fon, const char* desc, int fnaction, int duration);
 static void __setFunctionCmd(iOActionData data, iONode cmd, Boolean fon, int fnaction, int duration);
 
 /** ----- OBase ----- */
@@ -1583,9 +1583,10 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
         iOOperator opr = ModelOp.getOperator( model, wAction.getoid( data->action ));
         if( opr != NULL ) {
           while( StrTokOp.hasMoreTokens(tok) ) {
-            int fnaction = atoi(StrTokOp.nextToken(tok));
+            const char* fndesc = StrTokOp.nextToken(tok);
+            int fnaction = atoi(fndesc);
             if( !random || fnpick == fnidx )
-              __doOperatorFunction(data, opr, fon, fnaction, duration);
+              __doOperatorFunction(data, opr, StrOp.equals( wOutput.flip, wAction.getcmd( data->action ) ), fon, fndesc, fnaction, duration);
             fnidx++;
           }
         }
@@ -1672,12 +1673,15 @@ static void __setFunctionCmd(iOActionData data, iONode cmd, Boolean fon, int fna
 }
 
 
-static void __doOperatorFunction(iOActionData data, iOOperator opr, Boolean fon, int fnaction, int duration) {
-  iONode cmd = NodeOp.inst( wFunCmd.name(), NULL, ELEMENT_NODE );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "operator function [%d] %s", fnaction, fon?"ON":"OFF" );
-  wFunCmd.setid( cmd, wAction.getid( data->action ) );
-  __setFunctionCmd(data, cmd, fon, fnaction, duration);
-  OperatorOp.cmd( opr, cmd);
+static void __doOperatorFunction(iOActionData data, iOOperator opr, Boolean flip, Boolean fon, const char* desc, int fnaction, int duration) {
+
+  if( !OperatorOp.setFnByDesc( opr, desc, flip, fon, duration) ) {
+    iONode cmd = NodeOp.inst( wFunCmd.name(), NULL, ELEMENT_NODE );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "operator function [%d] %s", fnaction, fon?"ON":"OFF" );
+    wFunCmd.setid( cmd, wAction.getid( data->action ) );
+    __setFunctionCmd(data, cmd, fon, fnaction, duration);
+    OperatorOp.cmd( opr, cmd);
+  }
 }
 
 static void __doCarFunction(iOActionData data, iOCar car, Boolean fon, int fnaction, int duration) {

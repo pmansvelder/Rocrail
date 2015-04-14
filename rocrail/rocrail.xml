@@ -2383,6 +2383,13 @@
       <param name="inst" vt="this" remark="Operator instance"/>
       <param name="bkid" vt="const char*" remark="Block ID"/>
     </fun>
+    <fun name="setFnByDesc" vt="Boolean">
+      <param name="inst" vt="this" remark="Operator instance"/>
+      <param name="desc" vt="const char*"/>
+      <param name="flip" vt="Boolean"/>
+      <param name="fon" vt="Boolean"/>
+      <param name="duration" vt="int"/>
+    </fun>
     <fun name="matchIdent" vt="Boolean">
       <param name="inst" vt="this" remark="Operator instance"/>
       <param name="ident1" vt="const char*" remark="Loco ident code"/>

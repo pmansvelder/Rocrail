@@ -35,6 +35,7 @@
 #include "rocrail/wrapper/public/Operator.h"
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/Car.h"
+#include "rocrail/wrapper/public/FunCmd.h"
 
 static int instCnt = 0;
 
@@ -333,6 +334,109 @@ static Boolean _hasCar( struct OOperator* inst, const char* id ) {
   }
   StrTokOp.base.del(tok);
   return hascar;
+}
+
+
+static void __setFunctionCmd(iOOperatorData data, iONode cmd, Boolean flip, Boolean fon, int fnaction, int duration) {
+  if( flip ) {
+    wFunCmd.setf0 ( cmd, fnaction== 0?!wFunCmd.isf0 ( cmd ):wFunCmd.isf0 ( cmd ) );
+    wFunCmd.setf1 ( cmd, fnaction== 1?!wFunCmd.isf1 ( cmd ):wFunCmd.isf1 ( cmd ) );
+    wFunCmd.setf2 ( cmd, fnaction== 2?!wFunCmd.isf2 ( cmd ):wFunCmd.isf2 ( cmd ) );
+    wFunCmd.setf3 ( cmd, fnaction== 3?!wFunCmd.isf3 ( cmd ):wFunCmd.isf3 ( cmd ) );
+    wFunCmd.setf4 ( cmd, fnaction== 4?!wFunCmd.isf4 ( cmd ):wFunCmd.isf4 ( cmd ) );
+    wFunCmd.setf5 ( cmd, fnaction== 5?!wFunCmd.isf5 ( cmd ):wFunCmd.isf5 ( cmd ) );
+    wFunCmd.setf6 ( cmd, fnaction== 6?!wFunCmd.isf6 ( cmd ):wFunCmd.isf6 ( cmd ) );
+    wFunCmd.setf7 ( cmd, fnaction== 7?!wFunCmd.isf7 ( cmd ):wFunCmd.isf7 ( cmd ) );
+    wFunCmd.setf8 ( cmd, fnaction== 8?!wFunCmd.isf8 ( cmd ):wFunCmd.isf8 ( cmd ) );
+    wFunCmd.setf9 ( cmd, fnaction== 9?!wFunCmd.isf9 ( cmd ):wFunCmd.isf9 ( cmd ) );
+    wFunCmd.setf10( cmd, fnaction==10?!wFunCmd.isf10( cmd ):wFunCmd.isf10( cmd ) );
+    wFunCmd.setf11( cmd, fnaction==11?!wFunCmd.isf11( cmd ):wFunCmd.isf11( cmd ) );
+    wFunCmd.setf12( cmd, fnaction==12?!wFunCmd.isf12( cmd ):wFunCmd.isf12( cmd ) );
+    wFunCmd.setf13( cmd, fnaction==13?!wFunCmd.isf13( cmd ):wFunCmd.isf13( cmd ) );
+    wFunCmd.setf14( cmd, fnaction==14?!wFunCmd.isf14( cmd ):wFunCmd.isf14( cmd ) );
+    wFunCmd.setf15( cmd, fnaction==15?!wFunCmd.isf15( cmd ):wFunCmd.isf15( cmd ) );
+    wFunCmd.setf16( cmd, fnaction==16?!wFunCmd.isf16( cmd ):wFunCmd.isf16( cmd ) );
+    wFunCmd.setf17( cmd, fnaction==17?!wFunCmd.isf17( cmd ):wFunCmd.isf17( cmd ) );
+    wFunCmd.setf18( cmd, fnaction==18?!wFunCmd.isf18( cmd ):wFunCmd.isf18( cmd ) );
+    wFunCmd.setf19( cmd, fnaction==19?!wFunCmd.isf19( cmd ):wFunCmd.isf19( cmd ) );
+    wFunCmd.setf20( cmd, fnaction==20?!wFunCmd.isf20( cmd ):wFunCmd.isf20( cmd ) );
+    wFunCmd.setf21( cmd, fnaction==21?!wFunCmd.isf21( cmd ):wFunCmd.isf21( cmd ) );
+    wFunCmd.setf22( cmd, fnaction==22?!wFunCmd.isf22( cmd ):wFunCmd.isf22( cmd ) );
+    wFunCmd.setf23( cmd, fnaction==23?!wFunCmd.isf23( cmd ):wFunCmd.isf23( cmd ) );
+    wFunCmd.setf24( cmd, fnaction==24?!wFunCmd.isf24( cmd ):wFunCmd.isf24( cmd ) );
+    wFunCmd.setf25( cmd, fnaction==25?!wFunCmd.isf25( cmd ):wFunCmd.isf25( cmd ) );
+    wFunCmd.setf26( cmd, fnaction==26?!wFunCmd.isf26( cmd ):wFunCmd.isf26( cmd ) );
+    wFunCmd.setf27( cmd, fnaction==27?!wFunCmd.isf27( cmd ):wFunCmd.isf27( cmd ) );
+    wFunCmd.setf28( cmd, fnaction==28?!wFunCmd.isf28( cmd ):wFunCmd.isf28( cmd ) );
+  }
+  else {
+    wFunCmd.setf0 ( cmd, fnaction== 0?fon:wFunCmd.isf0 ( cmd ) );
+    wFunCmd.setf1 ( cmd, fnaction== 1?fon:wFunCmd.isf1 ( cmd ) );
+    wFunCmd.setf2 ( cmd, fnaction== 2?fon:wFunCmd.isf2 ( cmd ) );
+    wFunCmd.setf3 ( cmd, fnaction== 3?fon:wFunCmd.isf3 ( cmd ) );
+    wFunCmd.setf4 ( cmd, fnaction== 4?fon:wFunCmd.isf4 ( cmd ) );
+    wFunCmd.setf5 ( cmd, fnaction== 5?fon:wFunCmd.isf5 ( cmd ) );
+    wFunCmd.setf6 ( cmd, fnaction== 6?fon:wFunCmd.isf6 ( cmd ) );
+    wFunCmd.setf7 ( cmd, fnaction== 7?fon:wFunCmd.isf7 ( cmd ) );
+    wFunCmd.setf8 ( cmd, fnaction== 8?fon:wFunCmd.isf8 ( cmd ) );
+    wFunCmd.setf9 ( cmd, fnaction== 9?fon:wFunCmd.isf9 ( cmd ) );
+    wFunCmd.setf10( cmd, fnaction==10?fon:wFunCmd.isf10( cmd ) );
+    wFunCmd.setf11( cmd, fnaction==11?fon:wFunCmd.isf11( cmd ) );
+    wFunCmd.setf12( cmd, fnaction==12?fon:wFunCmd.isf12( cmd ) );
+    wFunCmd.setf13( cmd, fnaction==13?fon:wFunCmd.isf13( cmd ) );
+    wFunCmd.setf14( cmd, fnaction==14?fon:wFunCmd.isf14( cmd ) );
+    wFunCmd.setf15( cmd, fnaction==15?fon:wFunCmd.isf15( cmd ) );
+    wFunCmd.setf16( cmd, fnaction==16?fon:wFunCmd.isf16( cmd ) );
+    wFunCmd.setf17( cmd, fnaction==17?fon:wFunCmd.isf17( cmd ) );
+    wFunCmd.setf18( cmd, fnaction==18?fon:wFunCmd.isf18( cmd ) );
+    wFunCmd.setf19( cmd, fnaction==19?fon:wFunCmd.isf19( cmd ) );
+    wFunCmd.setf20( cmd, fnaction==20?fon:wFunCmd.isf20( cmd ) );
+    wFunCmd.setf21( cmd, fnaction==21?fon:wFunCmd.isf21( cmd ) );
+    wFunCmd.setf22( cmd, fnaction==22?fon:wFunCmd.isf22( cmd ) );
+    wFunCmd.setf23( cmd, fnaction==23?fon:wFunCmd.isf23( cmd ) );
+    wFunCmd.setf24( cmd, fnaction==24?fon:wFunCmd.isf24( cmd ) );
+    wFunCmd.setf25( cmd, fnaction==25?fon:wFunCmd.isf25( cmd ) );
+    wFunCmd.setf26( cmd, fnaction==26?fon:wFunCmd.isf26( cmd ) );
+    wFunCmd.setf27( cmd, fnaction==27?fon:wFunCmd.isf27( cmd ) );
+    wFunCmd.setf28( cmd, fnaction==28?fon:wFunCmd.isf28( cmd ) );
+  }
+
+  wFunCmd.setfnchanged( cmd, fnaction );
+  wFunCmd.settimedfn( cmd, fon?fnaction:-1 );
+  wFunCmd.setgroup( cmd, fnaction/4 + ((fnaction%4 > 0) ? 1:0) );
+  if( fon ) {
+    wFunCmd.settimer( cmd, duration );
+  }
+}
+
+
+static void __doCarFunction(iOOperatorData data, iOCar car, Boolean flip, Boolean fon, int fnaction, int duration) {
+  iONode cmd = NodeOp.inst( wFunCmd.name(), NULL, ELEMENT_NODE );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "car function [%d] %s", fnaction, fon?"ON":"OFF" );
+  CarOp.getFunctionStatus(car, cmd);
+  __setFunctionCmd(data, cmd, flip, fon, fnaction, duration);
+  CarOp.cmd( car, cmd);
+}
+
+
+static Boolean _setFnByDesc( iOOperator inst, const char* desc, Boolean flip, Boolean fon, int duration) {
+  iOOperatorData data = Data(inst);
+  Boolean foundFunction = False;
+
+  iOStrTok tok = StrTokOp.inst(wOperator.getcarids(data->props), ',');
+  while( StrTokOp.hasMoreTokens(tok) ) {
+    iOCar car = ModelOp.getCar(AppOp.getModel(), StrTokOp.nextToken(tok) );
+    if( car != NULL ) {
+      int fnaction = CarOp.getFnNrByDesc(car, desc);
+      if( fnaction != -1 ) {
+        foundFunction = True;
+        __doCarFunction(data, car, flip, fon, fnaction, duration);
+      }
+    }
+  }
+  StrTokOp.base.del(tok);
+
+  return foundFunction;
 }
 
 
