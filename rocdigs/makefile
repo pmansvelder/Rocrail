@@ -373,7 +373,6 @@ clean:
 	-$(REMOVE) $(OUTDIR)$(FS)dmxeurolite$(SHAREDSUFFIX)
 	-$(REMOVE) $(OUTDIR)$(FS)raptor$(SHAREDSUFFIX)
 	cd $(GENDIR)$(FS)rocdigs$(CS) ..$(FS)$(BINDIR)$(FS)ogen$(GENSUFFIX) ..$(FS)..$(FS)rocdigs$(FS)rocdigs.xml ..$(FS)
-	cd $(GENDIR)$(FS)rocdigs$(CS) ..$(FS)$(BINDIR)$(FS)xml2cstr$(GENSUFFIX) ..$(FS)..$(FS)common$(FS)version.xml impl$(FS)version.c svnLog
 
 install:
 	-cp -p $(OUTDIR)$(FS)p50$(SHAREDSUFFIX) $(DESTDIR)
