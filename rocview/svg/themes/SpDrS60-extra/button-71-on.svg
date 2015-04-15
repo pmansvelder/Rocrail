@@ -1,0 +1,21 @@
+<svg width="32" height="32">
+  <g>
+    <path stroke="rgb(0, 255, 0)" fill="rgb(0, 255, 0)" d="M 0,0 L 31,0 L 31,31 L 0,31 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(255, 255, 255)" d="M 7,22 L 25,22 L 25,30 L 7,30 z " />
+    <!-- F -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 9,24 L 9,28 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 9,24 L 12,24 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 9,26 L 11,26 z " />
+    <!-- R -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,24 L 14,28 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,24 L 17,24 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 17,24 L 17,26 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,26 L 17,26 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,25 L 17,28 z " />
+    <!-- T -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 19,24 L 23,24 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 21,24 L 21,28 z " />
+    
+    <circle cx="16" cy="15" r="5" stroke="rgb(0, 0, 0)" fill="rgb(128, 128, 128)" />
+  </g>
+</svg>

@@ -1,0 +1,49 @@
+<svg width="64" height="32">
+  <g>
+    <path stroke="rgb(128, 128, 128)" fill="rgb(128, 128, 128)" d="M 0,0 L 63,0 L 63,31 L 0,31 z " />
+    <!-- Melder -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(255, 255, 0)" d="M 10,2 L 27,2 L 27,11 L 10,11 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(160, 160, 160)" d="M 37,2 L 54,2 L 54,11 L 37,11 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(255, 255, 255)" d="M 23,13 L 41,12 L 41,22 L 23,22 z " />
+    <!-- E -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,4 L 14,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,4 L 17,4 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,6 L 17,6 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 14,9 L 17,9 z " />
+    <!-- I -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 19,4 L 19,9 z " />
+    <!-- N -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 21,4 L 21,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 24,4 L 24,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 21,4 L 24,9 z " />
+    <!-- A -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 41,4 L 39,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 41,4 L 43,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 40,7 L 43,7 z " />
+    <!-- U -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 44,5 L 44,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 44,9 L 47,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 47,5 L 47,9 z " />
+    <!-- S -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 48,5 L 51,5 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 48,5 L 48,7 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 48,7 L 51,7 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 51,7 L 51,9 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 48,9 L 51,9 z " />
+    <!-- S -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 26,15 L 29,15 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 26,15 L 26,17 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 26,17 L 29,17 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 29,17 L 29,20 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 26,20 L 29,20 z " />
+    <!-- t -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 31,16 L 31,20 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 30,17 L 32,17 z " />
+    <!-- T -->
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 36,15 L 36,20 z " />
+    <path stroke="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" d="M 34,15 L 38,15 z " />
+    <!-- Taster -->
+    <circle cx="16" cy="18" r="5" stroke="rgb(0, 0, 0)" fill="rgb(160, 160, 160)" />
+    <circle cx="48" cy="18" r="5" stroke="rgb(0, 0, 0)" fill="rgb(160, 160, 160)" />
+  </g>
+</svg>

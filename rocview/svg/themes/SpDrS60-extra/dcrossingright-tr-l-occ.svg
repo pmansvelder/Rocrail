@@ -17,6 +17,6 @@
     <path stroke="rgb(0,0,0)" fill="rgb(0,0,0)" d="M 32,24 L 35,21 L 39,21 L 39,22 L 36,22 L 33,25  z " />
     <!-- Marker grau -->
     <circle cx="17" cy="4" r="3" fill="rgb(192,192,192)" stroke="rgb(0,0,0)"/>
-    <circle cx="25" cy="4" r="3" fill="rgb(255,0,0)" stroke="rgb(0,0,0)"/>
+    <circle cx="25" cy="4" r="3" fill="rgb(255,255,0)" stroke="rgb(0,0,0)"/>
   </g>
 </svg>
