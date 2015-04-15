@@ -255,6 +255,10 @@ void TrackPickerDlg::initSymbols() {
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s:%s::::,%s,%s", wTrack.name(), wTrack.concurveleft, tracktype::connector_curve_left, "track_connector_left" );
   ListOp.add( m_SymbolList, (obj) symname );
+  symname = StrOp.fmt("%s:%s:2:::,%s,%s", wTrack.name(), wTrack.tracknr, "track-2.svg", "track_tunnel" );
+  ListOp.add( m_SymbolList, (obj) symname );
+  symname = StrOp.fmt("%s:%s:3:::,%s,%s", wTrack.name(), wTrack.tracknr, "track-3.svg", "track_tunnel" );
+  ListOp.add( m_SymbolList, (obj) symname );
 
   // Switch
   symname = StrOp.fmt("%s:%s::::,%s,%s", wSwitch.name(), wSwitch.left, switchtype::turnoutleft_route, "switch_left" );

@@ -244,6 +244,8 @@ bool PlanPanelDrop::OnDropText(wxCoord x, wxCoord y, const wxString& data) {
         if( atoi(symdir) > 0 ) {
           if( StrOp.equals(symname, wOutput.name()))
             wOutput.setsvgtype(node, atoi(symdir) );
+          else if( StrOp.equals(symname, wTrack.name()))
+            wTrack.settknr(node, atoi(symdir) );
           else
             wSwitch.setaccnr(node, atoi(symdir) );
         }

@@ -29847,4 +29847,7 @@
   <Msg id="road_dcurve">
     <en txt="Double curved road"/>
   </Msg>
+  <Msg id="track_tunnel">
+    <en txt="Tunnel track"/>
+  </Msg>
 </Messages>
