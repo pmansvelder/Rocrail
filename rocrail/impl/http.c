@@ -295,7 +295,6 @@ static struct OHttp* _inst( iONode ini ) {
     data->ini = ini;
     data->port = wHttpService.getport( ini );
     data->webclient = wHttpService.getwebclient( ini );
-
   
     /* Initialize data->xxx members... */
     if( data->port > 0 ) {

@@ -369,9 +369,11 @@
       <var name="port" vt="int" defval="53701" range="0-65535" remark="Port number for server socket. Deactivated when 0."/>
       <var name="path" vt="string" defval="." range="*" remark="Path where to look for external HTML documents."/>
       <var name="refresh" vt="int" defval="10" range="0-*" unit="s" remark="browser refresh time: 0=no refresh"/>
+      <var name="enable" vt="bool" defval="true"/>
       <webclient wrappername="WebClient" cardinality="1">
-        <var name="me" vt="bool" defval="false" remark="rocWeb Mobile Edition"/>
-        <var name="port" vt="int" defval="53702" range="0-65535" remark="Port number server socket for webclients. Deactivated when 0."/>
+        <var name="me" vt="bool" defval="false" remark="rocWeb Mobile Edition V2"/>
+        <var name="enable" vt="bool" defval="true"/>
+        <var name="port" vt="int" defval="8088" range="0-65535" remark="Port number server socket for webclients. Deactivated when 0."/>
         <var name="xsize" vt="int" defval="640" range="0-*" remark=""/>
         <var name="ysize" vt="int" defval="0" range="0-*" remark="no height is set when 0 which is recommended"/>
         <var name="refresh" vt="int" defval="0" range="0-*" unit="s" remark="browser refresh time: 0=no refresh"/>

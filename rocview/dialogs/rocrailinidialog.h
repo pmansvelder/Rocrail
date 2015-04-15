@@ -291,6 +291,7 @@ public:
     wxTextCtrl* m_WebServicePort;
     wxStaticText* m_LabWebServiceRefresh;
     wxTextCtrl* m_WebServiceRefresh;
+    wxCheckBox* m_WebV2;
     wxStaticBoxSizer* m_ClockBox;
     wxStaticText* m_labDevider;
     wxTextCtrl* m_Divider;
