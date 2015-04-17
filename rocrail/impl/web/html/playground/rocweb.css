@@ -1,2 +1,13 @@
 .item {position:absolute;text-align:center;border:0px}
 .itemtext{vertical-align:middle;}
+.full-width-slider input {display: none;}
+.full-width-slider .ui-slider-track {margin-left: 15px;}
+/* the thumb will not listen... .full-width-slider .ui-slider-handle {height: 50px;}*/
+
+.led-green {
+    width: 8px;
+    height: 8px;
+    background-color: #690;
+    border-radius: 50%;
+}
+

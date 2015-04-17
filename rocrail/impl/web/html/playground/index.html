@@ -4,10 +4,10 @@
 	<title>Rocrail WEB Client</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-  <link rel="stylesheet" href="rocweb.css" />
 	<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
   <script src="rocweb.js"></script>
+  <link rel="stylesheet" href="rocweb.css" />
 </head>
 
 <body>
@@ -15,7 +15,7 @@
   <div data-role="header" style="overflow:hidden;">
     <h1>Rocrail</h1>
     <a href="#" data-icon="grid" class="ui-btn-left" data-transition="pop" onclick="openThrottle()">Throttle</a>
-    <a href="#" data-icon="gear" class="ui-btn-right" onclick="openOptions()">Options</a>
+    <a href="#" data-icon="bars" class="ui-btn-right" onclick="openMenu()">Menu</a>
   </div>
 
   <div class="item" id="fb_xy33" onclick="actionSensor(this.id)" 
@@ -26,14 +26,43 @@
     <label class="itemtext">B1 E03 &gt;</label>
   </div>
 
-  
+
+  <div data-role="popup" id="popupBlock" class="ui-popup" data-theme="a" style="width: 200px;" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <h3 id="blockTitle">Block</h3>
+  <select name="select-choice-1" id="select-choice-1">
+  <option value="BR11">BR11</option>
+  <option value="E03">E03</option>
+  </select>
+  <div class="ui-grid-a">
+  <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all">Start</a></div>
+  <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all">Stop</a></div>
+  </div>
+  </div>
+  </div>
+
+  <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <button class="ui-btn ui-icon-power ui-btn-icon-left">Power</button>
+  <button class="ui-btn ui-icon-alert ui-btn-icon-left">Emergancy break</button>
+  <button class="ui-btn ui-icon-star ui-btn-icon-left">System</button>
+  <button class="ui-btn ui-icon-info ui-btn-icon-left">Info</button>
+  <button class="ui-btn ui-icon-gear ui-btn-icon-left">Options</button>
+  </div>
+  </div>
+  </div>
+
   <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a" style="width: 400px;">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-    <div style="padding:10px 20px;">
+    <div style="padding:10px 10px;">
+    <center><img src="img/br103.png"/></center>
     <select name="select-choice-1" id="select-choice-1">
       <option value="BR11">BR11</option>
       <option value="E03">E03</option>
     </select>
+    
     <div class="ui-grid-d">
     <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all">F1</a></div>
     <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all">F2</a></div>
@@ -53,12 +82,14 @@
     <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all">F12</a></div>
     <div class="ui-block-e"><a href="#" class="ui-shadow ui-btn ui-corner-all">FG</a></div>
 
-    <div class="ui-block-a" style="width:40%"><a href="#" class="ui-shadow ui-btn ui-corner-all">Dir &gt;</a></div>
+    <div class="ui-block-a" style="width:40%"><a href="#" id="direction" class="ui-shadow ui-btn ui-corner-all">Dir &gt;</a></div>
     <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all">F13</a></div>
     <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all">F14</a></div>
     <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all">F0</a></div>
     </div>
-    <input type="range" name="slider2" id="slider2" value="0" min="0" max="100" data-highlight="true">
+    <div class="full-width-slider">
+    <input type="range" name="speedSlider" id="speedSlider" value="0" min="0" max="100" data-highlight="true" oninput="sppeedUpdate(value)">
+    </div>
     </div>
  </div>
 
