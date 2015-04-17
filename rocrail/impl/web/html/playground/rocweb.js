@@ -1,4 +1,17 @@
 
+function openInfo()
+{
+  console.log("close menu");
+  $( "#popupMenu" ).popup( "close" );
+  
+  console.log("open info");
+  $('#popupMenu').on("popupafterclose", function(){$( "#popupInfo" ).popup( "open" )});
+
+//  console.log("open info");
+//  $( "#popupInfo" ).popup( "open" );
+}
+
+
 function openThrottle()
 {
   $( "#popupThrottle" ).popup( "open" );
@@ -11,7 +24,17 @@ function closeThrottle()
 
 function openMenu()
 {
+  $('#popupMenu').unbind("popupafterclose");
   $( "#popupMenu" ).popup( "open" );
+  
+  // Test to save a session structure.
+  var E03 = {color: "grey", name: "Spot", size: 46};
+  E03.test = "Hallo";
+  sessionStorage.setItem("E03", JSON.stringify(E03));
+
+  var cat = JSON.parse(sessionStorage.getItem("E03"));
+  console.log(cat.size + " " + cat.color + " " + cat.test );
+
 }
 
 function openOptions()
@@ -40,4 +63,10 @@ $(document).on("pagecreate",function(){
   $("#speedSlider").on( "slidestop", function( event, ui ) {
   value = this.value;
   speedUpdate(value);} );
+  
+  $('#locoSelect').change(function() {
+    console.log("locoSelect: " + this.value );
+  } );
+
 });
+

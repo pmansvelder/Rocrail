@@ -45,12 +45,20 @@
   <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <button class="ui-btn ui-icon-power ui-btn-icon-left">Power</button>
-  <button class="ui-btn ui-icon-alert ui-btn-icon-left">Emergancy break</button>
-  <button class="ui-btn ui-icon-star ui-btn-icon-left">System</button>
-  <button class="ui-btn ui-icon-info ui-btn-icon-left">Info</button>
-  <button class="ui-btn ui-icon-gear ui-btn-icon-left">Options</button>
+  <button class="ui-btn ui-icon-power ui-btn-icon-left" style="text-align:left;">Power</button>
+  <button class="ui-btn ui-icon-alert ui-btn-icon-left" style="text-align:left;">Emergancy break</button>
+  <button class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;">System</button>
+  <button class="ui-btn ui-icon-info  ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
+  <button class="ui-btn ui-icon-gear  ui-btn-icon-left" style="text-align:left;">Options</button>
   </div>
+  </div>
+
+  <div data-role="popup" id="popupInfo" class="ui-popup" data-theme="a">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:20px 20px;">
+  <h3>Rocrail</h3>
+  <label>Copyright &copy; 2015 Rob Versluis</label>
+  <a href="http://www.rocrail.net">www.rocrail.net</a>
   </div>
   </div>
 
@@ -58,7 +66,7 @@
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
     <div style="padding:10px 10px;">
     <center><img src="img/br103.png"/></center>
-    <select name="select-choice-1" id="select-choice-1">
+    <select name="locoSelect" id="locoSelect">
       <option value="BR11">BR11</option>
       <option value="E03">E03</option>
     </select>
