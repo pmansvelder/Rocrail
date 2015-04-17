@@ -309,6 +309,14 @@ void statusEnter( iILcDriverInt inst, Boolean re_enter ) {
   /* Wait in block or no new destination found. */
   if( data->next2Block == NULL ) {
 
+    data->state = LC_WAIT4EVENT;
+    data->eventTimeout = 0;
+    data->signalReset  = 0;
+    data->loc->setMode(data->loc, wLoc.mode_wait, wLoc.modereason_waitforevent);
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
+                   "Setting state for \"%s\" from %s to LC_WAIT4EVENT.",
+                   data->loc->getId( data->loc ), re_enter?"LC_RE_ENTERBLOCK":"LC_ENTERBLOCK" );
+
     if( data->next1Block->hasExtStop(data->next1Block, NULL) ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 4201,
           "block %s has a stop module; not sending velocity hint to loco %s",
@@ -368,14 +376,6 @@ void statusEnter( iILcDriverInt inst, Boolean re_enter ) {
       }
     }
 
-
-    data->state = LC_WAIT4EVENT;
-    data->eventTimeout = 0;
-    data->signalReset  = 0;
-    data->loc->setMode(data->loc, wLoc.mode_wait, wLoc.modereason_waitforevent);
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
-                   "Setting state for \"%s\" from %s to LC_WAIT4EVENT.",
-                   data->loc->getId( data->loc ), re_enter?"LC_RE_ENTERBLOCK":"LC_ENTERBLOCK" );
   }
 
 
