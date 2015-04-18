@@ -10,10 +10,11 @@
   <link rel="stylesheet" href="rocweb.css" />
 </head>
 
-<body>
+<body id="planpanel" onload="loadPlan()">
+
 
   <div data-role="header" style="overflow:hidden;">
-    <h1>Rocrail</h1>
+    <h1>Rocrail: Plan-F reloaded</h1>
     <a href="#" data-icon="grid" class="ui-btn-left" data-transition="pop" onclick="openThrottle()">Throttle</a>
     <a href="#" data-icon="bars" class="ui-btn-right" onclick="openMenu()">Menu</a>
   </div>
@@ -24,6 +25,9 @@
   <div class="item" id="bk_xy57" onclick="actionBlock(this.id)" 
     style="width:128px; height:32px; line-height:32px; left:160px; top:128px; background-image:url(img/block_occ_1.png);"/>
     <label class="itemtext">B1 E03 &gt;</label>
+  </div>
+  <div class="item" id="fb_xy44" onclick="actionSensor(this.id)" 
+    style="width:32px; height:32px; line-height:32px; left:288px; top:128px; background-image:url(img/sensor_off_1.png);"/>
   </div>
 
 
@@ -55,10 +59,12 @@
 
   <div data-role="popup" id="popupInfo" class="ui-popup" data-theme="a">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-  <div style="padding:20px 20px;">
-  <h3>Rocrail</h3>
-  <label>Copyright &copy; 2015 Rob Versluis</label>
+  <div style="padding:10px 10px;">
+  <center>
+  <img src="img/logo.png"/>
+  <label>Copyright &copy; 2002-2015 Rob Versluis</label>
   <a href="http://www.rocrail.net">www.rocrail.net</a>
+  </center>
   </div>
   </div>
 
