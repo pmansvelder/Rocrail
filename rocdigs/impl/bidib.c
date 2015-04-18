@@ -3305,7 +3305,7 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
     Boolean warning = False;
     if( dynnum == 1 && value > 10 )
       warning = True;
-    TraceOp.trc( name, warning?TRCLEVEL_WARNING:TRCLEVEL_CALC, __LINE__, 9999,
+    TraceOp.trc( name, warning?TRCLEVEL_WARNING:TRCLEVEL_DEBUG, __LINE__, 9999,
         "BM %s port %d reports loco %s(%d) %s is %d", pathKey, port, slot!=NULL?slot->id:"", locoAddr, bidibGetDynStateName(dynnum), value );
     break;
   }
