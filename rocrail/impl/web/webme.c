@@ -112,7 +112,26 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       __getFile( inst, ROCWEB_CSS );
     }
     else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
+      Boolean ok = True;
       __getModel( inst );
+    }
+    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.xml?" ) ) {
+      Boolean ok = True;
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command: %s", str );
+      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 202 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
+    }
+    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/update.xml" ) ) {
+      Boolean ok = True;
+      int randNumber = rand();
+      int bigsleep = randNumber % 10000;
+
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "update...sleep=%d", bigsleep );
+      /* ToDo: get an update event from queue. */
+      ThreadOp.sleep(bigsleep);
+      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
+      if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
     }
     else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".png" ) ) {
       char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;

@@ -1,4 +1,6 @@
 var req;
+var yoffset = 48;
+var planloaded = false;
 
 function openInfo()
 {
@@ -49,17 +51,24 @@ function closeOptions()
 function actionSensor(id)
 {
   console.log("sensor action on " + id );
-  //alert("flip sensor " + id);
- 
+  var xmlhttp;
   // send an XMLHttpRequest
   try {
-    req = new XMLHttpRequest();
-    req.onreadystatechange = processReqChange;
-    req.open("GET", "rocweb.xml?fb_flip="+id.replace("fb_",""), true);
-    req.send("");
+    req.abort();
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+        processUpdate(xmlhttp);
+      }
+    };
+    
+    xmlhttp.open("GET", "rocweb.xml?fb_flip="+id.replace("fb_",""), true);
+    xmlhttp.send("");
   } 
     catch(e) {
-      alert("exception: " + e);
+      console.log("exception: " + e);
     }
   }
 
@@ -91,20 +100,30 @@ $(document).on("pagecreate",function(){
 });
 
 
-function processReqChange() {
+function processUpdate(p_req) {
 //only if req shows "loaded"
-if (req.readyState == 4) {
- //alert("response status = "+req.status);
- if (req.status == 0) {
+if (p_req.readyState == 4) {
+ console.log("response status = "+p_req.status);
+ if (p_req.status == 0 || p_req.status == 200) {
    try {
-     xmlDoc = req.responseXML;
+     xmlDoc = p_req.responseXML;
      fblist = xmlDoc.getElementsByTagName("fb");
+     if( fblist.length > 0 )
+       console.log("updating " + fblist.length + " sensors");
+
      for (var i = 0; i < fblist.length; i++) {
+       console.log("sensor: " + fblist[i].getAttribute('id'));
        var div = document.getElementById("fb_"+fblist[i].getAttribute('id'));
-       if( "true" == fblist[i].getAttribute('state') )
-         div.style.backgroundImage = "url(img/sensor_on_1.png)";
-       else
-         div.style.backgroundImage = "url(img/sensor_off_1.png)";
+       if( div != null ) {
+         if( "true" == fblist[i].getAttribute('state') )
+           div.style.backgroundImage = "url(img/sensor_on_1.png)";
+         else
+           div.style.backgroundImage = "url(img/sensor_off_1.png)";
+       }
+       else {
+         console.log("sensor: " + fblist[i].getAttribute('id') + " not found");
+       }
+     
      }
    }
    catch(e) {
@@ -112,10 +131,6 @@ if (req.readyState == 4) {
    }
 
  }
- if (req.status == 200) {
-   // ...processing statements go here...
-   console.log("response received");
-   }
  }
 }
 
@@ -162,36 +177,49 @@ function xml2string(node) {
 }
 
 function processResponse() {
-  if (req.readyState == 4) {
+  console.log("readyState="+req.readyState+" status="+req.status);
+  if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
     // only if "OK"
-    console.log("response status = "+req.status);
-    if (req.status == 0 || req.status == 200) {
-      try {
-        xmlDoc = req.responseXML;
-        if( xmlDoc != null ) {
-          planlist = xmlDoc.getElementsByTagName("plan")
-          if( planlist.length > 0 ) {
-            console.log( "processing plan: " + planlist[0].nodeName );
-            processPlan();
-          }
-          else {
-            console.log( "processing event" );
-          }
+    try {
+      xmlDoc = req.responseXML;
+      if( xmlDoc != null ) {
+        planlist = xmlDoc.getElementsByTagName("plan")
+        if( planlist.length > 0 ) {
+          console.log( "processing plan: " + planlist[0].nodeName );
+          var h = document.getElementById("title");
+          h.innerHTML = "Rocrail: " + planlist[0].getAttribute('title');
+          processPlan();
+          planloaded = true;
         }
         else {
-          console.log( "??? xmlDoc=" + xmlDoc);
+          console.log( "processing event" );
+          processUpdate(req);
         }
       }
-      catch(e) {
-        console.log("exception: " + e);
+      else {
+        console.log( "??? xmlDoc=" + xmlDoc);
       }
+      
+      if( planloaded ) {
+        console.log( "long poll server event..." );
+        try {
+          req = new XMLHttpRequest();
+          req.onreadystatechange = processResponse;
+          req.open("GET", "update.xml", true);
+          req.send("");
+        } 
+        catch(e) {
+          console.log("exception: " + e);
+        }
+      }
+      
     }
+    catch(e) {
+      console.log("exception: " + e);
+    }
+    
   }
 
-  if (req.status == 200) {
-    // ...processing statements go here...
-    console.log("*** readyState="+req.readyState+" status="+req.status);
-  }
 }
 
 
@@ -214,7 +242,7 @@ function processPlan() {
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
        newdiv.style.left     = "" + (parseInt(fblist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(fblist[i].getAttribute('y')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(fblist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        
        if( "true" == fblist[i].getAttribute('state') )
@@ -239,11 +267,11 @@ function processPlan() {
        newdiv.style.height   = "32px";
        newdiv.style.lineHeight = "32px";
        newdiv.style.left     = "" + (parseInt(bklist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "<label class='itemtext'>"+bklist[i].getAttribute('locid')+"</label>";
        newdiv.style.textAlign= "center";
        
-       console.log(xml2string(bklist[i]));
+       //console.log(xml2string(bklist[i]));
        console.log("block entering=" + bklist[i].getAttribute("entering") + " x,y " + newdiv.style.left + "," + newdiv.style.top );
 
        if( "true" == bklist[i].getAttribute('entering') )
