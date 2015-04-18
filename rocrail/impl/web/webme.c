@@ -25,15 +25,74 @@
 #include "rocrail/impl/web/webme.h"
 #include "rocrail/impl/web/web.h"
 
+#include "rocrail/public/model.h"
+#include "rocrail/public/app.h"
+
 
 #include "rocs/public/str.h"
 #include "rocs/public/trace.h"
 #include "rocs/public/node.h"
 #include "rocs/public/socket.h"
+#include "rocs/public/file.h"
 
 
 
+static const char* ROCWEB_INDEX = "web/index.html";
+static const char* ROCWEB_JS    = "web/rocweb.js";
+static const char* ROCWEB_CSS   = "web/rocweb.css";
 
+static void __getFile(iOPClient inst, const char* fname) {
+  iOPClientData data = Data(inst);
+
+  if( FileOp.exist( fname ) ) {
+    long size = FileOp.fileSize( fname );
+    char* html = allocMem( size + 1 );
+    iOFile f = FileOp.inst( fname, OPEN_READONLY );
+    if( f != NULL ) {
+      Boolean ok = True;
+      FileOp.read( f, html, size );
+      FileOp.base.del( f );
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
+      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: text/html\r\n\r\n" );
+      if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
+    }
+    freeMem(html);
+  }
+}
+
+static void __getImage(iOPClient inst, const char* fname) {
+  iOPClientData data = Data(inst);
+
+  if( FileOp.exist( fname ) ) {
+    long size = FileOp.fileSize( fname );
+    char* html = allocMem( size + 1 );
+    iOFile f = FileOp.inst( fname, OPEN_READONLY );
+    if( f != NULL ) {
+      Boolean ok = True;
+      FileOp.read( f, html, size );
+      FileOp.base.del( f );
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
+      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "png" );
+      if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
+    }
+    freeMem(html);
+  }
+}
+
+static void __getModel(iOPClient inst) {
+  iOPClientData data = Data(inst);
+  iONode model = ModelOp.getModel( AppOp.getModel() );
+  char* xml = NodeOp.base.toString( model );
+  Boolean ok = True;
+  int size = StrOp.len(xml);
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write model %d", size );
+  if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 0 OK\r\n" );
+  if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
+  if(ok) ok=SocketOp.write( data->socket, xml, size );
+  StrOp.free(xml);
+}
 
 
 Boolean rocWebME( iOPClient inst, const char* str ) {
@@ -41,31 +100,43 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
   
   if( inst != NULL ) {
     iOPClientData data = Data(inst);
+    char l_str[1025] = {'\0'};
+
+    if( StrOp.find( str, "GET" ) && StrOp.find( str, " / " ) ) {
+      __getFile( inst, ROCWEB_INDEX );
+    }
+    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.js" ) ) {
+      __getFile( inst, ROCWEB_JS );
+    }
+    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.css" ) ) {
+      __getFile( inst, ROCWEB_CSS );
+    }
+    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
+      __getModel( inst );
+    }
+    else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".png" ) ) {
+      char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
+      char* p = StrOp.find( symbolfile, "HTTP" );
+
+      if( p != NULL ) {
+        p--;
+        *p = '\0';
+        __getImage( inst, symbolfile );
+      }
+      StrOp.free( symbolfile );
+    }
+
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Reading rest of HTTP header... " );
+    while( SocketOp.readln( data->socket, l_str ) && !SocketOp.isBroken( data->socket ) ) {
+      if( l_str[0] == '\r' || l_str[0] == '\n' ) {
+        break;
+      }
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "%s", l_str );
+    };
     
-    webHeader( data->socket );
-    
-    SocketOp.fmt( data->socket, "\n<!-- rocWebME -->\n" );
-    SocketOp.fmt( data->socket, "<table width='220px' border='0' cellpadding='5' cellspacing='0'>\n" );
-    SocketOp.fmt( data->socket, "<tr><td align='center' colspan='3'><img border='0' src='images/logo.png'>\n" );
-    
-    SocketOp.fmt( data->socket, "<tr><td align='center'><a href='system.html'><img border='0' src='images/power.png'></a>\n" );
-    SocketOp.fmt( data->socket, "<td align='center'><a href='auto.html'><img border='0' src='images/automode.png'></a>\n" );
-    SocketOp.fmt( data->socket, "<td align='center'><a href='auto.html'><img border='0' src='images/stopall.png'></a>\n" );
-    
-    SocketOp.fmt( data->socket, "<tr><td align='center'><a href='loco.html'><img border='0' src='images/locctrl.png'></a>\n" );
-    SocketOp.fmt( data->socket, "<td align='center'><a href='switch.html'><img border='0' src='images/swctrl.png'></a>\n" );
-    SocketOp.fmt( data->socket, "<td align='center'><a href='routes.html'><img border='0' src='images/routes.png'></a>\n" );
-    
-    SocketOp.fmt( data->socket, "<tr><td align='center'><a href='loco.html'><img border='0' src='images/schedules.png'></a>\n" );
-    SocketOp.fmt( data->socket, "<td align='center'><a href='switch.html'><img border='0' src='images/server.png'></a>\n" );
-    SocketOp.fmt( data->socket, "<td align='center'><a href='routes.html'><img border='0' src='images/properties.png'></a>\n" );
-    
-    SocketOp.fmt( data->socket, "</table>\n" );
-    
-    
-    webFooter( data->socket );
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "disconnect... " );
+    SocketOp.disConnect( data->socket );
   }
-  
   
   return True;
 }

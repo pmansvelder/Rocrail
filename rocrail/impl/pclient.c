@@ -917,6 +917,10 @@ static Boolean _work( struct OPClient* inst ) {
     if( StrOp.find( str, "POST" ) )
       readPost = True;
 
+    if( wWebClient.isme( data->ini ) ) {
+      return rocWebME( inst, str );
+    }
+
     if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocrail.gif" ) ) {
       __getFavicon( inst );
     }
@@ -936,9 +940,6 @@ static Boolean _work( struct OPClient* inst ) {
         __getSymbol( inst, symbolfile );
       }
       StrOp.free( symbolfile );
-    }
-    else if( wWebClient.isme( data->ini ) ) {
-      rocWebME( inst, str );
     }
     else {
 

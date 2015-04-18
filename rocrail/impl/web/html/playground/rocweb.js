@@ -102,19 +102,19 @@ if (req.readyState == 4) {
      for (var i = 0; i < fblist.length; i++) {
        var div = document.getElementById("fb_"+fblist[i].getAttribute('id'));
        if( "true" == fblist[i].getAttribute('state') )
-         div.style.backgroundImage = "url(sensor_on_1.png)";
+         div.style.backgroundImage = "url(img/sensor_on_1.png)";
        else
-         div.style.backgroundImage = "url(sensor_off_1.png)";
+         div.style.backgroundImage = "url(img/sensor_off_1.png)";
      }
    }
    catch(e) {
-     alert("exception: " + e);
+     console.log("exception: " + e);
    }
 
  }
  if (req.status == 200) {
    // ...processing statements go here...
-   alert("response received");
+   console.log("response received");
    }
  }
 }
@@ -123,13 +123,33 @@ function loadPlan() {
  // send an XMLHttpRequest
  try {
    req = new XMLHttpRequest();
-   req.onreadystatechange = processReqPlan;
+   req.onreadystatechange = processResponse;
    req.open("GET", "plan.xml", true);
    req.send("");
  } 
    catch(e) {
-     alert("exception: " + e);
+     console.log("exception: " + e);
    }
+/*   
+   console.log("creating a websocket...");
+   var ws = new WebSocket("ws://localhost:8088", "rcp");
+   ws.onopen = function()
+   {
+      // Web Socket is connected, send data using send()
+      ws.send("Message to send");
+      console.log("Message is sent...");
+   };
+   ws.onmessage = function (evt) 
+   { 
+      var received_msg = evt.data;
+      console.log("Message is received..." + received_msg);
+   };
+   ws.onclose = function()
+   { 
+      // websocket is closed.
+      console.log("Connection is closed..."); 
+   };
+  */ 
 }
 
 function xml2string(node) {
@@ -141,16 +161,49 @@ function xml2string(node) {
   }
 }
 
-function processReqPlan() {
+function processResponse() {
+  if (req.readyState == 4) {
+    // only if "OK"
+    console.log("response status = "+req.status);
+    if (req.status == 0 || req.status == 200) {
+      try {
+        xmlDoc = req.responseXML;
+        if( xmlDoc != null ) {
+          planlist = xmlDoc.getElementsByTagName("plan")
+          if( planlist.length > 0 ) {
+            console.log( "processing plan: " + planlist[0].nodeName );
+            processPlan();
+          }
+          else {
+            console.log( "processing event" );
+          }
+        }
+        else {
+          console.log( "??? xmlDoc=" + xmlDoc);
+        }
+      }
+      catch(e) {
+        console.log("exception: " + e);
+      }
+    }
+  }
+
+  if (req.status == 200) {
+    // ...processing statements go here...
+    console.log("*** readyState="+req.readyState+" status="+req.status);
+  }
+}
+
+
+function processPlan() {
 //only if req shows "loaded"
-if (req.readyState == 4) {
- // only if "OK"
- //alert("response status = "+req.status);
- if (req.status == 0) {
    try {
      xmlDoc = req.responseXML;
      
      fblist = xmlDoc.getElementsByTagName("fb");
+     if( fblist.length > 0 )
+       console.log("processing " + fblist.length + " sensors");
+
      for (var i = 0; i < fblist.length; i++) {
        console.log('sensor: ' + fblist[i].getAttribute('id'));
        var newdiv = document.createElement('div');
@@ -173,6 +226,8 @@ if (req.readyState == 4) {
      }
      
      bklist = xmlDoc.getElementsByTagName("bk");
+     if( bklist.length > 0 )
+       console.log("processing " + bklist.length + " blocks");
      for (var i = 0; i < bklist.length; i++) {
        console.log('block: ' + bklist[i].getAttribute('id'));
        var newdiv = document.createElement('div');
@@ -202,15 +257,9 @@ if (req.readyState == 4) {
      }
    }
    catch(e) {
-     alert("exception: " + e);
+     console.log("exception: " + e);
    }
 
- }
- if (req.status == 200) {
-   // ...processing statements go here...
-   alert("response received");
-   }
- }
 }
 
 
