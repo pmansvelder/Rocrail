@@ -905,7 +905,14 @@ static Boolean _work( struct OPClient* inst ) {
     Boolean bdirection = True;
 
     SocketOp.setRcvTimeout( data->socket, 1000 );
+
+    if( wWebClient.isme( data->ini ) && data->websocket ) {
+      return rocWebSocketME( inst );
+    }
+
+
     /* Read first HTTP header line: */
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Read first HTTP header line..." );
     if( !SocketOp.readln( data->socket, str ) ) {
       SocketOp.disConnect( data->socket );
       return True;

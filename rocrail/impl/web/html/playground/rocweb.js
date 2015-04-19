@@ -1,6 +1,8 @@
 var req;
 var yoffset = 48;
 var planloaded = false;
+var ws = null;
+
 
 function openInfo()
 {
@@ -142,29 +144,9 @@ function loadPlan() {
    req.open("GET", "plan.xml", true);
    req.send("");
  } 
-   catch(e) {
-     console.log("exception: " + e);
-   }
-  
-   console.log("creating a websocket...");
-   var ws = new WebSocket("ws://localhost:8088", "rcp");
-   ws.onopen = function()
-   {
-      // Web Socket is connected, send data using send()
-      ws.send("Message to send");
-      console.log("Message is sent...");
-   };
-   ws.onmessage = function (evt) 
-   { 
-      var received_msg = evt.data;
-      console.log("Message is received..." + received_msg);
-   };
-   ws.onclose = function()
-   { 
-      // websocket is closed.
-      console.log("Connection is closed..."); 
-   };
- 
+ catch(e) {
+   console.log("exception: " + e);
+ }
 }
 
 function xml2string(node) {
@@ -199,8 +181,32 @@ function processResponse() {
       else {
         console.log( "??? xmlDoc=" + xmlDoc);
       }
- /*     
+
       if( planloaded ) {
+         console.log("creating a websocket...");
+         ws = new WebSocket("ws://localhost:8088", "rcp");
+         ws.onopen = function()
+         {
+            // Web Socket is connected, send data using send()
+            ws.send("<fb cmd=\"flip\"/>");
+            console.log("websocket connection is established...");
+         };
+         ws.onerror = function (error) {
+           console.log('WebSocket Error ' + error);
+         };
+         ws.onmessage = function (evt) 
+         {
+           console.log("websocket message receiving...");
+           var received_msg = evt.data;
+           console.log("websocket message received: " + received_msg);
+         };
+         ws.onclose = function()
+         { 
+            // websocket is closed.
+            console.log("websocket is closed..."); 
+         };
+
+   /*     
         console.log( "long poll server event..." );
         try {
           req = new XMLHttpRequest();
@@ -211,8 +217,9 @@ function processResponse() {
         catch(e) {
           console.log("exception: " + e);
         }
+        */
       }
-*/      
+     
     }
     catch(e) {
       console.log("exception: " + e);

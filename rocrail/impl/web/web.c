@@ -53,7 +53,7 @@ Boolean webFooter( iOSocket s ) {
 
 Boolean webSocketHeader( iOSocket s, const char* key, const char* protocol ) {
   Boolean ok = True;
-  TraceOp.trc( "web", TRCLEVEL_USER2, __LINE__, 9999, "webSocketHeader key=%s", key );
+  TraceOp.trc( "web", TRCLEVEL_USER2, __LINE__, 9999, "webSocketHeader key=%s protocol=%s", key, protocol );
   if(ok) ok=SocketOp.fmt( s, "HTTP/1.1 101 Switching Protocols\r\n" );
   if(ok) ok=SocketOp.fmt( s, "Connection: Upgrade\r\n" );
   if(ok) ok=SocketOp.fmt( s, "Upgrade: websocket\r\n" );
