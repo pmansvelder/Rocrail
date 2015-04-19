@@ -2,6 +2,7 @@ var req;
 var yoffset = 48;
 var planloaded = false;
 var ws = null;
+var initWS;
 
 
 function openInfo()
@@ -56,7 +57,7 @@ function actionSensor(id)
   var xmlhttp;
   // send an XMLHttpRequest
   try {
-    req.abort();
+    //req.abort();
     xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function()
     {
@@ -183,29 +184,17 @@ function processResponse() {
       }
 
       if( planloaded ) {
-         console.log("creating a websocket...");
-         ws = new WebSocket("ws://localhost:8088", "rcp");
-         ws.onopen = function()
-         {
-            // Web Socket is connected, send data using send()
-            ws.send("<fb cmd=\"flip\"/>");
-            console.log("websocket connection is established...");
-         };
-         ws.onerror = function (error) {
-           console.log('WebSocket Error ' + error);
-         };
-         ws.onmessage = function (evt) 
-         {
-           console.log("websocket message receiving...");
-           var received_msg = evt.data;
-           console.log("websocket message received: " + received_msg);
-         };
-         ws.onclose = function()
-         { 
-            // websocket is closed.
-            console.log("websocket is closed..."); 
-         };
-
+        var worker = new Worker("rocwebworker.js");
+        worker.onmessage = function (e) {
+          var result = JSON.parse(e.data);
+          if(result.type == 'debug') {
+            console.log(result.msg);
+          } 
+          else if(result.type == 'response') {
+            console.log(result.answer);
+            /* ToDo: Evaluate server event. */
+          }
+        }
    /*     
         console.log( "long poll server event..." );
         try {

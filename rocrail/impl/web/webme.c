@@ -38,9 +38,10 @@
 
 
 
-static const char* ROCWEB_INDEX = "web/index.html";
-static const char* ROCWEB_JS    = "web/rocweb.js";
-static const char* ROCWEB_CSS   = "web/rocweb.css";
+static const char* ROCWEB_INDEX    = "web/index.html";
+static const char* ROCWEB_JS       = "web/rocweb.js";
+static const char* ROCWEBWORKER_JS = "web/rocwebworker.js";
+static const char* ROCWEB_CSS      = "web/rocweb.css";
 
 static void __getFile(iOPClient inst, const char* fname) {
   iOPClientData data = Data(inst);
@@ -151,12 +152,21 @@ for (var i = 0; i < ENCODED.length; i++) {
 Boolean rocWebSocketME( iOPClient inst ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
-  char b[10];
+  char b[128];
   char bMask[10];
   int payload = 0;
   Boolean mask = False;
 
+  if( !SocketOp.peek( data->socket, b, 1) ) {
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "no work for rocWebSocketME" );
+    ThreadOp.sleep(10);
+    return False;
+  }
+
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebSocketME" );
+
   ok = SocketOp.read( data->socket, b, 1 );
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebSocketME: 0x%02X", b );
   if(ok) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: fin=%s opcode=%d", b[0]&0x80?"true":"false", b[0]&0x0F );
     ok = SocketOp.read( data->socket, b, 1 );
@@ -195,11 +205,21 @@ Boolean rocWebSocketME( iOPClient inst ) {
         }
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: message=%s", buffer );
 
+        /* ToDo: process message */
+        b[0] = 0x81;
+        b[1] = StrOp.len("<ok/>");
+        StrOp.copy(b+2, "<ok/>");
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: response=%s", b+2 );
+        TraceOp.dump( name, TRCLEVEL_USER2, (const char*)b, 2 + (b[1]&0x7F) );
+
+        ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
+
         freeMem(buffer);
       }
     }
   }
 
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "ready work for rocWebSocketME" );
   return !ok;
 }
 
@@ -279,6 +299,9 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.js" ) ) {
         __getFile( inst, ROCWEB_JS );
       }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocwebworker.js" ) ) {
+        __getFile( inst, ROCWEBWORKER_JS );
+      }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.css" ) ) {
         __getFile( inst, ROCWEB_CSS );
       }
@@ -321,6 +344,8 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
     }
   }
   
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "ready work for rocWebME" );
+
   return True;
 }
 
