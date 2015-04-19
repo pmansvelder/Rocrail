@@ -1229,8 +1229,8 @@ static int base64_encode( unsigned char *dst, int *dlen, const unsigned char *sr
  */
 static int base64_decode( unsigned char *dst, int *dlen, const unsigned char *src, int slen )
 {
-    size_t i, n;
-    uint32_t j, x;
+    int i, n;
+    unsigned int j, x;
     unsigned char *p;
 
     /* First pass: check for validity and get output length */
