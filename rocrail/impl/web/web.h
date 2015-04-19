@@ -26,5 +26,6 @@
 
 Boolean webHeader( iOSocket s );
 Boolean webFooter( iOSocket s );
+Boolean webSocketHeader( iOSocket s, const char* key, const char* protocol );
 
 #endif /*WEB_H_*/

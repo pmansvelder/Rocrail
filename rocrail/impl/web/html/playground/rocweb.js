@@ -145,7 +145,7 @@ function loadPlan() {
    catch(e) {
      console.log("exception: " + e);
    }
-/*   
+  
    console.log("creating a websocket...");
    var ws = new WebSocket("ws://localhost:8088", "rcp");
    ws.onopen = function()
@@ -164,7 +164,7 @@ function loadPlan() {
       // websocket is closed.
       console.log("Connection is closed..."); 
    };
-  */ 
+ 
 }
 
 function xml2string(node) {
@@ -199,7 +199,7 @@ function processResponse() {
       else {
         console.log( "??? xmlDoc=" + xmlDoc);
       }
-      
+ /*     
       if( planloaded ) {
         console.log( "long poll server event..." );
         try {
@@ -212,7 +212,7 @@ function processResponse() {
           console.log("exception: " + e);
         }
       }
-      
+*/      
     }
     catch(e) {
       console.log("exception: " + e);

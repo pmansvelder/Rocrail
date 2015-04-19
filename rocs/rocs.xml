@@ -2047,15 +2047,30 @@
 
 
   <object name="Mime64" remark="Mime64 converter">
-    <fun name="encode" vt="Boolean" remark="encode the input file into mime64">
+    <fun name="encodeFile" vt="Boolean" remark="encode the input file into mime64">
       <param name="infile" vt="const char*"/>
       <param name="outfile" vt="const char*"/>
     </fun>
-    <fun name="decode" vt="Boolean" remark="decode the input file into it's ">
+    <fun name="decodeFile" vt="Boolean" remark="decode the input file into it's ">
       <param name="infile" vt="const char*"/>
       <param name="outfile" vt="const char*"/>
     </fun>
-  </object>
+    <fun name="sha1" vt="char*" remark="generate a sha1 key">
+      <param name="str" vt="const char*"/>
+    </fun>
+    <fun name="encode" vt="int" remark="encode the input into mime64">
+      <param name="dst" vt="unsigned char*"/>
+      <param name="dlen" vt="int*"/>
+      <param name="src" vt="const unsigned char*"/>
+      <param name="slen" vt="int"/>
+    </fun>
+    <fun name="decode" vt="int" remark="decode the input from mime64 to binary">
+      <param name="dst" vt="unsigned char*"/>
+      <param name="dlen" vt="int*"/>
+      <param name="src" vt="const unsigned char*"/>
+      <param name="slen" vt="int"/>
+    </fun>
+    </object>
 
   <object name="USB" remark="LibUSB interface">
     <fun name="inst" vt="this" remark="Object creator."/>

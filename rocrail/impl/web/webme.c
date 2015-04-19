@@ -34,6 +34,7 @@
 #include "rocs/public/node.h"
 #include "rocs/public/socket.h"
 #include "rocs/public/file.h"
+#include "rocs/public/mime64.h"
 
 
 
@@ -96,54 +97,13 @@ static void __getModel(iOPClient inst) {
 
 
 Boolean rocWebME( iOPClient inst, const char* str ) {
+  char serverKey[128];
+  char protocol[128];
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebME [%s]", str );
   
   if( inst != NULL ) {
     iOPClientData data = Data(inst);
     char l_str[1025] = {'\0'};
-
-    if( StrOp.find( str, "GET" ) && StrOp.find( str, " / " ) ) {
-      __getFile( inst, ROCWEB_INDEX );
-    }
-    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.js" ) ) {
-      __getFile( inst, ROCWEB_JS );
-    }
-    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.css" ) ) {
-      __getFile( inst, ROCWEB_CSS );
-    }
-    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
-      Boolean ok = True;
-      __getModel( inst );
-    }
-    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.xml?" ) ) {
-      Boolean ok = True;
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command: %s", str );
-      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 202 OK\r\n" );
-      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
-    }
-    else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/update.xml" ) ) {
-      Boolean ok = True;
-      int randNumber = rand();
-      int bigsleep = randNumber % 10000;
-
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "update...sleep=%d", bigsleep );
-      /* ToDo: get an update event from queue. */
-      ThreadOp.sleep(bigsleep);
-      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
-      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
-      if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
-    }
-    else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".png" ) ) {
-      char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
-      char* p = StrOp.find( symbolfile, "HTTP" );
-
-      if( p != NULL ) {
-        p--;
-        *p = '\0';
-        __getImage( inst, symbolfile );
-      }
-      StrOp.free( symbolfile );
-    }
 
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Reading rest of HTTP header... " );
     while( SocketOp.readln( data->socket, l_str ) && !SocketOp.isBroken( data->socket ) ) {
@@ -151,10 +111,106 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
         break;
       }
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "%s", l_str );
+
+      if( StrOp.findi( l_str, "Sec-WebSocket-Protocol:") ) {
+        StrOp.replaceAll(l_str, '\n', '\0');
+        StrOp.replaceAll(l_str, '\r', '\0');
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket protocol=%s", l_str + 24 );
+        StrOp.copy(protocol, l_str + 24);
+      }
+
+      if( StrOp.findi( l_str, "Sec-WebSocket-Key:") ) {
+        byte dest[128];
+        int dlen = 128;
+        int rc = 0;
+        char* clientkey = NULL;
+        char* serverkey = NULL;
+        char* sha1 = NULL;
+        byte* mime64key = NULL;
+        data->websocket = True;
+        StrOp.replaceAll(l_str, '\n', '\0');
+        StrOp.replaceAll(l_str, '\r', '\0');
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket key=%s", l_str + 19 );
+        rc = Mime64Op.decode(dest, &dlen, (const unsigned char*)(l_str+19), StrOp.len(l_str+19));
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket rc=%d keylen=%d", rc, dlen );
+        TraceOp.dump( name, TRCLEVEL_USER2, (const char*)dest, dlen );
+
+        clientkey = StrOp.byteToStr(dest, dlen);
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "clientkey=%s", clientkey );
+        serverkey = StrOp.cat(serverkey, l_str + 19);
+        serverkey = StrOp.cat(serverkey, SERVER_KEY);
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "serverkey=%s", serverkey );
+
+        sha1 = Mime64Op.sha1(serverkey);
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "sha1=%s", sha1 );
+
+        mime64key = StrOp.strToByte(sha1);
+        dlen = 128;
+        rc = Mime64Op.encode(dest, &dlen, (const unsigned char*)mime64key, StrOp.len(sha1)/2);
+        MemOp.copy(serverKey, dest, dlen);
+        serverKey[dlen] = 0;
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "mime64=%s", serverKey );
+
+        StrOp.free(clientkey);
+        StrOp.free(serverkey);
+        StrOp.free(sha1);
+        freeMem(mime64key);
+
+      }
     };
-    
-    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "disconnect... " );
-    SocketOp.disConnect( data->socket );
+
+    if( data->websocket ) {
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "accept the websocket..." );
+      webSocketHeader( data->socket, serverKey, protocol );
+      return False;
+    }
+    else {
+      if( StrOp.find( str, "GET" ) && StrOp.find( str, " / " ) ) {
+        __getFile( inst, ROCWEB_INDEX );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.js" ) ) {
+        __getFile( inst, ROCWEB_JS );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.css" ) ) {
+        __getFile( inst, ROCWEB_CSS );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
+        Boolean ok = True;
+        __getModel( inst );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.xml?" ) ) {
+        Boolean ok = True;
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command: %s", str );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 202 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/update.xml" ) ) {
+        Boolean ok = True;
+        int randNumber = rand();
+        int bigsleep = randNumber % 10000;
+
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "update...sleep=%d", bigsleep );
+        /* ToDo: get an update event from queue. */
+        ThreadOp.sleep(bigsleep);
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
+        if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".png" ) ) {
+        char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
+        char* p = StrOp.find( symbolfile, "HTTP" );
+
+        if( p != NULL ) {
+          p--;
+          *p = '\0';
+          __getImage( inst, symbolfile );
+        }
+        StrOp.free( symbolfile );
+      }
+
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "disconnect... " );
+      SocketOp.disConnect( data->socket );
+    }
   }
   
   return True;
