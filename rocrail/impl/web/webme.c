@@ -157,6 +157,10 @@ Boolean rocWebSocketME( iOPClient inst ) {
   int payload = 0;
   Boolean mask = False;
 
+  if( SocketOp.isBroken( data->socket ) ) {
+    return True;
+  }
+
   if( !SocketOp.peek( data->socket, b, 1) ) {
     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "no work for rocWebSocketME" );
     ThreadOp.sleep(10);

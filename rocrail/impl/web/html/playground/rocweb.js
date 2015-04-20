@@ -3,7 +3,7 @@ var yoffset = 48;
 var planloaded = false;
 var ws = null;
 var initWS;
-
+var worker;
 
 function openInfo()
 {
@@ -50,6 +50,35 @@ function openOptions()
 function closeOptions()
 {
 }
+
+function sendCommand(cmd) {
+  // send an XMLHttpRequest
+  console.log("send command: " + cmd);
+  try {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+        processUpdate(xmlhttp);
+      }
+    };
+    
+    xmlhttp.open("GET", "rocweb.xml?"+cmd, true);
+    xmlhttp.send("");
+  } 
+    catch(e) {
+      console.log("exception: " + e);
+  }
+  
+}
+
+function actionPower() {
+  var cmd = "<system cmd=\"poweron\"/>";
+  sendCommand(cmd);
+  //worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 
 function actionSensor(id)
 {
@@ -102,6 +131,11 @@ $(document).on("pagecreate",function(){
 
 });
 
+/*
+$(document).ready(function(){
+  //$('.ui-slider-handle').height(50)
+})
+*/
 
 function processUpdate(p_req) {
 //only if req shows "loaded"
@@ -184,15 +218,22 @@ function processResponse() {
       }
 
       if( planloaded ) {
-        var worker = new Worker("rocwebworker.js");
+        worker = new Worker("rocwebworker.js");
         worker.onmessage = function (e) {
           var result = JSON.parse(e.data);
           if(result.type == 'debug') {
             console.log(result.msg);
           } 
           else if(result.type == 'response') {
-            console.log(result.answer);
+            console.log("response: "+result.answer);
             /* ToDo: Evaluate server event. */
+          }
+          else if(result.type == 'command') {
+            console.log("command: "+result.msg);
+            /* ToDo: Evaluate server event. */
+          }
+          else {
+            console.log(e.data);
           }
         }
    /*     

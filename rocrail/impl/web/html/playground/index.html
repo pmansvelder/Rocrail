@@ -15,8 +15,15 @@
 
   <div data-role="header" style="overflow:hidden;">
     <h1 id="title">Rocrail: Plan-F reloaded</h1>
-    <a href="#" data-icon="grid" class="ui-btn-left" data-transition="pop" onclick="openThrottle()">Throttle</a>
-    <a href="#" data-icon="bars" class="ui-btn-right" onclick="openMenu()">Menu</a>
+    <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
+    </div>  
+    <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
+    </div>  
   </div>
 
   <!--
@@ -103,7 +110,7 @@
     <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all">F0</a></div>
     </div>
     <div class="full-width-slider">
-    <input type="range" name="speedSlider" id="speedSlider" value="0" min="0" max="100" data-highlight="true" oninput="sppeedUpdate(value)">
+      <input type="range" name="speedSlider" id="speedSlider" value="0" min="0" max="100" data-highlight="true">
     </div>
     </div>
  </div>
