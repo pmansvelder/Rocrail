@@ -3307,6 +3307,29 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
       warning = True;
     TraceOp.trc( name, warning?TRCLEVEL_WARNING:TRCLEVEL_DEBUG, __LINE__, 9999,
         "BM %s port %d reports loco %s(%d) %s is %d", pathKey, port, slot!=NULL?slot->id:"", locoAddr, bidibGetDynStateName(dynnum), value );
+
+    /* Report quality */
+    if( dynnum == 1 && slot!=NULL && bidibnode != NULL ) {
+      if( value != bidibnode->signalquality || !StrOp.equals(bidibnode->signalreporter, slot->id) ) {
+        iONode nodeC = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+
+        bidibnode->signalquality  = value;
+        bidibnode->signalreporter = slot->id;
+
+        wFeedback.setbus( nodeC, bidibnode->uid );
+        wFeedback.setaddr( nodeC, port );
+        wFeedback.setcmd( nodeC, wFeedback.signalquality );
+        wFeedback.setsignal( nodeC, value );
+        wFeedback.setlocoid( nodeC, slot->id );
+
+        wItem.setuidname(nodeC, bidibnode->username);
+
+        if( data->iid != NULL )
+          wFeedback.setiid( nodeC, data->iid );
+
+        data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_INFO );
+      }
+    }
     break;
   }
 

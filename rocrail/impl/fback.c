@@ -43,6 +43,7 @@
 #include "rocs/public/system.h"
 
 #include "rocrail/wrapper/public/Feedback.h"
+#include "rocrail/wrapper/public/FeedbackStatistic.h"
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/Switch.h"
 #include "rocrail/wrapper/public/Signal.h"
@@ -410,6 +411,38 @@ static Boolean _cmd( iOFBack inst, iONode cmd, Boolean update ) {
 }
 
 
+static void __processSignalQuality(iOFBack inst, int signalquality, const char* locoid ) {
+  iOFBackData data = Data(inst);
+  Boolean l_NewQuality = False;
+  Boolean l_NotFound   = True;
+  iONode   fbstatistic = wFeedback.getfbstatistic( data->props );
+
+  /* loop over all actions */
+  while( fbstatistic != NULL ) {
+    if( StrOp.equals(wFeedbackStatistic.getlcid(fbstatistic), locoid) ) {
+      l_NotFound = False;
+      if( wFeedbackStatistic.getquality(fbstatistic) != signalquality ) {
+        wFeedbackStatistic.setquality(fbstatistic, signalquality);
+        l_NewQuality = True;
+      }
+    }
+    fbstatistic = wFeedback.nextfbstatistic( data->props, fbstatistic );
+  };
+
+  if( l_NotFound ) {
+    iONode fbstatistic = NodeOp.inst(wFeedbackStatistic.name(), data->props, ELEMENT_NODE);
+    wFeedbackStatistic.setlcid(fbstatistic, locoid);
+    wFeedbackStatistic.setquality(fbstatistic, signalquality);
+    NodeOp.addChild( data->props, fbstatistic);
+    l_NewQuality = True;
+  }
+
+  if(l_NewQuality)
+    AppOp.broadcastEvent( (iONode)NodeOp.base.clone(data->props) );
+}
+
+
+
 static void _event( iOFBack inst, iONode nodeC ) {
   iOFBackData data = Data(inst);
   Boolean hasListener = False;
@@ -419,6 +452,12 @@ static void _event( iOFBack inst, iONode nodeC ) {
     char* strNode = (char*)NodeOp.base.toString( nodeC );
     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "event %s", strNode );
     StrOp.free( strNode );
+  }
+
+  if( StrOp.equals(wFeedback.getcmd(nodeC), wFeedback.signalquality) ) {
+    __processSignalQuality(inst, wFeedback.getsignal(nodeC), wFeedback.getlocoid(nodeC) );
+    nodeC->base.del(nodeC);
+    return;
   }
 
   if( wFeedback.getcutoutaddr(data->props) > 0 && wFeedback.getaddr(nodeC) == wFeedback.getcutoutaddr(data->props) ) {

@@ -1358,6 +1358,8 @@
       <var name="pendingfeature" vt="int"/>
       <var name="dmxchannel" vt="char*"/>
       <var name="username[128]" vt="char" remark=""/>
+      <var name="signalquality" vt="int"/>
+      <var name="signalreporter" vt="char*"/>
     </struct>
     <struct name="QBiDiBCmd" typedef="*iQBiDiBCmd" remark="Queue command.">
       <var name="path[4]" vt="byte" remark=""/>
