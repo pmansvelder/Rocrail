@@ -217,6 +217,7 @@ Boolean rocWebSocketME( iOPClient inst ) {
         TraceOp.dump( name, TRCLEVEL_USER2, (const char*)b, 2 + (b[1]&0x7F) );
 
         ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
+        ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
 
         freeMem(buffer);
       }

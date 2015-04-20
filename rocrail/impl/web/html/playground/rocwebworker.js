@@ -30,4 +30,17 @@ function doWebSocket() {
   
 }
 
+onmessage = function(e) {
+  debug('Message received from main script');
+  var result = JSON.parse(e.data);
+  if(result.type == 'command') {
+    debug("worker command: "+result.msg);
+    ws.send(result.msg);
+    /* ToDo: Send to server. */
+  }
+
+  debug('Posting message back to main script');
+  postMessage(e.data);
+}
+
 doWebSocket();

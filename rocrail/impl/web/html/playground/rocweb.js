@@ -75,8 +75,8 @@ function sendCommand(cmd) {
 
 function actionPower() {
   var cmd = "<system cmd=\"poweron\"/>";
-  sendCommand(cmd);
-  //worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  //sendCommand(cmd);
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 
@@ -230,10 +230,10 @@ function processResponse() {
           }
           else if(result.type == 'command') {
             console.log("command: "+result.msg);
-            /* ToDo: Evaluate server event. */
+            /* ToDo: Send to server. */
           }
           else {
-            console.log(e.data);
+            console.log("data: " + e.data);
           }
         }
    /*     
