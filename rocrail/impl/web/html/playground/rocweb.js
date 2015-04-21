@@ -92,7 +92,6 @@ function actionPower() {
   var cmd = "<system cmd=\"poweron\"/>";
   //sendCommand(cmd);
   document.getElementById("headerPower").style.backgroundColor= "#FF8888";
-
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -100,26 +99,9 @@ function actionPower() {
 function actionSensor(id)
 {
   console.log("sensor action on " + id );
-  var xmlhttp;
-  // send an XMLHttpRequest
-  try {
-    //req.abort();
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function()
-    {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-      {
-        processUpdate(xmlhttp);
-      }
-    };
-    
-    xmlhttp.open("GET", "rocweb.xml?fb_flip="+id.replace("fb_",""), true);
-    xmlhttp.send("");
-  } 
-    catch(e) {
-      console.log("exception: " + e);
-    }
-  }
+  var cmd = "<fb cmd=\"flip\" id=\""+id.replace("fb_","")+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
 
 
 

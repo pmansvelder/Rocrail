@@ -149,13 +149,35 @@ for (var i = 0; i < ENCODED.length; i++) {
 }
 
  */
-Boolean rocWebSocketME( iOPClient inst ) {
+Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
   char b[128];
   char bMask[10];
   int payload = 0;
   Boolean mask = False;
+
+  if( SocketOp.isBroken( data->socket ) ) {
+    return True;
+  }
+
+  if( event != NULL ) {
+    char* info = NodeOp.base.toString( event );
+    int len = StrOp.len(info);
+    char* b = allocMem(20 + len + 1);
+    b[0] = 0x81;
+    if( len < 127 ) {
+      b[1] = len+1;
+      StrOp.copy(b+2, info);
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event=%.40s", b+2 );
+      ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
+    }
+    else {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket: todo %d long event=%.40s", len, info );
+    }
+    freeMem(b);
+    StrOp.free(info);
+  }
 
   if( SocketOp.isBroken( data->socket ) ) {
     return True;
@@ -207,7 +229,8 @@ Boolean rocWebSocketME( iOPClient inst ) {
           MemOp.copy(buffer, decoded, payload);
           freeMem(decoded);
         }
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: message=%s", buffer );
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: message=%.80s", buffer );
+        *cmd = StrOp.dup(buffer);
 
         /* ToDo: process message */
         b[0] = 0x81;
@@ -216,7 +239,6 @@ Boolean rocWebSocketME( iOPClient inst ) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: response=%s", b+2 );
         TraceOp.dump( name, TRCLEVEL_USER2, (const char*)b, 2 + (b[1]&0x7F) );
 
-        ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
         ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
 
         freeMem(buffer);

@@ -890,7 +890,7 @@ static int __doLevel( iOPClient inst, const char* req ) {
 
 typedef void(*postcall)(iOPClient,const char*,const char*);
 /** Work slice. */
-static Boolean _work( struct OPClient* inst ) {
+static Boolean _work( struct OPClient* inst, iONode event, char** command ) {
   if( inst != NULL ) {
     iOPClientData data = Data(inst);
     char str[1025] = {'\0'};
@@ -907,7 +907,14 @@ static Boolean _work( struct OPClient* inst ) {
     SocketOp.setRcvTimeout( data->socket, 1000 );
 
     if( wWebClient.isme( data->ini ) && data->websocket ) {
-      return rocWebSocketME( inst );
+      char* cmd = NULL;
+      Boolean ok = rocWebSocketME( inst, event, &cmd );
+      *command = cmd;
+      if( cmd != NULL ) {
+        /* Parse command and semd it over the callback function to the control. */
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command received: %.80s", cmd );
+      }
+      return ok;
     }
 
 

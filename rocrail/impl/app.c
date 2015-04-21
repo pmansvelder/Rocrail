@@ -1015,7 +1015,7 @@ static int _Main( iOApp inst, int argc, char** argv ) {
   {
     iONode http = wRocRail.gethttp( data->ini );
     if( http != NULL )
-      data->http = HttpOp.inst( http );
+      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control );
   }
 
   /* Snmp (Optional)*/
@@ -1316,6 +1316,8 @@ static void _broadcastEvent( iONode event ) {
       ClntConOp.broadcastEvent(data->clntCon, (iONode)NodeOp.base.clone(event));
     if( data->srcpCon != NULL )
       SrcpConOp.broadcastEvent(data->srcpCon, (iONode)NodeOp.base.clone(event));
+    if( data->http != NULL )
+      HttpOp.broadcastEvent(data->http, (iONode)NodeOp.base.clone(event));
 
     NodeOp.base.del(event);
   }

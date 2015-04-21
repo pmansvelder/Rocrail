@@ -1944,8 +1944,11 @@
   </object>
 
   <object name="Http" use="node,thread,socket,map,mutex" remark="HttpMonitor.">
+    <typedef def="void(*httpcon_callback)(obj,iONode)"/>
     <fun name="inst" vt="this" remark="Object creator.">
       <param name="ini" vt="iONode" remark="Http ini."/>
+      <param name="callbackfun" vt="httpcon_callback"/>
+      <param name="callbackobj" vt="obj"/>
     </fun>
     <fun name="shutdown" vt="void" remark="Shutdown Http.">
       <param name="inst" vt="this" remark="Http instance."/>
@@ -1955,6 +1958,15 @@
     </fun>
     <fun name="deletePostDataMap" vt="void" remark="">
       <param name="postdatamap" vt="iOMap" remark=""/>
+    </fun>
+    <fun name="setCallback" vt="void">
+      <param name="inst" vt="this" remark="Http instance"/>
+      <param name="callbackfun" vt="httpcon_callback"/>
+      <param name="callbackobj" vt="obj"/>
+    </fun>
+    <fun name="broadcastEvent" vt="void">
+      <param name="inst" vt="this" remark="Http instance."/>
+      <param name="evt" vt="iONode"/>
     </fun>
     <data>
       <var name="port" vt="int" remark="Port to service."/>
@@ -1971,7 +1983,9 @@
       <var name="shutdown" vt="Boolean" remark=""/>
       <var name="ini" vt="iONode" remark=""/>
       <var name="webclient" vt="iONode" remark=""/>
-    </data>
+      <var name="callback" vt="httpcon_callback"/>
+      <var name="callbackObj" vt="obj"/>
+      </data>
   </object>
 
   <object name="HClient" use="node,list,thread,socket,file" remark="HttpClient.">
@@ -2004,6 +2018,8 @@
     </fun>
     <fun name="work" vt="Boolean" remark="Work slice.">
       <param name="inst" vt="this" remark="HClient instance."/>
+      <param name="event" vt="iONode" remark="Event node."/>
+      <param name="cmd" vt="char**" remark="Command XML."/>
     </fun>
     <fun name="getId" vt="const char*" remark="PClient ID.">
       <param name="inst" vt="this" remark="PClient instance."/>
@@ -2019,7 +2035,7 @@
       <var name="refresh" vt="int" remark="browser refresh time"/>
       <var name="locIDs" vt="iOList" remark="LocID's"/>
       <var name="ini" vt="iONode" remark="webclient ini"/>
-    </data>
+      </data>
     <struct name="extraItem" typedef="*iOExtraItem">
       <var name="skip" vt="Boolean"/>
       <var name="html[256]" vt="char"/>

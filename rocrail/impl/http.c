@@ -30,6 +30,7 @@
 #include "rocs/public/trace.h"
 #include "rocs/public/map.h"
 #include "rocs/public/strtok.h"
+#include "rocs/public/doc.h"
 
 
 static int instCnt = 0;
@@ -190,6 +191,7 @@ static void __pportserver( void* threadinst ) {
   iOThread     th = (iOThread)threadinst;
   iOHttp     http = (iOHttp)ThreadOp.getParm(th);
   iOHttpData data = Data( http );
+  iONode    event = NULL;
 
   char* desc = StrOp.fmt( "WebClient Service on port %d", data->pport  );
   ThreadOp.setDescription( th, desc );
@@ -203,11 +205,28 @@ static void __pportserver( void* threadinst ) {
       client = (iOPClient)MapOp.first( data->pclientMap );
       MutexOp.post( data->pclientmux );
     }
+
+    obj post = ThreadOp.getPost( th );
+    if( post != NULL ) {
+      event = (iONode)post;
+    }
+
     /* Iterate the list of connected clients. */
     while( client != NULL ) {
+      char* cmd = NULL;
 
       /* Let the client do the work... */
-      Boolean remove = PClientOp.work( client );
+      Boolean remove = PClientOp.work( client, event, &cmd );
+      if( cmd != NULL ) {
+        /* Parse command and semd it over the callback function to the control. */
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command received: %.80s", cmd );
+        iODoc doc = DocOp.parse( cmd );
+        if( doc != NULL ) {
+          iONode nodeA = DocOp.getRootNode( doc );
+          data->callback( data->callbackObj, nodeA );
+        }
+        StrOp.free(cmd);
+      }
 
       if( remove ) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Removing WebClient [%s].", PClientOp.getId( client ) );
@@ -228,6 +247,11 @@ static void __pportserver( void* threadinst ) {
         MutexOp.post( data->pclientmux );
       }
     };
+
+    if( event != NULL ) {
+      NodeOp.base.del(event);
+      event = NULL;
+    }
 
     ThreadOp.sleep( 5 );
   } while( !ThreadOp.isQuit( th ) );
@@ -285,8 +309,15 @@ static void __pportmanager( void* threadinst ) {
 }
 
 
+static void _setCallback( iOHttp inst, httpcon_callback pfun, obj callbackObj ) {
+  iOHttpData data = Data(inst);
+  data->callback    = pfun;
+  data->callbackObj = callbackObj;
+}
+
+
 /** Object creator. */
-static struct OHttp* _inst( iONode ini ) {
+static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj ) {
   if( ini != NULL ) {
     iOHttp __Http = allocMem( sizeof( struct OHttp ) );
     iOHttpData data = allocMem( sizeof( struct OHttpData ) );
@@ -295,6 +326,8 @@ static struct OHttp* _inst( iONode ini ) {
     data->ini = ini;
     data->port = wHttpService.getport( ini );
     data->webclient = wHttpService.getwebclient( ini );
+    data->callback    = pfun;
+    data->callbackObj = callbackObj;
   
     /* Initialize data->xxx members... */
     if( data->port > 0 ) {
@@ -363,6 +396,16 @@ static void _shutdown( struct OHttp* inst ) {
       ThreadOp.requestQuit( data->pportserver );
     if( data->psrvrsocket != NULL )
       SocketOp.disConnect( data->psrvrsocket );
+  }
+  return;
+}
+
+
+/**  */
+static void _broadcastEvent( struct OHttp* inst ,iONode evt ) {
+  iOHttpData data = Data(inst);
+  if( !ThreadOp.post( data->pportserver, (obj)evt ) ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Unable to broadcast event!" );
   }
   return;
 }
