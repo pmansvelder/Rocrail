@@ -9255,34 +9255,84 @@ static Boolean scheduleCheck( iOAnalyse inst, Boolean repair ) {
             const char* locationid = wScheduleEntry.getlocation( entry );
             TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck:  entry[%d/%d] block[%s] location[%s]",
                 j+1, scEntries, blockid, locationid );
-            if( blockid != NULL && StrOp.len( blockid ) > 0 ) {
-              iIBlockBase block = ModelOp.getBlock( data->model, blockid );
-              if( block == NULL ) {
-                numProblems++;
-                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] block[%s] does not exist",
-                    scid, j+1, scEntries, blockid );
+            const char* entryNodeName = NodeOp.getName( entry );
+            if( StrOp.equals( entryNodeName, wScheduleEntry.name() ) ) {
+              if( blockid != NULL && StrOp.len( blockid ) > 0 ) {
+                iIBlockBase block = ModelOp.getBlock( data->model, blockid );
+                if( block == NULL ) {
+                  numProblems++;
+                  TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] block[%s] does not exist",
+                      scid, j+1, scEntries, blockid );
+                }
+                else {
+                  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] block[%s] OK",
+                      scid, j+1, scEntries, blockid );
+                }
+              }
+              else if( locationid != NULL && StrOp.len( locationid ) > 0 ) {
+                iOLocation location = ModelOp.getLocation( data->model, locationid );
+                if( location == NULL ) {
+                  numProblems++;
+                  TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] location[%s] does not exist",
+                      scid, j+1, scEntries, locationid );
+                }
+                else {
+                  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] location[%s] OK",
+                      scid, j+1, scEntries, locationid );
+                }
               }
               else {
-                TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] block[%s] OK",
-                    scid, j+1, scEntries, blockid );
+                numProblems++;
+                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] no block or location",
+                    scid, j+1, scEntries );
               }
+
+              { /* a schedule entry may have some action entries... */
+                int scEntryEntries = NodeOp.getChildCnt( entry );
+                TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] has [%d]entries",
+                    scid, j+1, scEntries, scEntryEntries );
+
+                /* loop over all entries */
+                int k;
+                for( k = 0 ; k < scEntryEntries ; k++ ) {
+                  iONode entryEntry = NodeOp.getChild( entry, k );
+                  if( entryEntry != NULL ) {
+                    const char* entryEntryNodeName = NodeOp.getName( entryEntry );
+                    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] subEntry[%d/%d] name[%s]",
+                        scid, j+1, scEntries, k+1, scEntryEntries, entryEntryNodeName );
+
+                    if( StrOp.equals( entryEntryNodeName, wActionCtrl.name() ) ) {
+                      int checkedTotal = 0;
+                      int modifications = 0;
+                      modifications = checkAction( inst, k+1, entryEntry, repair, &checkedTotal );
+                      if( modifications > 0 ) {
+                        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: schedule[%s] entry[%d/%d] subEntry[%d/%d] invalid action",
+                            scid, j+1, scEntries, k+1, scEntryEntries );
+                        numProblems++ ;
+                      }
+                    }
+                    else {
+                      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: schedule[%s] entry[%d/%d] subEntry[%d/%d] unsupported/unchecked entry type[%s]",
+                          scid, j+1, scEntries, k+1, scEntryEntries, entryEntryNodeName );
+                    }
+                  }
+                }
+              }
+
             }
-            else if( locationid != NULL && StrOp.len( locationid ) > 0 ) {
-              iOLocation location = ModelOp.getLocation( data->model, locationid );
-              if( location == NULL ) {
-                numProblems++;
-                TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] location[%s] does not exist",
-                    scid, j+1, scEntries, locationid );
-              }
-              else {
-                TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "scheduleCheck: schedule[%s] entry[%d/%d] location[%s] OK",
-                    scid, j+1, scEntries, locationid );
+            else if( StrOp.equals( entryNodeName, wActionCtrl.name() ) ) {
+              int checkedTotal = 0;
+              int modifications = 0;
+              modifications = checkAction( inst, j+1, entry, repair, &checkedTotal );
+              if( modifications > 0 ) {
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: schedule[%s] entry[%d/%d] invalid action",
+                    scid, j+1, scEntries );
+                numProblems++ ;
               }
             }
             else {
-              numProblems++;
-              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: schedule[%s] entry[%d/%d] no block or location",
-                  scid, j+1, scEntries );
+              TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: schedule[%s] entry[%d/%d] unsupported/unchecked entry type[%s]",
+                  scid, j+1, scEntries, entryNodeName );
             }
           }
         }
