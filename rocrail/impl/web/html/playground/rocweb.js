@@ -5,6 +5,16 @@ var ws = null;
 var initWS;
 var worker;
 
+
+function langDE() {
+ document.getElementById("menuPower").innerHTML = "Gleisstrom";
+}
+
+function langEN() {
+ document.getElementById("menuPower").innerHTML = "Power";
+}
+
+
 function openInfo()
 {
   console.log("close menu");
@@ -73,9 +83,16 @@ function sendCommand(cmd) {
   
 }
 
+function onFunction(id, nr) {
+  console.log("Funtion: " + id + " ("+nr+")");
+  document.getElementById(id).style.backgroundColor= "#FF8888";
+}
+
 function actionPower() {
   var cmd = "<system cmd=\"poweron\"/>";
   //sendCommand(cmd);
+  document.getElementById("headerPower").style.backgroundColor= "#FF8888";
+
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -128,14 +145,36 @@ $(document).on("pagecreate",function(){
   $('#locoSelect').change(function() {
     console.log("locoSelect: " + this.value );
   } );
+  
+  $('#languageSelect').change(function() {
+    console.log("languageSelect: " + this.value );
+    localStorage.lang = this.value;
+
+    if( this.value == "de" )
+      langDE();
+    else if( this.value == "en" )
+      langEN();
+  } );
 
 });
 
-/*
+
 $(document).ready(function(){
   //$('.ui-slider-handle').height(50)
+  var lang = localStorage.lang;
+  
+  var sel = document.getElementById('languageSelect');
+  
+  if( lang == "de" ) {
+    langDE();
+    //sel.selectedIndex = 0;
+  }
+  else {
+    langEN();
+    //sel.selectedIndex = 1;
+  }
 })
-*/
+
 
 function processUpdate(p_req) {
 //only if req shows "loaded"
@@ -197,6 +236,7 @@ function processResponse() {
   console.log("readyState="+req.readyState+" status="+req.status);
   if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
     // only if "OK"
+    $.mobile.loading("show");
     try {
       xmlDoc = req.responseXML;
       if( xmlDoc != null ) {
@@ -254,6 +294,7 @@ function processResponse() {
     catch(e) {
       console.log("exception: " + e);
     }
+    $.mobile.loading("hide");
     
   }
 

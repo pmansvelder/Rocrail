@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Rocrail WEB Client</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
 	<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
@@ -17,7 +18,7 @@
     <h1 id="title">Rocrail: Plan-F reloaded</h1>
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
       <a href="#" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
-      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
+      <a href="#" id="headerPower" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
     </div>  
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
       <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
@@ -57,11 +58,26 @@
   <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <button class="ui-btn ui-icon-power ui-btn-icon-left" style="text-align:left;">Power</button>
+  <button id="menuPower" class="ui-btn ui-icon-power ui-btn-icon-left" style="text-align:left;">Power</button>
   <button class="ui-btn ui-icon-alert ui-btn-icon-left" style="text-align:left;">Emergancy break</button>
   <button class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;">System</button>
   <button class="ui-btn ui-icon-info  ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
   <button class="ui-btn ui-icon-gear  ui-btn-icon-left" style="text-align:left;">Options</button>
+    <select name="languageSelect" id="languageSelect" style="text-align:left;">
+      <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
+      <option id="langEN" value="en" style="text-align:left;">English</option>
+    </select>
+  <!--
+    <ul data-role="listview">
+      <li  name="languageSelect" id="languageSelect" data-role="collapsible" data-iconpos="right" data-inset="false">
+        <h2>Language</h2>
+        <ul data-role="listview" data-theme="b">
+          <li><a id="langDE" value="de"  href="#" onclick="langDE()">Deutsch</a></li>
+          <li><a id="langEN" value="en"  href="#" onclick="langEN()">English</a></li>
+        </ul>
+      </li>
+    </ul>
+    -->
   </div>
   </div>
 
@@ -86,7 +102,7 @@
     </select>
     
     <div class="ui-grid-d">
-    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all">F1</a></div>
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F1" onclick="onFunction('F1', 1)">F1</a></div>
     <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all">F2</a></div>
     <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all">F3</a></div>
     <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all">F4</a></div>
