@@ -7859,3 +7859,15 @@ msgstr ""
 msgid "Tunnel track"
 msgstr ""
 
+#. 
+# id="statistic"
+#, c-format
+msgid "Statistic"
+msgstr ""
+
+#. 
+# id="signalquality"
+#, c-format
+msgid "Signal quality"
+msgstr ""
+

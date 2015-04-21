@@ -89,6 +89,9 @@ class wxSpinCtrl;
 #define ID_FB_TYPE 10396
 #define ID_PANEL_FB_WIRING 10334
 #define ID_PANEL_FB_GPS 10444
+#define ID_PANEL_FB_STATISTICS 10475
+#define ID_STATISTIC_LIST 10476
+#define ID_STATISTIC_DELETE 10477
 #define SYMBOL_FEEDBACKDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_FEEDBACKDIALOG_TITLE _("Sensors")
 #define SYMBOL_FEEDBACKDIALOG_IDNAME ID_DIALOG_FEEDBACK
@@ -160,6 +163,15 @@ public:
 
     /// wxEVT_COMMAND_RADIOBOX_SELECTED event handler for ID_FB_TYPE
     void OnFbTypeSelected( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_STATISTIC_LIST
+    void OnStatisticListSelected( wxListEvent& event );
+
+    /// wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_STATISTIC_LIST
+    void OnStatisticListColLeftClick( wxListEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_STATISTIC_DELETE
+    void OnStatisticDeleteClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
     void OnCancelClick( wxCommandEvent& event );
@@ -272,6 +284,9 @@ public:
     wxSpinCtrl* m_GPSToleranceY;
     wxStaticText* m_labGPSToleranceZ;
     wxSpinCtrl* m_GPSToleranceZ;
+    wxPanel* m_StatisticsTab;
+    wxListCtrl* m_StatisticList;
+    wxButton* m_StatisticDelete;
     wxButton* m_Cancel;
     wxButton* m_OK;
     wxButton* m_Apply;

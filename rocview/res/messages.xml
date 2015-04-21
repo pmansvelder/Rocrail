@@ -29850,4 +29850,10 @@
   <Msg id="track_tunnel">
     <en txt="Tunnel track"/>
   </Msg>
+  <Msg id="statistic">
+    <en txt="Statistic"/>
+  </Msg>
+  <Msg id="signalquality">
+    <en txt="Signal quality"/>
+  </Msg>
 </Messages>
