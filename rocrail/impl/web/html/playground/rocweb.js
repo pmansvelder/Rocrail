@@ -105,17 +105,23 @@ function onFunction(id, nr) {
 }
 
 function actionPower() {
-  var cmd = "<system cmd=\"poweron\"/>";
-  //sendCommand(cmd);
-  document.getElementById("headerPower").style.backgroundColor= "#FF8888";
+  var mOn = true;
+  var cmd = "<sys informall=\"true\" cmd=\""+(mOn?"go":"stop")+"\"/>";
+  //document.getElementById("headerPower").style.backgroundColor= "#FF8888";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 
 function actionSensor(id)
 {
-  console.log("sensor action on " + id );
-  var cmd = "<fb cmd=\"flip\" id=\""+id.replace("fb_","")+"\"/>";
+  fbid = id.replace("fb_","");
+  console.log("sensor action on " + fbid );
+  fb = fbMap[fbid];
+  var cmd;
+  if( "true" == fb.getAttribute('state') )
+    cmd = "<fb state=\"false\" id=\""+fbid+"\"/>";
+  else
+    cmd = "<fb state=\"true\" id=\""+fbid+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -230,6 +236,32 @@ function xml2string(node) {
   }
 }
 
+function handleSensor(fb) {
+  console.log("sensor event: " + fb.getAttribute('id') + " " + fb.getAttribute('state'));
+  var div = document.getElementById("fb_"+fb.getAttribute('id'));
+  if( div != null ) {
+    fbNode = fbMap[fb.getAttribute('id')];
+    fbNode.setAttribute('state', fb.getAttribute('state'));
+
+    if( "true" == fb.getAttribute('state') )
+      div.style.backgroundImage = "url(img/sensor_on_1.png)";
+    else
+      div.style.backgroundImage = "url(img/sensor_off_1.png)";
+  }
+  else {
+    console.log("sensor: " + fb.getAttribute('id') + " not found");
+  }
+}
+
+function evaluateEvent(xmlStr) {
+  var xmlDoc = ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
+  var root = xmlDoc.documentElement;
+  var evtName = root.nodeName;
+  console.log("evaluate: " + evtName);
+  if( evtName == "fb" )
+    handleSensor(root);
+}
+
 function processResponse() {
   console.log("readyState="+req.readyState+" status="+req.status);
   if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
@@ -265,6 +297,7 @@ function processResponse() {
           else if(result.type == 'response') {
             console.log("response: "+result.answer);
             /* ToDo: Evaluate server event. */
+            evaluateEvent(result.answer);
           }
           else if(result.type == 'command') {
             console.log("command: "+result.msg);
@@ -298,6 +331,7 @@ function processResponse() {
 
 }
 
+var fbMap = {};
 
 function processPlan() {
 //only if req shows "loaded"
@@ -310,6 +344,7 @@ function processPlan() {
 
      for (var i = 0; i < fblist.length; i++) {
        console.log('sensor: ' + fblist[i].getAttribute('id'));
+       fbMap[fblist[i].getAttribute('id')] = fblist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "fb_"+fblist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionSensor(this.id)");

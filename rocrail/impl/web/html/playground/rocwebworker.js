@@ -4,8 +4,10 @@ function debug(msg) {
 }
 
 function doWebSocket() {
-  console.log("creating a websocket...");
-  ws = new WebSocket("ws://localhost:8088", "rcp");
+  var host = location.hostname;
+  host.replace("www.","");
+  debug("creating a websocket...ws://" + host + ":" + location.port);
+  ws = new WebSocket("ws://"+host+":"+location.port, "rcp");
   ws.onopen = function()
   {
      // Web Socket is connected, send data using send()
