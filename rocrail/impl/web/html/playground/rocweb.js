@@ -83,7 +83,23 @@ function sendCommand(cmd) {
   
 }
 
+
+var tapholdF1 = 0;
+
+$(function(){
+  $("#F1").bind("taphold", tapholdF1Handler);
+ 
+  function tapholdF1Handler(e) {
+    tapholdF1 = 1;
+    console.log("taphold F1");
+  }
+});
+
 function onFunction(id, nr) {
+  if( tapholdF1 == 1 ) {
+    tapholdF1 = 0;
+    return;
+  }
   console.log("Funtion: " + id + " ("+nr+")");
   document.getElementById(id).style.backgroundColor= "#FF8888";
 }
