@@ -43,6 +43,7 @@
     <const name="deleteservice" vt="string" val="-deleteservice" defval="false" remark="Try to uninstall rocrail as Windows Service. (Windows only)"/>
     <const name="lcd" vt="string" val="-lcd" defval="false" remark="activate LCD support with gamepad navigation"/>
     <const name="info" vt="string" val="-info" defval="true" remark="Activates info tracelevel."/>
+    <const name="http" vt="string" val="-http" defval="true" remark="Activates http tracelevel."/>
     <const name="stress" vt="string" val="-stress" defval="true" remark="Activates network stress runner."/>
     <const name="modplan" vt="string" val="-modplan" defval="true" remark="Create modplan."/>
     <const name="run" vt="string" val="-run" defval="false" remark="Run all locos."/>
@@ -366,14 +367,14 @@
       <const name="privTrapShutDown"  vt="string" val="1.3.6.1.4.1.37707.1.1.10.2.0"/>
     </SnmpService>
     <http wrappername="HttpService" cardinality="1" remark="Http interface for configure the xspooler.">
-      <var name="port" vt="int" defval="53701" range="0-65535" remark="Port number for server socket. Deactivated when 0."/>
+      <var name="port" vt="int" defval="0" range="0-65535" remark="Port number for server socket. Deactivated when 0."/>
       <var name="path" vt="string" defval="." range="*" remark="Path where to look for external HTML documents."/>
       <var name="refresh" vt="int" defval="10" range="0-*" unit="s" remark="browser refresh time: 0=no refresh"/>
       <var name="enable" vt="bool" defval="true"/>
       <webclient wrappername="WebClient" cardinality="1">
         <var name="me" vt="bool" defval="false" remark="rocWeb Mobile Edition V2"/>
         <var name="enable" vt="bool" defval="true"/>
-        <var name="port" vt="int" defval="8088" range="0-65535" remark="Port number server socket for webclients. Deactivated when 0."/>
+        <var name="port" vt="int" defval="0" range="0-65535" remark="Port number server socket for webclients. Deactivated when 0."/>
         <var name="xsize" vt="int" defval="640" range="0-*" remark=""/>
         <var name="ysize" vt="int" defval="0" range="0-*" remark="no height is set when 0 which is recommended"/>
         <var name="refresh" vt="int" defval="0" range="0-*" unit="s" remark="browser refresh time: 0=no refresh"/>

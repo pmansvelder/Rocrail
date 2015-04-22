@@ -247,15 +247,6 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: message=%.80s", buffer );
         *cmd = StrOp.dup(buffer);
 
-        /* ToDo: process message */
-        b[0] = 0x81;
-        b[1] = StrOp.len("<ok/>");
-        StrOp.copy(b+2, "<ok/>");
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: response=%s", b+2 );
-        TraceOp.dump( name, TRCLEVEL_USER2, (const char*)b, 2 + (b[1]&0x7F) );
-
-        ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
-
         freeMem(buffer);
       }
     }

@@ -488,6 +488,7 @@ static void __help( void ) {
   TraceOp.println( "-parse                   | Switch on xml parse tracelevel." );
   TraceOp.println( "-monitor                 | Switch on controller monitor tracelevel." );
   TraceOp.println( "-info                    | Switch on info tracelevel." );
+  TraceOp.println( "-http                    | Switch on http tracelevel." );
   TraceOp.println( "-------------------------+--------------------------------------------"  );
   TraceOp.println( "-console                 | Read console input." );
   TraceOp.println( "-nocom                   | Switch off communication." );
@@ -705,6 +706,7 @@ static int _Main( iOApp inst, int argc, char** argv ) {
   tracelevel  parse   = CmdLnOp.hasKey( arg, wCmdline.parse  ) ? TRCLEVEL_PARSE:0;
   tracelevel  monitor = CmdLnOp.hasKey( arg, wCmdline.monitor) ? TRCLEVEL_MONITOR:0;
   tracelevel  info    = CmdLnOp.hasKey( arg, wCmdline.info   ) ? TRCLEVEL_INFO:0;
+  tracelevel  http    = CmdLnOp.hasKey( arg, wCmdline.http   ) ? TRCLEVEL_USER2:0;
 
   const char* wd      = CmdLnOp.getStr( arg, wCmdline.workdir );
   const char* tf      = CmdLnOp.getStr( arg, wCmdline.trcfile );
@@ -737,7 +739,7 @@ static int _Main( iOApp inst, int argc, char** argv ) {
     cd = FileOp.cd( wd );
   }
 
-  trc = TraceOp.inst( debug | dump | monitor | parse | info | TRCLEVEL_WARNING | TRCLEVEL_CALC | TRCLEVEL_STATUS, tf, True );
+  trc = TraceOp.inst( debug | dump | monitor | parse | info | http | TRCLEVEL_WARNING | TRCLEVEL_CALC | TRCLEVEL_STATUS, tf, True );
   TraceOp.setAppID( trc, "r" );
 
   if( wd != NULL ) {
