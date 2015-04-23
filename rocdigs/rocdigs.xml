@@ -1360,6 +1360,7 @@
       <var name="username[128]" vt="char" remark=""/>
       <var name="signalquality" vt="int"/>
       <var name="signalreporter" vt="char*"/>
+      <var name="signalport" vt="int"/>
     </struct>
     <struct name="QBiDiBCmd" typedef="*iQBiDiBCmd" remark="Queue command.">
       <var name="path[4]" vt="byte" remark=""/>

@@ -3310,9 +3310,10 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
 
     /* Report quality */
     if( dynnum == 1 && slot!=NULL && bidibnode != NULL ) {
-      if( value != bidibnode->signalquality || !StrOp.equals(bidibnode->signalreporter, slot->id) ) {
+      if( value != bidibnode->signalquality || !StrOp.equals(bidibnode->signalreporter, slot->id) || bidibnode->signalport != port ) {
         iONode nodeC = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
 
+        bidibnode->signalport     = port;
         bidibnode->signalquality  = value;
         bidibnode->signalreporter = slot->id;
 
