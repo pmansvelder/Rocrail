@@ -94,10 +94,9 @@ BEGIN_EVENT_TABLE( FeedbackDialog, wxDialog )
 
     EVT_RADIOBOX( ID_FB_TYPE, FeedbackDialog::OnFbTypeSelected )
 
-    EVT_LIST_ITEM_SELECTED( ID_STATISTIC_LIST, FeedbackDialog::OnStatisticListSelected )
-    EVT_LIST_COL_CLICK( ID_STATISTIC_LIST, FeedbackDialog::OnStatisticListColLeftClick )
-
     EVT_BUTTON( ID_STATISTIC_DELETE, FeedbackDialog::OnStatisticDeleteClick )
+
+    EVT_BUTTON( ID_STATISTIC_SHOW_ALL, FeedbackDialog::OnStatisticShowAllClick )
 
     EVT_BUTTON( wxID_CANCEL, FeedbackDialog::OnCancelClick )
 
@@ -276,8 +275,10 @@ void FeedbackDialog::initLabels() {
 
   // Statistic
   m_StatisticDelete->SetLabel( wxGetApp().getMsg( "delete" ) );
-  m_StatisticList->InsertColumn(0, wxGetApp().getMsg( "signalquality" ), wxLIST_FORMAT_LEFT );
-  m_StatisticList->InsertColumn(1, wxGetApp().getMsg( "locid" ), wxLIST_FORMAT_LEFT );
+  m_StatisticShowAll->SetLabel( wxGetApp().getMsg( "showall" ) );
+  m_StatisticGrid->CreateGrid(0, 0, wxGrid::wxGridSelectRows);
+  m_StatisticGrid->AutoSizeColumns();
+  m_StatisticGrid->AutoSizeRows();
 
   // Buttons
   m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
@@ -389,30 +390,15 @@ void FeedbackDialog::initValues() {
   // Action
 
   // Statistic
-  m_StatisticList->DeleteAllItems();
-  iONode   fbstatistic = wFeedback.getfbstatistic( m_Props );
+  if( m_StatisticGrid->GetNumberRows() > 0 )
+    m_StatisticGrid->DeleteRows( 0, m_StatisticGrid->GetNumberRows() );
+  if( m_StatisticGrid->GetNumberCols() > 0 )
+    m_StatisticGrid->DeleteCols( 0, m_StatisticGrid->GetNumberCols() );
 
-  /* loop over all actions */
-  int idx = 0;
-  while( fbstatistic != NULL ) {
-    m_StatisticList->InsertItem( idx, wxString::Format(wxT("%d"), wFeedbackStatistic.getquality(fbstatistic)) );
-    m_StatisticList->SetItem( idx, 1, wxString(wFeedbackStatistic.getlcid(fbstatistic),wxConvUTF8) );
-    idx++;
-    fbstatistic = wFeedback.nextfbstatistic( m_Props, fbstatistic );
-  };
-  // resize
-  for( int n = 0; n < 2; n++ ) {
-    m_StatisticList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
-    int autoheadersize = m_StatisticList->GetColumnWidth(n);
-    m_StatisticList->SetColumnWidth(n, wxLIST_AUTOSIZE);
-    int autosize = m_StatisticList->GetColumnWidth(n);
-    if(autoheadersize > autosize )
-      m_StatisticList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
-    else if( autosize > 120 )
-      m_StatisticList->SetColumnWidth(n, autoheadersize > 120 ? autoheadersize:120);
-  }
+  doStatistic(m_Props);
 
 }
+
 
 bool FeedbackDialog::evaluate() {
   if( m_Props == NULL )
@@ -576,8 +562,9 @@ bool FeedbackDialog::Create( wxWindow* parent, wxWindowID id, const wxString& ca
     m_labGPSToleranceZ = NULL;
     m_GPSToleranceZ = NULL;
     m_StatisticsTab = NULL;
-    m_StatisticList = NULL;
+    m_StatisticGrid = NULL;
     m_StatisticDelete = NULL;
+    m_StatisticShowAll = NULL;
     m_Cancel = NULL;
     m_OK = NULL;
     m_Apply = NULL;
@@ -930,35 +917,42 @@ void FeedbackDialog::CreateControls()
     wxBoxSizer* itemBoxSizer101 = new wxBoxSizer(wxVERTICAL);
     m_StatisticsTab->SetSizer(itemBoxSizer101);
 
-    m_StatisticList = new wxListCtrl( m_StatisticsTab, ID_STATISTIC_LIST, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
-    itemBoxSizer101->Add(m_StatisticList, 1, wxGROW|wxALL, 5);
+    m_StatisticGrid = new wxGrid( m_StatisticsTab, ID_FEEDBACK_STATISTIC_GRIG, wxDefaultPosition, wxSize(200, 150), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+    m_StatisticGrid->SetDefaultColSize(50);
+    m_StatisticGrid->SetDefaultRowSize(25);
+    m_StatisticGrid->SetColLabelSize(25);
+    m_StatisticGrid->SetRowLabelSize(50);
+    itemBoxSizer101->Add(m_StatisticGrid, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer103 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer101->Add(itemBoxSizer103, 0, wxALIGN_LEFT, 5);
     m_StatisticDelete = new wxButton( m_StatisticsTab, ID_STATISTIC_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer103->Add(m_StatisticDelete, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+    m_StatisticShowAll = new wxButton( m_StatisticsTab, ID_STATISTIC_SHOW_ALL, _("Show all"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer103->Add(m_StatisticShowAll, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
     m_Notebook->AddPage(m_StatisticsTab, _("Statistics"));
 
     itemBoxSizer2->Add(m_Notebook, 1, wxGROW|wxALL, 5);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer105 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer106 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer105, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer106, 0, wxGROW|wxALL, 5);
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer105->AddButton(m_Cancel);
+    itemStdDialogButtonSizer106->AddButton(m_Cancel);
 
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     m_OK->SetDefault();
-    itemStdDialogButtonSizer105->AddButton(m_OK);
+    itemStdDialogButtonSizer106->AddButton(m_OK);
 
     m_Apply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer105->AddButton(m_Apply);
+    itemStdDialogButtonSizer106->AddButton(m_Apply);
 
-    wxButton* itemButton109 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer105->AddButton(itemButton109);
+    wxButton* itemButton110 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer106->AddButton(itemButton110);
 
-    itemStdDialogButtonSizer105->Realize();
+    itemStdDialogButtonSizer106->Realize();
 
 ////@end FeedbackDialog content construction
 }
@@ -1249,28 +1243,72 @@ void FeedbackDialog::OnStatisticDeleteClick( wxCommandEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_STATISTIC_LIST
- */
+int FeedbackDialog::findStatisticCol( wxString lcid) {
+  int col = 0;
+  bool found = false;
+  int cols = m_StatisticGrid->GetNumberCols();
+  if( cols > 0 ) {
+    for( int i = 0; i < cols; i++) {
+      if( lcid == m_StatisticGrid->GetColLabelValue(i) ) {
+        col = i;
+        found = true;
+        break;
+      }
+    }
+  }
 
-void FeedbackDialog::OnStatisticListSelected( wxListEvent& event )
-{
-////@begin wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_STATISTIC_LIST in FeedbackDialog.
-    // Before editing this code, remove the block markers.
-    event.Skip();
-////@end wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_STATISTIC_LIST in FeedbackDialog. 
+  if(!found) {
+    m_StatisticGrid->AppendCols();
+    col = m_StatisticGrid->GetNumberCols()-1;
+  }
+
+  return col;
 }
 
+void FeedbackDialog::doStatistic(iONode l_Props) {
+  // Statistic
+  m_StatisticGrid->AppendRows();
+  int row = m_StatisticGrid->GetNumberRows()-1;
+  m_StatisticGrid->SetRowLabelValue(row, wxString(wFeedback.getid(l_Props),wxConvUTF8));
 
-/*!
- * wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_STATISTIC_LIST
- */
+  /* loop over all statistics */
+  iONode   fbstatistic = wFeedback.getfbstatistic( l_Props );
+  int idx = 0;
+  while( fbstatistic != NULL ) {
+    int col = findStatisticCol(wxString(wFeedbackStatistic.getlcid(fbstatistic),wxConvUTF8));
+    m_StatisticGrid->SetCellValue(row, col, wxString::Format(wxT("%d"), wFeedbackStatistic.getquality(fbstatistic)) );
+    m_StatisticGrid->SetCellAlignment(wxALIGN_CENTRE, row, col);
+    m_StatisticGrid->SetReadOnly( row, col, true );
+    m_StatisticGrid->SetColLabelValue(col, wxString(wFeedbackStatistic.getlcid(fbstatistic),wxConvUTF8));
 
-void FeedbackDialog::OnStatisticListColLeftClick( wxListEvent& event )
+    idx++;
+    fbstatistic = wFeedback.nextfbstatistic( l_Props, fbstatistic );
+  };
+}
+
+void FeedbackDialog::OnStatisticShowAllClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_STATISTIC_LIST in FeedbackDialog.
-    // Before editing this code, remove the block markers.
-    event.Skip();
-////@end wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_STATISTIC_LIST in FeedbackDialog. 
+  if( m_Props == NULL )
+    return;
+  // Statistic
+  if( m_StatisticGrid->GetNumberRows() > 0 )
+    m_StatisticGrid->DeleteRows( 0, m_StatisticGrid->GetNumberRows() );
+  if( m_StatisticGrid->GetNumberCols() > 0 )
+    m_StatisticGrid->DeleteCols( 0, m_StatisticGrid->GetNumberCols() );
+
+  iONode model = wxGetApp().getModel();
+  if( model != NULL ) {
+    iONode fblist = wPlan.getfblist( model );
+    if( fblist != NULL ) {
+      iONode fb = wFeedbackList.getfb(fblist);
+      while(fb != NULL ) {
+        if( wFeedback.getfbstatistic(fb) != NULL )
+          doStatistic(fb);
+        fb = wFeedbackList.nextfb(fblist, fb);
+      }
+    }
+  }
+
+
 }
 

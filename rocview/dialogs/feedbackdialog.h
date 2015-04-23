@@ -35,6 +35,7 @@
 #include "wx/notebook.h"
 #include "wx/listctrl.h"
 #include "wx/spinctrl.h"
+#include "wx/grid.h"
 ////@end includes
 
 #include "basedlg.h"
@@ -50,6 +51,7 @@
 class wxNotebook;
 class wxListCtrl;
 class wxSpinCtrl;
+class wxGrid;
 ////@end forward declarations
 
 /*!
@@ -90,8 +92,9 @@ class wxSpinCtrl;
 #define ID_PANEL_FB_WIRING 10334
 #define ID_PANEL_FB_GPS 10444
 #define ID_PANEL_FB_STATISTICS 10475
-#define ID_STATISTIC_LIST 10476
+#define ID_FEEDBACK_STATISTIC_GRIG 10476
 #define ID_STATISTIC_DELETE 10477
+#define ID_STATISTIC_SHOW_ALL 10478
 #define SYMBOL_FEEDBACKDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_FEEDBACKDIALOG_TITLE _("Sensors")
 #define SYMBOL_FEEDBACKDIALOG_IDNAME ID_DIALOG_FEEDBACK
@@ -123,6 +126,9 @@ class FeedbackDialog: public wxDialog, public BaseDialog
   bool initIndex();
   void initValues();
   bool evaluate();
+  void doStatistic(iONode l_Props);
+  int findStatisticCol( wxString lcid);
+
   int m_TabAlign;
 
 public:
@@ -164,14 +170,11 @@ public:
     /// wxEVT_COMMAND_RADIOBOX_SELECTED event handler for ID_FB_TYPE
     void OnFbTypeSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_STATISTIC_LIST
-    void OnStatisticListSelected( wxListEvent& event );
-
-    /// wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_STATISTIC_LIST
-    void OnStatisticListColLeftClick( wxListEvent& event );
-
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_STATISTIC_DELETE
     void OnStatisticDeleteClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_STATISTIC_SHOW_ALL
+    void OnStatisticShowAllClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
     void OnCancelClick( wxCommandEvent& event );
@@ -285,8 +288,9 @@ public:
     wxStaticText* m_labGPSToleranceZ;
     wxSpinCtrl* m_GPSToleranceZ;
     wxPanel* m_StatisticsTab;
-    wxListCtrl* m_StatisticList;
+    wxGrid* m_StatisticGrid;
     wxButton* m_StatisticDelete;
+    wxButton* m_StatisticShowAll;
     wxButton* m_Cancel;
     wxButton* m_OK;
     wxButton* m_Apply;
