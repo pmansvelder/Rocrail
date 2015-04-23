@@ -421,7 +421,7 @@ static void __processSignalQuality(iOFBack inst, int signalquality, const char* 
   while( fbstatistic != NULL ) {
     if( StrOp.equals(wFeedbackStatistic.getlcid(fbstatistic), locoid) ) {
       l_NotFound = False;
-      if( wFeedbackStatistic.getquality(fbstatistic) != signalquality ) {
+      if( wFeedbackStatistic.getquality(fbstatistic) < signalquality ) {
         wFeedbackStatistic.setquality(fbstatistic, signalquality);
         l_NewQuality = True;
       }
