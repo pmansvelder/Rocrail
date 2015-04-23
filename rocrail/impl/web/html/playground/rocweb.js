@@ -1,11 +1,27 @@
+/* Variables */
 var req;
 var yoffset = 48;
 var planloaded = false;
 var ws = null;
 var initWS;
 var worker;
+var tapholdF1 = 0;
+var fbMap = {};
 
 
+/* JSon test */
+function jsonStorageTest() {
+  // Test to save a session structure.
+  var E03 = {color: "grey", name: "Spot", size: 46};
+  E03.test = "Hallo";
+  sessionStorage.setItem("E03", JSON.stringify(E03));
+  
+  var cat = JSON.parse(sessionStorage.getItem("E03"));
+  console.log(cat.size + " " + cat.color + " " + cat.test );
+}
+
+
+/* Configuration */
 function langDE() {
  document.getElementById("menuPower").innerHTML = "Gleisstrom";
 }
@@ -15,6 +31,7 @@ function langEN() {
 }
 
 
+/* Info Dialog */
 function openInfo()
 {
   console.log("close menu");
@@ -28,6 +45,7 @@ function openInfo()
 }
 
 
+/* Throttle Dialog */
 function openThrottle()
 {
   $( "#popupThrottle" ).popup( "open" );
@@ -38,21 +56,16 @@ function closeThrottle()
   $( "#popupThrottle" ).popup( "close" );
 }
 
+
+/* Menu Dialog */
 function openMenu()
 {
   $('#popupMenu').unbind("popupafterclose");
   $( "#popupMenu" ).popup( "open" );
-  
-  // Test to save a session structure.
-  var E03 = {color: "grey", name: "Spot", size: 46};
-  E03.test = "Hallo";
-  sessionStorage.setItem("E03", JSON.stringify(E03));
-
-  var cat = JSON.parse(sessionStorage.getItem("E03"));
-  console.log(cat.size + " " + cat.color + " " + cat.test );
-
 }
 
+
+/* Options Dialog */
 function openOptions()
 {
 }
@@ -61,6 +74,8 @@ function closeOptions()
 {
 }
 
+
+/* Send a XML Http request */
 function sendCommand(cmd) {
   // send an XMLHttpRequest
   console.log("send command: " + cmd);
@@ -80,12 +95,10 @@ function sendCommand(cmd) {
     catch(e) {
       console.log("exception: " + e);
   }
-  
 }
 
 
-var tapholdF1 = 0;
-
+/* Throttle commands */
 $(function(){
   $("#F1").bind("taphold", tapholdF1Handler);
  
@@ -104,6 +117,13 @@ function onFunction(id, nr) {
   document.getElementById(id).style.backgroundColor= "#FF8888";
 }
 
+function speedUpdate(value) {
+  document.getElementById("direction").innerHTML = "" + value + " >";
+  $("#direction").css("background","#557755");
+}
+
+
+/* System commands */
 function actionPower() {
   var mOn = true;
   var cmd = "<sys informall=\"true\" cmd=\""+(mOn?"go":"stop")+"\"/>";
@@ -112,6 +132,7 @@ function actionPower() {
 }
 
 
+/* Item commands */
 function actionSensor(id)
 {
   fbid = id.replace("fb_","");
@@ -125,8 +146,6 @@ function actionSensor(id)
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
-
-
 function actionBlock(id)
 {
   localStorage.setItem("block", id);
@@ -134,11 +153,8 @@ function actionBlock(id)
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
 }
 
-function speedUpdate(value) {
-  document.getElementById("direction").innerHTML = "" + value + " >";
-  $("#direction").css("background","#557755");
-}
 
+/* Initial functions */
 $(document).on("pagecreate",function(){
 
   // jQuery events go here...
@@ -162,11 +178,9 @@ $(document).on("pagecreate",function(){
 
 });
 
-
 $(document).ready(function(){
   //$('.ui-slider-handle').height(50)
   var lang = localStorage.lang;
-  
   var sel = document.getElementById('languageSelect');
   
   if( lang == "de" ) {
@@ -180,6 +194,7 @@ $(document).ready(function(){
 })
 
 
+/* Old update function: Deprecated */
 function processUpdate(p_req) {
 //only if req shows "loaded"
 if (p_req.readyState == 4) {
@@ -214,6 +229,8 @@ if (p_req.readyState == 4) {
  }
 }
 
+
+/* Load the plan.xml at startup */
 function loadPlan() {
  // send an XMLHttpRequest
  try {
@@ -227,6 +244,8 @@ function loadPlan() {
  }
 }
 
+
+/* Utilities */
 function xml2string(node) {
   if (typeof(XMLSerializer) !== 'undefined') {
      var serializer = new XMLSerializer();
@@ -236,6 +255,7 @@ function xml2string(node) {
   }
 }
 
+/* Update event handlers */
 function handleSensor(fb) {
   console.log("sensor event: " + fb.getAttribute('id') + " " + fb.getAttribute('state'));
   var div = document.getElementById("fb_"+fb.getAttribute('id'));
@@ -253,6 +273,8 @@ function handleSensor(fb) {
   }
 }
 
+
+/* Processing events from server */
 function evaluateEvent(xmlStr) {
   var xmlDoc = ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
   var root = xmlDoc.documentElement;
@@ -307,18 +329,6 @@ function processResponse() {
             console.log("data: " + e.data);
           }
         }
-   /*     
-        console.log( "long poll server event..." );
-        try {
-          req = new XMLHttpRequest();
-          req.onreadystatechange = processResponse;
-          req.open("GET", "update.xml", true);
-          req.send("");
-        } 
-        catch(e) {
-          console.log("exception: " + e);
-        }
-        */
       }
      
     }
@@ -331,8 +341,8 @@ function processResponse() {
 
 }
 
-var fbMap = {};
 
+/* Process the plan.xml */
 function processPlan() {
 //only if req shows "loaded"
    try {
