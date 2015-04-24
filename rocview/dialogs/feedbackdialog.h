@@ -128,8 +128,10 @@ class FeedbackDialog: public wxDialog, public BaseDialog
   bool evaluate();
   void doStatistic(iONode l_Props);
   int findStatisticCol( wxString lcid);
+  void StatisticDeleteAll();
 
   int m_TabAlign;
+  bool m_bStatisticShowAll;
 
 public:
     /// Constructors

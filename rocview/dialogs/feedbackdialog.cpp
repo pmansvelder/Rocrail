@@ -310,7 +310,7 @@ void FeedbackDialog::initValues() {
   char* title = StrOp.fmt( "%s %s", (const char*)wxGetApp().getMsg("sensor").mb_str(wxConvUTF8), wFeedback.getid( m_Props ) );
   SetTitle( wxString(title,wxConvUTF8) );
   StrOp.free( title );
-
+  m_bStatisticShowAll = false;
   // General
   m_Id->SetValue( wxString(wFeedback.getid( m_Props ),wxConvUTF8) );
   m_Description->SetValue( wxString(wFeedback.getdesc( m_Props ),wxConvUTF8) );
@@ -1219,12 +1219,55 @@ void FeedbackDialog::OnButtonFbAutoaddrClick( wxCommandEvent& event )
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_STATISTIC_DELETE
  */
 
+void FeedbackDialog::StatisticDeleteAll() {
+  iONode model = wxGetApp().getModel();
+  if( model != NULL ) {
+    iONode fblist = wPlan.getfblist( model );
+    if( fblist != NULL ) {
+      int cnt = NodeOp.getChildCnt( fblist );
+      for( int i = 0; i < cnt; i++ ) {
+        iONode fb = NodeOp.getChild( fblist, i );
+        iONode fbstatistic = wFeedback.getfbstatistic( fb );
+
+        if( fbstatistic == NULL )
+          continue;
+
+        /* loop over all statistics */
+        while( fbstatistic != NULL ) {
+          NodeOp.removeChild( fb, fbstatistic);
+          NodeOp.base.del(fbstatistic);
+          fbstatistic = wFeedback.getfbstatistic( fb );
+        };
+
+        if( !wxGetApp().isStayOffline() ) {
+          /* Notify RocRail. */
+          iONode cmd = NodeOp.inst( wModelCmd.name(), NULL, ELEMENT_NODE );
+          wModelCmd.setcmd( cmd, wModelCmd.modify );
+          NodeOp.addChild( cmd, (iONode)fb->base.clone( fb ) );
+          wxGetApp().sendToRocrail( cmd );
+          cmd->base.del(cmd);
+        }
+        else {
+          wxGetApp().setLocalModelModified(true);
+        }
+
+
+      }
+    }
+    wxCommandEvent cmd;
+    OnStatisticShowAllClick(cmd);
+  }
+}
+
 void FeedbackDialog::OnStatisticDeleteClick( wxCommandEvent& event )
 {
-  if( m_Props != NULL ) {
+  if( m_bStatisticShowAll ) {
+    StatisticDeleteAll();
+  }
+  else if( m_Props != NULL ) {
     iONode   fbstatistic = wFeedback.getfbstatistic( m_Props );
 
-    /* loop over all actions */
+    /* loop over all statistics */
     while( fbstatistic != NULL ) {
       NodeOp.removeChild( m_Props, fbstatistic);
       NodeOp.base.del(fbstatistic);
@@ -1286,6 +1329,7 @@ void FeedbackDialog::OnStatisticShowAllClick( wxCommandEvent& event )
 {
   if( m_Props == NULL )
     return;
+  m_bStatisticShowAll = true;
   // Statistic
   if( m_StatisticGrid->GetNumberRows() > 0 )
     m_StatisticGrid->DeleteRows( 0, m_StatisticGrid->GetNumberRows() );
