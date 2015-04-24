@@ -1162,6 +1162,8 @@ void FeedbackDialog::OnHelpClick( wxCommandEvent& event )
   case 2: wxGetApp().openLink( "sensor" ); break; // Position
   case 3: wxGetApp().openLink( "sensor-int" ); break;
   case 4: wxGetApp().openLink( "sensor-wiring" ); break;
+  case 5: wxGetApp().openLink( "sensor-gps" ); break;
+  case 6: wxGetApp().openLink( "sensor-statistic" ); break;
   default: wxGetApp().openLink( "sensor" ); break;
   }
 }
