@@ -71,6 +71,9 @@ static void __del( void* inst ) {
   if( inst != NULL ) {
     iOPClientData data = Data(inst);
     /* Cleanup data->xxx members...*/
+    if( data->socket != NULL && data->websocket ) {
+      SocketOp.base.del(data->socket);
+    }
     ListOp.base.del( data->locIDs );
     freeMem( data );
     freeMem( inst );

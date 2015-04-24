@@ -220,10 +220,17 @@ static void __pportserver( void* threadinst ) {
       if( cmd != NULL ) {
         /* Parse command and semd it over the callback function to the control. */
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command received: %.80s", cmd );
-        iODoc doc = DocOp.parse( cmd );
-        if( doc != NULL ) {
-          iONode nodeA = DocOp.getRootNode( doc );
-          data->callback( data->callbackObj, nodeA );
+        TraceOp.dump( name, TRCLEVEL_USER2, (const char*)cmd, StrOp.len(cmd) );
+        if( (byte)(cmd[0]) == 0x03 && (byte)(cmd[1]) == 0xE8 ) {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutdown webclient [%s]", PClientOp.getId( client ) );
+          remove = True;
+        }
+        else {
+          iODoc doc = DocOp.parse( cmd );
+          if( doc != NULL ) {
+            iONode nodeA = DocOp.getRootNode( doc );
+            data->callback( data->callbackObj, nodeA );
+          }
         }
         StrOp.free(cmd);
       }

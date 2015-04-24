@@ -14,6 +14,7 @@ var zlevelIdx = 0;
 var power = 'false';
 var donkey = 'false';
 var didShowDonkey = false;
+var shutdownTimer;
 
 /* JSon test */
 function jsonStorageTest() {
@@ -362,8 +363,23 @@ function processResponse() {
           processPlan();
           planloaded = true;
 
-          if( donkey == 'true')
+          if( donkey == 'true') {
             document.getElementById("donkey").style.display = 'none'
+          }
+          else {
+            console.log( "5 minutes before shutdown..." );
+            var shutdownTimer = setInterval(function () {doShutdown()}, (5 * 1000) );
+            function doShutdown() {
+              console.log("no key; shutdown...");
+              clearInterval(shutdownTimer);
+              var cmd = "<sys shutdown=\"true\"/>";
+              worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
+              zlevelSelected.style.display = 'none';
+              document.getElementById("donkeyWarning").style.display = 'none'
+              openDonkey();
+            }
+
+          }
 
         }
         else {

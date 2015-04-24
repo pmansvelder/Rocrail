@@ -41,7 +41,9 @@ onmessage = function(e) {
     /* ToDo: Send to server. */
   }
   if(result.type == 'shutdown') {
-    ws.close();
+    debug("closing websocket...");
+    ws.close(1000, "<shutdown/>");
+    return;
   }
   
   debug('Posting message back to main script');

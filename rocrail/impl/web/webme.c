@@ -181,6 +181,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
   Boolean mask = False;
 
   if( SocketOp.isBroken( data->socket ) ) {
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
   }
 
@@ -218,6 +219,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
   }
 
   if( SocketOp.isBroken( data->socket ) ) {
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
   }
 
