@@ -1255,13 +1255,15 @@ int FeedbackDialog::findStatisticCol( wxString lcid) {
 }
 
 void FeedbackDialog::doStatistic(iONode l_Props) {
+  /* loop over all statistics */
+  iONode   fbstatistic = wFeedback.getfbstatistic( l_Props );
+  if( fbstatistic == NULL )
+    return;
   // Statistic
   m_StatisticGrid->AppendRows();
   int row = m_StatisticGrid->GetNumberRows()-1;
   m_StatisticGrid->SetRowLabelValue(row, wxString(wFeedback.getid(l_Props),wxConvUTF8));
 
-  /* loop over all statistics */
-  iONode   fbstatistic = wFeedback.getfbstatistic( l_Props );
   int idx = 0;
   while( fbstatistic != NULL ) {
     int q = wFeedbackStatistic.getquality(fbstatistic);
