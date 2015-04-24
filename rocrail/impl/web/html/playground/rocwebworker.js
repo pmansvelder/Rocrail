@@ -40,7 +40,10 @@ onmessage = function(e) {
     ws.send(result.msg);
     /* ToDo: Send to server. */
   }
-
+  if(result.type == 'shutdown') {
+    ws.close();
+  }
+  
   debug('Posting message back to main script');
   postMessage(e.data);
 }

@@ -256,7 +256,7 @@ static void __pportserver( void* threadinst ) {
     ThreadOp.sleep( 5 );
   } while( !ThreadOp.isQuit( th ) );
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "WebClient Service ended on %d.", data->port );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "WebClient Service ended on %d.", data->pport );
   ThreadOp.base.del( th );
   data->pportserver = NULL;
 }

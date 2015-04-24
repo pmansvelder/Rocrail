@@ -6,8 +6,14 @@ var ws = null;
 var initWS;
 var worker;
 var tapholdF1 = 0;
+var zlevelMap = {};
+var zlevelList = [];
 var fbMap = {};
-
+var zlevelSelected = 'none';
+var zlevelIdx = 0;
+var power = 'false';
+var donkey = 'false';
+var didShowDonkey = false;
 
 /* JSon test */
 function jsonStorageTest() {
@@ -42,6 +48,13 @@ function openInfo()
 
 //  console.log("open info");
 //  $( "#popupInfo" ).popup( "open" );
+}
+
+
+function openDonkey()
+{
+  console.log("open info");
+  $( "#popupInfo" ).popup( "open" );
 }
 
 
@@ -125,10 +138,33 @@ function speedUpdate(value) {
 
 /* System commands */
 function actionPower() {
-  var mOn = true;
+  var mOn = power == 'true' ? false:true;
   var cmd = "<sys informall=\"true\" cmd=\""+(mOn?"go":"stop")+"\"/>";
-  //document.getElementById("headerPower").style.backgroundColor= "#FF8888";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function actionLevelDown() {
+  zlevelSelected.style.display = 'none'
+  zlevelIdx++;
+  var zleveldiv = zlevelList[zlevelIdx];
+  if(zleveldiv == undefined ) {
+    zleveldiv = zlevelList[0];
+    zlevelIdx = 0;
+  }
+  zlevelSelected = zleveldiv;
+  zleveldiv.style.display = 'block'
+}
+function actionLevelUp() {
+  zlevelSelected.style.display = 'none'
+    zlevelIdx--;
+    var zleveldiv = zlevelList[zlevelIdx];
+    if(zleveldiv == undefined ) {
+      zleveldiv = zlevelList[0];
+      zlevelIdx = 0;
+    }
+    zlevelSelected = zleveldiv;
+    zleveldiv.style.display = 'block'
 }
 
 
@@ -152,7 +188,6 @@ function actionBlock(id)
   document.getElementById("blockTitle").innerHTML = "Block: " + localStorage.getItem("block");
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
 }
-
 
 /* Initial functions */
 $(document).on("pagecreate",function(){
@@ -179,6 +214,7 @@ $(document).on("pagecreate",function(){
 });
 
 $(document).ready(function(){
+  console.log("document ready");
   //$('.ui-slider-handle').height(50)
   var lang = localStorage.lang;
   var sel = document.getElementById('languageSelect');
@@ -191,6 +227,7 @@ $(document).ready(function(){
     langEN();
     //sel.selectedIndex = 1;
   }
+
 })
 
 
@@ -273,6 +310,25 @@ function handleSensor(fb) {
   }
 }
 
+function handleState(state) {
+  power = state.getAttribute('power');
+  console.log("power: " + power );
+  if( power == "true" )
+    document.getElementById("headerPower").style.backgroundColor= "#FF8888";
+  else 
+    document.getElementById("headerPower").style.backgroundColor= "initial";
+}
+
+function handleSystem(sys) {
+  //<sys cmd="shutdown" informall="true"/>
+  var cmd = sys.getAttribute('cmd');
+  if( cmd == "shutdown" ) {
+    console.log("server shutdown");
+    var cmd = "<sys shutdown=\"true\"/>";
+    worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
+    zlevelSelected.style.display = 'none'
+  }
+}
 
 /* Processing events from server */
 function evaluateEvent(xmlStr) {
@@ -282,6 +338,10 @@ function evaluateEvent(xmlStr) {
   console.log("evaluate: " + evtName);
   if( evtName == "fb" )
     handleSensor(root);
+  if( evtName == "state" )
+    handleState(root);
+  if( evtName == "sys" )
+    handleSystem(root);
 }
 
 function processResponse() {
@@ -294,11 +354,17 @@ function processResponse() {
       if( xmlDoc != null ) {
         planlist = xmlDoc.getElementsByTagName("plan")
         if( planlist.length > 0 ) {
-          console.log( "processing plan: " + planlist[0].nodeName );
           var h = document.getElementById("title");
-          h.innerHTML = "Rocrail: " + planlist[0].getAttribute('title');
+          donkey = planlist[0].getAttribute('donkey');
+          title = planlist[0].getAttribute('title');
+          console.log( "processing plan: " + title + " key=" + donkey );
+          h.innerHTML = "Rocrail: " + title;
           processPlan();
           planloaded = true;
+
+          if( donkey == 'true')
+            document.getElementById("donkey").style.display = 'none'
+
         }
         else {
           console.log( "processing event" );
@@ -318,6 +384,10 @@ function processResponse() {
           } 
           else if(result.type == 'response') {
             console.log("response: "+result.answer);
+            if( !didShowDonkey && donkey == 'false' ) {
+              openDonkey();
+              didShowDonkey = true;
+            }
             /* ToDo: Evaluate server event. */
             evaluateEvent(result.answer);
           }
@@ -342,18 +412,62 @@ function processResponse() {
 }
 
 
+function getOriNr(Ori) {
+  if(Ori == "north" )
+    return 2;
+  if(Ori == "east")
+    return 3;
+  if(Ori == "south")
+    return 4;
+  return 1;
+}
+
+
 /* Process the plan.xml */
 function processPlan() {
 //only if req shows "loaded"
    try {
      xmlDoc = req.responseXML;
      
+     zlevellist = xmlDoc.getElementsByTagName("zlevel");
+     if( zlevellist.length > 0 ) {
+       console.log("processing " + zlevellist.length + " zlevels");
+       for (var i = 0; i < zlevellist.length; i++) {
+         var z = zlevellist[i].getAttribute('z');
+         console.log('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
+
+         var newdiv = document.createElement('div');
+         newdiv.setAttribute('id', "level_" + z);
+         zlevelMap[z] = newdiv;
+         zlevelList[i] = newdiv;
+
+         if( zlevelSelected == 'none' ) {
+           zlevelSelected = newdiv;
+           zlevelIdx = i;
+         }
+         else {
+           console.log("disable level " + z);
+           newdiv.style.display = 'none'
+         }
+         document.body.appendChild(newdiv);
+       }
+     }
+     
      fblist = xmlDoc.getElementsByTagName("fb");
      if( fblist.length > 0 )
        console.log("processing " + fblist.length + " sensors");
 
      for (var i = 0; i < fblist.length; i++) {
-       console.log('sensor: ' + fblist[i].getAttribute('id'));
+       var z     = fblist[i].getAttribute('z');
+       var curve = fblist[i].getAttribute('curve');
+       var ori   = getOriNr(fblist[i].getAttribute('ori'));
+       if( z == undefined )
+         z = '0';
+       if( curve != "true" )
+         ori = (ori % 2 == 0) ? 2 : 1;
+
+       var leveldiv = zlevelMap[z]; 
+       console.log('sensor: ' + fblist[i].getAttribute('id') + "at level " + z);
        fbMap[fblist[i].getAttribute('id')] = fblist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "fb_"+fblist[i].getAttribute('id'));
@@ -367,18 +481,29 @@ function processPlan() {
        newdiv.innerHTML      = "";
        
        if( "true" == fblist[i].getAttribute('state') )
-         newdiv.style.backgroundImage = "url('img/sensor_on_1.png')";
+         if( curve == "true" )
+           newdiv.style.backgroundImage = "url('img/csensor_on_"+ori+".png')";
+         else
+           newdiv.style.backgroundImage = "url('img/sensor_on_"+ori+".png')";
        else
-         newdiv.style.backgroundImage = "url('img/sensor_off_1.png')";
+         if( curve == "true" )
+           newdiv.style.backgroundImage = "url('img/csensor_off_"+ori+".png')";
+         else
+           newdiv.style.backgroundImage = "url('img/sensor_off_"+ori+".png')";
 
-       document.body.appendChild(newdiv);
+       leveldiv.appendChild(newdiv);
+       //document.body.appendChild(newdiv);
      }
      
      bklist = xmlDoc.getElementsByTagName("bk");
      if( bklist.length > 0 )
        console.log("processing " + bklist.length + " blocks");
      for (var i = 0; i < bklist.length; i++) {
-       console.log('block: ' + bklist[i].getAttribute('id'));
+       var z = bklist[i].getAttribute('z');
+       if( z == undefined )
+         z = '0';
+       var leveldiv = zlevelMap[z]; 
+       console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionBlock(this.id)");
@@ -389,7 +514,10 @@ function processPlan() {
        newdiv.style.lineHeight = "32px";
        newdiv.style.left     = "" + (parseInt(bklist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32 + yoffset) + "px";
-       newdiv.innerHTML      = "<label class='itemtext'>"+bklist[i].getAttribute('locid')+"</label>";
+       var label = bklist[i].getAttribute('locid');
+       if( label.length == 0 )
+         label = bklist[i].getAttribute('id');
+       newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
        newdiv.style.textAlign= "center";
        
        //console.log(xml2string(bklist[i]));
@@ -402,7 +530,8 @@ function processPlan() {
        else
          newdiv.style.backgroundImage = "url('img/block_occ_1.png')";
 
-       document.body.appendChild(newdiv);
+       leveldiv.appendChild(newdiv);
+       //document.body.appendChild(newdiv);
      }
    }
    catch(e) {

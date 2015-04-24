@@ -28,6 +28,10 @@
 #include "rocrail/public/model.h"
 #include "rocrail/public/app.h"
 
+#include "rocrail/wrapper/public/Plan.h"
+#include "rocrail/wrapper/public/Global.h"
+#include "rocrail/wrapper/public/RocRail.h"
+#include "rocrail/wrapper/public/State.h"
 
 #include "rocs/public/str.h"
 #include "rocs/public/trace.h"
@@ -35,6 +39,7 @@
 #include "rocs/public/socket.h"
 #include "rocs/public/file.h"
 #include "rocs/public/mime64.h"
+#include "rocs/public/system.h"
 
 
 
@@ -85,10 +90,28 @@ static void __getImage(iOPClient inst, const char* fname) {
 
 static void __getModel(iOPClient inst) {
   iOPClientData data = Data(inst);
-  iONode model = ModelOp.getModel( AppOp.getModel() );
-  char* xml = NodeOp.base.toString( model );
   Boolean ok = True;
-  int size = StrOp.len(xml);
+  char* xml = NULL;
+  int size = 0;
+  iONode model = ModelOp.getModel( AppOp.getModel() );
+
+  unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
+  char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
+
+  if( !SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
+    wPlan.setdonkey(model, True);
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "valid donation key: %s", wRocRail.getdoneml(AppOp.getIni()) );
+  }
+  else {
+    wPlan.setdonkey(model, False);
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "no valid donation key found" );
+  }
+
+  freeMem(decodedKey);
+  freeMem(donkey);
+
+  xml = NodeOp.base.toString( model );
+  size = StrOp.len(xml);
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write model %d", size );
   if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 0 OK\r\n" );
   if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
