@@ -3306,7 +3306,7 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
     if( dynnum == 1 && value > 10 )
       warning = True;
     TraceOp.trc( name, warning?TRCLEVEL_WARNING:TRCLEVEL_DEBUG, __LINE__, 9999,
-        "BM %s port %d reports loco %s(%d) %s is %d", pathKey, port, slot!=NULL?slot->id:"", locoAddr, bidibGetDynStateName(dynnum), value );
+        "BM %s port %d reports loco %s(%d) %s is %d", pathKey, port + 1, slot!=NULL?slot->id:"", locoAddr, bidibGetDynStateName(dynnum), value );
 
     /* Report quality */
     if( dynnum == 1 && slot!=NULL && bidibnode != NULL ) {
@@ -3318,7 +3318,7 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
         bidibnode->signalreporter = slot->id;
 
         wFeedback.setbus( nodeC, bidibnode->uid );
-        wFeedback.setaddr( nodeC, port );
+        wFeedback.setaddr( nodeC, port + 1 );
         wFeedback.setcmd( nodeC, wFeedback.signalquality );
         wFeedback.setsignal( nodeC, value );
         wFeedback.setlocoid( nodeC, slot->id );
