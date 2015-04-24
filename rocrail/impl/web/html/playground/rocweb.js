@@ -9,6 +9,7 @@ var tapholdF1 = 0;
 var zlevelMap = {};
 var zlevelList = [];
 var fbMap = {};
+var bkMap = {};
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
@@ -300,14 +301,32 @@ function handleSensor(fb) {
   if( div != null ) {
     fbNode = fbMap[fb.getAttribute('id')];
     fbNode.setAttribute('state', fb.getAttribute('state'));
-
-    if( "true" == fb.getAttribute('state') )
-      div.style.backgroundImage = "url(img/sensor_on_1.png)";
-    else
-      div.style.backgroundImage = "url(img/sensor_off_1.png)";
+    div.style.backgroundImage = getSensorImage(fbNode);
   }
   else {
     console.log("sensor: " + fb.getAttribute('id') + " not found");
+  }
+}
+
+function handleBlock(bk) {
+  console.log("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
+  var div = document.getElementById("bk_"+bk.getAttribute('id'));
+  if( div != null ) {
+    bkNode = bkMap[bk.getAttribute('id')];
+    bkNode.setAttribute('state', bk.getAttribute('state'));
+    bkNode.setAttribute('locid', bk.getAttribute('locid'));
+    bkNode.setAttribute('reserved', bk.getAttribute('reserved'));
+    bkNode.setAttribute('entering', bk.getAttribute('entering'));
+    
+    var label = bk.getAttribute('locid');
+    if( label.length == 0 )
+      label = bk.getAttribute('id');
+    div.innerHTML = "<label class='itemtext'>"+label+"</label>";
+
+    div.style.backgroundImage = getBlockImage(bkNode);
+  }
+  else {
+    console.log("block: " + bk.getAttribute('id') + " not found");
   }
 }
 
@@ -339,9 +358,11 @@ function evaluateEvent(xmlStr) {
   console.log("evaluate: " + evtName);
   if( evtName == "fb" )
     handleSensor(root);
-  if( evtName == "state" )
+  else if( evtName == "bk" )
+    handleBlock(root);
+  else if( evtName == "state" )
     handleState(root);
-  if( evtName == "sys" )
+  else if( evtName == "sys" )
     handleSystem(root);
 }
 
@@ -368,7 +389,7 @@ function processResponse() {
           }
           else {
             console.log( "5 minutes before shutdown..." );
-            var shutdownTimer = setInterval(function () {doShutdown()}, (5 * 1000) );
+            var shutdownTimer = setInterval(function () {doShutdown()}, (5 * 60 * 1000) );
             function doShutdown() {
               console.log("no key; shutdown...");
               clearInterval(shutdownTimer);
@@ -438,6 +459,45 @@ function getOriNr(Ori) {
   return 1;
 }
 
+function getSensorImage(fb) {
+  var curve = fb.getAttribute('curve');
+  var ori   = getOriNr(fb.getAttribute('ori'));
+  if( curve != "true" )
+    ori = (ori % 2 == 0) ? 2 : 1;
+
+  if( "true" == fb.getAttribute('state') )
+    if( curve == "true" )
+      return "url('img/csensor_on_"+ori+".png')";
+    else
+      return "url('img/sensor_on_"+ori+".png')";
+  else
+    if( curve == "true" )
+      return "url('img/csensor_off_"+ori+".png')";
+    else
+      return "url('img/sensor_off_"+ori+".png')";
+}
+
+function getBlockImage(bk) {
+  var ori   = getOriNr(bk.getAttribute('ori'));
+  ori = (ori % 2 == 0) ? 2 : 1;
+  var label = bk.getAttribute('locid');
+  var suffix = "";
+  
+  if( "true" == bk.getAttribute('smallsymbol') )
+    suffix = "_s";
+
+  if( "true" == bk.getAttribute('entering') )
+    return "url('img/block_enter_"+ori+suffix+".png')";
+  else if( "closed" == bk.getAttribute('state') )
+    return "url('img/block_closed_"+ori+suffix+".png')";
+  if( "true" == bk.getAttribute('reserved') )
+    return "url('img/block_reserved_"+ori+suffix+".png')";
+  else if( label.length > 0 )
+    return "url('img/block_occ_"+ori+suffix+".png')";
+  else
+    return "url('img/block_"+ori+suffix+".png')";
+  
+}
 
 /* Process the plan.xml */
 function processPlan() {
@@ -496,16 +556,7 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(fblist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        
-       if( "true" == fblist[i].getAttribute('state') )
-         if( curve == "true" )
-           newdiv.style.backgroundImage = "url('img/csensor_on_"+ori+".png')";
-         else
-           newdiv.style.backgroundImage = "url('img/sensor_on_"+ori+".png')";
-       else
-         if( curve == "true" )
-           newdiv.style.backgroundImage = "url('img/csensor_off_"+ori+".png')";
-         else
-           newdiv.style.backgroundImage = "url('img/sensor_off_"+ori+".png')";
+       newdiv.style.backgroundImage = getSensorImage(fblist[i]);
 
        leveldiv.appendChild(newdiv);
        //document.body.appendChild(newdiv);
@@ -520,6 +571,7 @@ function processPlan() {
          z = '0';
        var leveldiv = zlevelMap[z]; 
        console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
+       bkMap[bklist[i].getAttribute('id')] = bklist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionBlock(this.id)");
@@ -537,14 +589,7 @@ function processPlan() {
        newdiv.style.textAlign= "center";
        
        //console.log(xml2string(bklist[i]));
-       console.log("block entering=" + bklist[i].getAttribute("entering") + " x,y " + newdiv.style.left + "," + newdiv.style.top );
-
-       if( "true" == bklist[i].getAttribute('entering') )
-         newdiv.style.backgroundImage = "url('img/block_enter_1.png')";
-       else if( "closed" == bklist[i].getAttribute('state') )
-         newdiv.style.backgroundImage = "url('img/block_closed_1.png')";
-       else
-         newdiv.style.backgroundImage = "url('img/block_occ_1.png')";
+       newdiv.style.backgroundImage = getBlockImage(bklist[i]);
 
        leveldiv.appendChild(newdiv);
        //document.body.appendChild(newdiv);
