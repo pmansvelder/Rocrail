@@ -1272,8 +1272,8 @@ void FeedbackDialog::doStatistic(iONode l_Props) {
     m_StatisticGrid->SetCellAlignment(wxALIGN_CENTRE, row, col);
     m_StatisticGrid->SetReadOnly( row, col, true );
     m_StatisticGrid->SetColLabelValue(col, wxString(wFeedbackStatistic.getlcid(fbstatistic),wxConvUTF8));
-    int qmax = q > 25 ? 25:q;
-    int mincolor = 255 - ((255.0/25.0)*q);
+    int qmax = q > 50 ? 50:q;
+    int mincolor = 255 - ((255.0/50.0)*q);
     m_StatisticGrid->SetCellBackgroundColour(row, col,  wxColour(255, mincolor, mincolor) );
     idx++;
     fbstatistic = wFeedback.nextfbstatistic( l_Props, fbstatistic );
