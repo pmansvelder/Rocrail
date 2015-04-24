@@ -1296,12 +1296,27 @@ void FeedbackDialog::OnStatisticShowAllClick( wxCommandEvent& event )
   if( model != NULL ) {
     iONode fblist = wPlan.getfblist( model );
     if( fblist != NULL ) {
-      iONode fb = wFeedbackList.getfb(fblist);
-      while(fb != NULL ) {
-        if( wFeedback.getfbstatistic(fb) != NULL )
-          doStatistic(fb);
-        fb = wFeedbackList.nextfb(fblist, fb);
+
+      iOList list = ListOp.inst();
+      int cnt = NodeOp.getChildCnt( fblist );
+      for( int i = 0; i < cnt; i++ ) {
+        iONode fb = NodeOp.getChild( fblist, i );
+        const char* id = wFeedback.getid( fb );
+        if( id != NULL ) {
+          ListOp.add(list, (obj)fb);
+        }
       }
+      ListOp.sort(list, &__sortID);
+
+      int idx = 0;
+      cnt = ListOp.size( list );
+      for( int i = 0; i < cnt; i++ ) {
+        iONode fb = (iONode)ListOp.get( list, i );
+        doStatistic(fb);
+      }
+      /* clean up the temp. list */
+      ListOp.base.del(list);
+
     }
   }
 
