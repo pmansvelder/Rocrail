@@ -9,7 +9,9 @@ var tapholdF1 = 0;
 var zlevelMap = {};
 var zlevelList = [];
 var fbMap = {};
+var tkMap = {};
 var bkMap = {};
+var swMap = {};
 var lcMap = {};
 var locoSelected = 'none';
 var zlevelSelected = 'none';
@@ -152,8 +154,13 @@ function onFunction(id, nr) {
 }
 
 function speedUpdate(value) {
+  lc = lcMap[locoSelected];
+  console.log("Speed: " + value + " for loco " + locoSelected);
+  var vVal = value * (parseInt(lc.getAttribute('V_max')/100.00));
+
   document.getElementById("direction").innerHTML = "" + value + " >";
-  $("#direction").css("background","#557755");
+  var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\"%s\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 
@@ -200,6 +207,14 @@ function actionSensor(id)
     cmd = "<fb state=\"false\" id=\""+fbid+"\"/>";
   else
     cmd = "<fb state=\"true\" id=\""+fbid+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function actionSwitch(id) {
+  swid = id.replace("sw_","");
+  sw = swMap[swid];
+  console.log("switch action on " + swid + " state=" + sw.getAttribute('state'));
+  var cmd = "<sw cmd=\"flip\" id=\""+swid+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -333,6 +348,20 @@ function handleSensor(fb) {
 }
 
 
+function handleSwitch(sw) {
+  console.log("switch event: " + sw.getAttribute('id') + " " + sw.getAttribute('state'));
+  var div = document.getElementById("sw_"+sw.getAttribute('id'));
+  if( div != null ) {
+    swNode = swMap[sw.getAttribute('id')];
+    swNode.setAttribute('state', sw.getAttribute('state'));
+    div.style.backgroundImage = getSwitchImage(swNode);
+  }
+  else {
+    console.log("switch: " + sw.getAttribute('id') + " not found");
+  }
+}
+
+
 function handleFunction(fn) {
   console.log("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
   var lc = lcMap[fn.getAttribute('id')];
@@ -415,6 +444,8 @@ function evaluateEvent(xmlStr) {
     handleSystem(root);
   else if( evtName == "fn" )
     handleFunction(root);
+  else if( evtName == "sw" )
+    handleSwitch(root);
 }
 
 function processResponse() {
@@ -528,6 +559,53 @@ function getSensorImage(fb) {
       return "url('img/sensor_off_"+ori+".png')";
 }
 
+function getTrackImage(tk) {
+  var ori  = getOriNr(tk.getAttribute('ori'));
+  var type = tk.getAttribute('type');
+  var suffix = '';
+  if (type == "curve" )
+    return "url('img/curve"+suffix+"_"+ori+".png')";
+  else if( type == "buffer" || type == "connector" ) {
+    if (ori == 1)
+      ori = 3;
+    else if (ori == 3)
+      ori = 1;
+    return "url('img/"+type+suffix+"_"+ori+".png')";
+  }
+  else {
+    return "url('img/track"+suffix+"_"+ (ori % 2 == 0 ? 2 : 1) + ".png')";
+  }
+  
+}
+
+function getSwitchImage(sw) {
+  var ori   = getOriNr(sw.getAttribute('ori'));
+  var type  = sw.getAttribute('type');
+  var state = sw.getAttribute('state');
+  var rasterStr = "";
+  var suffix = "";
+  if (ori == 1)
+    ori = 3;
+  else if (ori == 3)
+    ori = 1;
+
+  if (type=="right") {
+    if (state=="straight")
+      return "url('img/turnout"+rasterStr+"_rs"+suffix+"_"+ori+".png')";
+    else
+      return "url('img/turnout"+rasterStr+"_rt"+suffix+"_"+ori+".png')";
+
+  }
+  else if (type=="left") {
+    if (state=="straight")
+      return "url('img/turnout"+rasterStr+"_ls"+suffix+"_"+ori+".png')";
+    else
+      return "url('img/turnout"+rasterStr+"_lt"+suffix+"_"+ori+".png')";
+
+  }
+  
+}
+
 function getBlockImage(bk) {
   var ori   = getOriNr(bk.getAttribute('ori'));
   ori = (ori % 2 == 0) ? 2 : 1;
@@ -591,6 +669,59 @@ function processPlan() {
      }
      
      
+     tklist = xmlDoc.getElementsByTagName("tk");
+     if( tklist.length > 0 )
+       console.log("processing " + tklist.length + " tracks");
+
+     for (var i = 0; i < tklist.length; i++) {
+       var z     = tklist[i].getAttribute('z');
+       var ori   = getOriNr(tklist[i].getAttribute('ori'));
+       var leveldiv = zlevelMap[z]; 
+       console.log('track: ' + tklist[i].getAttribute('id') + "at level " + z);
+       tkMap[tklist[i].getAttribute('id')] = tklist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "tk_"+tklist[i].getAttribute('id'));
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = "32px";
+       newdiv.style.height   = "32px";
+       newdiv.style.left     = "" + (parseInt(tklist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(tklist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.innerHTML      = "";
+       newdiv.style.backgroundImage = getTrackImage(tklist[i]);
+       //console.log("Track image="+newdiv.style.backgroundImage + "    " + getTrackImage(tklist[i]));
+
+       leveldiv.appendChild(newdiv);
+     }
+     
+
+     swlist = xmlDoc.getElementsByTagName("sw");
+     if( swlist.length > 0 )
+       console.log("processing " + swlist.length + " switches");
+
+     for (var i = 0; i < swlist.length; i++) {
+       var z     = swlist[i].getAttribute('z');
+       var leveldiv = zlevelMap[z]; 
+       console.log('switch: ' + swlist[i].getAttribute('id') + "at level " + z);
+       swMap[swlist[i].getAttribute('id')] = swlist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "sw_"+swlist[i].getAttribute('id'));
+       newdiv.setAttribute('onClick', "actionSwitch(this.id)");
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = "32px";
+       newdiv.style.height   = "32px";
+       newdiv.style.left     = "" + (parseInt(swlist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(swlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.innerHTML      = "";
+       
+       newdiv.style.backgroundImage = getSwitchImage(swlist[i]);
+       //console.log("Sensor image="+newdiv.style.backgroundImage);
+
+       leveldiv.appendChild(newdiv);
+     }
+     
+     
      fblist = xmlDoc.getElementsByTagName("fb");
      if( fblist.length > 0 )
        console.log("processing " + fblist.length + " sensors");
@@ -619,6 +750,7 @@ function processPlan() {
        newdiv.innerHTML      = "";
        
        newdiv.style.backgroundImage = getSensorImage(fblist[i]);
+       //console.log("Sensor image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
        //document.body.appendChild(newdiv);
