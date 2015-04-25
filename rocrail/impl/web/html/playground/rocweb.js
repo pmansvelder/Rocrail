@@ -10,6 +10,8 @@ var zlevelMap = {};
 var zlevelList = [];
 var fbMap = {};
 var bkMap = {};
+var lcMap = {};
+var locoSelected = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
@@ -63,6 +65,17 @@ function openDonkey()
 /* Throttle Dialog */
 function openThrottle()
 {
+  var select = document.getElementById("locoSelect");
+  while(select.options.length > 0) {
+    select.remove(0);
+  }
+  for (var i in lcMap){
+    var lc = lcMap[i];
+    option = document.createElement( 'option' );
+    option.value = lc.getAttribute('id');
+    option.innerHTML = lc.getAttribute('id');
+    select.add( option );
+  }
   $( "#popupThrottle" ).popup( "open" );
 }
 
@@ -128,8 +141,14 @@ function onFunction(id, nr) {
     tapholdF1 = 0;
     return;
   }
-  console.log("Funtion: " + id + " ("+nr+")");
-  document.getElementById(id).style.backgroundColor= "#FF8888";
+  lc = lcMap[locoSelected];
+  console.log("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
+  var group = (nr-1)/4+1;
+  var fx = parseInt(lc.getAttribute('fx'));
+  var mask = 1 << nr;
+  var on = fx&mask?"false":"true";
+  var cmd = "<fn id=\""+locoSelected+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 function speedUpdate(value) {
@@ -201,6 +220,11 @@ $(document).on("pagecreate",function(){
   
   $('#locoSelect').change(function() {
     console.log("locoSelect: " + this.value );
+    var lc = lcMap[this.value]
+    var img = document.getElementById("locoImage");
+    img.src = "images/" + lc.getAttribute('image');
+    console.log("new image: " + img.src);
+    locoSelected = this.value;
   } );
   
   $('#languageSelect').change(function() {
@@ -308,6 +332,31 @@ function handleSensor(fb) {
   }
 }
 
+
+function handleFunction(fn) {
+  console.log("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
+  var lc = lcMap[fn.getAttribute('id')];
+  var fnchanged = fn.getAttribute('fnchanged');
+  var fx = parseInt(lc.getAttribute('fx'));
+  var mask = 1 << parseInt(fnchanged); 
+  var on = fn.getAttribute("f"+fnchanged);
+  
+  if( on == "true")
+    fx = fx | mask;
+  else
+    fx = fx & ~mask;
+  lc.setAttribute('fx', ""+fx)
+  
+  if( fn.getAttribute('id') == locoSelected ) {
+    var div = document.getElementById("F"+fnchanged);
+    if( on == "true")
+      div.style.backgroundColor = "#FF8888";
+    else
+      div.style.backgroundColor = ''
+  }
+}
+
+
 function handleBlock(bk) {
   console.log("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
   var div = document.getElementById("bk_"+bk.getAttribute('id'));
@@ -336,7 +385,7 @@ function handleState(state) {
   if( power == "true" )
     document.getElementById("headerPower").style.backgroundColor= "#FF8888";
   else 
-    document.getElementById("headerPower").style.backgroundColor= "initial";
+    document.getElementById("headerPower").style.backgroundColor= '';
 }
 
 function handleSystem(sys) {
@@ -364,6 +413,8 @@ function evaluateEvent(xmlStr) {
     handleState(root);
   else if( evtName == "sys" )
     handleSystem(root);
+  else if( evtName == "fn" )
+    handleFunction(root);
 }
 
 function processResponse() {
@@ -528,6 +579,17 @@ function processPlan() {
          document.body.appendChild(newdiv);
        }
      }
+     
+     
+     lclist = xmlDoc.getElementsByTagName("lc");
+     if( lclist.length > 0 )
+       console.log("processing " + lclist.length + " locos");
+
+     for (var i = 0; i < lclist.length; i++) {
+       console.log('loco: ' + lclist[i].getAttribute('id') );
+       lcMap[lclist[i].getAttribute('id')] = lclist[i];
+     }
+     
      
      fblist = xmlDoc.getElementsByTagName("fb");
      if( fblist.length > 0 )

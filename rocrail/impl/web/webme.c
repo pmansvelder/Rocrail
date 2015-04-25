@@ -86,6 +86,10 @@ static void __getImage(iOPClient inst, const char* fname) {
     }
     freeMem(html);
   }
+  else {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", fname );
+    SocketOp.fmt( data->socket, "HTTP/1.0 404 Not found\r\n\r\n" );
+  }
 }
 
 static void __getModel(iOPClient inst) {
