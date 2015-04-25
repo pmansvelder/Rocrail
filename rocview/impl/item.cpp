@@ -2760,6 +2760,27 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
     // ToDo: Merge Node!?
     if( !wBlock.isupdateenterside(node) ) {
       NodeOp.mergeNode( m_Props, node, True, False, True);
+
+      // replace all child nodes...
+      if( NodeOp.getChildCnt(node) > 0 ) {
+        int cnt = NodeOp.getChildCnt( m_Props );
+        while( cnt > 0 ) {
+          iONode child = NodeOp.getChild( m_Props, 0 );
+          iONode removedChild = NodeOp.removeChild( m_Props, child );
+          if( removedChild != NULL) {
+            NodeOp.base.del(removedChild);
+          }
+          cnt = NodeOp.getChildCnt(m_Props);
+        }
+
+        /* add the new or modified childs: */
+        cnt = NodeOp.getChildCnt( node );
+        for( int i = 0; i < cnt; i++ ) {
+          iONode child = NodeOp.getChild( node, i );
+          NodeOp.addChild( m_Props, (iONode)NodeOp.base.clone(child) );
+        }
+      }
+
     }
 
     if( x != -1 && y != -1 ) {

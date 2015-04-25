@@ -111,6 +111,7 @@ FeedbackDialog::FeedbackDialog( wxWindow* parent, iONode p_Props )
   m_TabAlign = wxGetApp().getTabAlign();
   Create(parent, -1, wxGetApp().getMsg("sensortable") );
   m_Props = p_Props;
+  m_bStatisticShowAll = false;
 
   initLabels();
 
@@ -1273,6 +1274,11 @@ void FeedbackDialog::OnStatisticDeleteClick( wxCommandEvent& event )
       NodeOp.base.del(fbstatistic);
       fbstatistic = wFeedback.getfbstatistic( m_Props );
     };
+    if( m_StatisticGrid->GetNumberRows() > 0 )
+      m_StatisticGrid->DeleteRows( 0, m_StatisticGrid->GetNumberRows() );
+    if( m_StatisticGrid->GetNumberCols() > 0 )
+      m_StatisticGrid->DeleteCols( 0, m_StatisticGrid->GetNumberCols() );
+    doStatistic(m_Props);
   }
 }
 
