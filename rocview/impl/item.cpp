@@ -2762,7 +2762,8 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
       NodeOp.mergeNode( m_Props, node, True, False, True);
 
       // replace all child nodes...
-      if( NodeOp.getChildCnt(node) > 0 ) {
+      if( !oncreate && NodeOp.getChildCnt(node) > 0 ) {
+        TraceOp.trc( "item", TRCLEVEL_INFO, __LINE__, 9999, "replacing child nodes of %s...", wItem.getid(m_Props));
         int cnt = NodeOp.getChildCnt( m_Props );
         while( cnt > 0 ) {
           iONode child = NodeOp.getChild( m_Props, 0 );
@@ -2773,7 +2774,7 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
           cnt = NodeOp.getChildCnt(m_Props);
         }
 
-        /* add the new or modified childs: */
+        // add the new or modified childs:
         cnt = NodeOp.getChildCnt( node );
         for( int i = 0; i < cnt; i++ ) {
           iONode child = NodeOp.getChild( node, i );

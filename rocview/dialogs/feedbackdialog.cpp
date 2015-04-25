@@ -1308,8 +1308,12 @@ int FeedbackDialog::findStatisticCol( wxString lcid) {
 void FeedbackDialog::doStatistic(iONode l_Props) {
   /* loop over all statistics */
   iONode   fbstatistic = wFeedback.getfbstatistic( l_Props );
-  if( fbstatistic == NULL )
+  if( fbstatistic == NULL ) {
+    char* xml = NodeOp.base.toString(l_Props);
+    TraceOp.trc( "app", TRCLEVEL_INFO, __LINE__, 9999, "no statistics for %s\n%s", wFeedback.getid(l_Props), xml );
+    StrOp.free(xml);
     return;
+  }
   // Statistic
   m_StatisticGrid->AppendRows();
   int row = m_StatisticGrid->GetNumberRows()-1;
@@ -1333,8 +1337,6 @@ void FeedbackDialog::doStatistic(iONode l_Props) {
 
 void FeedbackDialog::OnStatisticShowAllClick( wxCommandEvent& event )
 {
-  if( m_Props == NULL )
-    return;
   m_bStatisticShowAll = true;
   // Statistic
   if( m_StatisticGrid->GetNumberRows() > 0 )
