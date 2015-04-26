@@ -84,6 +84,7 @@ function openThrottle()
       select.value = locoSelected; 
     }
   }
+  $('#locoSelect').selectmenu("refresh");
   initThrottle();
   updateFunctionLabels();
   $( "#popupThrottle" ).popup( "open" );
@@ -179,12 +180,37 @@ $(function(){
   }
 });
 
+function onDirection() {
+  lc = lcMap[locoSelected];
+  if( lc == undefined )
+    return;
+  var dir = lc.getAttribute('dir');
+  if( dir == 'true' )
+    lc.setAttribute('dir', 'false');
+  else
+    lc.setAttribute('dir', 'true');
+  updateDir();
+  speedUpdate(parseInt(lc.getAttribute('V')));
+}
+
+function updateDir() {
+  lc = lcMap[locoSelected];
+  if( lc == undefined ) return;
+  var dir = lc.getAttribute('dir');
+  var V = lc.getAttribute('V');
+  if( dir == 'true')
+    document.getElementById("direction").innerHTML = "" + V + " >";
+  else
+    document.getElementById("direction").innerHTML = "< " + V;
+}
+
 function onFunction(id, nr) {
   if( tapholdF1 == 1 ) {
     tapholdF1 = 0;
     return;
   }
   lc = lcMap[locoSelected];
+  if( lc == undefined ) return;
   console.log("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
   var group = (nr-1)/4+1;
   var fx = parseInt(lc.getAttribute('fx'));
@@ -196,11 +222,12 @@ function onFunction(id, nr) {
 
 function speedUpdate(value) {
   lc = lcMap[locoSelected];
+  if( lc == undefined ) return;
   console.log("Speed: " + value + " for loco " + locoSelected);
   var vVal = value * (parseInt(lc.getAttribute('V_max')/100.00));
-
-  document.getElementById("direction").innerHTML = "" + value + " >";
-  var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\"%s\"/>";
+  lc.setAttribute('V', vVal);
+  updateDir();
+  var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -274,6 +301,9 @@ function initThrottle() {
     var img = document.getElementById("locoImage");
     img.src = "images/" + lc.getAttribute('image');
     console.log("new image: " + img.src);
+    document.getElementById("speedSlider").value = lc.getAttribute('V');
+    $("#speedSlider").slider("refresh");
+    updateDir();
   }
 }
 
@@ -415,6 +445,11 @@ function handleSwitch(sw) {
 }
 
 
+function handleLoco(lc) {
+  
+}
+
+
 function handleFunction(fn) {
   console.log("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
   var lc = lcMap[fn.getAttribute('id')];
@@ -501,6 +536,8 @@ function evaluateEvent(xmlStr) {
     handleSystem(root);
   else if( evtName == "fn" )
     handleFunction(root);
+  else if( evtName == "lc" )
+    handleLoco(root);
   else if( evtName == "sw" )
     handleSwitch(root);
 }
