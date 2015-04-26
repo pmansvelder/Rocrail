@@ -79,7 +79,6 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
     return NULL;
   }
   iONode svg = DocOp.getRootNode( doc );
-  // clean up
   DocOp.base.del(doc);
 
   /* If this is missing the browser won't show the svg:
