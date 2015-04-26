@@ -307,6 +307,9 @@ $(document).on("pagecreate",function(){
 $(document).ready(function(){
   console.log("document ready");
   //$('.ui-slider-handle').height(50)
+  $('.ui-slider').input("none");
+  $('.ui-slider-track').marginLeft("15px");
+
   var lang = localStorage.lang;
   var sel = document.getElementById('languageSelect');
   
@@ -415,6 +418,10 @@ function handleSwitch(sw) {
 function handleFunction(fn) {
   console.log("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
   var lc = lcMap[fn.getAttribute('id')];
+  
+  if( lc == undefined)
+    return;
+  
   var fnchanged = fn.getAttribute('fnchanged');
   var fx = parseInt(lc.getAttribute('fx'));
   var mask = 1 << parseInt(fnchanged); 
@@ -593,91 +600,91 @@ function getOriNr(Ori) {
   return 1;
 }
 
+function getOri(item) {
+  var Ori = item.getAttribute('ori');
+  if(Ori == "north" )
+    return Ori;
+  if(Ori == "east")
+    return Ori;
+  if(Ori == "south")
+    return Ori;
+  return "west";
+}
+
 function getSensorImage(fb) {
   var curve = fb.getAttribute('curve');
-  var ori   = getOriNr(fb.getAttribute('ori'));
-  if( curve != "true" )
-    ori = (ori % 2 == 0) ? 2 : 1;
+  var ori   = getOri(fb);
 
   if( "true" == fb.getAttribute('state') )
     if( curve == "true" )
-      return "url('img/csensor_on_"+ori+".png')";
+      return "url('curve-sensor-on."+ori+".svg')";
     else
-      return "url('img/sensor_on_"+ori+".png')";
+      return "url('sensor-on."+ori+".svg')";
   else
     if( curve == "true" )
-      return "url('img/csensor_off_"+ori+".png')";
+      return "url('curve-sensor-off."+ori+".svg')";
     else
-      return "url('img/sensor_off_"+ori+".png')";
+      return "url('sensor-off."+ori+".svg')";
 }
 
 function getTrackImage(tk) {
-  var ori  = getOriNr(tk.getAttribute('ori'));
+  var ori  = getOri(tk);
   var type = tk.getAttribute('type');
   var suffix = '';
   if (type == "curve" )
-    return "url('img/curve"+suffix+"_"+ori+".png')";
+    return "url('curve."+ori+".svg')";
   else if( type == "buffer" || type == "connector" ) {
-    if (ori == 1)
-      ori = 3;
-    else if (ori == 3)
-      ori = 1;
-    return "url('img/"+type+suffix+"_"+ori+".png')";
+    return "url("+type+"."+ori+".svg')";
   }
   else {
-    return "url('img/track"+suffix+"_"+ (ori % 2 == 0 ? 2 : 1) + ".png')";
+    return "url('straight"+"."+ ori + ".svg')";
   }
   
 }
 
 function getSwitchImage(sw) {
-  var ori   = getOriNr(sw.getAttribute('ori'));
+  var ori   = getOri(sw);
   var type  = sw.getAttribute('type');
   var state = sw.getAttribute('state');
   var rasterStr = "";
   var suffix = "";
-  if (ori == 1)
-    ori = 3;
-  else if (ori == 3)
-    ori = 1;
 
   if (type=="right") {
     if (state=="straight")
-      return "url('img/turnout"+rasterStr+"_rs"+suffix+"_"+ori+".png')";
+      return "url('turnoutright"+"."+ori+".svg')";
     else
-      return "url('img/turnout"+rasterStr+"_rt"+suffix+"_"+ori+".png')";
+      return "url('turnoutright-t"+"."+ori+".svg')";
 
   }
   else if (type=="left") {
     if (state=="straight")
-      return "url('img/turnout"+rasterStr+"_ls"+suffix+"_"+ori+".png')";
+      return "url('turnoutleft"+"."+ori+".svg')";
     else
-      return "url('img/turnout"+rasterStr+"_lt"+suffix+"_"+ori+".png')";
+      return "url('turnoutleft-t"+"."+ori+".svg')";
 
   }
   
 }
 
 function getBlockImage(bk) {
-  var ori   = getOriNr(bk.getAttribute('ori'));
+  var ori   = getOri(bk);
   ori = (ori % 2 == 0) ? 2 : 1;
   var label = bk.getAttribute('locid');
   var suffix = "";
   
   if( "true" == bk.getAttribute('smallsymbol') )
-    suffix = "_s";
+    suffix = "-s";
 
   if( "true" == bk.getAttribute('entering') )
-    return "url('img/block_ent_"+ori+suffix+".png')";
+    return "url('block-ent"+suffix+"."+ori+".svg')";
   else if( "closed" == bk.getAttribute('state') )
-    return "url('img/block_closed_"+ori+suffix+".png')";
+    return "url('block-closed"+suffix+"."+ori+".svg')";
   if( "true" == bk.getAttribute('reserved') )
-    return "url('img/block_reserved_"+ori+suffix+".png')";
+    return "url('block-res"+suffix+"."+ori+".svg')";
   else if( label.length > 0 )
-    return "url('svg/themes/SpDrS60/block-occ."+ori+".svg')";
+    return "url('block-occ"+suffix+"."+ori+".svg')";
   else
-    return "url('svg/themes/SpDrS60/block."+ori+".svg')";
-    //return "url('img/block_"+ori+suffix+".png')";
+    return "url('block"+suffix+"."+ori+".svg')";
   
 }
 
@@ -816,6 +823,8 @@ function processPlan() {
        var z = bklist[i].getAttribute('z');
        if( z == undefined )
          z = '0';
+       var ori   = getOriNr(bklist[i].getAttribute('ori'));
+       ori = (ori % 2 == 0) ? 2 : 1;
        var leveldiv = zlevelMap[z]; 
        console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
@@ -824,8 +833,8 @@ function processPlan() {
        newdiv.setAttribute('onClick', "actionBlock(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       newdiv.style.width    = "128px";
-       newdiv.style.height   = "32px";
+       newdiv.style.width    = ori==1?"128px":"32px";
+       newdiv.style.height   = ori==1?"32px":"128px";
        newdiv.style.lineHeight = "32px";
        newdiv.style.left     = "" + (parseInt(bklist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32 + yoffset) + "px";

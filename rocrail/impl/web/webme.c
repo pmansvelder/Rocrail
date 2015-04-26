@@ -32,6 +32,7 @@
 #include "rocrail/wrapper/public/Global.h"
 #include "rocrail/wrapper/public/RocRail.h"
 #include "rocrail/wrapper/public/State.h"
+#include "rocrail/wrapper/public/WebClient.h"
 
 #include "rocs/public/str.h"
 #include "rocs/public/strtok.h"
@@ -70,7 +71,7 @@ static void __getFile(iOPClient inst, const char* fname) {
 }
 
 
-static char* __rotateSVG(const char* svgStr, int orinr) {
+static char* __rotateSVG(const char* svgStr, const char* ori) {
   char* svgNew = NULL;
   iODoc doc = DocOp.parse( svgStr );
   if( doc == NULL || DocOp.getRootNode( doc ) == NULL) {
@@ -87,7 +88,10 @@ static char* __rotateSVG(const char* svgStr, int orinr) {
     NodeOp.setStr(svg, "xmlns", "http://www.w3.org/2000/svg");
   }
 
-  /* ToDo: Rotate with the orinr the SVG. */
+  if( !StrOp.equals(ori, "west") ) {
+    /* ToDo: Rotate with the orinr the SVG. */
+
+  }
 
   svgNew = NodeOp.base.toString(svg);
   NodeOp.base.del(svg);
@@ -99,9 +103,25 @@ static void __getSVG(iOPClient inst, const char* fname) {
   iOStrTok tok = StrTokOp.inst( fname, '.' );
 
   const char* svgname = StrTokOp.nextToken( tok );
-  int orinr = atoi(StrTokOp.nextToken( tok ));
-  char* svg = StrOp.fmt("%s.svg", svgname);
-  StrTokOp.base.del(tok);
+  const char* ori     = StrTokOp.nextToken( tok );
+  /* Multiple theme support in the rocrail.ini. */
+  char* svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath1(data->ini), svgname);
+  if( !FileOp.exist( svg ) ) {
+    StrOp.free(svg);
+    svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath2(data->ini), svgname);
+  }
+  if( !FileOp.exist( svg ) ) {
+    StrOp.free(svg);
+    svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath3(data->ini), svgname);
+  }
+  if( !FileOp.exist( svg ) ) {
+    StrOp.free(svg);
+    svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath4(data->ini), svgname);
+  }
+  if( !FileOp.exist( svg ) ) {
+    StrOp.free(svg);
+    svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath5(data->ini), svgname);
+  }
 
   if( FileOp.exist( svg ) ) {
     char* svgRotated = NULL;
@@ -112,7 +132,7 @@ static void __getSVG(iOPClient inst, const char* fname) {
       Boolean ok = True;
       FileOp.read( f, html, size );
       FileOp.base.del( f );
-      svgRotated = __rotateSVG(html, orinr);
+      svgRotated = __rotateSVG(html, ori);
       if(svgRotated != NULL ) {
         size = StrOp.len(svgRotated);
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
@@ -134,6 +154,8 @@ static void __getSVG(iOPClient inst, const char* fname) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", svg );
     SocketOp.fmt( data->socket, "HTTP/1.0 404 Not found\r\n\r\n" );
   }
+
+  StrTokOp.base.del(tok);
 
   StrOp.free(svg);
 }

@@ -457,7 +457,7 @@ static void _event( iOFBack inst, iONode nodeC ) {
   }
 
   if( StrOp.equals(wFeedback.getcmd(nodeC), wFeedback.signalquality) ) {
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "signal quality..." );
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "signal quality..." );
     __processSignalQuality(inst, wFeedback.getsignal(nodeC), wFeedback.getlocoid(nodeC) );
     nodeC->base.del(nodeC);
     return;

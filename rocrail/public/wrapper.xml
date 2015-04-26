@@ -391,6 +391,11 @@
           <var name="title" vt="string" defval="WebCam" range="*"/>
           <var name="imagefile" vt="string" defval="webcam.jpg" range="*"/>
         </webcam>
+	      <var name="svgpath1" vt="string" defval="svg/themes/SpDrS60" remark="scan this path for svg symbols"/>
+	      <var name="svgpath2" vt="string" defval="svg/themes/Accessories" remark="scan this path for svg symbols"/>
+	      <var name="svgpath3" vt="string" defval="svg/themes/Roads" remark="scan this path for svg symbols"/>
+	      <var name="svgpath4" vt="string" defval="." remark="scan this path for svg symbols"/>
+	      <var name="svgpath5" vt="string" defval="." remark="scan this path for svg symbols"/>
       </webclient>
     </http>
     <service wrappername="Service" cardinality="1" remark="Service for remote Rocrail to negotiate about a loc destination.">
