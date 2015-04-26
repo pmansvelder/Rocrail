@@ -34,6 +34,7 @@
 #include "rocrail/wrapper/public/State.h"
 
 #include "rocs/public/str.h"
+#include "rocs/public/strtok.h"
 #include "rocs/public/trace.h"
 #include "rocs/public/node.h"
 #include "rocs/public/socket.h"
@@ -67,6 +68,76 @@ static void __getFile(iOPClient inst, const char* fname) {
     freeMem(html);
   }
 }
+
+
+static char* __rotateSVG(const char* svgStr, int orinr) {
+  char* svgNew = NULL;
+  iODoc doc = DocOp.parse( svgStr );
+  if( doc == NULL || DocOp.getRootNode( doc ) == NULL) {
+    TraceOp.trc( "svg", TRCLEVEL_EXCEPTION, __LINE__, 9999, "svg not parsed\n %60.60s", svgStr );
+    return NULL;
+  }
+  iONode svg = DocOp.getRootNode( doc );
+  // clean up
+  DocOp.base.del(doc);
+
+  /* If this is missing the browser won't show the svg:
+   * <svg xmlns="http://www.w3.org/2000/svg" ...> */
+  if( NodeOp.getStr(svg, "xmlns", NULL) == NULL) {
+    NodeOp.setStr(svg, "xmlns", "http://www.w3.org/2000/svg");
+  }
+
+  /* ToDo: Rotate with the orinr the SVG. */
+
+  svgNew = NodeOp.base.toString(svg);
+  NodeOp.base.del(svg);
+  return svgNew;
+}
+
+static void __getSVG(iOPClient inst, const char* fname) {
+  iOPClientData data = Data(inst);
+  iOStrTok tok = StrTokOp.inst( fname, '.' );
+
+  const char* svgname = StrTokOp.nextToken( tok );
+  int orinr = atoi(StrTokOp.nextToken( tok ));
+  char* svg = StrOp.fmt("%s.svg", svgname);
+  StrTokOp.base.del(tok);
+
+  if( FileOp.exist( svg ) ) {
+    char* svgRotated = NULL;
+    long size = FileOp.fileSize( svg );
+    char* html = allocMem( size + 1 );
+    iOFile f = FileOp.inst(svg, OPEN_READONLY );
+    if( f != NULL ) {
+      Boolean ok = True;
+      FileOp.read( f, html, size );
+      FileOp.base.del( f );
+      svgRotated = __rotateSVG(html, orinr);
+      if(svgRotated != NULL ) {
+        size = StrOp.len(svgRotated);
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "svg+xml" );
+        if(ok) ok=SocketOp.write( data->socket, (char*)svgRotated, size );
+        StrOp.free(svgRotated);
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "svg+xml" );
+        if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
+      }
+    }
+    freeMem(html);
+  }
+  else {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", svg );
+    SocketOp.fmt( data->socket, "HTTP/1.0 404 Not found\r\n\r\n" );
+  }
+
+  StrOp.free(svg);
+}
+
 
 static void __getImage(iOPClient inst, const char* fname) {
   iOPClientData data = Data(inst);
@@ -397,6 +468,17 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
           p--;
           *p = '\0';
           __getImage( inst, symbolfile );
+        }
+        StrOp.free( symbolfile );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".svg" ) ) {
+        char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
+        char* p = StrOp.find( symbolfile, "HTTP" );
+
+        if( p != NULL ) {
+          p--;
+          *p = '\0';
+          __getSVG( inst, symbolfile );
         }
         StrOp.free( symbolfile );
       }

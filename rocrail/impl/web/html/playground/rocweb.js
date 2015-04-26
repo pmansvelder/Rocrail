@@ -20,6 +20,7 @@ var power = 'false';
 var donkey = 'false';
 var didShowDonkey = false;
 var shutdownTimer;
+var FGroup = 0;
 
 /* JSon test */
 function jsonStorageTest() {
@@ -77,8 +78,48 @@ function openThrottle()
     option.value = lc.getAttribute('id');
     option.innerHTML = lc.getAttribute('id');
     select.add( option );
+    if( locoSelected == lc.getAttribute('id')) {
+      select.selectedIndex = i;
+      option.selected = 'selected';
+      select.value = locoSelected; 
+    }
   }
+  initThrottle();
+  updateFunctionLabels();
   $( "#popupThrottle" ).popup( "open" );
+}
+
+function updateFunctionLabels() {
+  for(i = 1; i < 15; i++) {
+    var F = document.getElementById("F"+i);
+    F.innerHTML = "F" + (i + FGroup * 14); 
+    //console.log("function button " + i + " = " + F.innerHTML);
+  }
+
+  lc = lcMap[locoSelected];
+  if( lc != undefined ) {
+    //var fundeflist = lc.childNodes;
+    var fundeflist = lc.getElementsByTagName("fundef");
+    console.log("function defs " + fundeflist.length + " for " + lc.getAttribute('id'));
+    if( fundeflist.length > 0 ) {
+      for( n = 0; n < fundeflist.length; n++ ){ 
+        console.log("fundef " + fundeflist[n].getAttribute('fn') + " text: " + fundeflist[n].getAttribute('text'));
+        if( fundeflist[n].getAttribute('icon') ) {
+          var F = document.getElementById("F"+fundeflist[n].getAttribute('fn'));
+          F.innerHTML = "<img src='images/"+fundeflist[n].getAttribute('icon')+"'/>";
+        }
+      }
+    }
+  }
+
+}
+
+function onFG() {
+  if( FGroup == 0 )
+    FGroup = 1;
+  else
+    FGroup = 0;
+  updateFunctionLabels(); 
 }
 
 function closeThrottle()
@@ -225,6 +266,18 @@ function actionBlock(id)
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
 }
 
+
+function initThrottle() {
+  console.log("locoSelect: " + locoSelected );
+  var lc = lcMap[locoSelected]
+  if( lc != undefined ) {
+    var img = document.getElementById("locoImage");
+    img.src = "images/" + lc.getAttribute('image');
+    console.log("new image: " + img.src);
+  }
+}
+
+
 /* Initial functions */
 $(document).on("pagecreate",function(){
 
@@ -234,12 +287,9 @@ $(document).on("pagecreate",function(){
   speedUpdate(value);} );
   
   $('#locoSelect').change(function() {
-    console.log("locoSelect: " + this.value );
-    var lc = lcMap[this.value]
-    var img = document.getElementById("locoImage");
-    img.src = "images/" + lc.getAttribute('image');
-    console.log("new image: " + img.src);
     locoSelected = this.value;
+    localStorage.setItem("locoSelected", locoSelected);
+    initThrottle();
   } );
   
   $('#languageSelect').change(function() {
@@ -465,6 +515,8 @@ function processResponse() {
           h.innerHTML = "Rocrail: " + title;
           processPlan();
           planloaded = true;
+          locoSelected = localStorage.getItem("locoSelected");
+          console.log("selected loco = " + locoSelected);
 
           if( donkey == 'true') {
             document.getElementById("donkey").style.display = 'none'
@@ -616,15 +668,16 @@ function getBlockImage(bk) {
     suffix = "_s";
 
   if( "true" == bk.getAttribute('entering') )
-    return "url('img/block_enter_"+ori+suffix+".png')";
+    return "url('img/block_ent_"+ori+suffix+".png')";
   else if( "closed" == bk.getAttribute('state') )
     return "url('img/block_closed_"+ori+suffix+".png')";
   if( "true" == bk.getAttribute('reserved') )
     return "url('img/block_reserved_"+ori+suffix+".png')";
   else if( label.length > 0 )
-    return "url('img/block_occ_"+ori+suffix+".png')";
+    return "url('svg/themes/SpDrS60/block-occ."+ori+".svg')";
   else
-    return "url('img/block_"+ori+suffix+".png')";
+    return "url('svg/themes/SpDrS60/block."+ori+".svg')";
+    //return "url('img/block_"+ori+suffix+".png')";
   
 }
 
