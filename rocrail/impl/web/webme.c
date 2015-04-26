@@ -89,7 +89,51 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
   }
 
   if( !StrOp.equals(ori, "west") ) {
-    /* ToDo: Rotate with the orinr the SVG. */
+    iONode g = NodeOp.findNode(svg, "g");
+    /* ToDo: Rotate with the orinr the SVG.
+     * use the transform in the g element for rotating:
+     * */
+    /*
+    <svg width="128" height="32" xmlns="http://www.w3.org/2000/svg">
+      <!--<g transform="rotate(270, 64, 64)">-->
+      <g transform="rotate(90, 16, 16)">
+        <!-- Block -->
+        <path stroke="rgb(0,0,0)" fill="none" d="M 0,3 L 127,3 L 127,28 L 0,28 z " />
+        <path stroke="rgb(0,0,0)" fill="rgb(255,255,255)" d="M 1,4 L 126,4 L 126,27 L 1,27 z " />
+        <!--path stroke="rgb(0,0,0)" fill="black" d="M 1,24 L 14,24 L 14,27 L 1,27 z " /-->
+        <path stroke="rgb(0,0,0)" fill="none" d="M 3,23 L 7,23 z " />
+        <path stroke="rgb(0,0,0)" fill="none" d="M 5,21 L 5,25 z " />
+      </g>
+    </svg>
+
+     */
+    if( g != NULL ) {
+      int width  = NodeOp.getInt(svg, "width", 32);
+      int height = NodeOp.getInt(svg, "height", 32);
+      int center = 0;
+      char* transform = NULL;
+      int deg = 0;
+      /* ToDo: Calculate the center of the rotation... */
+      if( StrOp.equals(ori, "east") ) {
+        deg = 180;
+        center = width / 2;
+      }
+      else if( StrOp.equals(ori, "south") ) {
+        deg = 90;
+        center = height / 2;
+        NodeOp.setInt(svg, "width", height);
+        NodeOp.setInt(svg, "height", width);
+      }
+      else if( StrOp.equals(ori, "north") ) {
+        deg = 270;
+        center = width / 2;
+        NodeOp.setInt(svg, "width", height);
+        NodeOp.setInt(svg, "height", width);
+      }
+      transform = StrOp.fmt("rotate(%d, %d, %d)", deg, center, center);
+      NodeOp.setStr(g, "transform", transform);
+      StrOp.free(transform);
+    }
 
   }
 
