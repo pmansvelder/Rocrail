@@ -1,14 +1,129 @@
+<!DOCTYPE html> 
 <html>
- 
 <head>
-<style>
-div{position:absolute;text-align:center;}
-p{vertical-align:middle;}
-</style>
- <script type="text/javascript" src="rocweb.js"></script>
+	<title>Rocrail WEB Client</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+	<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="rocweb.js"></script>
+  <link rel="stylesheet" href="rocweb.css" />
 </head>
- 
+
 <body id="planpanel" onload="loadPlan()">
- 
+
+
+  <div data-role="header" style="overflow:hidden;">
+    <h1 id="title">Rocrail: Plan-F reloaded</h1>
+    <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
+      <a href="#" id="headerPower" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
+    </div>  
+    <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
+    </div>  
+  </div>
+
+  <div data-role="popup" id="popupBlock" class="ui-popup" data-theme="a" style="width: 200px;" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <h3 id="blockTitle">Block</h3>
+  <select name="select-choice-1" id="select-choice-1">
+  <option value="BR11">BR11</option>
+  <option value="E03">E03</option>
+  </select>
+  <div class="ui-grid-a">
+  <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all">Start</a></div>
+  <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all">Stop</a></div>
+  </div>
+  </div>
+  </div>
+
+  <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <button id="menuPower" class="ui-btn ui-icon-power ui-btn-icon-left" style="text-align:left;">Power</button>
+  <button class="ui-btn ui-icon-alert ui-btn-icon-left" style="text-align:left;">Emergancy break</button>
+  <button class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;">System</button>
+  <button class="ui-btn ui-icon-info  ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
+  <button class="ui-btn ui-icon-gear  ui-btn-icon-left" style="text-align:left;">Options</button>
+    <select name="languageSelect" id="languageSelect" style="text-align:left;">
+      <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
+      <option id="langEN" value="en" style="text-align:left;">English</option>
+    </select>
+  <!--
+    <ul data-role="listview">
+      <li  name="languageSelect" id="languageSelect" data-role="collapsible" data-iconpos="right" data-inset="false">
+        <h2>Language</h2>
+        <ul data-role="listview" data-theme="b">
+          <li><a id="langDE" value="de"  href="#" onclick="langDE()">Deutsch</a></li>
+          <li><a id="langEN" value="en"  href="#" onclick="langEN()">English</a></li>
+        </ul>
+      </li>
+    </ul>
+    -->
+  </div>
+  </div>
+
+  <div data-role="popup" id="popupInfo" class="ui-popup" data-theme="a">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <center>
+  <img src="logo.png"/>
+  <label>Copyright &copy; 2002-2015 Rob Versluis</label>
+  <a href="http://www.rocrail.net">www.rocrail.net</a>
+  <div id="donkey">
+    <br>
+    Rocrail runs entirely on volunteer labor.
+    However, Rocrail also needs contributions of money.
+    Your continued support is vital for keeping Rocrail available.<br>
+    If you already did donate you can ask a key to disable this on startup dialog: donate@rocrail.net<br>
+    <div id="donkeyWarning"><b>Rocweb will stop communicate in 5 minutes!</b></div>
+  </div>
+  </center>
+  </div>
+  </div>
+
+  <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a" style="width: 400px;">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+    <div style="padding:10px 10px;">
+    <center><img id="locoImage" src="br103.png"/></center>
+    <select name="locoSelect" id="locoSelect">
+    </select>
+    
+    <div class="ui-grid-d">
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F1" onclick="onFunction('F1', 1)">F1</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F2" onclick="onFunction('F2', 2)">F2</a></div>
+    <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F3" onclick="onFunction('F3', 3)">F3</a></div>
+    <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F4" onclick="onFunction('F4', 4)">F4</a></div>
+    <div class="ui-block-e"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="ST" onclick="onST()">ST</a></div>
+
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F5" onclick="onFunction('F5', 5)">F5</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F6" onclick="onFunction('F6', 6)">F6</a></div>
+    <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F7" onclick="onFunction('F7', 7)">F7</a></div>
+    <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F8" onclick="onFunction('F8', 8)">F8</a></div>
+    <div class="ui-block-e"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="RE" onclick="onRE()">RE</a></div>
+
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F9" onclick="onFunction('F9', 9)">F9</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F10" onclick="onFunction('F10', 10)">F10</a></div>
+    <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F11" onclick="onFunction('F11', 11)">F11</a></div>
+    <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F12" onclick="onFunction('F12', 12)">F12</a></div>
+    <div class="ui-block-e"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="FG" onclick="onFG()">FG</a></div>
+
+    <div class="ui-block-a" style="width:40%"><a href="#" id="direction" class="ui-shadow ui-btn ui-corner-all" onclick="onDirection()">Dir &gt;</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F13" onclick="onFunction('F13', 13)">F13</a></div>
+    <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F14" onclick="onFunction('F14', 14)">F14</a></div>
+    <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F0" onclick="onFunction('F0', 0)">F0</a></div>
+    </div>
+    <div class="full-width-slider">
+      <input type="range" name="speedSlider" id="speedSlider" value="0" min="0" max="100" data-highlight="true">
+    </div>
+    </div>
+ </div>
+
 </body>
+
 </html>

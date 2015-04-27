@@ -396,7 +396,8 @@
 	      <var name="svgpath3" vt="string" defval="svg/themes/Roads" remark="scan this path for svg symbols"/>
 	      <var name="svgpath4" vt="string" defval="." remark="scan this path for svg symbols"/>
 	      <var name="svgpath5" vt="string" defval="." remark="scan this path for svg symbols"/>
-      </webclient>
+        <var name="imgpath" vt="string" defval="images" range="*" remark="Location of (loco)images."/>
+	    </webclient>
     </http>
     <service wrappername="Service" cardinality="1" remark="Service for remote Rocrail to negotiate about a loc destination.">
       <var name="sname" vt="string" defval="" range="*" remark="Servicer name to use in NetReq and NetRsp."/>

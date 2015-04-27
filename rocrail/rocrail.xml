@@ -1949,6 +1949,7 @@
       <param name="ini" vt="iONode" remark="Http ini."/>
       <param name="callbackfun" vt="httpcon_callback"/>
       <param name="callbackobj" vt="obj"/>
+      <param name="imgpath" vt="const char*" remark="Image path from the server."/>
     </fun>
     <fun name="shutdown" vt="void" remark="Shutdown Http.">
       <param name="inst" vt="this" remark="Http instance."/>

@@ -324,7 +324,7 @@ static void _setCallback( iOHttp inst, httpcon_callback pfun, obj callbackObj ) 
 
 
 /** Object creator. */
-static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj ) {
+static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, const char* imgpath ) {
   if( ini != NULL ) {
     iOHttp __Http = allocMem( sizeof( struct OHttp ) );
     iOHttpData data = allocMem( sizeof( struct OHttpData ) );
@@ -359,6 +359,8 @@ static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj )
       char*  phtmName = StrOp.fmt( "phtm%08X", __Http );
       char*  phtsName = StrOp.fmt( "phts%08X", __Http );
       
+      wWebClient.setimgpath( data->webclient, imgpath );
+
       data->pclientMap = MapOp.inst();
       data->pclientmux = MutexOp.inst( NULL, True );
   

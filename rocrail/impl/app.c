@@ -1017,7 +1017,7 @@ static int _Main( iOApp inst, int argc, char** argv ) {
   {
     iONode http = wRocRail.gethttp( data->ini );
     if( http != NULL )
-      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control );
+      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control, wRocRail.getimgpath(data->ini) );
   }
 
   /* Snmp (Optional)*/

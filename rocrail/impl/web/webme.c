@@ -49,6 +49,7 @@ static const char* ROCWEB_INDEX    = "web/index.html";
 static const char* ROCWEB_JS       = "web/rocweb.js";
 static const char* ROCWEBWORKER_JS = "web/rocwebworker.js";
 static const char* ROCWEB_CSS      = "web/rocweb.css";
+static const char* ROCWEB_LOGO     = "web/logo.png";
 
 static void __getFile(iOPClient inst, const char* fname) {
   iOPClientData data = Data(inst);
@@ -204,13 +205,20 @@ static void __getSVG(iOPClient inst, const char* fname) {
 }
 
 
-static void __getImage(iOPClient inst, const char* fname) {
+static void __getImage(iOPClient inst, const char* fname, Boolean qualifiedPath) {
   iOPClientData data = Data(inst);
 
-  if( FileOp.exist( fname ) ) {
-    long size = FileOp.fileSize( fname );
+  char* png = NULL;
+
+  if( !qualifiedPath )
+    png = StrOp.fmt("%s/%s", wWebClient.getimgpath(data->ini), fname);
+  else
+    png = StrOp.dup(fname);
+
+  if( FileOp.exist( png ) ) {
+    long size = FileOp.fileSize( png );
     char* html = allocMem( size + 1 );
-    iOFile f = FileOp.inst( fname, OPEN_READONLY );
+    iOFile f = FileOp.inst( png, OPEN_READONLY );
     if( f != NULL ) {
       Boolean ok = True;
       FileOp.read( f, html, size );
@@ -223,9 +231,10 @@ static void __getImage(iOPClient inst, const char* fname) {
     freeMem(html);
   }
   else {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", fname );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", png );
     SocketOp.fmt( data->socket, "HTTP/1.0 404 Not found\r\n\r\n" );
   }
+  StrOp.free(png);
 }
 
 static void __getModel(iOPClient inst) {
@@ -525,6 +534,9 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
         if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
       }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/logo.png" ) ) {
+        __getImage( inst, ROCWEB_LOGO, True );
+      }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".png" ) ) {
         char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
         char* p = StrOp.find( symbolfile, "HTTP" );
@@ -532,7 +544,7 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
         if( p != NULL ) {
           p--;
           *p = '\0';
-          __getImage( inst, symbolfile );
+          __getImage( inst, symbolfile, False );
         }
         StrOp.free( symbolfile );
       }
