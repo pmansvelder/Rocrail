@@ -6,8 +6,9 @@ var ws = null;
 var initWS;
 var worker;
 var tapholdF1 = 0;
+var zlevelDivMap = {};
+var zlevelDivList = [];
 var zlevelMap = {};
-var zlevelList = [];
 var fbMap = {};
 var tkMap = {};
 var bkMap = {};
@@ -243,9 +244,9 @@ function actionPower() {
 function actionLevelDown() {
   zlevelSelected.style.display = 'none'
   zlevelIdx++;
-  var zleveldiv = zlevelList[zlevelIdx];
+  var zleveldiv = zlevelDivList[zlevelIdx];
   if(zleveldiv == undefined ) {
-    zleveldiv = zlevelList[0];
+    zleveldiv = zlevelDivList[0];
     zlevelIdx = 0;
   }
   zlevelSelected = zleveldiv;
@@ -254,9 +255,9 @@ function actionLevelDown() {
 function actionLevelUp() {
   zlevelSelected.style.display = 'none'
     zlevelIdx--;
-    var zleveldiv = zlevelList[zlevelIdx];
+    var zleveldiv = zlevelDivList[zlevelIdx];
     if(zleveldiv == undefined ) {
-      zleveldiv = zlevelList[0];
+      zleveldiv = zlevelDivList[0];
       zlevelIdx = 0;
     }
     zlevelSelected = zleveldiv;
@@ -265,6 +266,18 @@ function actionLevelUp() {
 
 
 /* Item commands */
+function actionAuto(auto) {
+  console.log("auto action " + auto);
+  var cmd = "<auto cmd=\""+auto+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function actionEBreak() {
+  console.log("emergancy break");
+  var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 function actionSensor(id)
 {
   fbid = id.replace("fb_","");
@@ -556,7 +569,7 @@ function processResponse() {
           donkey = planlist[0].getAttribute('donkey');
           title = planlist[0].getAttribute('title');
           console.log( "processing plan: " + title + " key=" + donkey );
-          h.innerHTML = "Rocrail: " + title;
+          h.innerHTML = title;
           processPlan();
           planloaded = true;
           locoSelected = localStorage.getItem("locoSelected");
@@ -733,19 +746,22 @@ function processPlan() {
      
      zlevellist = xmlDoc.getElementsByTagName("zlevel");
      if( zlevellist.length > 0 ) {
+       var title = "";
        console.log("processing " + zlevellist.length + " zlevels");
        for (var i = 0; i < zlevellist.length; i++) {
+         zlevelMap[z] = zlevellist[i];
          var z = zlevellist[i].getAttribute('z');
          console.log('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
 
          var newdiv = document.createElement('div');
          newdiv.setAttribute('id', "level_" + z);
-         zlevelMap[z] = newdiv;
-         zlevelList[i] = newdiv;
+         zlevelDivMap[z] = newdiv;
+         zlevelDivList[i] = newdiv;
 
          if( zlevelSelected == 'none' ) {
            zlevelSelected = newdiv;
            zlevelIdx = i;
+           title = zlevellist[i].getAttribute('title');
          }
          else {
            console.log("disable level " + z);
@@ -753,6 +769,8 @@ function processPlan() {
          }
          document.body.appendChild(newdiv);
        }
+       var h = document.getElementById("title");
+       h.innerHTML = title;
      }
      
      
@@ -773,7 +791,7 @@ function processPlan() {
      for (var i = 0; i < tklist.length; i++) {
        var z     = tklist[i].getAttribute('z');
        var ori   = getOriNr(tklist[i].getAttribute('ori'));
-       var leveldiv = zlevelMap[z]; 
+       var leveldiv = zlevelDivMap[z]; 
        console.log('track: ' + tklist[i].getAttribute('id') + "at level " + z);
        tkMap[tklist[i].getAttribute('id')] = tklist[i];
        var newdiv = document.createElement('div');
@@ -798,7 +816,7 @@ function processPlan() {
 
      for (var i = 0; i < swlist.length; i++) {
        var z     = swlist[i].getAttribute('z');
-       var leveldiv = zlevelMap[z]; 
+       var leveldiv = zlevelDivMap[z]; 
        console.log('switch: ' + swlist[i].getAttribute('id') + "at level " + z);
        swMap[swlist[i].getAttribute('id')] = swlist[i];
        var newdiv = document.createElement('div');
@@ -832,7 +850,7 @@ function processPlan() {
        if( curve != "true" )
          ori = (ori % 2 == 0) ? 2 : 1;
 
-       var leveldiv = zlevelMap[z]; 
+       var leveldiv = zlevelDivMap[z]; 
        console.log('sensor: ' + fblist[i].getAttribute('id') + "at level " + z);
        fbMap[fblist[i].getAttribute('id')] = fblist[i];
        var newdiv = document.createElement('div');
@@ -862,7 +880,7 @@ function processPlan() {
          z = '0';
        var ori   = getOriNr(bklist[i].getAttribute('ori'));
        ori = (ori % 2 == 0) ? 2 : 1;
-       var leveldiv = zlevelMap[z]; 
+       var leveldiv = zlevelDivMap[z]; 
        console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
        var newdiv = document.createElement('div');

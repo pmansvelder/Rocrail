@@ -19,8 +19,11 @@
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
       <a href="#" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
       <a href="#" id="headerPower" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
+      <a href="#" id="headerAuto" class="ui-btn ui-btn-icon-right ui-icon-recycle ui-btn-icon-notext" onclick="actionAuto('on')">Automode</a>
+      <a href="#" id="headerStop" class="ui-btn ui-btn-icon-right ui-icon-delete ui-btn-icon-notext" onclick="actionAuto('off')">Automode</a>
     </div>  
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-alert ui-btn-icon-notext" onclick="actionEBreak()">EBreak</a>
       <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
       <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
       <a href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
