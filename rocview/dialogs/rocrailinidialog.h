@@ -105,6 +105,12 @@ class wxSpinCtrl;
 #define ID_PANEL_R2RNET 10281
 #define ID_BUTTON_R2RNET_ROUTES 10327
 #define ID_PANEL_ANALYSER 10416
+#define ID_PANEL_ROCWEB 10479
+#define ID_SVGPATH_BUTTON 10339
+#define ID_SVGPATH2_BUTTON 10001
+#define ID_SVGPATH3_BUTTON 10002
+#define ID_SVGPATH4_BUTTON 10003
+#define ID_SVGPATH5_BUTTON 10004
 #define SYMBOL_ROCRAILINIDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_ROCRAILINIDIALOG_TITLE _("Rocrail Properties")
 #define SYMBOL_ROCRAILINIDIALOG_IDNAME ID_DIALOG_RR_INI
@@ -187,6 +193,21 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_R2RNET_ROUTES
     void OnButtonR2rnetRoutesClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH_BUTTON
+    void OnSvgPath1Click( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH2_BUTTON
+    void OnSvgPath2Click( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH3_BUTTON
+    void OnSvgPath3Click( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH4_BUTTON
+    void OnSvgPath4Click( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH5_BUTTON
+    void OnSvgPath5Click( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
     void OnOkClick( wxCommandEvent& event );
@@ -286,12 +307,6 @@ public:
     wxTextCtrl* m_HttpPort;
     wxStaticText* m_LabServiceRefresh;
     wxTextCtrl* m_ServiceRefresh;
-    wxStaticBoxSizer* m_WebServiceBox;
-    wxStaticText* m_LabWebServicePort;
-    wxTextCtrl* m_WebServicePort;
-    wxStaticText* m_LabWebServiceRefresh;
-    wxTextCtrl* m_WebServiceRefresh;
-    wxCheckBox* m_WebV2;
     wxStaticBoxSizer* m_ClockBox;
     wxStaticText* m_labDevider;
     wxTextCtrl* m_Divider;
@@ -443,6 +458,28 @@ public:
     wxCheckBox* m_BlockClean;
     wxCheckBox* m_RouteClean;
     wxCheckBox* m_ActionClean;
+    wxPanel* m_RocWebPanel;
+    wxStaticBoxSizer* m_WebServiceBox;
+    wxStaticText* m_LabWebServicePort;
+    wxTextCtrl* m_WebServicePort;
+    wxStaticText* m_LabWebServiceRefresh;
+    wxTextCtrl* m_WebServiceRefresh;
+    wxCheckBox* m_WebV2;
+    wxStaticText* m_labTheme1;
+    wxTextCtrl* m_SVGPath;
+    wxButton* m_SvgPathDlg;
+    wxStaticText* m_labTheme2;
+    wxTextCtrl* m_SVGPath2;
+    wxButton* m_SvgPath2Dlg;
+    wxStaticText* m_labTheme3;
+    wxTextCtrl* m_SVGPath3;
+    wxButton* m_SvgPath3Dlg;
+    wxStaticText* m_labTheme4;
+    wxTextCtrl* m_SVGPath4;
+    wxButton* m_SvgPath4Dlg;
+    wxStaticText* m_labTheme5;
+    wxTextCtrl* m_SVGPath5;
+    wxButton* m_SvgPath5Dlg;
     wxButton* m_OK;
     wxButton* m_Cancel;
     iONode m_Controller;
