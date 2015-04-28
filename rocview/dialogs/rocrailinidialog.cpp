@@ -121,6 +121,8 @@ BEGIN_EVENT_TABLE( RocrailIniDialog, wxDialog )
 
     EVT_BUTTON( ID_BUTTON_R2RNET_ROUTES, RocrailIniDialog::OnButtonR2rnetRoutesClick )
 
+    EVT_BUTTON( ID_ROCWEB_WEB_BUTTON, RocrailIniDialog::OnRocwebWebButtonClick )
+
     EVT_BUTTON( ID_SVGPATH_BUTTON, RocrailIniDialog::OnSvgPath1Click )
 
     EVT_BUTTON( ID_SVGPATH2_BUTTON, RocrailIniDialog::OnSvgPath2Click )
@@ -289,6 +291,7 @@ void RocrailIniDialog::initLabels() {
   m_WebServiceBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "webclient" ) );
   m_LabWebServicePort->SetLabel( wxGetApp().getMsg( "port" ) );
   m_LabWebServiceRefresh->SetLabel( wxGetApp().getMsg( "refresh" ) );
+  m_labWebPath->SetLabel( wxGetApp().getMsg( "path" ) );
 
   // Automat
   m_LabelSwTime->SetLabel( wxGetApp().getMsg( "switchtime" ) );
@@ -517,6 +520,7 @@ void RocrailIniDialog::initValues() {
       m_WebV2->SetValue( wWebClient.isme(web) ? true:false );
 
       // RocWeb
+      m_WebPath->SetValue( wxString(wWebClient.getwebpath( web ),wxConvUTF8) );
       m_SVGPath->SetValue( wxString(wWebClient.getsvgpath1( web ),wxConvUTF8) );
       m_SVGPath2->SetValue( wxString(wWebClient.getsvgpath2( web ),wxConvUTF8) );
       m_SVGPath3->SetValue( wxString(wWebClient.getsvgpath3( web ),wxConvUTF8) );
@@ -850,6 +854,7 @@ void RocrailIniDialog::evaluate() {
   wWebClient.setport( web, atoi( m_WebServicePort->GetValue().mb_str(wxConvUTF8) ) );
   wWebClient.setrefresh( web, atoi( m_WebServiceRefresh->GetValue().mb_str(wxConvUTF8) ) );
   wWebClient.setme(web, m_WebV2->IsChecked() ? True:False );
+  wWebClient.setwebpath( web, m_WebPath->GetValue().mb_str(wxConvUTF8) );
   wWebClient.setsvgpath1( web, m_SVGPath->GetValue().mb_str(wxConvUTF8) );
   wWebClient.setsvgpath2( web, m_SVGPath2->GetValue().mb_str(wxConvUTF8) );
   wWebClient.setsvgpath3( web, m_SVGPath3->GetValue().mb_str(wxConvUTF8) );
@@ -1209,6 +1214,9 @@ bool RocrailIniDialog::Create( wxWindow* parent, wxWindowID id, const wxString& 
     m_LabWebServiceRefresh = NULL;
     m_WebServiceRefresh = NULL;
     m_WebV2 = NULL;
+    m_labWebPath = NULL;
+    m_WebPath = NULL;
+    m_WebPathDlg = NULL;
     m_labTheme1 = NULL;
     m_SVGPath = NULL;
     m_SvgPathDlg = NULL;
@@ -2143,14 +2151,14 @@ void RocrailIniDialog::CreateControls()
     wxFlexGridSizer* itemFlexGridSizer267 = new wxFlexGridSizer(0, 5, 0, 0);
     m_WebServiceBox->Add(itemFlexGridSizer267, 0, wxALIGN_LEFT, 5);
     m_LabWebServicePort = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Port"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer267->Add(m_LabWebServicePort, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+    itemFlexGridSizer267->Add(m_LabWebServicePort, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_WebServicePort = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
     m_WebServicePort->SetMaxLength(5);
     itemFlexGridSizer267->Add(m_WebServicePort, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_LabWebServiceRefresh = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Refresh"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer267->Add(m_LabWebServiceRefresh, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+    itemFlexGridSizer267->Add(m_LabWebServiceRefresh, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_WebServiceRefresh = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
     itemFlexGridSizer267->Add(m_WebServiceRefresh, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -2159,76 +2167,89 @@ void RocrailIniDialog::CreateControls()
     m_WebV2->SetValue(false);
     itemFlexGridSizer267->Add(m_WebV2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxStaticBox* itemStaticBoxSizer273Static = new wxStaticBox(m_RocWebPanel, wxID_ANY, _("SVG"));
-    wxStaticBoxSizer* itemStaticBoxSizer273 = new wxStaticBoxSizer(itemStaticBoxSizer273Static, wxVERTICAL);
-    itemBoxSizer265->Add(itemStaticBoxSizer273, 0, wxGROW|wxALL, 5);
-    wxFlexGridSizer* itemFlexGridSizer274 = new wxFlexGridSizer(0, 3, 0, 0);
-    itemStaticBoxSizer273->Add(itemFlexGridSizer274, 0, wxGROW|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer273 = new wxFlexGridSizer(0, 3, 0, 0);
+    m_WebServiceBox->Add(itemFlexGridSizer273, 0, wxGROW, 5);
+    m_labWebPath = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Path"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer273->Add(m_labWebPath, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_WebPath = new wxTextCtrl( m_RocWebPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer273->Add(m_WebPath, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_WebPathDlg = new wxButton( m_RocWebPanel, ID_ROCWEB_WEB_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
+    itemFlexGridSizer273->Add(m_WebPathDlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    itemFlexGridSizer273->AddGrowableCol(1);
+
+    wxStaticBox* itemStaticBoxSizer277Static = new wxStaticBox(m_RocWebPanel, wxID_ANY, _("SVG"));
+    wxStaticBoxSizer* itemStaticBoxSizer277 = new wxStaticBoxSizer(itemStaticBoxSizer277Static, wxVERTICAL);
+    itemBoxSizer265->Add(itemStaticBoxSizer277, 0, wxGROW|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer278 = new wxFlexGridSizer(0, 3, 0, 0);
+    itemStaticBoxSizer277->Add(itemFlexGridSizer278, 0, wxGROW|wxALL, 5);
     m_labTheme1 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 1"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_labTheme1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer278->Add(m_labTheme1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_SVGPath = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_SVGPath, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SVGPath, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
     m_SvgPathDlg = new wxButton( m_RocWebPanel, ID_SVGPATH_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
-    itemFlexGridSizer274->Add(m_SvgPathDlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SvgPathDlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme2 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 2"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_labTheme2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer278->Add(m_labTheme2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_SVGPath2 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_SVGPath2, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SVGPath2, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
     m_SvgPath2Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH2_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
-    itemFlexGridSizer274->Add(m_SvgPath2Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SvgPath2Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme3 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 3"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_labTheme3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer278->Add(m_labTheme3, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_SVGPath3 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_SVGPath3, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SVGPath3, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
     m_SvgPath3Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH3_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
-    itemFlexGridSizer274->Add(m_SvgPath3Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SvgPath3Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme4 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 4"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_labTheme4, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer278->Add(m_labTheme4, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_SVGPath4 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_SVGPath4, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SVGPath4, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
     m_SvgPath4Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH4_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
-    itemFlexGridSizer274->Add(m_SvgPath4Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SvgPath4Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme5 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 5"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_labTheme5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer278->Add(m_labTheme5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_SVGPath5 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer274->Add(m_SVGPath5, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SVGPath5, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
     m_SvgPath5Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH5_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
-    itemFlexGridSizer274->Add(m_SvgPath5Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer278->Add(m_SvgPath5Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    itemFlexGridSizer274->AddGrowableCol(1);
+    itemFlexGridSizer278->AddGrowableCol(1);
 
     m_RRNotebook->AddPage(m_RocWebPanel, _("RocWeb"));
 
     itemBoxSizer2->Add(m_RRNotebook, 1, wxGROW|wxALL, 5);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer290 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer294 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer290, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer294, 0, wxGROW|wxLEFT|wxRIGHT, 5);
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     m_OK->SetDefault();
-    itemStdDialogButtonSizer290->AddButton(m_OK);
+    itemStdDialogButtonSizer294->AddButton(m_OK);
 
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer290->AddButton(m_Cancel);
+    itemStdDialogButtonSizer294->AddButton(m_Cancel);
 
-    wxButton* itemButton293 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer290->AddButton(itemButton293);
+    wxButton* itemButton297 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer294->AddButton(itemButton297);
 
-    itemStdDialogButtonSizer290->Realize();
+    itemStdDialogButtonSizer294->Realize();
 
 ////@end RocrailIniDialog content construction
 }
@@ -2656,6 +2677,20 @@ void RocrailIniDialog::OnSvgPath3Click( wxCommandEvent& event )
   dlg->SetPath(m_SVGPath3->GetValue());
   if( dlg->ShowModal() == wxID_OK ) {
     m_SVGPath3->SetValue( dlg->GetPath() );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_WEB_BUTTON
+ */
+
+void RocrailIniDialog::OnRocwebWebButtonClick( wxCommandEvent& event )
+{
+  wxDirDialog* dlg = new wxDirDialog( this );
+  dlg->SetPath(m_WebPath->GetValue());
+  if( dlg->ShowModal() == wxID_OK ) {
+    m_WebPath->SetValue( dlg->GetPath() );
   }
 }
 

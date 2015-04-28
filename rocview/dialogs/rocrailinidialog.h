@@ -106,6 +106,7 @@ class wxSpinCtrl;
 #define ID_BUTTON_R2RNET_ROUTES 10327
 #define ID_PANEL_ANALYSER 10416
 #define ID_PANEL_ROCWEB 10479
+#define ID_ROCWEB_WEB_BUTTON 10481
 #define ID_SVGPATH_BUTTON 10339
 #define ID_SVGPATH2_BUTTON 10001
 #define ID_SVGPATH3_BUTTON 10002
@@ -193,6 +194,9 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_R2RNET_ROUTES
     void OnButtonR2rnetRoutesClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_WEB_BUTTON
+    void OnRocwebWebButtonClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH_BUTTON
     void OnSvgPath1Click( wxCommandEvent& event );
@@ -465,6 +469,9 @@ public:
     wxStaticText* m_LabWebServiceRefresh;
     wxTextCtrl* m_WebServiceRefresh;
     wxCheckBox* m_WebV2;
+    wxStaticText* m_labWebPath;
+    wxTextCtrl* m_WebPath;
+    wxButton* m_WebPathDlg;
     wxStaticText* m_labTheme1;
     wxTextCtrl* m_SVGPath;
     wxButton* m_SvgPathDlg;

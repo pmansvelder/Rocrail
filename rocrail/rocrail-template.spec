@@ -61,6 +61,7 @@ find $RPM_BUILD_ROOT/opt/rocrail/svg -type d -exec chmod 755 {} \;
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type f -exec chmod 666 {} \;
 
 install -g users -m 666 Rocrail/rocrail/symbols/*.* $RPM_BUILD_ROOT/opt/rocrail/symbols
+install -g users -m 666 Rocrail/rocrail/impl/web/html/*.* $RPM_BUILD_ROOT/opt/rocrail/web
 
 %clean
 #rm -rf $RPM_BUILD_ROOT

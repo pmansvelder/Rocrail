@@ -41,6 +41,7 @@ mkdir -p debian/opt/rocrail/default
 mkdir -p debian/opt/rocrail/stylesheets
 mkdir -p debian/opt/rocrail/decspecs
 mkdir -p debian/opt/rocrail/symbols
+mkdir -p debian/opt/rocrail/web
 mkdir -p debian/opt/rocrail/images
 mkdir -p debian/opt/rocrail/svg
 mkdir -p debian/usr/share/applications
@@ -73,6 +74,7 @@ cp -R ../stylesheets/*.* debian/opt/rocrail/stylesheets
 cp -R ../decspecs/*.* debian/opt/rocrail/decspecs
 cp -R ../rocview/svg/* debian/opt/rocrail/svg
 cp -R ../rocrail/symbols/*.* debian/opt/rocrail/symbols
+cp -R ../rocrail/impl/web/html/*.* debian/opt/rocrail/web
 cp -R ../COPYING debian/opt/rocrail
 
 fakeroot dpkg-deb --build debian

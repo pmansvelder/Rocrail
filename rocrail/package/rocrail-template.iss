@@ -57,6 +57,7 @@ Source: "..\..\decspecs\*.*"; DestDir: "{userdocs}\Rocrail\decspecs"; Flags: rec
 Source: "..\..\rocview\svg\themes\*.*"; DestDir: "{app}\svg\themes"; Tasks: themes; Flags: recursesubdirs
 Source: "..\..\rocview\svg\americanthemes\*.*"; DestDir: "{app}\svg\themes"; Tasks: americanthemes; Flags: recursesubdirs
 ;Source: "..\..\rocrail\symbols\*.*"; DestDir: "{app}\symbols"; Tasks: symbols; Flags: onlyifdoesntexist
+Source: "..\..\rocrail\impl\web\html\*.*"; DestDir: "{app}\web";
 Source: "..\..\COPYING"; DestDir: "{app}"
 
 [Icons]

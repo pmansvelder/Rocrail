@@ -397,6 +397,7 @@
 	      <var name="svgpath4" vt="string" defval="." remark="scan this path for svg symbols"/>
 	      <var name="svgpath5" vt="string" defval="." remark="scan this path for svg symbols"/>
         <var name="imgpath" vt="string" defval="images" range="*" remark="Location of (loco)images."/>
+        <var name="webpath" vt="string" defval="web" range="*" remark="Location of the web files."/>
 	    </webclient>
     </http>
     <service wrappername="Service" cardinality="1" remark="Service for remote Rocrail to negotiate about a loc destination.">

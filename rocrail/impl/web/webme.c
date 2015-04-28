@@ -45,19 +45,21 @@
 
 
 
-static const char* ROCWEB_INDEX    = "web/index.html";
-static const char* ROCWEB_JS       = "web/rocweb.js";
-static const char* ROCWEBWORKER_JS = "web/rocwebworker.js";
-static const char* ROCWEB_CSS      = "web/rocweb.css";
-static const char* ROCWEB_LOGO     = "web/logo.png";
+static const char* ROCWEB_INDEX    = "index.html";
+static const char* ROCWEB_JS       = "rocweb.js";
+static const char* ROCWEBWORKER_JS = "rocwebworker.js";
+static const char* ROCWEB_CSS      = "rocweb.css";
+static const char* ROCWEB_LOGO     = "logo.png";
 
 static void __getFile(iOPClient inst, const char* fname) {
   iOPClientData data = Data(inst);
 
-  if( FileOp.exist( fname ) ) {
-    long size = FileOp.fileSize( fname );
+  char* webfile = StrOp.fmt("%s/%s", wWebClient.getwebpath(data->ini), fname);
+
+  if( FileOp.exist( webfile ) ) {
+    long size = FileOp.fileSize( webfile );
     char* html = allocMem( size + 1 );
-    iOFile f = FileOp.inst( fname, OPEN_READONLY );
+    iOFile f = FileOp.inst( webfile, OPEN_READONLY );
     if( f != NULL ) {
       Boolean ok = True;
       FileOp.read( f, html, size );
@@ -69,6 +71,8 @@ static void __getFile(iOPClient inst, const char* fname) {
     }
     freeMem(html);
   }
+
+  StrOp.free(webfile);
 }
 
 
