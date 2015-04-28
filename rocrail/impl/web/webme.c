@@ -65,11 +65,16 @@ static void __getFile(iOPClient inst, const char* fname) {
       FileOp.read( f, html, size );
       FileOp.base.del( f );
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
-      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
       if(ok) ok=SocketOp.fmt( data->socket, "Content-type: text/html\r\n\r\n" );
       if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
     }
     freeMem(html);
+  }
+  else {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "file [%s] not found", webfile );
+    SocketOp.fmt( data->socket, "HTTP/1.1 404 Not found\r\n\r\n" );
   }
 
   StrOp.free(webfile);
@@ -184,14 +189,16 @@ static void __getSVG(iOPClient inst, const char* fname) {
       if(svgRotated != NULL ) {
         size = StrOp.len(svgRotated);
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
-        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "svg+xml" );
         if(ok) ok=SocketOp.write( data->socket, (char*)svgRotated, size );
         StrOp.free(svgRotated);
       }
       else {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
-        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "svg+xml" );
         if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
       }
@@ -200,7 +207,7 @@ static void __getSVG(iOPClient inst, const char* fname) {
   }
   else {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", svg );
-    SocketOp.fmt( data->socket, "HTTP/1.0 404 Not found\r\n\r\n" );
+    SocketOp.fmt( data->socket, "HTTP/1.1 404 Not found\r\n\r\n" );
   }
 
   StrTokOp.base.del(tok);
@@ -228,7 +235,8 @@ static void __getImage(iOPClient inst, const char* fname, Boolean qualifiedPath)
       FileOp.read( f, html, size );
       FileOp.base.del( f );
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
-      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
       if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "png" );
       if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
     }
@@ -236,7 +244,7 @@ static void __getImage(iOPClient inst, const char* fname, Boolean qualifiedPath)
   }
   else {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "image not found: %s", png );
-    SocketOp.fmt( data->socket, "HTTP/1.0 404 Not found\r\n\r\n" );
+    SocketOp.fmt( data->socket, "HTTP/1.1 404 Not found\r\n\r\n" );
   }
   StrOp.free(png);
 }
@@ -266,7 +274,8 @@ static void __getModel(iOPClient inst) {
   xml = NodeOp.base.toString( model );
   size = StrOp.len(xml);
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write model %d", size );
-  if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 0 OK\r\n" );
+  if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 0 OK\r\n" );
+  if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
   if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
   if(ok) ok=SocketOp.write( data->socket, xml, size );
   StrOp.free(xml);
@@ -451,6 +460,10 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       }
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "%s", l_str );
 
+      if( StrOp.findi( l_str, "Connection: keep-alive" ) ) {
+
+      }
+
       if( StrOp.findi( l_str, "Sec-WebSocket-Protocol:") ) {
         StrOp.replaceAll(l_str, '\n', '\0');
         StrOp.replaceAll(l_str, '\r', '\0');
@@ -516,6 +529,28 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.css" ) ) {
         __getFile( inst, ROCWEB_CSS );
       }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".js" ) ) {
+        char* jsfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
+        char* p = StrOp.find( jsfile, "HTTP" );
+
+        if( p != NULL ) {
+          p--;
+          *p = '\0';
+          __getFile( inst, jsfile );
+        }
+        StrOp.free( jsfile );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".css" ) ) {
+        char* cssfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
+        char* p = StrOp.find( cssfile, "HTTP" );
+
+        if( p != NULL ) {
+          p--;
+          *p = '\0';
+          __getFile( inst, cssfile );
+        }
+        StrOp.free( cssfile );
+      }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
         Boolean ok = True;
         __getModel( inst );
@@ -523,7 +558,7 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.xml?" ) ) {
         Boolean ok = True;
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command: %s", str );
-        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 202 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 202 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/update.xml" ) ) {
@@ -534,7 +569,7 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "update...sleep=%d", bigsleep );
         /* ToDo: get an update event from queue. */
         ThreadOp.sleep(bigsleep);
-        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.0 200 OK\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
         if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
       }
