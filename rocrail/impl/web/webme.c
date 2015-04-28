@@ -216,15 +216,15 @@ static void __getSVG(iOPClient inst, const char* fname) {
 }
 
 
-static void __getImage(iOPClient inst, const char* fname, Boolean qualifiedPath) {
+static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
   iOPClientData data = Data(inst);
 
   char* png = NULL;
 
-  if( !qualifiedPath )
+  if( !webPath )
     png = StrOp.fmt("%s/%s", wWebClient.getimgpath(data->ini), fname);
   else
-    png = StrOp.dup(fname);
+    png = StrOp.fmt("%s/%s", wWebClient.getwebpath(data->ini), fname);
 
   if( FileOp.exist( png ) ) {
     long size = FileOp.fileSize( png );
@@ -529,27 +529,16 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.css" ) ) {
         __getFile( inst, ROCWEB_CSS );
       }
-      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".js" ) ) {
-        char* jsfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
-        char* p = StrOp.find( jsfile, "HTTP" );
+      else if( StrOp.find( str, "GET" ) && ( StrOp.find( str, ".js" ) || StrOp.find( str, ".map" ) || StrOp.find( str, ".css" ) ) ) {
+        char* fname = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
+        char* p = StrOp.find( fname, "HTTP" );
 
         if( p != NULL ) {
           p--;
           *p = '\0';
-          __getFile( inst, jsfile );
+          __getFile( inst, fname );
         }
-        StrOp.free( jsfile );
-      }
-      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".css" ) ) {
-        char* cssfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
-        char* p = StrOp.find( cssfile, "HTTP" );
-
-        if( p != NULL ) {
-          p--;
-          *p = '\0';
-          __getFile( inst, cssfile );
-        }
-        StrOp.free( cssfile );
+        StrOp.free( fname );
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
         Boolean ok = True;
