@@ -67,7 +67,18 @@ static void __getFile(iOPClient inst, const char* fname) {
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
       if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
       if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
-      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: text/html\r\n\r\n" );
+      if( StrOp.find( fname, ".css" ) ) {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: text/css\r\n\r\n" );
+      }
+      else if( StrOp.find( fname, ".js" ) ) {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/javascript\r\n\r\n" );
+      }
+      else if( StrOp.find( fname, ".map" ) ) {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/json\r\n\r\n" );
+      }
+      else {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: text/html\r\n\r\n" );
+      }
       if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
     }
     freeMem(html);
@@ -221,7 +232,7 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
 
   char* png = NULL;
 
-  if( !webPath )
+  if( !webPath && !StrOp.find(fname, "jquery") )
     png = StrOp.fmt("%s/%s", wWebClient.getimgpath(data->ini), fname);
   else
     png = StrOp.fmt("%s/%s", wWebClient.getwebpath(data->ini), fname);
@@ -237,7 +248,15 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
       if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
       if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
-      if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "png" );
+      if( StrOp.find( fname, ".gif" ) ) {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/gif\r\n\r\n" );
+      }
+      else if( StrOp.find( fname, ".ico" ) ) {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/x-icon\r\n\r\n" );
+      }
+      else {
+        if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/png\r\n\r\n" );
+      }
       if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
     }
     freeMem(html);
@@ -565,7 +584,7 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/logo.png" ) ) {
         __getImage( inst, ROCWEB_LOGO, True );
       }
-      else if( StrOp.find( str, "GET" ) && StrOp.find( str, ".png" ) ) {
+      else if( StrOp.find( str, "GET" ) && (StrOp.find( str, ".png" )||StrOp.find( str, ".gif" )||StrOp.find( str, ".ico" )) ) {
         char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
         char* p = StrOp.find( symbolfile, "HTTP" );
 
@@ -586,6 +605,10 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
           __getSVG( inst, symbolfile );
         }
         StrOp.free( symbolfile );
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "unsupported file: %s", str );
+        SocketOp.fmt( data->socket, "HTTP/1.1 404 Not found\r\n\r\n" );
       }
 
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "disconnect... " );

@@ -350,8 +350,8 @@ $(document).on("pagecreate",function(){
 $(document).ready(function(){
   console.log("document ready");
   //$('.ui-slider-handle').height(50)
-  $('.ui-slider').input("none");
-  $('.ui-slider-track').marginLeft("15px");
+  //$('.ui-slider').input("none");
+  //$('.ui-slider-track').marginLeft("15px");
 
   var lang = localStorage.lang;
   var sel = document.getElementById('languageSelect');
