@@ -521,15 +521,12 @@ static void _trc( const char* objectname, tracelevel level, int line, int id, co
     char* fmtMsg = NULL;
 
     va_start(args, fmt);
-#if defined vsnprintf
     vsnprintf(msg, TRACELEN, fmt, args);
-#else
-    vsprintf(msg, fmt, args);
-#endif
     va_end(args);
 /*
     if( t->level & TRCLEVEL_DEBUG && objectname != NULL )
 */
+    msg[TRACELEN-1] = '\0';
     fmtMsg = StrOp.fmtID( RocsTraceID, "%s %-1.1s%04d%c %-8.8s %-8.8s %04d %s",
                           __stamp( stmp ), t->appID, id, __level( level ),
                           tname, objectname, line, msg );
@@ -575,15 +572,12 @@ static void _trace( const void* cargo, tracelevel level, int id, const char* fmt
     char* fmtMsg = NULL;
 
     va_start(args, fmt);
-#if defined vsnprintf
-    vsnprintf(msg, TRACELEN, fmt, args);
-#else
-    vsprintf(msg, fmt, args);
-#endif
+    vsnprintf(msg, TRACELEN-1, fmt, args);
     va_end(args);
 /*
     if( t->level & TRCLEVEL_DEBUG && objectname != NULL )
 */
+    msg[TRACELEN-1] = '\0';
     if( objectname != NULL )
       fmtMsg = StrOp.fmtID( RocsTraceID, "%s %-1.1s%04d%c %-8.8s %-8.8s %s",
                             __stamp( stmp ), t->appID, id, __level( level ), tname, objectname, msg );
@@ -643,14 +637,11 @@ static void _terrno( const char* objectname, tracelevel level, int line, int id,
     char* fmtMsg = NULL;
 
     va_start(args, fmt);
-#if defined vsnprintf
-    vsnprintf(msg, TRACELEN, fmt, args);
-#else
-    vsprintf(msg, fmt, args);
-#endif
+    vsnprintf(msg, TRACELEN-1, fmt, args);
     va_end(args);
 
 /*    if( t->level & TRCLEVEL_DEBUG && objectname != NULL )*/
+    msg[TRACELEN-1] = '\0';
     fmtMsg = StrOp.fmtID( RocsTraceID, "%s %-1.1s%04d%c %-8.8s %-8.8s %04d %s [%d] [%s]",
                           __stamp( stmp ), t->appID, id, __level( level ),
                           tname, objectname, line, msg, error, SystemOp.getErrStr( error ) );
@@ -681,13 +672,10 @@ static void _println( const char* fmt, ... ) {
     t = Data(l_trc);
 
     va_start(args, fmt);
-#if defined vsnprintf
     vsnprintf(msg, TRACELEN, fmt, args);
-#else
-    vsprintf(msg, fmt, args);
-#endif
     va_end(args);
 
+    msg[TRACELEN-1] = '\0';
     __writeFile( t, msg, False );
     /*__writeFile( t, "\n" );*/
 

@@ -164,19 +164,20 @@ static char* _fmt( const char* fmt, ... ) {
   char s[4096] = {'\0'};
 
   va_start(args, fmt);
-  vsprintf(s, fmt, args);
+  vsnprintf(s, 4095, fmt, args);
   va_end(args);
-
+  s[4095] = '\0';
   return _dup( s );
 }
+
 static char* _fmtID( RocsMemID id, const char* fmt, ... ) {
   va_list args;
   char s[4096] = {'\0'};
 
   va_start(args, fmt);
-  vsprintf(s, fmt, args);
+  vsnprintf(s, 4095, fmt, args);
   va_end(args);
-
+  s[4095] = '\0';
   return _dupID( s, id );
 }
 
