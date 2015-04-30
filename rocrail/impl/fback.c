@@ -438,7 +438,9 @@ static void __processSignalQuality(iOFBack inst, int signalquality, const char* 
   }
 
   if(l_NewQuality) {
-    AppOp.broadcastEvent( (iONode)NodeOp.base.clone(data->props) );
+    iONode clone = (iONode)NodeOp.base.clone(data->props);
+    wFeedback.setcmd(clone, wFeedback.signalquality);
+    AppOp.broadcastEvent( clone );
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "signal quality is %d reported by %s", signalquality, locoid );
   }
 }

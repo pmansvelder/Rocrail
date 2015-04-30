@@ -93,6 +93,7 @@
 #include "rocrail/wrapper/public/SelTabPos.h"
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/Feedback.h"
+#include "rocrail/wrapper/public/FeedbackStatistic.h"
 #include "rocrail/wrapper/public/Text.h"
 #include "rocrail/wrapper/public/ZLevel.h"
 #include "rocrail/wrapper/public/Route.h"
@@ -2761,26 +2762,28 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
     if( !wBlock.isupdateenterside(node) ) {
       NodeOp.mergeNode( m_Props, node, True, False, True);
 
-      // replace all child nodes...
-      if( !oncreate && NodeOp.getChildCnt(node) > 0 && node != m_Props) {
-        TraceOp.trc( "item", TRCLEVEL_INFO, __LINE__, 9999, "replacing %d child nodes of %s...", NodeOp.getChildCnt(node), wItem.getid(m_Props));
-        int cnt = NodeOp.getChildCnt( m_Props );
-        while( cnt > 0 ) {
-          iONode child = NodeOp.getChild( m_Props, 0 );
-          TraceOp.trc( "item", TRCLEVEL_INFO, __LINE__, 9999, "removing child node %s", NodeOp.getName(child) );
-          iONode removedChild = NodeOp.removeChild( m_Props, child );
-          if( removedChild != NULL) {
-            NodeOp.base.del(removedChild);
-          }
-          cnt = NodeOp.getChildCnt(m_Props);
-        }
+      // Process signal quality:
+      if( StrOp.equals( wFeedback.name(), NodeOp.getName( m_Props ) ) &&
+          StrOp.equals(wFeedback.getcmd(node), wFeedback.signalquality) )
+      {
+        // replace all child nodes...
+        if( !oncreate && NodeOp.getChildCnt(node) > 0 && node != m_Props) {
 
-        // add the new or modified childs:
-        cnt = NodeOp.getChildCnt( node );
-        for( int i = 0; i < cnt; i++ ) {
-          iONode child = NodeOp.getChild( node, i );
-          TraceOp.trc( "item", TRCLEVEL_INFO, __LINE__, 9999, "adding child node %s", NodeOp.getName(child) );
-          NodeOp.addChild( m_Props, (iONode)NodeOp.base.clone(child) );
+
+          iONode fbstatistic = wFeedback.getfbstatistic( m_Props );
+          while( fbstatistic != NULL ) {
+            NodeOp.removeChild( m_Props, fbstatistic);
+            NodeOp.base.del(fbstatistic);
+            fbstatistic = wFeedback.getfbstatistic( m_Props );
+          };
+
+          fbstatistic = wFeedback.getfbstatistic(node);
+
+          /* loop over all actions */
+          while( fbstatistic != NULL ) {
+            NodeOp.addChild( m_Props, (iONode)NodeOp.base.clone(fbstatistic) );
+            fbstatistic = wFeedback.nextfbstatistic( node, fbstatistic );
+          };
         }
       }
 
