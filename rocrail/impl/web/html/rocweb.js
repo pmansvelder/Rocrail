@@ -450,7 +450,7 @@ function handleSwitch(sw) {
   if( div != null ) {
     swNode = swMap[sw.getAttribute('id')];
     swNode.setAttribute('state', sw.getAttribute('state'));
-    div.style.backgroundImage = getSwitchImage(swNode);
+    div.style.backgroundImage = getSwitchImage(swNode, div);
   }
   else {
     console.log("switch: " + sw.getAttribute('id') + " not found");
@@ -692,28 +692,90 @@ function getTrackImage(tk) {
   
 }
 
-function getSwitchImage(sw) {
+function getSwitchImage(sw, div) {
   var ori   = getOri(sw);
   var type  = sw.getAttribute('type');
   var state = sw.getAttribute('state');
+  var accnr = sw.getAttribute('accnr');
+  var dir   = sw.getAttribute('dir');
   var rasterStr = "";
   var suffix = "";
 
+  console.log("switch type: " + type + " accnr="+accnr);
+  
   if (type=="right") {
     if (state=="straight")
       return "url('turnoutright"+"."+ori+".svg')";
     else
       return "url('turnoutright-t"+"."+ori+".svg')";
-
   }
   else if (type=="left") {
     if (state=="straight")
       return "url('turnoutleft"+"."+ori+".svg')";
     else
       return "url('turnoutleft-t"+"."+ori+".svg')";
-
   }
-  
+  else if (type=="threeway") {
+    if (state=="left")
+      return "url('threeway-tl"+"."+ori+".svg')";
+    else if (state=="right")
+      return "url('threeway-tr"+"."+ori+".svg')";
+    else
+      return "url('threeway"+"."+ori+".svg')";
+  }
+  else if (type=="dcrossing") {
+    if( ori == "west" || ori == "east") {
+      div.style.width    = "64px";
+      div.style.height   = "32px";
+    }
+    else {
+      div.style.width    = "32px";
+      div.style.height   = "64px";
+    }
+    var direction = (dir == "true" ? "left":"right");
+    if (state=="left")
+      return "url('dcrossing"+direction+"-tl."+ori+".svg')";
+    else if (state=="right")
+      return "url('dcrossing"+direction+"-tr."+ori+".svg')";
+    else if (state=="turnout")
+      return "url('dcrossing"+direction+"-t."+ori+".svg')";
+    else
+      return "url('dcrossing"+direction+"."+ori+".svg')";
+  }
+  else if (type=="decoupler") {
+    if (state=="straight")
+      return "url('decoupler-on"+"."+ori+".svg')";
+    else
+      return "url('decoupler"+"."+ori+".svg')";
+  }
+  else if (type=="accessory") {
+
+    if( accnr == "51" ) {
+      if( ori == "west" || ori == "east") {
+        div.style.width    = "128px";
+        div.style.height   = "64px";
+      }
+      else {
+        div.style.width    = "64px";
+        div.style.height   = "128px";
+      }
+    }
+    else if( accnr == "52" ) {
+      if( ori == "west" || ori == "east") {
+        div.style.width    = "128px";
+        div.style.height   = "32px";
+      }
+      else {
+        div.style.width    = "32px";
+        div.style.height   = "128px";
+      }
+    }
+    
+    if(state=="turnout")
+      return "url('accessory-"+accnr+"-off"+"."+ori+".svg')";
+    else
+      return "url('accessory-"+accnr+"-on"+"."+ori+".svg')";
+  }  
 }
 
 function getBlockImage(bk) {
@@ -830,8 +892,8 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(swlist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        
-       newdiv.style.backgroundImage = getSwitchImage(swlist[i]);
-       //console.log("Sensor image="+newdiv.style.backgroundImage);
+       newdiv.style.backgroundImage = getSwitchImage(swlist[i], newdiv);
+       console.log("Switch image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }

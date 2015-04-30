@@ -130,27 +130,28 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
     if( g != NULL ) {
       int width  = NodeOp.getInt(svg, "width", 32);
       int height = NodeOp.getInt(svg, "height", 32);
-      int center = 0;
+      int centerX = 0;
+      int centerY = 0;
       char* transform = NULL;
       int deg = 0;
+
       /* ToDo: Calculate the center of the rotation... */
+      centerX = width / 2;
+      centerY = height / 2;
       if( StrOp.equals(ori, "east") ) {
         deg = 180;
-        center = width / 2;
       }
       else if( StrOp.equals(ori, "south") ) {
         deg = 90;
-        center = height / 2;
         NodeOp.setInt(svg, "width", height);
         NodeOp.setInt(svg, "height", width);
       }
       else if( StrOp.equals(ori, "north") ) {
         deg = 270;
-        center = width / 2;
         NodeOp.setInt(svg, "width", height);
         NodeOp.setInt(svg, "height", width);
       }
-      transform = StrOp.fmt("rotate(%d, %d, %d)", deg, center, center);
+      transform = StrOp.fmt("rotate(%d, %d, %d)", deg, centerX, centerY);
       NodeOp.setStr(g, "transform", transform);
       StrOp.free(transform);
     }
