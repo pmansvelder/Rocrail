@@ -37,7 +37,7 @@ Source: "..\..\stylesheets\*.*"; DestDir: "C:\Rocrail\stylesheets";
 Source: "..\..\decspecs\*.*"; DestDir: "C:\Rocrail\decspecs"; Flags: recursesubdirs
 Source: "..\..\rocview\svg\themes\*.*"; DestDir: "C:\Rocrail\svg\themes"; Tasks: themes; Flags: recursesubdirs
 Source: "..\..\rocview\svg\americanthemes\*.*"; DestDir: "C:\Rocrail\svg\themes"; Tasks: americanthemes; Flags: recursesubdirs
-Source: "..\..\rocrail\impl\web\html\*.*"; DestDir: "C:\Rocrail\web";
+Source: "..\..\rocrail\impl\web\html\*.*"; DestDir: "C:\Rocrail\web"; Flags: recursesubdirs
 Source: "..\..\COPYING"; DestDir: "C:\Rocrail"
 
 [Icons]
