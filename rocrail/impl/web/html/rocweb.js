@@ -553,7 +553,7 @@ function handleBlock(bk) {
       label = bk.getAttribute('id');
     div.innerHTML = "<label class='itemtext'>"+label+"</label>";
 
-    div.style.backgroundImage = getBlockImage(bkNode);
+    div.style.backgroundImage = getBlockImage(bkNode, div);
   }
   else {
     console.log("block: " + bk.getAttribute('id') + " not found");
@@ -907,12 +907,20 @@ function getSwitchImage(sw, div) {
   }  
 }
 
-function getBlockImage(bk) {
+function getBlockImage(bk, div) {
   var ori   = getOri(bk);
-  ori = (ori % 2 == 0) ? 2 : 1;
   var label = bk.getAttribute('locid');
   var suffix = "";
-  
+
+  if( ori == "north" || ori == "south" ) {
+    div.style.width    = "32px";
+    div.style.height   = "128px";
+  }
+  else {
+    div.style.width    = "128px";
+    div.style.height   = "32px";
+  }
+
   if( "true" == bk.getAttribute('smallsymbol') )
     suffix = "-s";
 
@@ -1124,8 +1132,7 @@ function processPlan() {
        var z = bklist[i].getAttribute('z');
        if( z == undefined )
          z = '0';
-       var ori   = getOriNr(bklist[i].getAttribute('ori'));
-       ori = (ori % 2 == 0) ? 2 : 1;
+       var ori = getOri(bklist[i]);
        var leveldiv = zlevelDivMap[z]; 
        console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
@@ -1134,19 +1141,25 @@ function processPlan() {
        newdiv.setAttribute('onClick', "actionBlock(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       newdiv.style.width    = ori==1?"128px":"32px";
-       newdiv.style.height   = ori==1?"32px":"128px";
-       newdiv.style.lineHeight = "32px";
+       newdiv.style.width    = "128px";
+       newdiv.style.height   = "32px";
        newdiv.style.left     = "" + (parseInt(bklist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32 + yoffset) + "px";
        var label = bklist[i].getAttribute('locid');
        if( label.length == 0 )
          label = bklist[i].getAttribute('id');
-       newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+       if( ori == "north" || ori == "south" ) {
+         newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+         newdiv.style.lineHeight = "128px";
+       }
+       else {
+         newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+         newdiv.style.lineHeight = "32px";
+       }
        newdiv.style.textAlign= "center";
        
        //console.log(xml2string(bklist[i]));
-       newdiv.style.backgroundImage = getBlockImage(bklist[i]);
+       newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
 
        leveldiv.appendChild(newdiv);
        //document.body.appendChild(newdiv);

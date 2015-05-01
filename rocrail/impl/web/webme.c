@@ -94,6 +94,7 @@ static void __getFile(iOPClient inst, const char* fname) {
 
 static char* __rotateSVG(const char* svgStr, const char* ori) {
   char* svgNew = NULL;
+  Boolean rotatedV = False;
   iODoc doc = DocOp.parse( svgStr );
   if( doc == NULL || DocOp.getRootNode( doc ) == NULL) {
     TraceOp.trc( "svg", TRCLEVEL_EXCEPTION, __LINE__, 9999, "svg not parsed\n %60.60s", svgStr );
@@ -136,20 +137,27 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
       int deg = 0;
 
       /* ToDo: Calculate the center of the rotation... */
-      centerX = width / 2;
-      centerY = height / 2;
       if( StrOp.equals(ori, "east") ) {
         deg = 180;
+        centerX = width  / 2;
+        centerY = height / 2;
       }
       else if( StrOp.equals(ori, "south") ) {
         deg = 90;
+        centerX = height / 2;
+        centerY = height / 2;
         NodeOp.setInt(svg, "width", height);
         NodeOp.setInt(svg, "height", width);
+        rotatedV = True;
       }
       else if( StrOp.equals(ori, "north") ) {
-        deg = 270;
+        /*deg = 270;*/
+        deg = 90;
+        centerX = height / 2;
+        centerY = height / 2;
         NodeOp.setInt(svg, "width", height);
         NodeOp.setInt(svg, "height", width);
+        rotatedV = True;
       }
       transform = StrOp.fmt("rotate(%d, %d, %d)", deg, centerX, centerY);
       NodeOp.setStr(g, "transform", transform);
@@ -159,6 +167,9 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
   }
 
   svgNew = NodeOp.base.toString(svg);
+  if( rotatedV ) {
+    /*TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s", svgNew );*/
+  }
   NodeOp.base.del(svg);
   return svgNew;
 }

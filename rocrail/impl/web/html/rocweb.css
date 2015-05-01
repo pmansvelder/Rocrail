@@ -1,5 +1,6 @@
 .item {position:absolute;text-align:center;border:0px}
 .itemtext{vertical-align:middle;}
+.itemtextV{vertical-align:middle; horizontal-align:middle; -webkit-transform: rotate(90deg);}
 
 .full-width-slider .ui-slider-input {display: none; width: 0px;}
 .full-width-slider .ui-slider-track {margin-left: 15px;}
