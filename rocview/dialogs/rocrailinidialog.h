@@ -107,11 +107,11 @@ class wxSpinCtrl;
 #define ID_PANEL_ANALYSER 10416
 #define ID_PANEL_ROCWEB 10479
 #define ID_ROCWEB_WEB_BUTTON 10481
-#define ID_SVGPATH_BUTTON 10339
-#define ID_SVGPATH2_BUTTON 10480
-#define ID_SVGPATH3_BUTTON 10482
-#define ID_SVGPATH4_BUTTON 10483
-#define ID_SVGPATH5_BUTTON 10484
+#define ID_ROCWEB_SVGPATH_BUTTON 10339
+#define ID_ROCWEB_SVGPATH2_BUTTON 10480
+#define ID_ROCWEB_SVGPATH3_BUTTON 10482
+#define ID_ROCWEB_SVGPATH4_BUTTON 10483
+#define ID_ROCWEB_SVGPATH5_BUTTON 10484
 #define SYMBOL_ROCRAILINIDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_ROCRAILINIDIALOG_TITLE _("Rocrail Properties")
 #define SYMBOL_ROCRAILINIDIALOG_IDNAME ID_DIALOG_RR_INI
@@ -198,19 +198,19 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_WEB_BUTTON
     void OnRocwebWebButtonClick( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH_BUTTON
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_SVGPATH_BUTTON
     void OnSvgPath1Click( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH2_BUTTON
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_SVGPATH2_BUTTON
     void OnSvgPath2Click( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH3_BUTTON
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_SVGPATH3_BUTTON
     void OnSvgPath3Click( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH4_BUTTON
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_SVGPATH4_BUTTON
     void OnSvgPath4Click( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SVGPATH5_BUTTON
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROCWEB_SVGPATH5_BUTTON
     void OnSvgPath5Click( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK

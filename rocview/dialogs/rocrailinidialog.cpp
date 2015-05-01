@@ -111,11 +111,11 @@ BEGIN_EVENT_TABLE( RocrailIniDialog, wxDialog )
     EVT_BUTTON( ID_BUTTON_RR_ADD, RocrailIniDialog::OnButtonRrAddClick )
     EVT_BUTTON( ID_BUTTON_R2RNET_ROUTES, RocrailIniDialog::OnButtonR2rnetRoutesClick )
     EVT_BUTTON( ID_ROCWEB_WEB_BUTTON, RocrailIniDialog::OnRocwebWebButtonClick )
-    EVT_BUTTON( ID_SVGPATH_BUTTON, RocrailIniDialog::OnSvgPath1Click )
-    EVT_BUTTON( ID_SVGPATH2_BUTTON, RocrailIniDialog::OnSvgPath2Click )
-    EVT_BUTTON( ID_SVGPATH3_BUTTON, RocrailIniDialog::OnSvgPath3Click )
-    EVT_BUTTON( ID_SVGPATH4_BUTTON, RocrailIniDialog::OnSvgPath4Click )
-    EVT_BUTTON( ID_SVGPATH5_BUTTON, RocrailIniDialog::OnSvgPath5Click )
+    EVT_BUTTON( ID_ROCWEB_SVGPATH_BUTTON, RocrailIniDialog::OnSvgPath1Click )
+    EVT_BUTTON( ID_ROCWEB_SVGPATH2_BUTTON, RocrailIniDialog::OnSvgPath2Click )
+    EVT_BUTTON( ID_ROCWEB_SVGPATH3_BUTTON, RocrailIniDialog::OnSvgPath3Click )
+    EVT_BUTTON( ID_ROCWEB_SVGPATH4_BUTTON, RocrailIniDialog::OnSvgPath4Click )
+    EVT_BUTTON( ID_ROCWEB_SVGPATH5_BUTTON, RocrailIniDialog::OnSvgPath5Click )
     EVT_BUTTON( wxID_OK, RocrailIniDialog::OnOkClick )
     EVT_BUTTON( wxID_CANCEL, RocrailIniDialog::OnCancelClick )
     EVT_BUTTON( wxID_HELP, RocrailIniDialog::OnHelpClick )
@@ -2171,7 +2171,7 @@ void RocrailIniDialog::CreateControls()
     m_SVGPath = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer278->Add(m_SVGPath, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
-    m_SvgPathDlg = new wxButton( m_RocWebPanel, ID_SVGPATH_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
+    m_SvgPathDlg = new wxButton( m_RocWebPanel, ID_ROCWEB_SVGPATH_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
     itemFlexGridSizer278->Add(m_SvgPathDlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme2 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 2"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -2180,7 +2180,7 @@ void RocrailIniDialog::CreateControls()
     m_SVGPath2 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer278->Add(m_SVGPath2, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
-    m_SvgPath2Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH2_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
+    m_SvgPath2Dlg = new wxButton( m_RocWebPanel, ID_ROCWEB_SVGPATH2_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
     itemFlexGridSizer278->Add(m_SvgPath2Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme3 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 3"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -2189,7 +2189,7 @@ void RocrailIniDialog::CreateControls()
     m_SVGPath3 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer278->Add(m_SVGPath3, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
-    m_SvgPath3Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH3_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
+    m_SvgPath3Dlg = new wxButton( m_RocWebPanel, ID_ROCWEB_SVGPATH3_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
     itemFlexGridSizer278->Add(m_SvgPath3Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme4 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 4"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -2198,7 +2198,7 @@ void RocrailIniDialog::CreateControls()
     m_SVGPath4 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer278->Add(m_SVGPath4, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
-    m_SvgPath4Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH4_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
+    m_SvgPath4Dlg = new wxButton( m_RocWebPanel, ID_ROCWEB_SVGPATH4_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
     itemFlexGridSizer278->Add(m_SvgPath4Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_labTheme5 = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Theme 5"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -2207,7 +2207,7 @@ void RocrailIniDialog::CreateControls()
     m_SVGPath5 = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer278->Add(m_SVGPath5, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5);
 
-    m_SvgPath5Dlg = new wxButton( m_RocWebPanel, ID_SVGPATH5_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
+    m_SvgPath5Dlg = new wxButton( m_RocWebPanel, ID_ROCWEB_SVGPATH5_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
     itemFlexGridSizer278->Add(m_SvgPath5Dlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     itemFlexGridSizer278->AddGrowableCol(1);
