@@ -251,6 +251,7 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s %d", fname, size );
       if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
       if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
+      if(ok) ok=SocketOp.fmt( data->socket, "Cache-Control: max-age=86400\r\n" );
       if( StrOp.find( fname, ".gif" ) ) {
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/gif\r\n\r\n" );
       }

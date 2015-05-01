@@ -15,6 +15,7 @@ var bkMap = {};
 var swMap = {};
 var lcMap = {};
 var coMap = {};
+var sgMap = {};
 var locoSelected = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
@@ -308,6 +309,14 @@ function actionOutput(id) {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function actionSignal(id) {
+  sgid = id.replace("sg_","");
+  sg = sgMap[sgid];
+  console.log("signal action on " + sgid + " state=" + sg.getAttribute('state'));
+  var cmd = "<sg cmd=\"flip\" id=\""+sgid+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 function actionBlock(id)
 {
   localStorage.setItem("block", id);
@@ -481,6 +490,21 @@ function handleSwitch(sw) {
 }
 
 
+function handleSignal(sg) {
+  console.log("signal event: " + sg.getAttribute('id') + " " + sg.getAttribute('state'));
+  var div = document.getElementById("sg_"+sg.getAttribute('id'));
+  if( div != null ) {
+    sgNode = sgMap[sg.getAttribute('id')];
+    sgNode.setAttribute('state', sg.getAttribute('state'));
+    sgNode.setAttribute('aspect', sg.getAttribute('aspect'));
+    div.style.backgroundImage = getSignalImage(sgNode, div);
+  }
+  else {
+    console.log("signal: " + sg.getAttribute('id') + " not found");
+  }
+}
+
+
 function handleLoco(lc) {
   
 }
@@ -578,6 +602,8 @@ function evaluateEvent(xmlStr) {
     handleSwitch(root);
   else if( evtName == "co" )
     handleOutput(root);
+  else if( evtName == "sg" )
+    handleSignal(root);
 }
 
 function processResponse() {
@@ -715,6 +741,45 @@ function getOutputImage(co) {
   if( state == undefined )
     state = "off";
   return "url('button-"+svg+"-"+state+"."+ ori + ".svg')";
+}
+
+function getSignalImage(sg) {
+  var ori     = getOri(sg);
+  var state   = sg.getAttribute('state');
+  var signal  = sg.getAttribute('signal');
+  var pattern = parseInt( sg.getAttribute('usepatterns') );
+  var suffix  = '';
+  
+  var greennr  = parseInt( sg.getAttribute('greennr') );;
+  var rednr    = parseInt( sg.getAttribute('rednr') );;
+  var yellownr = parseInt( sg.getAttribute('yellownr') );;
+  var whitenr  = parseInt( sg.getAttribute('whitenr') );;
+  var nr       = parseInt( sg.getAttribute('aspect') );
+  
+  if( pattern == 2 ) {
+    if( nr == -1 )
+      nr = 0;
+    if( nr >= 0 && nr < 5 ) {
+      if( greennr == nr )
+        state = "green";
+      else if( rednr == nr )
+        state = "red";
+      else if( yellownr == nr )
+        state = "yellow";
+      else if( whitenr == nr )
+        state = "white";
+      else
+        state = "red";
+    }
+  }
+  console.log("signal image: usepatterns="+pattern+" nr="+nr+" greennr="+greennr+" rednr="+rednr+" yellownr="+yellownr+" whitenr="+whitenr+" state="+state);
+  var aspect  = "r";
+  if( state == "red"    ) aspect = "r";
+  if( state == "green"  ) aspect = "g";
+  if( state == "yellow" ) aspect = "y";
+  if( state == "white"  ) aspect = "w";
+
+  return "url('signalmain-"+aspect+"."+ ori + ".svg')";
 }
 
 function getTrackImage(tk) {
@@ -932,6 +997,33 @@ function processPlan() {
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getOutputImage(colist[i]);
        console.log("Output image="+newdiv.style.backgroundImage);
+
+       leveldiv.appendChild(newdiv);
+     }
+     
+     
+     sglist = xmlDoc.getElementsByTagName("sg");
+     if( sglist.length > 0 )
+       console.log("processing " + sglist.length + " signals");
+
+     for (var i = 0; i < sglist.length; i++) {
+       var z     = sglist[i].getAttribute('z');
+       var ori   = getOriNr(sglist[i].getAttribute('ori'));
+       var leveldiv = zlevelDivMap[z]; 
+       console.log('signal: ' + sglist[i].getAttribute('id') + "at level " + z);
+       sgMap[sglist[i].getAttribute('id')] = sglist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "sg_"+sglist[i].getAttribute('id'));
+       newdiv.setAttribute('onClick', "actionSignal(this.id)");
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = "32px";
+       newdiv.style.height   = "32px";
+       newdiv.style.left     = "" + (parseInt(sglist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(sglist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.innerHTML      = "";
+       newdiv.style.backgroundImage = getSignalImage(sglist[i]);
+       console.log("Signal image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }
