@@ -1382,6 +1382,13 @@ static Boolean checkActionCondVariable( const char* state ) {
   return False;
 }
 
+/* condState(text) any text including "" */
+static Boolean checkActionCondText( const char* state ) {
+  /* any valid text including 0 length -> any valid pointer */
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "checkActionCondText: verify of state[%s] (state %p)", state, state );
+  return( state != NULL );
+}
+
 /* condState(route) == [locked, unlocked, closed, open] */
 static Boolean checkActionCondRoute( const char* state ) {
   if( StrOp.equals( state, "unlocked" ) ||
@@ -1485,6 +1492,11 @@ static int checkAction( iOAnalyse inst, int acIdx, iONode action, Boolean repair
     else if ( StrOp.equals( condType, wVariable.name() ) ) {
       ptr = (char *) ~0 ;
       if( ptr && checkActionCondVariable( condState ) )
+        condOK = True;
+    }
+    else if ( StrOp.equals( condType, wText.name() ) ) {
+      ptr = (char *) ~0 ;
+      if( ptr && checkActionCondText( condState ) )
         condOK = True;
     }
     else {
