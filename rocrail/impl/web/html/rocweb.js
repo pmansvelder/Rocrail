@@ -14,6 +14,7 @@ var tkMap = {};
 var bkMap = {};
 var swMap = {};
 var lcMap = {};
+var coMap = {};
 var locoSelected = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
@@ -299,6 +300,14 @@ function actionSwitch(id) {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function actionOutput(id) {
+  coid = id.replace("co_","");
+  co = coMap[coid];
+  console.log("output action on " + coid + " state=" + co.getAttribute('state'));
+  var cmd = "<co cmd=\"flip\" id=\""+coid+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 function actionBlock(id)
 {
   localStorage.setItem("block", id);
@@ -444,6 +453,20 @@ function handleSensor(fb) {
 }
 
 
+function handleOutput(co) {
+  console.log("output event: " + co.getAttribute('id') + " " + co.getAttribute('state'));
+  var div = document.getElementById("co_"+co.getAttribute('id'));
+  if( div != null ) {
+    coNode = coMap[co.getAttribute('id')];
+    coNode.setAttribute('state', co.getAttribute('state'));
+    div.style.backgroundImage = getOutputImage(coNode);
+  }
+  else {
+    console.log("output: " + co.getAttribute('id') + " not found");
+  }
+}
+
+
 function handleSwitch(sw) {
   console.log("switch event: " + sw.getAttribute('id') + " " + sw.getAttribute('state'));
   var div = document.getElementById("sw_"+sw.getAttribute('id'));
@@ -553,6 +576,8 @@ function evaluateEvent(xmlStr) {
     handleLoco(root);
   else if( evtName == "sw" )
     handleSwitch(root);
+  else if( evtName == "co" )
+    handleOutput(root);
 }
 
 function processResponse() {
@@ -663,33 +688,47 @@ function getOri(item) {
 
 function getSensorImage(fb) {
   var curve = fb.getAttribute('curve');
+  var accnr = parseInt(fb.getAttribute('accnr'));
   var ori   = getOri(fb);
 
   if( "true" == fb.getAttribute('state') )
-    if( curve == "true" )
+    if( accnr > 0 )
+      return "url('accessory-"+accnr+"-on."+ori+".svg')";
+    else if( curve == "true" )
       return "url('curve-sensor-on."+ori+".svg')";
     else
       return "url('sensor-on."+ori+".svg')";
   else
-    if( curve == "true" )
+    if( accnr > 0 )
+      return "url('accessory-"+accnr+"-off."+ori+".svg')";
+    else if( curve == "true" )
       return "url('curve-sensor-off."+ori+".svg')";
     else
       return "url('sensor-off."+ori+".svg')";
 }
 
+function getOutputImage(co) {
+  var ori   = getOri(co);
+  var svg   = co.getAttribute('svgtype');
+  var state = co.getAttribute('state');
+  var suffix = '';
+  if( state == undefined )
+    state = "off";
+  return "url('button-"+svg+"-"+state+"."+ ori + ".svg')";
+}
+
 function getTrackImage(tk) {
-  var ori  = getOri(tk);
-  var type = tk.getAttribute('type');
+  var ori   = getOri(tk);
+  var type  = tk.getAttribute('type');
   var suffix = '';
   if (type == "curve" )
     return "url('curve."+ori+".svg')";
-  else if( type == "buffer" || type == "connector" ) {
-    return "url("+type+"."+ori+".svg')";
+  else if( type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
+    return "url('"+type+"."+ori+".svg')";
   }
   else {
     return "url('straight"+"."+ ori + ".svg')";
   }
-  
 }
 
 function getSwitchImage(sw, div) {
@@ -698,6 +737,7 @@ function getSwitchImage(sw, div) {
   var state = sw.getAttribute('state');
   var accnr = sw.getAttribute('accnr');
   var dir   = sw.getAttribute('dir');
+  var rectc = sw.getAttribute('rectcrossing');
   var rasterStr = "";
   var suffix = "";
 
@@ -715,6 +755,12 @@ function getSwitchImage(sw, div) {
     else
       return "url('turnoutleft-t"+"."+ori+".svg')";
   }
+  else if (type=="twoway") {
+    if (state=="straight")
+      return "url('twoway-tr"+"."+ori+".svg')";
+    else
+      return "url('twoway-tl"+"."+ori+".svg')";
+  }
   else if (type=="threeway") {
     if (state=="left")
       return "url('threeway-tl"+"."+ori+".svg')";
@@ -722,6 +768,24 @@ function getSwitchImage(sw, div) {
       return "url('threeway-tr"+"."+ori+".svg')";
     else
       return "url('threeway"+"."+ori+".svg')";
+  }
+  else if (type=="crossing") {
+    if( rectc == "true") {
+      if (state=="straight")
+        return "url('crossing"+"."+ori+".svg')";
+      else
+        return "url('crossing-t"+"."+ori+".svg')";
+    }
+    else {
+      var direction = (dir == "true" ? "left":"right");
+      if (state=="turnout")
+        return "url('crossing"+direction+"-t."+ori+".svg')";
+      else
+        return "url('crossing"+direction+"-r."+ori+".svg')";
+    }
+  }
+  else if (type=="ccrossing") {
+    return "url('ccrossing"+"."+ori+".svg')";
   }
   else if (type=="dcrossing") {
     if( ori == "west" || ori == "east") {
@@ -846,6 +910,33 @@ function processPlan() {
      }
      
      
+     colist = xmlDoc.getElementsByTagName("co");
+     if( colist.length > 0 )
+       console.log("processing " + colist.length + " outputs");
+
+     for (var i = 0; i < colist.length; i++) {
+       var z     = colist[i].getAttribute('z');
+       var ori   = getOriNr(colist[i].getAttribute('ori'));
+       var leveldiv = zlevelDivMap[z]; 
+       console.log('output: ' + colist[i].getAttribute('id') + "at level " + z);
+       coMap[colist[i].getAttribute('id')] = colist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "co_"+colist[i].getAttribute('id'));
+       newdiv.setAttribute('onClick', "actionOutput(this.id)");
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = "32px";
+       newdiv.style.height   = "32px";
+       newdiv.style.left     = "" + (parseInt(colist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(colist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.innerHTML      = "";
+       newdiv.style.backgroundImage = getOutputImage(colist[i]);
+       console.log("Output image="+newdiv.style.backgroundImage);
+
+       leveldiv.appendChild(newdiv);
+     }
+     
+     
      tklist = xmlDoc.getElementsByTagName("tk");
      if( tklist.length > 0 )
        console.log("processing " + tklist.length + " tracks");
@@ -867,6 +958,7 @@ function processPlan() {
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getTrackImage(tklist[i]);
        //console.log("Track image="+newdiv.style.backgroundImage + "    " + getTrackImage(tklist[i]));
+       console.log("Track image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }

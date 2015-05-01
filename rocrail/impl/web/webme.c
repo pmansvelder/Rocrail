@@ -203,6 +203,7 @@ static void __getSVG(iOPClient inst, const char* fname) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
         if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Cache-Control: max-age=86400\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "svg+xml" );
         if(ok) ok=SocketOp.write( data->socket, (char*)svgRotated, size );
         StrOp.free(svgRotated);
@@ -211,6 +212,7 @@ static void __getSVG(iOPClient inst, const char* fname) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
         if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
+        if(ok) ok=SocketOp.fmt( data->socket, "Cache-Control: max-age=86400\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: image/%s\r\n\r\n", "svg+xml" );
         if(ok) ok=SocketOp.write( data->socket, (char*)html, size );
       }
