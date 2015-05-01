@@ -16,6 +16,7 @@ var swMap = {};
 var lcMap = {};
 var coMap = {};
 var sgMap = {};
+var txMap = {};
 var locoSelected = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
@@ -94,6 +95,8 @@ function openThrottle()
 }
 
 function updateFunctionLabels() {
+  var lights = document.getElementById("F0");
+  lights.innerHTML = "F0"
   for(i = 1; i < 15; i++) {
     var F = document.getElementById("F"+i);
     F.innerHTML = "F" + (i + FGroup * 14); 
@@ -106,11 +109,23 @@ function updateFunctionLabels() {
     var fundeflist = lc.getElementsByTagName("fundef");
     console.log("function defs " + fundeflist.length + " for " + lc.getAttribute('id'));
     if( fundeflist.length > 0 ) {
-      for( n = 0; n < fundeflist.length; n++ ){ 
-        console.log("fundef " + fundeflist[n].getAttribute('fn') + " text: " + fundeflist[n].getAttribute('text'));
+      for( n = 0; n < fundeflist.length; n++ ) {
+        var fn = fundeflist[n].getAttribute('fn');
+        var iFn = parseInt(fn);
+        console.log("fundef " + fn + " text: " + fundeflist[n].getAttribute('text'));
+        if( FGroup == 0 && iFn > 14 ) {
+          continue;
+        }
+        if( FGroup == 1 && iFn > 14 ) {
+          iFn -= 14;
+        }
         if( fundeflist[n].getAttribute('icon') ) {
-          var F = document.getElementById("F"+fundeflist[n].getAttribute('fn'));
+          var F = document.getElementById("F"+iFn);
           F.innerHTML = "<img src='"+fundeflist[n].getAttribute('icon')+"'/>";
+        }
+        else if( fundeflist[n].getAttribute('text') ) {
+          var F = document.getElementById("F"+iFn);
+          F.innerHTML = "<label style='font-size:10px'>" +fundeflist[n].getAttribute('text')+ "</label>";;
         }
       }
     }
@@ -351,6 +366,8 @@ $(document).on("pagecreate",function(){
     locoSelected = this.value;
     localStorage.setItem("locoSelected", locoSelected);
     initThrottle();
+    updateDir();
+    updateFunctionLabels();
   } );
   
   $('#languageSelect').change(function() {
@@ -461,6 +478,22 @@ function handleSensor(fb) {
   }
 }
 
+
+function handleText(tx) {
+  console.log("text event: " + tx.getAttribute('id') + " " + tx.getAttribute('text'));
+  var div = document.getElementById("tx_"+tx.getAttribute('id'));
+  if( div != null ) {
+    var text = tx.getAttribute('text');
+    if( text != undefined ) {
+      if( text.indexOf(".png") != -1 )
+        div.style.backgroundImage = "url('"+text+"')";
+      else  
+        div.innerHTML = "<div style='font-size:10px'>" +text+ "</div>";
+    }
+    else
+      div.innerHTML = "<div style='font-size:10px'>" + "</div>";
+  }
+}
 
 function handleOutput(co) {
   console.log("output event: " + co.getAttribute('id') + " " + co.getAttribute('state'));
@@ -604,6 +637,8 @@ function evaluateEvent(xmlStr) {
     handleOutput(root);
   else if( evtName == "sg" )
     handleSignal(root);
+  else if( evtName == "tx" )
+    handleText(root);
 }
 
 function processResponse() {
@@ -1060,6 +1095,38 @@ function processPlan() {
        //console.log("Track image="+newdiv.style.backgroundImage + "    " + getTrackImage(tklist[i]));
        console.log("Track image="+newdiv.style.backgroundImage);
 
+       leveldiv.appendChild(newdiv);
+     }
+     
+
+     txlist = xmlDoc.getElementsByTagName("tx");
+     if( txlist.length > 0 )
+       console.log("processing " + txlist.length + " texts");
+
+     for (var i = 0; i < txlist.length; i++) {
+       var z     = txlist[i].getAttribute('z');
+       var ori   = getOri(txlist[i]);
+       var text  = txlist[i].getAttribute('text');
+       var leveldiv = zlevelDivMap[z]; 
+       if( text == undefined )
+         text = "";
+       console.log('text: ' + txlist[i].getAttribute('id') + "at level " + z + " text=["+text+"]");
+       txMap[txlist[i].getAttribute('id')] = txlist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
+       newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";;
+       newdiv.style.left     = "" + (parseInt(txlist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(txlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       if( text != undefined && text.indexOf(".png") != -1 ) {
+         newdiv.style.backgroundImage = "url('"+text+"')";
+         newdiv.style.backgroundSize = newdiv.style.width;
+       }
+       else  
+         newdiv.innerHTML      = "<div style='font-size:10px'>" +text+ "</div>";
+       //newdiv.style.backgroundImage = getTextImage(txlist[i]);
        leveldiv.appendChild(newdiv);
      }
      

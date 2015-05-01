@@ -1,3 +1,4 @@
+var retryWebSocket = 0;
 
 function debug(msg) {                                                           
   postMessage(JSON.stringify({type:'debug',msg:msg}));                          
@@ -8,14 +9,19 @@ function doWebSocket() {
   host.replace("www.","");
   debug("creating a websocket...ws://" + host + ":" + location.port);
   ws = new WebSocket("ws://"+host+":"+location.port, "rcp");
+  retryWebSocket++;
   ws.onopen = function()
   {
-     // Web Socket is connected, send data using send()
-     ws.send("<fb cmd=\"flip\"/>");
      debug("websocket connection is established...");
   };
   ws.onerror = function (error) {
     debug('WebSocket Error ' + error);
+    if( retryWebSocket < 10 ) {
+      doWebSocket();
+      debug('WebSocket retry='+retryWebSocket);
+    }
+    else
+      debug('WebSocket fatal error; Give up.');
   };
   ws.onmessage = function (evt) 
   {
@@ -24,10 +30,10 @@ function doWebSocket() {
     debug("websocket message received: " + received_msg);
     postMessage(JSON.stringify({type:'response', answer:received_msg}));
   };
-  ws.onclose = function()
+  ws.onclose = function(event)
   { 
      // websocket is closed.
-    debug("websocket is closed..."); 
+    debug("websocket is closed: " + event.code); 
   };
   
 }

@@ -114,18 +114,17 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
     /* ToDo: Rotate with the orinr the SVG.
      * use the transform in the g element for rotating:
      * */
-    /*
-    <svg width="128" height="32" xmlns="http://www.w3.org/2000/svg">
-      <!--<g transform="rotate(270, 64, 64)">-->
-      <g transform="rotate(90, 16, 16)">
-        <!-- Block -->
-        <path stroke="rgb(0,0,0)" fill="none" d="M 0,3 L 127,3 L 127,28 L 0,28 z " />
-        <path stroke="rgb(0,0,0)" fill="rgb(255,255,255)" d="M 1,4 L 126,4 L 126,27 L 1,27 z " />
-        <!--path stroke="rgb(0,0,0)" fill="black" d="M 1,24 L 14,24 L 14,27 L 1,27 z " /-->
-        <path stroke="rgb(0,0,0)" fill="none" d="M 3,23 L 7,23 z " />
-        <path stroke="rgb(0,0,0)" fill="none" d="M 5,21 L 5,25 z " />
-      </g>
-    </svg>
+    /* Rotating 270 deg. needs a transform in every path:
+     *
+      <svg width="32" height="128" xmlns="http://www.w3.org/2000/svg">
+        <g id="block" transform="rotate(270, 112, 16)">
+          <!-- Block -->
+          <path stroke="rgb(0,0,0)" fill="none" d="M 0,3 L 127,3 L 127,28 L 0,28 z "  transform="translate(0,-94)"/>
+          <path stroke="rgb(0,0,0)" fill="rgb(255,255,255)" d="M 1,4 L 126,4 L 126,27 L 1,27 z " transform="translate(0,-94)" />
+          <path stroke="rgb(0,0,0)" fill="none" d="M 3,23 L 7,23 z " transform="translate(0,-94)" />
+          <path stroke="rgb(0,0,0)" fill="none" d="M 5,21 L 5,25 z " transform="translate(0,-94)" />
+        </g>
+      </svg>
 
      */
     if( g != NULL ) {
