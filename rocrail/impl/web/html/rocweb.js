@@ -537,9 +537,18 @@ function handleSignal(sg) {
   }
 }
 
+function findBlock4Loco(lcid) {
+  for (var key in bkMap) {
+    var bk = bkMap[key];
+    if( lcid == bk.getAttribute('locid'))
+      return bk;
+  }
+}
 
 function handleLoco(lc) {
-  
+  var bk = findBlock4Loco(lc.getAttribute('id'));
+  if( bk != undefined )
+    updateBlockstate(bk.getAttribute('statesignal'), lc.getAttribute('id'));
 }
 
 
@@ -570,6 +579,27 @@ function handleFunction(fn) {
   }
 }
 
+function updateBlockstate( sgid, lcid ) {
+  sg = sgMap[sgid];
+  lc = lcMap[lcid];
+  if( sg == undefined )
+    return;
+
+  var div = document.getElementById("sg_"+sgid);
+  var label = "-";
+  if( lc != undefined ) {
+    var mode = lc.getAttribute('mode');
+    if( mode == "auto" )
+      label = "A";
+    else if( mode == "idle" )
+      label = "O";
+    else if( mode == "wait" )
+      label = "W";
+    else if( mode == "halfauto" )
+      label = "H";
+  }
+  div.innerHTML = "<label class='itemtext'>"+label+"</label>";
+}
 
 function handleBlock(bk) {
   console.log("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
@@ -591,6 +621,8 @@ function handleBlock(bk) {
   else {
     console.log("block: " + bk.getAttribute('id') + " not found");
   }
+  
+  updateBlockstate( bk.getAttribute('statesignal'), bk.getAttribute('locid'));
 }
 
 function handleState(state) {
@@ -782,6 +814,8 @@ function getSignalImage(sg) {
   var ori     = getOri(sg);
   var state   = sg.getAttribute('state');
   var signal  = sg.getAttribute('signal');
+  var type    = sg.getAttribute('type');
+  var aspects = sg.getAttribute('aspects');
   var pattern = parseInt( sg.getAttribute('usepatterns') );
   var suffix  = '';
   
@@ -807,14 +841,33 @@ function getSignalImage(sg) {
         state = "red";
     }
   }
+  
+  if( type != "semaphore" )
+    type = "signal";
+  
+  if( aspects == "2" )
+    aspects = "-2";
+  else
+    aspects = "";
+  
   console.log("signal image: usepatterns="+pattern+" nr="+nr+" greennr="+greennr+" rednr="+rednr+" yellownr="+yellownr+" whitenr="+whitenr+" state="+state);
   var aspect  = "r";
   if( state == "red"    ) aspect = "r";
   if( state == "green"  ) aspect = "g";
   if( state == "yellow" ) aspect = "y";
   if( state == "white"  ) aspect = "w";
+  
+  if( signal == "blockstate" ) {
+    return "url('blockstate"+"."+ ori + ".svg')";
+  }
+  if( signal == "distant" ) {
+    return "url('"+type+"distant"+aspects+"-"+aspect+"."+ ori + ".svg')";
+  }
+  if( signal == "shunting" ) {
+    return "url('"+type+"shunting-2-"+aspect+"."+ ori + ".svg')";
+  }
 
-  return "url('signalmain-"+aspect+"."+ ori + ".svg')";
+  return "url('"+type+"main"+aspects+"-"+aspect+"."+ ori + ".svg')";
 }
 
 function getTrackImage(tk) {
@@ -1070,6 +1123,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
+       newdiv.style.lineHeight = "32px";
        newdiv.style.left     = "" + (parseInt(sglist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(sglist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
