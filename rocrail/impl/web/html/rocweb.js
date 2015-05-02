@@ -1046,6 +1046,8 @@ function processPlan() {
        for (var i = 0; i < zlevellist.length; i++) {
          zlevelMap[z] = zlevellist[i];
          var z = zlevellist[i].getAttribute('z');
+         if( z == undefined )
+           z = "0";
          console.log('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
 
          var newdiv = document.createElement('div');
@@ -1088,6 +1090,10 @@ function processPlan() {
        var ori   = getOriNr(colist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
        console.log('output: ' + colist[i].getAttribute('id') + "at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        coMap[colist[i].getAttribute('id')] = colist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "co_"+colist[i].getAttribute('id'));
@@ -1115,6 +1121,10 @@ function processPlan() {
        var ori   = getOriNr(sglist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
        console.log('signal: ' + sglist[i].getAttribute('id') + "at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        sgMap[sglist[i].getAttribute('id')] = sglist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "sg_"+sglist[i].getAttribute('id'));
@@ -1143,6 +1153,10 @@ function processPlan() {
        var ori   = getOriNr(tklist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
        console.log('track: ' + tklist[i].getAttribute('id') + "at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        tkMap[tklist[i].getAttribute('id')] = tklist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "tk_"+tklist[i].getAttribute('id'));
@@ -1173,6 +1187,10 @@ function processPlan() {
        if( text == undefined )
          text = "";
        console.log('text: ' + txlist[i].getAttribute('id') + "at level " + z + " text=["+text+"]");
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        txMap[txlist[i].getAttribute('id')] = txlist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
@@ -1201,6 +1219,10 @@ function processPlan() {
        var z     = swlist[i].getAttribute('z');
        var leveldiv = zlevelDivMap[z]; 
        console.log('switch: ' + swlist[i].getAttribute('id') + "at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        swMap[swlist[i].getAttribute('id')] = swlist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "sw_"+swlist[i].getAttribute('id'));
@@ -1235,6 +1257,10 @@ function processPlan() {
 
        var leveldiv = zlevelDivMap[z]; 
        console.log('sensor: ' + fblist[i].getAttribute('id') + "at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        fbMap[fblist[i].getAttribute('id')] = fblist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "fb_"+fblist[i].getAttribute('id'));
@@ -1265,6 +1291,10 @@ function processPlan() {
        var small    = bklist[i].getAttribute('smallsymbol');
        var leveldiv = zlevelDivMap[z]; 
        console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
