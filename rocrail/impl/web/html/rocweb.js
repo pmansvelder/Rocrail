@@ -930,11 +930,19 @@ function getSwitchImage(sw, div) {
         return "url('crossing-t"+"."+ori+".svg')";
     }
     else {
+      if( ori == "west" || ori == "east") {
+        div.style.width    = "64px";
+        div.style.height   = "32px";
+      }
+      else {
+        div.style.width    = "32px";
+        div.style.height   = "64px";
+      }
       var direction = (dir == "true" ? "left":"right");
       if (state=="turnout")
         return "url('crossing"+direction+"-t."+ori+".svg')";
       else
-        return "url('crossing"+direction+"-r."+ori+".svg')";
+        return "url('crossing"+direction+"."+ori+".svg')";
     }
   }
   else if (type=="ccrossing") {
@@ -985,6 +993,20 @@ function getSwitchImage(sw, div) {
       else {
         div.style.width    = "32px";
         div.style.height   = "128px";
+      }
+    }
+    else if( accnr == "53" ) {
+      div.style.width    = "64px";
+      div.style.height   = "64px";
+    }
+    else if( accnr == "54" ) {
+      if( ori == "west" || ori == "east") {
+        div.style.width    = "96px";
+        div.style.height   = "64px";
+      }
+      else {
+        div.style.width    = "64px";
+        div.style.height   = "96px";
       }
     }
     
