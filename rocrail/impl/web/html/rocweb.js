@@ -946,6 +946,14 @@ function getSwitchImage(sw, div) {
     }
   }
   else if (type=="ccrossing") {
+    if( ori == "west" || ori == "east") {
+      div.style.width    = "64px";
+      div.style.height   = "32px";
+    }
+    else {
+      div.style.width    = "32px";
+      div.style.height   = "64px";
+    }
     return "url('ccrossing"+"."+ori+".svg')";
   }
   else if (type=="dcrossing") {
@@ -1336,27 +1344,22 @@ function processPlan() {
        newdiv.style.height   = "32px";
        newdiv.style.left     = "" + (parseInt(bklist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
+       newdiv.style.lineHeight = newdiv.style.height;
+
        var label = bklist[i].getAttribute('locid');
        if( label.length == 0 )
          label = bklist[i].getAttribute('id');
+       label = label.split(' ').join('.');
+       label = label.split('-').join('.');
        if( ori == "north" || ori == "south" ) {
          newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
-         if( small == "true" )
-           newdiv.style.lineHeight = "64px";
-         else
-           newdiv.style.lineHeight = "128px";
        }
        else {
          newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
-         newdiv.style.lineHeight = "32px";
        }
-       newdiv.style.textAlign= "center";
        
-       //console.log(xml2string(bklist[i]));
-       newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
-
        leveldiv.appendChild(newdiv);
-       //document.body.appendChild(newdiv);
      }
    }
    catch(e) {
