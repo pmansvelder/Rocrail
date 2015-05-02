@@ -26,6 +26,7 @@
 #include "rocrail/public/switch.h"
 #include "rocrail/public/app.h"
 #include "rocrail/public/control.h"
+
 #include "rocrail/impl/pclient_impl.h"
 #include "rocrail/impl/web/web.h"
 #include "rocrail/impl/web/webme.h"
@@ -72,6 +73,7 @@ static void __del( void* inst ) {
     iOPClientData data = Data(inst);
     /* Cleanup data->xxx members...*/
     if( data->socket != NULL && data->websocket ) {
+      rocWebSocketMEClose(inst);
       SocketOp.base.del(data->socket);
     }
     ListOp.base.del( data->locIDs );

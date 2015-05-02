@@ -945,19 +945,27 @@ function getSwitchImage(sw, div) {
 function getBlockImage(bk, div) {
   var ori   = getOri(bk);
   var label = bk.getAttribute('locid');
+  var small = bk.getAttribute('smallsymbol');
   var suffix = "";
 
   if( ori == "north" || ori == "south" ) {
     div.style.width    = "32px";
-    div.style.height   = "128px";
+    if( "true" == small ) {
+      suffix = "-s";
+      div.style.height   = "64px";
+    }
+    else
+      div.style.height   = "128px";
   }
   else {
-    div.style.width    = "128px";
+    if( "true" == small ) {
+      suffix = "-s";
+      div.style.width   = "64px";
+    }
+    else
+      div.style.width    = "128px";
     div.style.height   = "32px";
   }
-
-  if( "true" == bk.getAttribute('smallsymbol') )
-    suffix = "-s";
 
   if( "true" == bk.getAttribute('entering') )
     return "url('block-ent"+suffix+"."+ori+".svg')";
@@ -1125,7 +1133,7 @@ function processPlan() {
          newdiv.style.backgroundSize = newdiv.style.width;
        }
        else  
-         newdiv.innerHTML      = "<div style='font-size:10px'>" +text+ "</div>";
+         newdiv.innerHTML      = "<div style='font-size:10px; horizontal-align:left;'>" +text+ "</div>";
        //newdiv.style.backgroundImage = getTextImage(txlist[i]);
        leveldiv.appendChild(newdiv);
      }
@@ -1199,7 +1207,8 @@ function processPlan() {
        var z = bklist[i].getAttribute('z');
        if( z == undefined )
          z = '0';
-       var ori = getOri(bklist[i]);
+       var ori      = getOri(bklist[i]);
+       var small    = bklist[i].getAttribute('smallsymbol');
        var leveldiv = zlevelDivMap[z]; 
        console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
@@ -1217,7 +1226,10 @@ function processPlan() {
          label = bklist[i].getAttribute('id');
        if( ori == "north" || ori == "south" ) {
          newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
-         newdiv.style.lineHeight = "128px";
+         if( small == "true" )
+           newdiv.style.lineHeight = "64px";
+         else
+           newdiv.style.lineHeight = "128px";
        }
        else {
          newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";

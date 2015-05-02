@@ -28,5 +28,6 @@
 
 Boolean rocWebME( iOPClient inst, const char* str );
 Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd );
+Boolean rocWebSocketMEClose( iOPClient inst );
 
 #endif /*WEBME_H_*/

@@ -92,7 +92,7 @@ static void __getFile(iOPClient inst, const char* fname) {
 }
 
 
-static char* __rotateSVG(const char* svgStr, const char* ori) {
+static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname) {
   char* svgNew = NULL;
   Boolean rotatedV = False;
   iODoc doc = DocOp.parse( svgStr );
@@ -150,14 +150,14 @@ static char* __rotateSVG(const char* svgStr, const char* ori) {
         rotatedV = True;
       }
       else if( StrOp.equals(ori, "north") ) {
-        /*deg = 270;*/
-        deg = 90;
+        deg = 270;
         centerX = height / 2;
         centerY = height / 2;
         NodeOp.setInt(svg, "width", height);
         NodeOp.setInt(svg, "height", width);
         rotatedV = True;
       }
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "rotation: %s %d", ori, deg, fname );
       transform = StrOp.fmt("rotate(%d, %d, %d)", deg, centerX, centerY);
       NodeOp.setStr(g, "transform", transform);
       StrOp.free(transform);
@@ -207,10 +207,10 @@ static void __getSVG(iOPClient inst, const char* fname) {
       Boolean ok = True;
       FileOp.read( f, html, size );
       FileOp.base.del( f );
-      svgRotated = __rotateSVG(html, ori);
+      svgRotated = __rotateSVG(html, ori, fname);
       if(svgRotated != NULL ) {
         size = StrOp.len(svgRotated);
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
         if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Cache-Control: max-age=86400\r\n" );
@@ -219,7 +219,7 @@ static void __getSVG(iOPClient inst, const char* fname) {
         StrOp.free(svgRotated);
       }
       else {
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
         if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Cache-Control: max-age=86400\r\n" );
@@ -367,6 +367,26 @@ for (var i = 0; i < ENCODED.length; i++) {
 }
 
  */
+Boolean rocWebSocketMEClose( iOPClient inst ) {
+  iOPClientData data = Data(inst);
+  Boolean ok = True;
+  char b[128];
+
+  if( data->socket == NULL || SocketOp.isBroken( data->socket ) ) {
+    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
+    return True;
+  }
+
+  b[0] = 0x88;
+  b[1] = 2;
+  b[2] = 1001 / 256;
+  b[3] = 1001 % 256;
+  ok = SocketOp.write( data->socket, b, 4 );
+
+  return ok;
+}
+
+
 Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
