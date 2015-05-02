@@ -151,11 +151,35 @@ static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname)
       }
       else if( StrOp.equals(ori, "north") ) {
         deg = 270;
-        centerX = height / 2;
+        centerX = width - 16;
         centerY = height / 2;
         NodeOp.setInt(svg, "width", height);
         NodeOp.setInt(svg, "height", width);
         rotatedV = True;
+
+        transform = NULL;
+        if( width != height && height == 32) {
+          transform = StrOp.fmt("translate(0, -%d)", width-32);
+        }
+        else if( width == 128 && height == 64) {
+          transform = StrOp.fmt("translate(16, -80)");
+        }
+
+        if( transform != NULL ) {
+          iONode path = NodeOp.findNode(g, "path");
+          while( path != NULL ) {
+            NodeOp.setStr(path, "transform", transform);
+            path = NodeOp.findNextNode(g, path);
+          }
+          path = NodeOp.findNode(g, "circle");
+          while( path != NULL ) {
+            NodeOp.setStr(path, "transform", transform);
+            path = NodeOp.findNextNode(g, path);
+          }
+          StrOp.free(transform);
+          StrOp.free(transform);
+        }
+
       }
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "rotation: %s %d", ori, deg, fname );
       transform = StrOp.fmt("rotate(%d, %d, %d)", deg, centerX, centerY);

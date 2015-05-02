@@ -974,8 +974,17 @@ function getSwitchImage(sw, div) {
       return "url('decoupler"+"."+ori+".svg')";
   }
   else if (type=="accessory") {
-
-    if( accnr == "51" ) {
+    if( accnr == "40" ) {
+      if( ori == "west" || ori == "east") {
+        div.style.width    = "128px";
+        div.style.height   = "64px";
+      }
+      else {
+        div.style.width    = "64px";
+        div.style.height   = "128px";
+      }
+    }
+    else if( accnr == "51" ) {
       if( ori == "west" || ori == "east") {
         div.style.width    = "128px";
         div.style.height   = "64px";
