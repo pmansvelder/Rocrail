@@ -134,7 +134,7 @@ static void __rewind(struct OBlockGroup* inst, const char* LocoId) {
 /**  */
 
 /* Check is a critical section is free */
-static Boolean _isFree( struct OBlockGroup* inst, const char* LocoId ) {
+static Boolean _isFree( struct OBlockGroup* inst ,const char* BlockId, const char* LocoId ) {
   iOBlockGroupData data = Data(inst);
   iOModel model  = AppOp.getModel();
   Boolean groupfree = True;
@@ -142,6 +142,13 @@ static Boolean _isFree( struct OBlockGroup* inst, const char* LocoId ) {
   if( MapOp.get(data->lockmap, LocoId) != NULL ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "loco %s already locked blockgroup %s", LocoId, wLink.getid(data->props));
     return True;
+  }
+
+  if( MapOp.size(data->lockmap) > 0 && data->allowfollowup && data->firstBlock != NULL ) {
+    if( StrOp.equals( BlockId, data->firstBlock) && MapOp.get(data->lockmap, LocoId) == NULL && !data->followupend ) {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "blockgroup %s followup allowed for loco %s", wLink.getid(data->props), LocoId);
+      return True;
+    }
   }
 
   if( wLink.getdst(data->props) != NULL ) {

@@ -4861,7 +4861,7 @@ static Boolean __isFree4BlockGroup(iOModel inst, const char* BlockId, const char
   if( group != NULL ) {
     iOBlockGroup bg = (iOBlockGroup)MapOp.get( data->blockGroupMap, group );
     if( bg != NULL )
-      return BlockGroupOp.isFree(bg, LocoId );
+      return BlockGroupOp.isFree(bg, BlockId, LocoId );
   }
   return True;
 }
