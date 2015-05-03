@@ -33,6 +33,7 @@ mkdir -p $RPM_BUILD_ROOT/opt/rocrail/svg
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/stylesheets
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/decspecs
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/symbols
+mkdir -p $RPM_BUILD_ROOT/opt/rocrail/web
 mkdir -p $RPM_BUILD_ROOT/usr/share/applications
 mkdir -p $RPM_BUILD_ROOT/usr/share/desktop-directories
 mkdir -p $RPM_BUILD_ROOT/etc/init.d

@@ -41,11 +41,11 @@ function jsonStorageTest() {
 
 /* Configuration */
 function langDE() {
- document.getElementById("menuPower").innerHTML = "Gleisstrom";
+ document.getElementById("menuOptions").innerHTML = "Optionen";
 }
 
 function langEN() {
- document.getElementById("menuPower").innerHTML = "Power";
+ document.getElementById("menuOptions").innerHTML = "Options";
 }
 
 
@@ -313,7 +313,7 @@ function actionSwitch(id) {
   swid = id.replace("sw_","");
   sw = swMap[swid];
   console.log("switch action on " + swid + " state=" + sw.getAttribute('state'));
-  var cmd = "<sw cmd=\"flip\" id=\""+swid+"\"/>";
+  var cmd = "<sw cmd=\"flip\" id=\""+swid+"\" manualcmd=\"true\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -335,9 +335,22 @@ function actionSignal(id) {
 
 function actionBlock(id)
 {
-  localStorage.setItem("block", id);
-  document.getElementById("blockTitle").innerHTML = "Block: " + localStorage.getItem("block");
+  bkid = id.replace("bk_","");
+  sessionStorage.setItem("block", bkid);
+  document.getElementById("blockTitle").innerHTML = "Block: " + bkid;
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
+}
+
+function onBlockOpen() {
+  bkid = sessionStorage.getItem("block");
+  var cmd = "<bk id=\""+bkid+"\" state=\"open\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function onBlockClose() {
+  bkid = sessionStorage.getItem("block");
+  var cmd = "<bk id=\""+bkid+"\" state=\"closed\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 
@@ -645,8 +658,9 @@ function handleBlock(bk) {
     bkNode.setAttribute('reserved', bk.getAttribute('reserved'));
     bkNode.setAttribute('entering', bk.getAttribute('entering'));
     
+    var ori   = getOri(bk);
     var label = bk.getAttribute('locid');
-    if( label.length == 0 )
+    if( label == undefined || label.length == 0 )
       label = bk.getAttribute('id');
     if( ori == "north" || ori == "south" )
       div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
@@ -684,9 +698,10 @@ function handleStageBlock(sb) {
       }
     }
 
-    var label = sblist[i].getAttribute('locid');
+    var ori   = getOri(sb);
+    var label = sb.getAttribute('locid');
     if( label == undefined || label.length == 0 )
-      label = sblist[i].getAttribute('id') + " [" + lcCount + "]";
+      label = sb.getAttribute('id') + " [" + lcCount + "]";
     if( ori == "north" || ori == "south" )
       div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
     else
@@ -968,42 +983,42 @@ function getSwitchImage(sw, div) {
   var dir   = sw.getAttribute('dir');
   var rectc = sw.getAttribute('rectcrossing');
   var rasterStr = "";
-  var suffix = "";
+  var suffix = "-route";
 
   console.log("switch type: " + type + " accnr="+accnr);
   
   if (type=="right") {
     if (state=="straight")
-      return "url('turnoutright"+"."+ori+".svg')";
+      return "url('turnoutright"+suffix+"."+ori+".svg')";
     else
-      return "url('turnoutright-t"+"."+ori+".svg')";
+      return "url('turnoutright-t"+suffix+"."+ori+".svg')";
   }
   else if (type=="left") {
     if (state=="straight")
-      return "url('turnoutleft"+"."+ori+".svg')";
+      return "url('turnoutleft"+suffix+"."+ori+".svg')";
     else
-      return "url('turnoutleft-t"+"."+ori+".svg')";
+      return "url('turnoutleft-t"+suffix+"."+ori+".svg')";
   }
   else if (type=="twoway") {
     if (state=="straight")
-      return "url('twoway-tr"+"."+ori+".svg')";
+      return "url('twoway-tr"+suffix+"."+ori+".svg')";
     else
-      return "url('twoway-tl"+"."+ori+".svg')";
+      return "url('twoway-tl"+suffix+"."+ori+".svg')";
   }
   else if (type=="threeway") {
     if (state=="left")
-      return "url('threeway-tl"+"."+ori+".svg')";
+      return "url('threeway-tl"+suffix+"."+ori+".svg')";
     else if (state=="right")
-      return "url('threeway-tr"+"."+ori+".svg')";
+      return "url('threeway-tr"+suffix+"."+ori+".svg')";
     else
-      return "url('threeway"+"."+ori+".svg')";
+      return "url('threeway"+suffix+"."+ori+".svg')";
   }
   else if (type=="crossing") {
     if( rectc == "true") {
       if (state=="straight")
-        return "url('crossing"+"."+ori+".svg')";
+        return "url('crossing"+suffix+"."+ori+".svg')";
       else
-        return "url('crossing-t"+"."+ori+".svg')";
+        return "url('crossing-t"+suffix+"."+ori+".svg')";
     }
     else {
       if( ori == "west" || ori == "east") {
@@ -1043,13 +1058,13 @@ function getSwitchImage(sw, div) {
     }
     var direction = (dir == "true" ? "left":"right");
     if (state=="left")
-      return "url('dcrossing"+direction+"-tl."+ori+".svg')";
+      return "url('dcrossing"+direction+"-tl"+suffix+"."+ori+".svg')";
     else if (state=="right")
-      return "url('dcrossing"+direction+"-tr."+ori+".svg')";
+      return "url('dcrossing"+direction+"-tr"+suffix+"."+ori+".svg')";
     else if (state=="turnout")
-      return "url('dcrossing"+direction+"-t."+ori+".svg')";
+      return "url('dcrossing"+direction+"-t"+suffix+"."+ori+".svg')";
     else
-      return "url('dcrossing"+direction+"."+ori+".svg')";
+      return "url('dcrossing"+direction+""+suffix+"."+ori+".svg')";
   }
   else if (type=="decoupler") {
     if (state=="straight")
@@ -1112,6 +1127,7 @@ function getSwitchImage(sw, div) {
 
 function getBlockImage(bk, div) {
   var ori   = getOri(bk);
+  var id    = bk.getAttribute('id');
   var label = bk.getAttribute('locid');
   var small = bk.getAttribute('smallsymbol');
   var suffix = "";
@@ -1141,8 +1157,10 @@ function getBlockImage(bk, div) {
     return "url('block-closed"+suffix+"."+ori+".svg')";
   if( "true" == bk.getAttribute('reserved') )
     return "url('block-res"+suffix+"."+ori+".svg')";
-  else if( label.length > 0 )
+  else if( label != undefined && label != "null" && label.length > 0 ) {
+    console.log("block " + id + " is locked by ["+label+"]");
     return "url('block-occ"+suffix+"."+ori+".svg')";
+  }
   else
     return "url('block"+suffix+"."+ori+".svg')";
   

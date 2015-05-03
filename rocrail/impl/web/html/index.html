@@ -41,12 +41,12 @@
   <div style="padding:10px 10px;">
   <h3 id="blockTitle">Block</h3>
   <select name="select-choice-1" id="select-choice-1">
-  <option value="BR11">BR11</option>
-  <option value="E03">E03</option>
   </select>
   <div class="ui-grid-a">
-  <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all">Start</a></div>
-  <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all">Stop</a></div>
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart()">Start</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStop()">Stop</a></div>
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockClose()">Close</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockOpen()">Open</a></div>
   </div>
   </div>
   </div>
@@ -66,11 +66,9 @@
   <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <button id="menuPower" class="ui-btn ui-icon-power ui-btn-icon-left" style="text-align:left;">Power</button>
-  <button class="ui-btn ui-icon-alert ui-btn-icon-left" style="text-align:left;">Emergancy break</button>
-  <button class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;">System</button>
   <button class="ui-btn ui-icon-info  ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
-  <button class="ui-btn ui-icon-gear  ui-btn-icon-left" style="text-align:left;">Options</button>
+  <button class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;" onclick="openSystem()">System</button>
+  <button id="menuOptions" class="ui-btn ui-icon-gear  ui-btn-icon-left" style="text-align:left;" onclick="openOptions()">Options</button>
     <select name="languageSelect" id="languageSelect" style="text-align:left;">
       <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
       <option id="langEN" value="en" style="text-align:left;">English</option>
