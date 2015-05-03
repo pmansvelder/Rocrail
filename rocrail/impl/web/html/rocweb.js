@@ -19,6 +19,7 @@ var sgMap = {};
 var txMap = {};
 var sbMap = {};
 var locoSelected = 'none';
+var locoBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
@@ -338,7 +339,65 @@ function actionBlock(id)
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
   document.getElementById("blockTitle").innerHTML = "Block: " + bkid;
+
+  bkNode = bkMap[bkid];
+
+  var select = document.getElementById("locoBlockSelect");
+  while(select.options.length > 0) {
+    select.remove(0);
+  }
+
+  option = document.createElement( 'option' );
+  option.value = "";
+  option.innerHTML = "";
+  select.add( option );
+
+  var selected = false;
+  
+  for (var i in lcMap){
+    var lc = lcMap[i];
+    option = document.createElement( 'option' );
+    option.value = lc.getAttribute('id');
+    option.innerHTML = lc.getAttribute('id');
+    select.add( option );
+    if( bkNode.getAttribute('locid') == lc.getAttribute('id')) {
+      select.selectedIndex = i+1;
+      option.selected = 'selected';
+      select.value = lc.getAttribute('id'); 
+      selected = true;
+      locoBlockSelect = lc.getAttribute('id');
+    }
+  }
+  
+  if( !selected ) {
+    select.selectedIndex = 0;
+    option.selected = 'selected';
+    select.value = ""; 
+    locoBlockSelect = 'none';
+  }
+  
+  sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
+
+  $('#locoBlockSelect').selectmenu("refresh");
+
+  
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
+}
+
+function onBlockStart() {
+  locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
+  if( locoBlockSelect != "none" ) {
+    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"go\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+}
+
+function onBlockStop() {
+  locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
+  if( locoBlockSelect != "none" ) {
+    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"stop\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
 }
 
 function onBlockOpen() {
@@ -408,6 +467,11 @@ $(document).on("pagecreate",function(){
   $("#speedSlider").on( "slidestop", function( event, ui ) {
   value = this.value;
   speedUpdate(value);} );
+  
+  $('#locoBlockSelect').change(function() {
+    locoBlockSelect = this.value;
+    sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
+  } );
   
   $('#locoSelect').change(function() {
     locoSelected = this.value;
