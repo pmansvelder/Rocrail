@@ -17,6 +17,7 @@ var lcMap = {};
 var coMap = {};
 var sgMap = {};
 var txMap = {};
+var sbMap = {};
 var locoSelected = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
@@ -345,7 +346,11 @@ function initThrottle() {
   var lc = lcMap[locoSelected]
   if( lc != undefined ) {
     var img = document.getElementById("locoImage");
-    img.src = lc.getAttribute('image');
+    var src = lc.getAttribute('image');
+    if( src == undefined || src.length == 0 )
+      img.src = "noimg.png";
+    else
+      img.src = lc.getAttribute('image');
     console.log("new image: " + img.src);
     document.getElementById("speedSlider").value = lc.getAttribute('V');
     $("#speedSlider").slider("refresh");
@@ -614,7 +619,10 @@ function handleBlock(bk) {
     var label = bk.getAttribute('locid');
     if( label.length == 0 )
       label = bk.getAttribute('id');
-    div.innerHTML = "<label class='itemtext'>"+label+"</label>";
+    if( ori == "north" || ori == "south" )
+      div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+    else
+      div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
 
     div.style.backgroundImage = getBlockImage(bkNode, div);
   }
@@ -623,6 +631,31 @@ function handleBlock(bk) {
   }
   
   updateBlockstate( bk.getAttribute('statesignal'), bk.getAttribute('locid'));
+}
+
+function handleStageBlock(sb) {
+  console.log("staging block event: " + sb.getAttribute('id') + " " + sb.getAttribute('state'));
+  var div = document.getElementById("sb_"+sb.getAttribute('id'));
+  if( div != null ) {
+    sbNode = sbMap[sb.getAttribute('id')];
+    sbNode.setAttribute('state', sb.getAttribute('state'));
+    sbNode.setAttribute('locid', sb.getAttribute('locid'));
+    sbNode.setAttribute('reserved', sb.getAttribute('reserved'));
+    sbNode.setAttribute('entering', sb.getAttribute('entering'));
+    
+    var label = sb.getAttribute('locid');
+    if( label == undefined || label.length == 0 )
+      label = sb.getAttribute('id');
+    if( ori == "north" || ori == "south" )
+      div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+    else
+      div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+
+    div.style.backgroundImage = getStageBlockImage(sbNode, div);
+  }
+  else {
+    console.log("staging block: " + sb.getAttribute('id') + " not found");
+  }
 }
 
 function handleState(state) {
@@ -671,6 +704,8 @@ function evaluateEvent(xmlStr) {
     handleSignal(root);
   else if( evtName == "tx" )
     handleText(root);
+  else if( evtName == "sb" )
+    handleStageBlock(root);
 }
 
 function processResponse() {
@@ -1072,6 +1107,33 @@ function getBlockImage(bk, div) {
   
 }
 
+function getStageBlockImage(sb, div) {
+  var ori   = getOri(sb);
+  var label = sb.getAttribute('locid');
+  var suffix = "";
+
+  if( ori == "north" || ori == "south" ) {
+    div.style.width    = "32px";
+    div.style.height   = "128px";
+  }
+  else {
+    div.style.width    = "128px";
+    div.style.height   = "32px";
+  }
+
+  if( "true" == sb.getAttribute('entering') )
+    return "url('stage-ent"+"."+ori+".svg')";
+  else if( "closed" == sb.getAttribute('state') )
+    return "url('stage-closed"+"."+ori+".svg')";
+  if( "true" == sb.getAttribute('reserved') )
+    return "url('stage-res"+"."+ori+".svg')";
+  else if( label.length > 0 )
+    return "url('stage-occ"+"."+ori+".svg')";
+  else
+    return "url('stage"+"."+ori+".svg')";
+  
+}
+
 /* Process the plan.xml */
 function processPlan() {
 //only if req shows "loaded"
@@ -1348,7 +1410,7 @@ function processPlan() {
        newdiv.style.lineHeight = newdiv.style.height;
 
        var label = bklist[i].getAttribute('locid');
-       if( label.length == 0 )
+       if( label == undefined || label.length == 0 )
          label = bklist[i].getAttribute('id');
        label = label.split(' ').join('.');
        label = label.split('-').join('.');
@@ -1361,6 +1423,49 @@ function processPlan() {
        
        leveldiv.appendChild(newdiv);
      }
+     
+     
+     sblist = xmlDoc.getElementsByTagName("sb");
+     if( sblist.length > 0 )
+       console.log("processing " + sblist.length + " staging blocks");
+     for (var i = 0; i < sblist.length; i++) {
+       var z = sblist[i].getAttribute('z');
+       if( z == undefined )
+         z = '0';
+       var ori      = getOri(sblist[i]);
+       var leveldiv = zlevelDivMap[z]; 
+       console.log('staging block: ' + sblist[i].getAttribute('id') + " at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
+       sbMap[bklist[i].getAttribute('id')] = sblist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "sb_"+sblist[i].getAttribute('id'));
+       newdiv.setAttribute('onClick', "actionStageBlock(this.id)");
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = "128px";
+       newdiv.style.height   = "32px";
+       newdiv.style.left     = "" + (parseInt(sblist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(sblist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.style.backgroundImage = getStageBlockImage(bklist[i], newdiv);
+       newdiv.style.lineHeight = newdiv.style.height;
+
+       var label = sblist[i].getAttribute('locid');
+       if( label == undefined || label.length == 0 )
+         label = sblist[i].getAttribute('id');
+       if( ori == "north" || ori == "south" ) {
+         newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+       }
+       else {
+         newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+       }
+
+       leveldiv.appendChild(newdiv);
+     }
+     
+     
    }
    catch(e) {
      console.log("exception: " + e);

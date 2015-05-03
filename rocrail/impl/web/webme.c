@@ -50,6 +50,7 @@ static const char* ROCWEB_JS       = "rocweb.js";
 static const char* ROCWEBWORKER_JS = "rocwebworker.js";
 static const char* ROCWEB_CSS      = "rocweb.css";
 static const char* ROCWEB_LOGO     = "logo.png";
+static const char* ROCWEB_NOIMG    = "noimg.png";
 
 static void __getFile(iOPClient inst, const char* fname) {
   iOPClientData data = Data(inst);
@@ -638,6 +639,9 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
         if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
         if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/noimg.png" )  ) {
+        __getImage( inst, ROCWEB_NOIMG, True );
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/logo.png" ) ) {
         __getImage( inst, ROCWEB_LOGO, True );
