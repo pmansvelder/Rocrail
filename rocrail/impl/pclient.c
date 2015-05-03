@@ -916,8 +916,8 @@ static Boolean _work( struct OPClient* inst, iONode event, char** command ) {
       Boolean ok = rocWebSocketME( inst, event, &cmd );
       *command = cmd;
       if( cmd != NULL ) {
-        /* Parse command and semd it over the callback function to the control. */
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command received: %.80s", cmd );
+        /* Parse command and send it over the callback function to the control. */
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command received: %.120s", cmd );
       }
       return ok;
     }

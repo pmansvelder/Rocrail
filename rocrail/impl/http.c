@@ -219,8 +219,8 @@ static void __pportserver( void* threadinst ) {
       Boolean remove = PClientOp.work( client, event, &cmd );
       if( cmd != NULL ) {
         /* Parse command and semd it over the callback function to the control. */
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "command received: %.80s", cmd );
-        TraceOp.dump( name, TRCLEVEL_USER2, (const char*)cmd, StrOp.len(cmd) );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "command received: %.120s", cmd );
+        TraceOp.dump( name, TRCLEVEL_BYTE, (const char*)cmd, StrOp.len(cmd) );
         if( (byte)(cmd[0]) == 0x03 && ((byte)(cmd[1]) == 0xE8 || (byte)(cmd[1]) == 0xE9) ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutdown webclient [%s]", PClientOp.getId( client ) );
           remove = True;
@@ -229,6 +229,7 @@ static void __pportserver( void* threadinst ) {
           iODoc doc = DocOp.parse( cmd );
           if( doc != NULL ) {
             iONode nodeA = DocOp.getRootNode( doc );
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
             data->callback( data->callbackObj, nodeA );
           }
         }

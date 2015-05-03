@@ -341,6 +341,35 @@ function actionBlock(id)
 }
 
 
+function actionStageBlock(id)
+{
+  sbid = id.replace("sb_","");
+  sessionStorage.setItem("stageblock", sbid);
+  document.getElementById("stageblockTitle").innerHTML = "Staging Block: " + sbid;
+  $( "#popupStageBlock" ).popup( "open", {positionTo: '#'+id} );
+}
+
+function onStageCompress() {
+  sbid = sessionStorage.getItem("stageblock");
+  var cmd = "<sb id=\""+sbid+"\" cmd=\"compress\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onStageOpen() {
+  sbid = sessionStorage.getItem("stageblock");
+  var cmd = "<sb id=\""+sbid+"\" state=\"open\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onStageClose() {
+  sbid = sessionStorage.getItem("stageblock");
+  var cmd = "<sb id=\""+sbid+"\" state=\"closed\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
 function initThrottle() {
   console.log("locoSelect: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -643,9 +672,21 @@ function handleStageBlock(sb) {
     sbNode.setAttribute('reserved', sb.getAttribute('reserved'));
     sbNode.setAttribute('entering', sb.getAttribute('entering'));
     
-    var label = sb.getAttribute('locid');
+    var lcCount = 0;
+    sectionlist = sb.getElementsByTagName("section");
+    if( sectionlist.length > 0 ) {
+      console.log("updating " + sectionlist.length + " staging block sections");
+      for (var n = 0; n < sectionlist.length; n++) {
+        var lcid = sectionlist[n].getAttribute('lcid');
+        if( lcid != undefined && lcid.length > 0 ) {
+          lcCount++;
+        }
+      }
+    }
+
+    var label = sblist[i].getAttribute('locid');
     if( label == undefined || label.length == 0 )
-      label = sb.getAttribute('id');
+      label = sblist[i].getAttribute('id') + " [" + lcCount + "]";
     if( ori == "north" || ori == "south" )
       div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
     else
@@ -1439,7 +1480,7 @@ function processPlan() {
          console.log("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
-       sbMap[bklist[i].getAttribute('id')] = sblist[i];
+       sbMap[sblist[i].getAttribute('id')] = sblist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "sb_"+sblist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionStageBlock(this.id)");
@@ -1452,9 +1493,21 @@ function processPlan() {
        newdiv.style.backgroundImage = getStageBlockImage(bklist[i], newdiv);
        newdiv.style.lineHeight = newdiv.style.height;
 
+       var lcCount = 0;
+       sectionlist = sblist[i].getElementsByTagName("section");
+       if( sectionlist.length > 0 ) {
+         console.log("processing " + sectionlist.length + " staging block sections");
+         for (var n = 0; n < sectionlist.length; n++) {
+           var lcid = sectionlist[n].getAttribute('lcid');
+           if( lcid != undefined && lcid.length > 0 ) {
+             lcCount++;
+           }
+         }
+       }
+
        var label = sblist[i].getAttribute('locid');
        if( label == undefined || label.length == 0 )
-         label = sblist[i].getAttribute('id');
+         label = sblist[i].getAttribute('id') + " [" + lcCount + "]";
        if( ori == "north" || ori == "south" ) {
          newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
        }
