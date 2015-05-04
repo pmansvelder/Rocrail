@@ -1091,7 +1091,23 @@ function getTurntableImage(tt) {
   var svg = 
     "<svg xmlns='http://www.w3.org/2000/svg' width='"+size+"' height='"+size+"'>" +
     "  <g>" +
-    "   <circle cx='"+center+"' cy='"+center+"' r='"+radius1+"' fill='rgb(255,255,255)' stroke-width='1' stroke='rgb(180,180,180)'/>" +
+    "   <circle cx='"+center+"' cy='"+center+"' r='"+radius1+"' fill='rgb(255,255,255)' stroke-width='1' stroke='rgb(180,180,180)'/>";
+  // draw tracks...
+  var trackPath = "M "+center+","+center+" L "+size+","+center; 
+  trackList = tt.getElementsByTagName("track");
+  if( trackList.length > 0 ) {
+    for( var i = 0; i < trackList.length; i++ ) {
+      var track = trackList[i];
+      var nr = parseInt(track.getAttribute('nr'));
+      var trackRotate = (360 / 48) * (48 - nr);
+      var trackTransform = "rotate("+trackRotate+", "+center+", "+center+")";
+      
+      var path = "<path stroke-width='5' stroke='rgb(100,100,100)' fill='rgb(100,100,100)' d='"+trackPath+"' transform='"+trackTransform+"' />";
+      svg += path;
+    }
+  }
+
+  svg +=   
     "   <circle cx='"+center+"' cy='"+center+"' r='"+radius2+"' fill='rgb(255,255,255)' stroke-width='2' stroke='rgb(0,0,0)'/>" +
     "   <circle cx='"+center+"' cy='"+center+"' r='"+radius3+"' fill='rgb(255,255,255)' stroke-width='2' stroke='rgb(0,0,0)'/>" +
     "   <path stroke-width='2' stroke='rgb(0,0,0)' fill='rgb(100,255,100)' d='"+bridge+"' transform='"+transform+"' />" +
