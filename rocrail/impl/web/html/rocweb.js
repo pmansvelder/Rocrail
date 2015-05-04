@@ -31,6 +31,12 @@ var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
 
+function trace(msg) {
+  localStorage.setItem("debug", true);
+  var debug = localStorage.getItem("debug");
+  if( debug )
+    console.log(msg);
+}
 
 /* JSon test */
 function jsonStorageTest() {
@@ -40,7 +46,7 @@ function jsonStorageTest() {
   sessionStorage.setItem("E03", JSON.stringify(E03));
   
   var cat = JSON.parse(sessionStorage.getItem("E03"));
-  console.log(cat.size + " " + cat.color + " " + cat.test );
+  trace(cat.size + " " + cat.color + " " + cat.test );
 }
 
 
@@ -57,20 +63,20 @@ function langEN() {
 /* Info Dialog */
 function openInfo()
 {
-  console.log("close menu");
+  trace("close menu");
   $( "#popupMenu" ).popup( "close" );
   
-  console.log("open info");
+  trace("open info");
   $('#popupMenu').on("popupafterclose", function(){$( "#popupInfo" ).popup( "open" )});
 
-//  console.log("open info");
+//  trace("open info");
 //  $( "#popupInfo" ).popup( "open" );
 }
 
 
 function openDonkey()
 {
-  console.log("open info");
+  trace("open info");
   $( "#popupInfo" ).popup( "open" );
 }
 
@@ -106,19 +112,19 @@ function updateFunctionLabels() {
   for(i = 1; i < 15; i++) {
     var F = document.getElementById("F"+i);
     F.innerHTML = "F" + (i + FGroup * 14); 
-    //console.log("function button " + i + " = " + F.innerHTML);
+    //trace("function button " + i + " = " + F.innerHTML);
   }
 
   lc = lcMap[locoSelected];
   if( lc != undefined ) {
     //var fundeflist = lc.childNodes;
     var fundeflist = lc.getElementsByTagName("fundef");
-    console.log("function defs " + fundeflist.length + " for " + lc.getAttribute('id'));
+    trace("function defs " + fundeflist.length + " for " + lc.getAttribute('id'));
     if( fundeflist.length > 0 ) {
       for( n = 0; n < fundeflist.length; n++ ) {
         var fn = fundeflist[n].getAttribute('fn');
         var iFn = parseInt(fn);
-        console.log("fundef " + fn + " text: " + fundeflist[n].getAttribute('text'));
+        trace("fundef " + fn + " text: " + fundeflist[n].getAttribute('text'));
         if( FGroup == 0 && iFn > 14 ) {
           continue;
         }
@@ -174,7 +180,7 @@ function closeOptions()
 /* Send a XML Http request */
 function sendCommand(cmd) {
   // send an XMLHttpRequest
-  console.log("send command: " + cmd);
+  trace("send command: " + cmd);
   try {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function()
@@ -189,7 +195,7 @@ function sendCommand(cmd) {
     xmlhttp.send("");
   } 
     catch(e) {
-      console.log("exception: " + e);
+      trace("exception: " + e);
   }
 }
 
@@ -200,7 +206,7 @@ $(function(){
  
   function tapholdF1Handler(e) {
     tapholdF1 = 1;
-    console.log("taphold F1");
+    trace("taphold F1");
   }
 });
 
@@ -235,7 +241,7 @@ function onFunction(id, nr) {
   }
   lc = lcMap[locoSelected];
   if( lc == undefined ) return;
-  console.log("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
+  trace("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
   var group = (nr-1)/4+1;
   var fx = parseInt(lc.getAttribute('fx'));
   var mask = 1 << nr;
@@ -247,7 +253,7 @@ function onFunction(id, nr) {
 function speedUpdate(value) {
   lc = lcMap[locoSelected];
   if( lc == undefined ) return;
-  console.log("Speed: " + value + " for loco " + locoSelected);
+  trace("Speed: " + value + " for loco " + locoSelected);
   var vVal = value * (parseInt(lc.getAttribute('V_max')/100.00));
   lc.setAttribute('V', vVal);
   updateDir();
@@ -290,13 +296,13 @@ function actionLevelUp() {
 
 /* Item commands */
 function actionAuto(auto) {
-  console.log("auto action " + auto);
+  trace("auto action " + auto);
   var cmd = "<auto cmd=\""+auto+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 function actionEBreak() {
-  console.log("emergancy break");
+  trace("emergancy break");
   var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -304,7 +310,7 @@ function actionEBreak() {
 function actionSensor(id)
 {
   fbid = id.replace("fb_","");
-  console.log("sensor action on " + fbid );
+  trace("sensor action on " + fbid );
   fb = fbMap[fbid];
   var cmd;
   if( "true" == fb.getAttribute('state') )
@@ -317,7 +323,7 @@ function actionSensor(id)
 function actionSwitch(id) {
   swid = id.replace("sw_","");
   sw = swMap[swid];
-  console.log("switch action on " + swid + " state=" + sw.getAttribute('state'));
+  trace("switch action on " + swid + " state=" + sw.getAttribute('state'));
   var cmd = "<sw cmd=\"flip\" id=\""+swid+"\" manualcmd=\"true\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -325,7 +331,7 @@ function actionSwitch(id) {
 function actionOutput(id) {
   coid = id.replace("co_","");
   co = coMap[coid];
-  console.log("output action on " + coid + " state=" + co.getAttribute('state'));
+  trace("output action on " + coid + " state=" + co.getAttribute('state'));
   var cmd = "<co cmd=\"flip\" id=\""+coid+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -333,7 +339,7 @@ function actionOutput(id) {
 function actionSignal(id) {
   sgid = id.replace("sg_","");
   sg = sgMap[sgid];
-  console.log("signal action on " + sgid + " state=" + sg.getAttribute('state'));
+  trace("signal action on " + sgid + " state=" + sg.getAttribute('state'));
   var cmd = "<sg cmd=\"flip\" id=\""+sgid+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -489,7 +495,7 @@ function onTurntablePrevious() {
 
 
 function initThrottleStatus() {
-  console.log("init throttle status: " + locoSelected );
+  trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
   if( lc != undefined ) {
     var locoStatus = document.getElementById("locoStatus");
@@ -521,13 +527,13 @@ function initThrottleStatus() {
     locoStatus.style.backgroundColor = modeColor;
     locoStatus.innerHTML = lc.getAttribute('id') + " [" + mode + "]" + fromTo;
     locoDescription.innerHTML = lc.getAttribute('desc');
-    console.log("init throttle status: " + lc.getAttribute('id') + " [" + mode + "]" + fromTo);
+    trace("init throttle status: " + lc.getAttribute('id') + " [" + mode + "]" + fromTo);
   }
 }
 
 
 function initThrottle() {
-  console.log("locoSelect: " + locoSelected );
+  trace("locoSelect: " + locoSelected );
   var lc = lcMap[locoSelected]
   if( lc != undefined ) {
     var img = document.getElementById("locoImage");
@@ -536,7 +542,7 @@ function initThrottle() {
       img.src = "noimg.png";
     else
       img.src = lc.getAttribute('image');
-    console.log("new image: " + img.src);
+    trace("new image: " + img.src);
 
     document.getElementById("speedSlider").value = lc.getAttribute('V');
     $("#speedSlider").slider("refresh");
@@ -557,7 +563,7 @@ $(document).on("pagecreate",function(){
   $('#locoBlockSelect').change(function() {
     $( "#popupBlock" ).popup( "close" );
     locoBlockSelect = this.value;
-    console.log("locoBlockSelect: " + locoBlockSelect);
+    trace("locoBlockSelect: " + locoBlockSelect);
     sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
     onLocoInBlock(locoBlockSelect);
   } );
@@ -571,7 +577,7 @@ $(document).on("pagecreate",function(){
   } );
   
   $('#languageSelect').change(function() {
-    console.log("languageSelect: " + this.value );
+    trace("languageSelect: " + this.value );
     localStorage.lang = this.value;
 
     if( this.value == "de" )
@@ -583,7 +589,7 @@ $(document).on("pagecreate",function(){
 });
 
 $(document).ready(function(){
-  console.log("document ready");
+  trace("document ready");
   //$('.ui-slider-handle').height(50)
   //$('.ui-slider').input("none");
   //$('.ui-slider-track').marginLeft("15px");
@@ -607,16 +613,16 @@ $(document).ready(function(){
 function processUpdate(p_req) {
 //only if req shows "loaded"
 if (p_req.readyState == 4) {
- console.log("response status = "+p_req.status);
+ trace("response status = "+p_req.status);
  if (p_req.status == 0 || p_req.status == 200) {
    try {
      xmlDoc = p_req.responseXML;
      fblist = xmlDoc.getElementsByTagName("fb");
      if( fblist.length > 0 )
-       console.log("updating " + fblist.length + " sensors");
+       trace("updating " + fblist.length + " sensors");
 
      for (var i = 0; i < fblist.length; i++) {
-       console.log("sensor: " + fblist[i].getAttribute('id'));
+       trace("sensor: " + fblist[i].getAttribute('id'));
        var div = document.getElementById("fb_"+fblist[i].getAttribute('id'));
        if( div != null ) {
          if( "true" == fblist[i].getAttribute('state') )
@@ -625,13 +631,13 @@ if (p_req.readyState == 4) {
            div.style.backgroundImage = "url(sensor_off_1.png)";
        }
        else {
-         console.log("sensor: " + fblist[i].getAttribute('id') + " not found");
+         trace("sensor: " + fblist[i].getAttribute('id') + " not found");
        }
      
      }
    }
    catch(e) {
-     console.log("exception: " + e);
+     trace("exception: " + e);
    }
 
  }
@@ -649,7 +655,7 @@ function loadPlan() {
    req.send("");
  } 
  catch(e) {
-   console.log("exception: " + e);
+   trace("exception: " + e);
  }
 }
 
@@ -666,7 +672,7 @@ function xml2string(node) {
 
 /* Update event handlers */
 function handleSensor(fb) {
-  console.log("sensor event: " + fb.getAttribute('id') + " " + fb.getAttribute('state'));
+  trace("sensor event: " + fb.getAttribute('id') + " " + fb.getAttribute('state'));
   var div = document.getElementById("fb_"+fb.getAttribute('id'));
   if( div != null ) {
     fbNode = fbMap[fb.getAttribute('id')];
@@ -674,13 +680,13 @@ function handleSensor(fb) {
     div.style.backgroundImage = getSensorImage(fbNode);
   }
   else {
-    console.log("sensor: " + fb.getAttribute('id') + " not found");
+    trace("sensor: " + fb.getAttribute('id') + " not found");
   }
 }
 
 
 function handleText(tx) {
-  console.log("text event: " + tx.getAttribute('id') + " " + tx.getAttribute('text'));
+  trace("text event: " + tx.getAttribute('id') + " " + tx.getAttribute('text'));
   var div = document.getElementById("tx_"+tx.getAttribute('id'));
   if( div != null ) {
     var text = tx.getAttribute('text');
@@ -696,7 +702,7 @@ function handleText(tx) {
 }
 
 function handleOutput(co) {
-  console.log("output event: " + co.getAttribute('id') + " " + co.getAttribute('state'));
+  trace("output event: " + co.getAttribute('id') + " " + co.getAttribute('state'));
   var div = document.getElementById("co_"+co.getAttribute('id'));
   if( div != null ) {
     coNode = coMap[co.getAttribute('id')];
@@ -704,13 +710,13 @@ function handleOutput(co) {
     div.style.backgroundImage = getOutputImage(coNode);
   }
   else {
-    console.log("output: " + co.getAttribute('id') + " not found");
+    trace("output: " + co.getAttribute('id') + " not found");
   }
 }
 
 
 function handleSwitch(sw) {
-  console.log("switch event: " + sw.getAttribute('id') + " " + sw.getAttribute('state'));
+  trace("switch event: " + sw.getAttribute('id') + " " + sw.getAttribute('state'));
   var div = document.getElementById("sw_"+sw.getAttribute('id'));
   if( div != null ) {
     swNode = swMap[sw.getAttribute('id')];
@@ -718,13 +724,13 @@ function handleSwitch(sw) {
     div.style.backgroundImage = getSwitchImage(swNode, div);
   }
   else {
-    console.log("switch: " + sw.getAttribute('id') + " not found");
+    trace("switch: " + sw.getAttribute('id') + " not found");
   }
 }
 
 
 function handleSignal(sg) {
-  console.log("signal event: " + sg.getAttribute('id') + " " + sg.getAttribute('state'));
+  trace("signal event: " + sg.getAttribute('id') + " " + sg.getAttribute('state'));
   var div = document.getElementById("sg_"+sg.getAttribute('id'));
   if( div != null ) {
     sgNode = sgMap[sg.getAttribute('id')];
@@ -733,7 +739,7 @@ function handleSignal(sg) {
     div.style.backgroundImage = getSignalImage(sgNode, div);
   }
   else {
-    console.log("signal: " + sg.getAttribute('id') + " not found");
+    trace("signal: " + sg.getAttribute('id') + " not found");
   }
 }
 
@@ -763,7 +769,7 @@ function handleLoco(lc) {
 
 
 function handleFunction(fn) {
-  console.log("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
+  trace("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
   var lc = lcMap[fn.getAttribute('id')];
   
   if( lc == undefined)
@@ -812,7 +818,7 @@ function updateBlockstate( sgid, lcid ) {
 }
 
 function handleBlock(bk) {
-  console.log("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
+  trace("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
   var div = document.getElementById("bk_"+bk.getAttribute('id'));
   if( div != null ) {
     bkNode = bkMap[bk.getAttribute('id')];
@@ -833,7 +839,7 @@ function handleBlock(bk) {
     div.style.backgroundImage = getBlockImage(bkNode, div);
   }
   else {
-    console.log("block: " + bk.getAttribute('id') + " not found");
+    trace("block: " + bk.getAttribute('id') + " not found");
   }
   
   updateBlockstate( bk.getAttribute('statesignal'), bk.getAttribute('locid'));
@@ -841,7 +847,7 @@ function handleBlock(bk) {
 
 
 function handleTurntable(tt) {
-  console.log("turntable event: " + tt.getAttribute('id') + " " + tt.getAttribute('state'));
+  trace("turntable event: " + tt.getAttribute('id') + " " + tt.getAttribute('state'));
   var div = document.getElementById("tt_"+tt.getAttribute('id'));
   if( div != null ) {
     ttNode = ttMap[tt.getAttribute('id')];
@@ -853,14 +859,14 @@ function handleTurntable(tt) {
     div.innerHTML = getTurntableImage(ttNode);
   }
   else {
-    console.log("turntable: " + tt.getAttribute('id') + " not found");
+    trace("turntable: " + tt.getAttribute('id') + " not found");
   }
   
 }
 
 
 function handleStageBlock(sb) {
-  console.log("staging block event: " + sb.getAttribute('id') + " " + sb.getAttribute('state'));
+  trace("staging block event: " + sb.getAttribute('id') + " " + sb.getAttribute('state'));
   var div = document.getElementById("sb_"+sb.getAttribute('id'));
   if( div != null ) {
     sbNode = sbMap[sb.getAttribute('id')];
@@ -872,7 +878,7 @@ function handleStageBlock(sb) {
     var lcCount = 0;
     sectionlist = sb.getElementsByTagName("section");
     if( sectionlist.length > 0 ) {
-      console.log("updating " + sectionlist.length + " staging block sections");
+      trace("updating " + sectionlist.length + " staging block sections");
       for (var n = 0; n < sectionlist.length; n++) {
         var lcid = sectionlist[n].getAttribute('lcid');
         if( lcid != undefined && lcid.length > 0 ) {
@@ -893,13 +899,13 @@ function handleStageBlock(sb) {
     div.style.backgroundImage = getStageBlockImage(sbNode, div);
   }
   else {
-    console.log("staging block: " + sb.getAttribute('id') + " not found");
+    trace("staging block: " + sb.getAttribute('id') + " not found");
   }
 }
 
 function handleState(state) {
   power = state.getAttribute('power');
-  console.log("power: " + power );
+  trace("power: " + power );
   if( power == "true" )
     document.getElementById("headerPower").style.backgroundColor= "#FF8888";
   else 
@@ -910,7 +916,7 @@ function handleSystem(sys) {
   //<sys cmd="shutdown" informall="true"/>
   var cmd = sys.getAttribute('cmd');
   if( cmd == "shutdown" ) {
-    console.log("server shutdown");
+    trace("server shutdown");
     var cmd = "<sys shutdown=\"true\"/>";
     worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
     zlevelSelected.style.display = 'none'
@@ -922,7 +928,7 @@ function evaluateEvent(xmlStr) {
   var xmlDoc = ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
   var root = xmlDoc.documentElement;
   var evtName = root.nodeName;
-  console.log("evaluate: " + evtName);
+  trace("evaluate: " + evtName);
   if( evtName == "fb" )
     handleSensor(root);
   else if( evtName == "bk" )
@@ -950,7 +956,7 @@ function evaluateEvent(xmlStr) {
 }
 
 function processResponse() {
-  console.log("readyState="+req.readyState+" status="+req.status);
+  trace("readyState="+req.readyState+" status="+req.status);
   if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
     // only if "OK"
     $.mobile.loading("show");
@@ -969,21 +975,21 @@ function processResponse() {
           serverInfo.innerHTML = "Server version: " + rocrailversion + "<br>" + "Server path: " + rocrailpwd;
           
           
-          console.log( "processing plan: " + title + " key=" + donkey );
+          trace( "processing plan: " + title + " key=" + donkey );
           h.innerHTML = title;
           processPlan();
           planloaded = true;
           locoSelected = localStorage.getItem("locoSelected");
-          console.log("selected loco = " + locoSelected);
+          trace("selected loco = " + locoSelected);
 
           if( donkey == 'true') {
             document.getElementById("donkey").style.display = 'none'
           }
           else {
-            console.log( "5 minutes before shutdown..." );
+            trace( "5 minutes before shutdown..." );
             var shutdownTimer = setInterval(function () {doShutdown()}, (5 * 60 * 1000) );
             function doShutdown() {
-              console.log("no key; shutdown...");
+              trace("no key; shutdown...");
               clearInterval(shutdownTimer);
               var cmd = "<sys shutdown=\"true\"/>";
               worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
@@ -996,12 +1002,12 @@ function processResponse() {
 
         }
         else {
-          console.log( "processing event" );
+          trace( "processing event" );
           processUpdate(req);
         }
       }
       else {
-        console.log( "??? xmlDoc=" + xmlDoc);
+        trace( "??? xmlDoc=" + xmlDoc);
       }
 
       if( planloaded ) {
@@ -1009,10 +1015,10 @@ function processResponse() {
         worker.onmessage = function (e) {
           var result = JSON.parse(e.data);
           if(result.type == 'debug') {
-            console.log(result.msg);
+            trace(result.msg);
           } 
           else if(result.type == 'response') {
-            console.log("response: "+result.answer);
+            trace("response: "+result.answer);
             if( !didShowDonkey && donkey == 'false' ) {
               openDonkey();
               didShowDonkey = true;
@@ -1021,18 +1027,18 @@ function processResponse() {
             evaluateEvent(result.answer);
           }
           else if(result.type == 'command') {
-            console.log("command: "+result.msg);
+            trace("command: "+result.msg);
             /* ToDo: Send to server. */
           }
           else {
-            console.log("data: " + e.data);
+            trace("data: " + e.data);
           }
         }
       }
      
     }
     catch(e) {
-      console.log("exception: " + e);
+      trace("exception: " + e);
     }
     $.mobile.loading("hide");
     
@@ -1133,7 +1139,7 @@ function getSignalImage(sg) {
   else
     aspects = "";
   
-  console.log("signal image: usepatterns="+pattern+" nr="+nr+" greennr="+greennr+" rednr="+rednr+" yellownr="+yellownr+" whitenr="+whitenr+" state="+state);
+  trace("signal image: usepatterns="+pattern+" nr="+nr+" greennr="+greennr+" rednr="+rednr+" yellownr="+yellownr+" whitenr="+whitenr+" state="+state);
   var aspect  = "r";
   if( state == "red"    ) aspect = "r";
   if( state == "green"  ) aspect = "g";
@@ -1179,7 +1185,7 @@ function getTurntableImage(tt) {
     "  <g>" +
     "   <circle cx='"+center+"' cy='"+center+"' r='"+radius1+"' fill='rgb(255,255,255)' stroke-width='1' stroke='rgb(180,180,180)'/>";
   // draw tracks...
-  var trackPath = "M "+center+","+center+" L "+size+","+center; 
+  var trackPath = "M "+center+","+center+" L "+(size-2)+","+center; 
   trackList = tt.getElementsByTagName("track");
   if( trackList.length > 0 ) {
     for( var i = 0; i < trackList.length; i++ ) {
@@ -1189,9 +1195,9 @@ function getTurntableImage(tt) {
       var trackTransform = "rotate("+trackRotate+", "+center+", "+center+")";
       var path = "";
       if( bridgepos == nr )
-        path = "<path stroke-width='5' stroke='rgb(255,0,0)' fill='rgb(255,0,0)' d='"+trackPath+"' transform='"+trackTransform+"' />";
+        path = "<path stroke-width='7' stroke='rgb(255,0,0)' fill='rgb(255,0,0)' d='"+trackPath+"' transform='"+trackTransform+"' />";
       else
-        path = "<path stroke-width='5' stroke='rgb(100,100,100)' fill='rgb(100,100,100)' d='"+trackPath+"' transform='"+trackTransform+"' />";
+        path = "<path stroke-width='7' stroke='rgb(100,100,100)' fill='rgb(100,100,100)' d='"+trackPath+"' transform='"+trackTransform+"' />";
       svg += path;
     }
   }
@@ -1229,7 +1235,7 @@ function getSwitchImage(sw, div) {
   var rasterStr = "";
   var suffix = "-route";
 
-  console.log("switch type: " + type + " accnr="+accnr);
+  trace("switch type: " + type + " accnr="+accnr);
   
   if (type=="right") {
     if (state=="straight")
@@ -1402,7 +1408,7 @@ function getBlockImage(bk, div) {
   if( "true" == bk.getAttribute('reserved') )
     return "url('block-res"+suffix+"."+ori+".svg')";
   else if( label != undefined && label != "null" && label.length > 0 ) {
-    console.log("block " + id + " is locked by ["+label+"]");
+    trace("block " + id + " is locked by ["+label+"]");
     return "url('block-occ"+suffix+"."+ori+".svg')";
   }
   else
@@ -1446,13 +1452,13 @@ function processPlan() {
      zlevellist = xmlDoc.getElementsByTagName("zlevel");
      if( zlevellist.length > 0 ) {
        var title = "";
-       console.log("processing " + zlevellist.length + " zlevels");
+       trace("processing " + zlevellist.length + " zlevels");
        for (var i = 0; i < zlevellist.length; i++) {
          zlevelMap[z] = zlevellist[i];
          var z = zlevellist[i].getAttribute('z');
          if( z == undefined )
            z = "0";
-         console.log('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
+         trace('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
 
          var newdiv = document.createElement('div');
          newdiv.setAttribute('id', "level_" + z);
@@ -1465,7 +1471,7 @@ function processPlan() {
            title = zlevellist[i].getAttribute('title');
          }
          else {
-           console.log("disable level " + z);
+           trace("disable level " + z);
            newdiv.style.display = 'none'
          }
          document.body.appendChild(newdiv);
@@ -1477,25 +1483,25 @@ function processPlan() {
      
      lclist = xmlDoc.getElementsByTagName("lc");
      if( lclist.length > 0 )
-       console.log("processing " + lclist.length + " locos");
+       trace("processing " + lclist.length + " locos");
 
      for (var i = 0; i < lclist.length; i++) {
-       console.log('loco: ' + lclist[i].getAttribute('id') );
+       trace('loco: ' + lclist[i].getAttribute('id') );
        lcMap[lclist[i].getAttribute('id')] = lclist[i];
      }
      
      
      colist = xmlDoc.getElementsByTagName("co");
      if( colist.length > 0 )
-       console.log("processing " + colist.length + " outputs");
+       trace("processing " + colist.length + " outputs");
 
      for (var i = 0; i < colist.length; i++) {
        var z     = colist[i].getAttribute('z');
        var ori   = getOriNr(colist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
-       console.log('output: ' + colist[i].getAttribute('id') + "at level " + z);
+       trace('output: ' + colist[i].getAttribute('id') + "at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        coMap[colist[i].getAttribute('id')] = colist[i];
@@ -1510,7 +1516,7 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(colist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getOutputImage(colist[i]);
-       console.log("Output image="+newdiv.style.backgroundImage);
+       trace("Output image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }
@@ -1518,15 +1524,15 @@ function processPlan() {
      
      sglist = xmlDoc.getElementsByTagName("sg");
      if( sglist.length > 0 )
-       console.log("processing " + sglist.length + " signals");
+       trace("processing " + sglist.length + " signals");
 
      for (var i = 0; i < sglist.length; i++) {
        var z     = sglist[i].getAttribute('z');
        var ori   = getOriNr(sglist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
-       console.log('signal: ' + sglist[i].getAttribute('id') + "at level " + z);
+       trace('signal: ' + sglist[i].getAttribute('id') + "at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        sgMap[sglist[i].getAttribute('id')] = sglist[i];
@@ -1542,7 +1548,7 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(sglist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getSignalImage(sglist[i]);
-       console.log("Signal image="+newdiv.style.backgroundImage);
+       trace("Signal image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }
@@ -1550,15 +1556,15 @@ function processPlan() {
      
      tklist = xmlDoc.getElementsByTagName("tk");
      if( tklist.length > 0 )
-       console.log("processing " + tklist.length + " tracks");
+       trace("processing " + tklist.length + " tracks");
 
      for (var i = 0; i < tklist.length; i++) {
        var z     = tklist[i].getAttribute('z');
        var ori   = getOriNr(tklist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
-       console.log('track: ' + tklist[i].getAttribute('id') + "at level " + z);
+       trace('track: ' + tklist[i].getAttribute('id') + "at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        tkMap[tklist[i].getAttribute('id')] = tklist[i];
@@ -1572,8 +1578,8 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(tklist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getTrackImage(tklist[i]);
-       //console.log("Track image="+newdiv.style.backgroundImage + "    " + getTrackImage(tklist[i]));
-       console.log("Track image="+newdiv.style.backgroundImage);
+       //trace("Track image="+newdiv.style.backgroundImage + "    " + getTrackImage(tklist[i]));
+       trace("Track image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }
@@ -1581,7 +1587,7 @@ function processPlan() {
 
      txlist = xmlDoc.getElementsByTagName("tx");
      if( txlist.length > 0 )
-       console.log("processing " + txlist.length + " texts");
+       trace("processing " + txlist.length + " texts");
 
      for (var i = 0; i < txlist.length; i++) {
        var z     = txlist[i].getAttribute('z');
@@ -1590,9 +1596,9 @@ function processPlan() {
        var leveldiv = zlevelDivMap[z]; 
        if( text == undefined )
          text = "";
-       console.log('text: ' + txlist[i].getAttribute('id') + "at level " + z + " text=["+text+"]");
+       trace('text: ' + txlist[i].getAttribute('id') + "at level " + z + " text=["+text+"]");
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        txMap[txlist[i].getAttribute('id')] = txlist[i];
@@ -1630,14 +1636,14 @@ function processPlan() {
 
      swlist = xmlDoc.getElementsByTagName("sw");
      if( swlist.length > 0 )
-       console.log("processing " + swlist.length + " switches");
+       trace("processing " + swlist.length + " switches");
 
      for (var i = 0; i < swlist.length; i++) {
        var z     = swlist[i].getAttribute('z');
        var leveldiv = zlevelDivMap[z]; 
-       console.log('switch: ' + swlist[i].getAttribute('id') + "at level " + z);
+       trace('switch: ' + swlist[i].getAttribute('id') + "at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        swMap[swlist[i].getAttribute('id')] = swlist[i];
@@ -1653,7 +1659,7 @@ function processPlan() {
        newdiv.innerHTML      = "";
        
        newdiv.style.backgroundImage = getSwitchImage(swlist[i], newdiv);
-       console.log("Switch image="+newdiv.style.backgroundImage);
+       trace("Switch image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
      }
@@ -1661,7 +1667,7 @@ function processPlan() {
      
      fblist = xmlDoc.getElementsByTagName("fb");
      if( fblist.length > 0 )
-       console.log("processing " + fblist.length + " sensors");
+       trace("processing " + fblist.length + " sensors");
 
      for (var i = 0; i < fblist.length; i++) {
        var z     = fblist[i].getAttribute('z');
@@ -1673,9 +1679,9 @@ function processPlan() {
          ori = (ori % 2 == 0) ? 2 : 1;
 
        var leveldiv = zlevelDivMap[z]; 
-       console.log('sensor: ' + fblist[i].getAttribute('id') + "at level " + z);
+       trace('sensor: ' + fblist[i].getAttribute('id') + "at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        fbMap[fblist[i].getAttribute('id')] = fblist[i];
@@ -1691,7 +1697,7 @@ function processPlan() {
        newdiv.innerHTML      = "";
        
        newdiv.style.backgroundImage = getSensorImage(fblist[i]);
-       //console.log("Sensor image="+newdiv.style.backgroundImage);
+       //trace("Sensor image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
        //document.body.appendChild(newdiv);
@@ -1699,7 +1705,7 @@ function processPlan() {
      
      bklist = xmlDoc.getElementsByTagName("bk");
      if( bklist.length > 0 )
-       console.log("processing " + bklist.length + " blocks");
+       trace("processing " + bklist.length + " blocks");
      for (var i = 0; i < bklist.length; i++) {
        var z = bklist[i].getAttribute('z');
        if( z == undefined )
@@ -1707,9 +1713,9 @@ function processPlan() {
        var ori      = getOri(bklist[i]);
        var small    = bklist[i].getAttribute('smallsymbol');
        var leveldiv = zlevelDivMap[z]; 
-       console.log('block: ' + bklist[i].getAttribute('id') + " at level " + z);
+       trace('block: ' + bklist[i].getAttribute('id') + " at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
@@ -1743,16 +1749,16 @@ function processPlan() {
 
      ttlist = xmlDoc.getElementsByTagName("tt");
      if( ttlist.length > 0 )
-       console.log("processing " + ttlist.length + " turntables");
+       trace("processing " + ttlist.length + " turntables");
      for (var i = 0; i < ttlist.length; i++) {
        var z = ttlist[i].getAttribute('z');
        if( z == undefined )
          z = '0';
        var ori      = getOri(ttlist[i]);
        var leveldiv = zlevelDivMap[z]; 
-       console.log('turntable: ' + ttlist[i].getAttribute('id') + " at level " + z);
+       trace('turntable: ' + ttlist[i].getAttribute('id') + " at level " + z);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        var traverser = ttlist[i].getAttribute('traverser');
@@ -1776,16 +1782,16 @@ function processPlan() {
      
      sblist = xmlDoc.getElementsByTagName("sb");
      if( sblist.length > 0 )
-       console.log("processing " + sblist.length + " staging blocks");
+       trace("processing " + sblist.length + " staging blocks");
      for (var i = 0; i < sblist.length; i++) {
        var z = sblist[i].getAttribute('z');
        if( z == undefined )
          z = '0';
        var ori      = getOri(sblist[i]);
        var leveldiv = zlevelDivMap[z]; 
-       console.log('staging block: ' + sblist[i].getAttribute('id') + " at level " + z + " ori=" + ori);
+       trace('staging block: ' + sblist[i].getAttribute('id') + " at level " + z + " ori=" + ori);
        if( leveldiv == undefined ) {
-         console.log("Error: zlevel ["+z+"] does not exist!");
+         trace("Error: zlevel ["+z+"] does not exist!");
          continue;
        }
        sbMap[sblist[i].getAttribute('id')] = sblist[i];
@@ -1804,7 +1810,7 @@ function processPlan() {
        var lcCount = 0;
        sectionlist = sblist[i].getElementsByTagName("section");
        if( sectionlist.length > 0 ) {
-         console.log("processing " + sectionlist.length + " staging block sections");
+         trace("processing " + sectionlist.length + " staging block sections");
          for (var n = 0; n < sectionlist.length; n++) {
            var lcid = sectionlist[n].getAttribute('lcid');
            if( lcid != undefined && lcid.length > 0 ) {
@@ -1829,7 +1835,7 @@ function processPlan() {
      
    }
    catch(e) {
-     console.log("exception: " + e.stack);
+     trace("exception: " + e.stack);
    }
 
 }

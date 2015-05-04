@@ -1,5 +1,5 @@
 .item {position:absolute;text-align:center;border:0px}
-.itemV {position:absolute;text-align:center;border:0px -webkit-transform: rotate(90deg);}
+.itemV {position:absolute;text-align:center;border:0px; -webkit-transform: rotate(90deg);}
 .itemtext{vertical-align:middle;}
 .itemtextV{vertical-align:middle; horizontal-align:middle; -webkit-transform: rotate(90deg);}
 .imageV{-webkit-transform: rotate(90deg);}
