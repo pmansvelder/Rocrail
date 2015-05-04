@@ -338,8 +338,17 @@ function actionSignal(id) {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
-function actionBlock(id)
-{
+function actionTurntable(id) {
+  ttid = id.replace("tt_","");
+  sessionStorage.setItem("turntable", ttid);
+  document.getElementById("turntableTitle").innerHTML = "Turntable: " + ttid;
+
+  ttNode = ttMap[ttid];
+  $( "#popupTurntable" ).popup( "open", {positionTo: '#'+id} );
+
+}
+
+function actionBlock(id) {
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
   document.getElementById("blockTitle").innerHTML = "Block: " + bkid;
@@ -744,6 +753,26 @@ function handleBlock(bk) {
   updateBlockstate( bk.getAttribute('statesignal'), bk.getAttribute('locid'));
 }
 
+
+function handleTurntable(tt) {
+  console.log("turntable event: " + tt.getAttribute('id') + " " + tt.getAttribute('state'));
+  var div = document.getElementById("tt_"+tt.getAttribute('id'));
+  if( div != null ) {
+    ttNode = ttMap[tt.getAttribute('id')];
+    ttNode.setAttribute('bridgepos', tt.getAttribute('bridgepos'));
+    ttNode.setAttribute('state', tt.getAttribute('state'));
+    ttNode.setAttribute('state1', tt.getAttribute('state1'));
+    ttNode.setAttribute('state2', tt.getAttribute('state2'));
+    
+    div.innerHTML = getTurntableImage(ttNode);
+  }
+  else {
+    console.log("turntable: " + tt.getAttribute('id') + " not found");
+  }
+  
+}
+
+
 function handleStageBlock(sb) {
   console.log("staging block event: " + sb.getAttribute('id') + " " + sb.getAttribute('state'));
   var div = document.getElementById("sb_"+sb.getAttribute('id'));
@@ -830,6 +859,8 @@ function evaluateEvent(xmlStr) {
     handleText(root);
   else if( evtName == "sb" )
     handleStageBlock(root);
+  else if( evtName == "tt" )
+    handleTurntable(root);
 }
 
 function processResponse() {
@@ -1038,7 +1069,9 @@ function getSignalImage(sg) {
 
 
 function getTurntableImage(tt) {
+  var traverser  = tt.getAttribute('traverser');
   var symbolsize = parseInt(tt.getAttribute('symbolsize'));
+  var bridgepos  = parseInt(tt.getAttribute('bridgepos'));
   if( symbolsize < 2 )
     symbolsize = 5;
   var size   = 5 * 32;
@@ -1053,7 +1086,8 @@ function getTurntableImage(tt) {
   // M 2,2 L 126,2 L 126,62 L 2,62 z 
   var bridge = "M "+bridgeX+","+bridgeY+" L "+(bridgeX+bridgeCX)+","+bridgeY+" L "+
                (bridgeX+bridgeCX)+","+(bridgeY+bridgeCY)+" L"+bridgeX+","+(bridgeY+bridgeCY)+" z";
-  var transform = "rotate(90, "+center+", "+center+")";
+  var rotate = (360 / 48) * (48 - bridgepos);
+  var transform = "rotate("+rotate+", "+center+", "+center+")";
   var svg = 
     "<svg xmlns='http://www.w3.org/2000/svg' width='"+size+"' height='"+size+"'>" +
     "  <g>" +
@@ -1291,7 +1325,7 @@ function getStageBlockImage(sb, div) {
     return "url('stage-closed"+"."+ori+".svg')";
   if( "true" == sb.getAttribute('reserved') )
     return "url('stage-res"+"."+ori+".svg')";
-  else if( label.length > 0 )
+  else if( label != undefined && label.length > 0 )
     return "url('stage-occ"+"."+ori+".svg')";
   else
     return "url('stage"+"."+ori+".svg')";
@@ -1644,7 +1678,7 @@ function processPlan() {
          z = '0';
        var ori      = getOri(sblist[i]);
        var leveldiv = zlevelDivMap[z]; 
-       console.log('staging block: ' + sblist[i].getAttribute('id') + " at level " + z);
+       console.log('staging block: ' + sblist[i].getAttribute('id') + " at level " + z + " ori=" + ori);
        if( leveldiv == undefined ) {
          console.log("Error: zlevel ["+z+"] does not exist!");
          continue;
@@ -1659,7 +1693,7 @@ function processPlan() {
        newdiv.style.height   = "32px";
        newdiv.style.left     = "" + (parseInt(sblist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(sblist[i].getAttribute('y')) * 32 + yoffset) + "px";
-       newdiv.style.backgroundImage = getStageBlockImage(bklist[i], newdiv);
+       newdiv.style.backgroundImage = getStageBlockImage(sblist[i], newdiv);
        newdiv.style.lineHeight = newdiv.style.height;
 
        var lcCount = 0;
@@ -1690,7 +1724,7 @@ function processPlan() {
      
    }
    catch(e) {
-     console.log("exception: " + e);
+     console.log("exception: " + e.stack);
    }
 
 }
