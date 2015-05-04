@@ -398,6 +398,7 @@ function actionBlock(id) {
 }
 
 function onBlockStart() {
+  $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"go\"/>";
@@ -406,6 +407,7 @@ function onBlockStart() {
 }
 
 function onBlockStop() {
+  $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"stop\"/>";
@@ -414,14 +416,26 @@ function onBlockStop() {
 }
 
 function onBlockOpen() {
+  $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
   var cmd = "<bk id=\""+bkid+"\" state=\"open\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 function onBlockClose() {
+  $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
   var cmd = "<bk id=\""+bkid+"\" state=\"closed\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function onLocoInBlock(lcid) {
+  bkid = sessionStorage.getItem("block");
+  var cmd = "";
+  if( lcid.length > 0 )
+    cmd = "<lc id=\""+lcid+"\" cmd=\"block\" blockid=\""+bkid+"\"/>";
+  else
+    cmd = "<bk id=\""+bkid+"\" cmd=\"loc\" locid=\"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -435,6 +449,7 @@ function actionStageBlock(id)
 }
 
 function onStageCompress() {
+  $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" cmd=\"compress\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
@@ -442,6 +457,7 @@ function onStageCompress() {
 
 
 function onStageOpen() {
+  $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" state=\"open\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
@@ -449,8 +465,25 @@ function onStageOpen() {
 
 
 function onStageClose() {
+  $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" state=\"closed\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onTurntableNext() {
+  $( "#popupTurntable" ).popup( "close" );
+  ttid = sessionStorage.getItem("turntable");
+  var cmd = "<tt id=\""+ttid+"\" cmd=\"next\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onTurntablePrevious() {
+  $( "#popupTurntable" ).popup( "close" );
+  ttid = sessionStorage.getItem("turntable");
+  var cmd = "<tt id=\""+ttid+"\" cmd=\"previous\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -482,8 +515,11 @@ $(document).on("pagecreate",function(){
   speedUpdate(value);} );
   
   $('#locoBlockSelect').change(function() {
+    $( "#popupBlock" ).popup( "close" );
     locoBlockSelect = this.value;
+    console.log("locoBlockSelect: " + locoBlockSelect);
     sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
+    onLocoInBlock(locoBlockSelect);
   } );
   
   $('#locoSelect').change(function() {
@@ -1101,8 +1137,11 @@ function getTurntableImage(tt) {
       var nr = parseInt(track.getAttribute('nr'));
       var trackRotate = (360 / 48) * (48 - nr);
       var trackTransform = "rotate("+trackRotate+", "+center+", "+center+")";
-      
-      var path = "<path stroke-width='5' stroke='rgb(100,100,100)' fill='rgb(100,100,100)' d='"+trackPath+"' transform='"+trackTransform+"' />";
+      var path = "";
+      if( bridgepos == nr )
+        path = "<path stroke-width='5' stroke='rgb(255,0,0)' fill='rgb(255,0,0)' d='"+trackPath+"' transform='"+trackTransform+"' />";
+      else
+        path = "<path stroke-width='5' stroke='rgb(100,100,100)' fill='rgb(100,100,100)' d='"+trackPath+"' transform='"+trackTransform+"' />";
       svg += path;
     }
   }
