@@ -18,6 +18,7 @@ var coMap = {};
 var sgMap = {};
 var txMap = {};
 var sbMap = {};
+var ttMap = {};
 var locoSelected = 'none';
 var locoBlockSelect = 'none';
 var zlevelSelected = 'none';
@@ -1035,6 +1036,36 @@ function getSignalImage(sg) {
   return "url('"+type+"main"+aspects+"-"+aspect+"."+ ori + ".svg')";
 }
 
+
+function getTurntableImage(tt) {
+  var symbolsize = parseInt(tt.getAttribute('symbolsize'));
+  if( symbolsize < 2 )
+    symbolsize = 5;
+  var size   = 5 * 32;
+  var center = (5 * 32) / 2;
+  var radius1 = center - 2;
+  var radius2 = center / 2;
+  var radius3 = radius2 - 6;
+  var bridgeX = (size/2) - radius3; 
+  var bridgeY = (size/2) - 5;
+  var bridgeCX = radius3 * 2; 
+  var bridgeCY = 10; 
+  // M 2,2 L 126,2 L 126,62 L 2,62 z 
+  var bridge = "M "+bridgeX+","+bridgeY+" L "+(bridgeX+bridgeCX)+","+bridgeY+" L "+
+               (bridgeX+bridgeCX)+","+(bridgeY+bridgeCY)+" L"+bridgeX+","+(bridgeY+bridgeCY)+" z";
+  var transform = "rotate(90, "+center+", "+center+")";
+  var svg = 
+    "<svg xmlns='http://www.w3.org/2000/svg' width='"+size+"' height='"+size+"'>" +
+    "  <g>" +
+    "   <circle cx='"+center+"' cy='"+center+"' r='"+radius1+"' fill='rgb(255,255,255)' stroke-width='1' stroke='rgb(180,180,180)'/>" +
+    "   <circle cx='"+center+"' cy='"+center+"' r='"+radius2+"' fill='rgb(255,255,255)' stroke-width='2' stroke='rgb(0,0,0)'/>" +
+    "   <circle cx='"+center+"' cy='"+center+"' r='"+radius3+"' fill='rgb(255,255,255)' stroke-width='2' stroke='rgb(0,0,0)'/>" +
+    "   <path stroke-width='2' stroke='rgb(0,0,0)' fill='rgb(100,255,100)' d='"+bridge+"' transform='"+transform+"' />" +
+    "  </g>" +
+    "</svg>";
+  return svg;
+}
+
 function getTrackImage(tk) {
   var ori   = getOri(tk);
   var type  = tk.getAttribute('type');
@@ -1567,6 +1598,39 @@ function processPlan() {
          newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
        }
        
+       leveldiv.appendChild(newdiv);
+     }
+     
+
+     ttlist = xmlDoc.getElementsByTagName("tt");
+     if( ttlist.length > 0 )
+       console.log("processing " + ttlist.length + " turntables");
+     for (var i = 0; i < ttlist.length; i++) {
+       var z = ttlist[i].getAttribute('z');
+       if( z == undefined )
+         z = '0';
+       var ori      = getOri(ttlist[i]);
+       var leveldiv = zlevelDivMap[z]; 
+       console.log('turntable: ' + ttlist[i].getAttribute('id') + " at level " + z);
+       if( leveldiv == undefined ) {
+         console.log("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
+       var traverser = ttlist[i].getAttribute('traverser');
+       var symbolsize = parseInt(ttlist[i].getAttribute('symbolsize'));
+       if( symbolsize < 2 )
+         symbolsize = 5;
+       ttMap[ttlist[i].getAttribute('id')] = ttlist[i];
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "tt_"+ttlist[i].getAttribute('id'));
+       newdiv.setAttribute('onClick', "actionTurntable(this.id)");
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.width    = ""+(symbolsize*32)+"px";
+       newdiv.style.height   = ""+(symbolsize*32)+"px";
+       newdiv.style.left     = "" + (parseInt(ttlist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(ttlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.innerHTML  = getTurntableImage(ttlist[i]); 
        leveldiv.appendChild(newdiv);
      }
      
