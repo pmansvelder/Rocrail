@@ -27,6 +27,9 @@ var donkey = 'false';
 var didShowDonkey = false;
 var shutdownTimer;
 var FGroup = 0;
+var rocrailversion = '';
+var rocrailpwd = '';
+
 
 /* JSon test */
 function jsonStorageTest() {
@@ -841,6 +844,13 @@ function processResponse() {
           var h = document.getElementById("title");
           donkey = planlist[0].getAttribute('donkey');
           title = planlist[0].getAttribute('title');
+          rocrailversion = planlist[0].getAttribute('rocrailversion');
+          rocrailpwd = planlist[0].getAttribute('rocrailpwd');
+          
+          var serverInfo = document.getElementById("serverInfo");
+          serverInfo.innerHTML = "Server version: " + rocrailversion + "<br>" + "Server path: " + rocrailpwd;
+          
+          
           console.log( "processing plan: " + title + " key=" + donkey );
           h.innerHTML = title;
           processPlan();
@@ -1420,16 +1430,29 @@ function processPlan() {
        newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
-       newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";;
+       if( ori == "north" || ori == "south" ) {
+         newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";
+         newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
+       }
+       else {
+         newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
+         newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";
+       }
        newdiv.style.left     = "" + (parseInt(txlist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(txlist[i].getAttribute('y')) * 32 + yoffset) + "px";
        if( text != undefined && text.indexOf(".png") != -1 ) {
-         newdiv.style.backgroundImage = "url('"+text+"')";
+         //newdiv.style.backgroundImage = "url('"+text+"')";
          newdiv.style.backgroundSize = newdiv.style.width;
+         if( ori == "north" || ori == "south" )
+           newdiv.innerHTML = "<div class='imageV'><img height='"+newdiv.style.width+"' src='"+text+"'/></div>";
+         else
+           newdiv.innerHTML = "<div><img width='"+newdiv.style.width+"' src='"+text+"'/></div>";
        }
        else  
-         newdiv.innerHTML      = "<div style='font-size:10px; horizontal-align:left;'>" +text+ "</div>";
+         if( ori == "north" || ori == "south" )
+           newdiv.innerHTML = "<div class='itemtextV' style='font-size:10px;'>"+text+"</div>";
+         else
+           newdiv.innerHTML = "<div style='font-size:10px; horizontal-align:left;'>" +text+ "</div>";
        //newdiv.style.backgroundImage = getTextImage(txlist[i]);
        leveldiv.appendChild(newdiv);
      }

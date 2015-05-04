@@ -1,7 +1,9 @@
 .item {position:absolute;text-align:center;border:0px}
+.itemV {position:absolute;text-align:center;border:0px -webkit-transform: rotate(90deg);}
 .itemtext{vertical-align:middle;}
 .itemtextV{vertical-align:middle; horizontal-align:middle; -webkit-transform: rotate(90deg);}
-
+.imageV{-webkit-transform: rotate(90deg);}
+.divborder{border: 1px solid #000; text-align: left; padding: 10px;}
 .full-width-slider .ui-slider-input {display: none; width: 0px;}
 .full-width-slider .ui-slider-track {margin-left: 15px;}
 
