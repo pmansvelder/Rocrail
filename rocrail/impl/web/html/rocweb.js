@@ -488,6 +488,44 @@ function onTurntablePrevious() {
 }
 
 
+function initThrottleStatus() {
+  console.log("init throttle status: " + locoSelected );
+  var lc = lcMap[locoSelected]
+  if( lc != undefined ) {
+    var locoStatus = document.getElementById("locoStatus");
+    var locoDescription = document.getElementById("locoDescription");
+
+    var modeLabel = "";
+    var modeColor = "#FFAAAA";
+    var mode = lc.getAttribute('mode');
+    if( mode == "auto" ) {
+      modeLabel = "A";
+      modeColor = "#AAFFAA";
+    }
+    else if( mode == "idle" )
+      modeLabel = "O";
+    else if( mode == "wait" )
+      modeLabel = "W";
+    else if( mode == "halfauto" ) {
+      modeLabel = "H";
+      modeColor = "#AAFFAA";
+    }
+    
+    var destblockid = lc.getAttribute('destblockid');
+    var blockid     = lc.getAttribute('blockid');
+
+    var fromTo = "";
+    if( blockid != undefined && blockid.length > 0 && destblockid != undefined && destblockid.length > 0 )
+      fromTo = " " + blockid + " >> " + destblockid;
+
+    locoStatus.style.backgroundColor = modeColor;
+    locoStatus.innerHTML = lc.getAttribute('id') + " [" + mode + "]" + fromTo;
+    locoDescription.innerHTML = lc.getAttribute('desc');
+    console.log("init throttle status: " + lc.getAttribute('id') + " [" + mode + "]" + fromTo);
+  }
+}
+
+
 function initThrottle() {
   console.log("locoSelect: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -499,9 +537,11 @@ function initThrottle() {
     else
       img.src = lc.getAttribute('image');
     console.log("new image: " + img.src);
+
     document.getElementById("speedSlider").value = lc.getAttribute('V');
     $("#speedSlider").slider("refresh");
     updateDir();
+    initThrottleStatus();
   }
 }
 
@@ -706,9 +746,19 @@ function findBlock4Loco(lcid) {
 }
 
 function handleLoco(lc) {
+  var lcNode = lcMap[lc.getAttribute('id')]
+  lcNode.setAttribute('mode', lc.getAttribute('mode'));
+  lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
+  lcNode.setAttribute('V', lc.getAttribute('V'));
+  lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
+  lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
+
   var bk = findBlock4Loco(lc.getAttribute('id'));
   if( bk != undefined )
     updateBlockstate(bk.getAttribute('statesignal'), lc.getAttribute('id'));
+  
+  if( lc.getAttribute('id') == locoSelected )
+    initThrottleStatus();
 }
 
 

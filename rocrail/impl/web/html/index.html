@@ -121,7 +121,10 @@
   <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a" style="width: 400px;">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
     <div style="padding:10px 10px;">
-    <center><img id="locoImage" src="noimg.png"/></center>
+    <center><img id="locoImage" src="noimg.png" onclick="onLocoImage()"/></center>
+    <div id="locoStatus"></div>
+    <div id="locoDescription"></div>
+    <div id="locoConsist"></div>
     <select name="locoSelect" id="locoSelect">
     </select>
     
