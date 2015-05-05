@@ -33,9 +33,9 @@ var rocrailversion = '';
 var rocrailpwd = '';
 
 function trace(msg) {
-  localStorage.setItem("debug", true);
+  localStorage.setItem("debug", "false");
   var debug = localStorage.getItem("debug");
-  if( debug )
+  if( debug == "true" )
     console.log(msg);
 }
 
@@ -361,7 +361,7 @@ function actionTurntable(id) {
 
 function actionFiddleYard(id) {
   fyid = id.replace("fy_","");
-  sessionStorage.setItem("fiddleyard", ttid);
+  sessionStorage.setItem("fiddleyard", fyid);
   document.getElementById("fiddleyardTitle").innerHTML = "FiddleYard: " + fyid;
 
   fyNode = fyMap[fyid];
@@ -505,6 +505,22 @@ function onTurntablePrevious() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
   var cmd = "<tt id=\""+ttid+"\" cmd=\"previous\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onFiddleYardNext() {
+  $( "#popupFiddleYard" ).popup( "close" );
+  fyid = sessionStorage.getItem("fiddleyard");
+  var cmd = "<seltab id=\""+fyid+"\" cmd=\"next\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onFiddleYardPrevious() {
+  $( "#popupFiddleYard" ).popup( "close" );
+  fyid = sessionStorage.getItem("fiddleyard");
+  var cmd = "<seltab id=\""+fyid+"\" cmd=\"previous\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -871,7 +887,7 @@ function handleTurntable(tt) {
     ttNode.setAttribute('state1', tt.getAttribute('state1'));
     ttNode.setAttribute('state2', tt.getAttribute('state2'));
     
-    div.innerHTML = getTurntableImage(ttNode);
+    div.innerHTML = getTurntableImage(ttNode, div);
   }
   else {
     trace("turntable: " + tt.getAttribute('id') + " not found");
@@ -1225,6 +1241,8 @@ function getFiddleYardImage(fy, div) {
   var label = fy.getAttribute('locid');
   if( label == undefined || label.length == 0 )
     label = fy.getAttribute('id');
+  else
+    fill = "255,100,100";
 
   var transform = "rotate("+rotate+", "+(32/2)+", "+(32/2)+")";
 
@@ -1241,8 +1259,61 @@ function getFiddleYardImage(fy, div) {
 }
 
 
-function getTurntableImage(tt) {
+function getTraverserImage(tt, div) {
+  var ori        = getOri(tt);
+  var bridgepos  = parseInt(tt.getAttribute('bridgepos'));
+  var yoff       = (bridgepos % 24) * 32;
+  var rotate     = 0;
+  var width      = 128;
+  var height     = 256;
+  var pathTransform = "";
+
+  if( ori == "north" || ori == "south" ) {
+    div.style.width    = "256px";
+    div.style.height   = "128px";
+    width  = 256;
+    height = 128;
+    rotate = 90;
+    var pathTransform = " transform='translate(0, -128)'";
+  }
+  else {
+    div.style.width    = "128px";
+    div.style.height   = "256px";
+  }
+  
+  var transform = "rotate("+rotate+", "+64+", "+64+")";
+
+
+  var svg = 
+    "<svg xmlns='http://www.w3.org/2000/svg' width='"+width+"' height='"+height+"'>" +
+    "  <g transform='"+transform+"'>" +
+    "    <path stroke='rgb(0,0,0)' fill='white' d='M 0,3 L 127,3 L 127,252 L 0,252 z ' "+pathTransform+"/>" +
+    "    <path stroke='rgb(0,0,0)' fill='white' d='M 6,6 L 121,6 L 121,249 L 6,249 z ' "+pathTransform+"/>" +
+    "    <path stroke='rgb(160,160,160)' fill='white' d='M 11,6 L 12,6 L 12,249 L 11,249 z ' "+pathTransform+"/>" +
+    "    <path stroke='rgb(160,160,160)' fill='white' d='M 115,6 L 116,6 L 116,249 L 115,249 z ' "+pathTransform+"/>";
+  
+  // draw the bridge
+  svg +=
+    "<path stroke='rgb(0,0,0)' fill='gray' d='M 7,"+(7+yoff)+" L 17,"+(7+yoff)+" L 17,"+(24+yoff)+" L 7,"+(24+yoff)+" z ' "+pathTransform+"/>" +
+    "<path stroke='rgb(0,0,0)' fill='gray' d='M 110,"+(7+yoff)+" L 120,"+(7+yoff)+" L 120,"+(24+yoff)+" L 110,"+(24+yoff)+" z ' "+pathTransform+"/>" +
+    "<path stroke='rgb(0,0,0)' fill='none' d='M 0,"+(10+yoff)+" L 127,"+(10+yoff)+" L 127,"+(21+yoff)+" L 0,"+(21+yoff)+" z ' "+pathTransform+"/>" +
+    "<path stroke='gray' fill='white' d='M 1,"+(11+yoff)+" L 126,"+(11+yoff)+" L 126,"+(20+yoff)+" L 1,"+(20+yoff)+" z ' "+pathTransform+"/>";
+
+  
+  svg +=
+    "  </g>" +
+    "</svg>";
+  
+  return svg;
+}
+
+
+function getTurntableImage(tt, div) {
   var traverser  = tt.getAttribute('traverser');
+  if( traverser == "true" ) {
+    return getTraverserImage(tt, div);
+  }
+  
   var symbolsize = parseInt(tt.getAttribute('symbolsize'));
   var bridgepos  = parseInt(tt.getAttribute('bridgepos'));
   if( symbolsize < 2 )
@@ -1856,7 +1927,7 @@ function processPlan() {
        newdiv.style.height   = ""+(symbolsize*32)+"px";
        newdiv.style.left     = "" + (parseInt(ttlist[i].getAttribute('x')) * 32) + "px";
        newdiv.style.top      = "" + (parseInt(ttlist[i].getAttribute('y')) * 32 + yoffset) + "px";
-       newdiv.innerHTML  = getTurntableImage(ttlist[i]); 
+       newdiv.innerHTML  = getTurntableImage(ttlist[i], newdiv); 
        leveldiv.appendChild(newdiv);
      }
      
