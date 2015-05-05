@@ -19,6 +19,7 @@ var sgMap = {};
 var txMap = {};
 var sbMap = {};
 var ttMap = {};
+var fyMap = {};
 var locoSelected = 'none';
 var locoBlockSelect = 'none';
 var zlevelSelected = 'none';
@@ -168,8 +169,12 @@ function openMenu()
 
 
 /* Options Dialog */
-function openOptions()
-{
+function openOptions() {
+  trace("close menu");
+  $( "#popupMenu" ).popup( "close" );
+  
+  trace("open info");
+  $('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
 }
 
 function closeOptions()
@@ -195,7 +200,7 @@ function sendCommand(cmd) {
     xmlhttp.send("");
   } 
     catch(e) {
-      trace("exception: " + e);
+      console.log("exception: " + e.stack);
   }
 }
 
@@ -351,6 +356,16 @@ function actionTurntable(id) {
 
   ttNode = ttMap[ttid];
   $( "#popupTurntable" ).popup( "open", {positionTo: '#'+id} );
+
+}
+
+function actionFiddleYard(id) {
+  fyid = id.replace("fy_","");
+  sessionStorage.setItem("fiddleyard", ttid);
+  document.getElementById("fiddleyardTitle").innerHTML = "FiddleYard: " + fyid;
+
+  fyNode = fyMap[fyid];
+  $( "#popupFiddleYard" ).popup( "open", {positionTo: '#'+id} );
 
 }
 
@@ -637,7 +652,7 @@ if (p_req.readyState == 4) {
      }
    }
    catch(e) {
-     trace("exception: " + e);
+     console.log("exception: " + e.stack);
    }
 
  }
@@ -655,7 +670,7 @@ function loadPlan() {
    req.send("");
  } 
  catch(e) {
-   trace("exception: " + e);
+   console.log("exception: " + e.stack);
  }
 }
 
@@ -865,6 +880,23 @@ function handleTurntable(tt) {
 }
 
 
+function handleFiddleYard(fy) {
+  trace("fiddleyard event: " + fy.getAttribute('id') + " " + fy.getAttribute('state'));
+  var div = document.getElementById("fy_"+fy.getAttribute('id'));
+  if( div != null ) {
+    fyNode = fyMap[fy.getAttribute('id')];
+    fyNode.setAttribute('locid', fy.getAttribute('locid'));
+    fyNode.setAttribute('state', fy.getAttribute('state'));
+    
+    div.innerHTML = getFiddleYardImage(fyNode, div);
+  }
+  else {
+    trace("fiddleyard: " + fy.getAttribute('id') + " not found");
+  }
+  
+}
+
+
 function handleStageBlock(sb) {
   trace("staging block event: " + sb.getAttribute('id') + " " + sb.getAttribute('state'));
   var div = document.getElementById("sb_"+sb.getAttribute('id'));
@@ -953,6 +985,8 @@ function evaluateEvent(xmlStr) {
     handleStageBlock(root);
   else if( evtName == "tt" )
     handleTurntable(root);
+  else if( evtName == "seltab" )
+    handleFiddleYard(root);
 }
 
 function processResponse() {
@@ -1038,7 +1072,7 @@ function processResponse() {
      
     }
     catch(e) {
-      trace("exception: " + e);
+      console.log("exception: " + e.stack);
     }
     $.mobile.loading("hide");
     
@@ -1157,6 +1191,53 @@ function getSignalImage(sg) {
   }
 
   return "url('"+type+"main"+aspects+"-"+aspect+"."+ ori + ".svg')";
+}
+
+
+function getFiddleYardImage(fy, div) {
+  var nrtracks = 0;
+  if( fy.getAttribute('nrtracks') == undefined )
+    nrtracks = 12;
+  else
+    nrtracks = parseInt(fy.getAttribute('nrtracks'));
+  var ori      = getOri(fy);
+  var width    = (nrtracks * 32) - 4;
+  var symwidth = nrtracks * 32;
+  var state    = fy.getAttribute('state');
+  var rotate   = 0;
+
+  var fill = "255,255,255";
+  if( state == "closed" )
+    fill = "100,100,100";
+  
+  trace("fy width="+width+" nrtracks="+nrtracks);
+
+  if( ori == "north" || ori == "south" ) {
+    div.style.width    = ""+(32)+"px";
+    div.style.height   = ""+symwidth+"px";
+    rotate = 90;
+  }
+  else {
+    div.style.width    = ""+symwidth+"px";
+    div.style.height   = ""+(32)+"px";
+  }
+  
+  var label = fy.getAttribute('locid');
+  if( label == undefined || label.length == 0 )
+    label = fy.getAttribute('id');
+
+  var transform = "rotate("+rotate+", "+(32/2)+", "+(32/2)+")";
+
+
+  var svg = 
+    "<svg xmlns='http://www.w3.org/2000/svg' width='"+symwidth+"' height='"+(div.style.height)+"'>" +
+    "  <g transform='"+transform+"'>" +
+    "   <rect x='2' y='2' rx='8' ry='8' width='"+width+"' height='28' fill='rgb("+fill+")' stroke-width='2' stroke='rgb(0,0,0)'/>" +
+    "   <text x='8' y='24' fill='black' >"+label+"</text>" +
+    "  </g>" +
+    "</svg>";
+  
+  return svg;
 }
 
 
@@ -1780,6 +1861,35 @@ function processPlan() {
      }
      
      
+     fylist = xmlDoc.getElementsByTagName("seltab");
+     if( fylist.length > 0 )
+       trace("processing " + fylist.length + " fiddle yards");
+     for (var i = 0; i < fylist.length; i++) {
+       var z = fylist[i].getAttribute('z');
+       if( z == undefined )
+         z = '0';
+       var ori      = getOri(fylist[i]);
+       var leveldiv = zlevelDivMap[z]; 
+       trace('fiddle yard: ' + fylist[i].getAttribute('id') + " at level " + z + " ori=" + ori);
+       if( leveldiv == undefined ) {
+         trace("Error: zlevel ["+z+"] does not exist!");
+         continue;
+       }
+       fyMap[fylist[i].getAttribute('id')] = fylist[i];
+       
+       var newdiv = document.createElement('div');
+       newdiv.setAttribute('id', "fy_"+fylist[i].getAttribute('id'));
+       newdiv.setAttribute('onClick', "actionFiddleYard(this.id)");
+       newdiv.setAttribute('class', "item");
+       newdiv.style.position = "absolute";
+       newdiv.style.left     = "" + (parseInt(fylist[i].getAttribute('x')) * 32) + "px";
+       newdiv.style.top      = "" + (parseInt(fylist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       newdiv.innerHTML  = getFiddleYardImage(fylist[i], newdiv); 
+       
+       leveldiv.appendChild(newdiv);
+     }
+     
+     
      sblist = xmlDoc.getElementsByTagName("sb");
      if( sblist.length > 0 )
        trace("processing " + sblist.length + " staging blocks");
@@ -1835,7 +1945,7 @@ function processPlan() {
      
    }
    catch(e) {
-     trace("exception: " + e.stack);
+     console.log("exception: " + e.stack);
    }
 
 }
