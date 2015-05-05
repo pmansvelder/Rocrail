@@ -20,7 +20,7 @@ function doWebSocket() {
     debug("websocket connection is established...");
   };
   ws.onerror = function (error) {
-    debug('WebSocket Error ' + error);
+    alert('WebSocket Error ' + error);
     if( retryWebSocket < 10 ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);

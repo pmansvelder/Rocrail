@@ -464,8 +464,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
   }
 
   if( !SocketOp.peek( data->socket, b, 1) ) {
-    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "no work for rocWebSocketME" );
-    ThreadOp.sleep(100);
+    ThreadOp.sleep(10);
     return False;
   }
 
