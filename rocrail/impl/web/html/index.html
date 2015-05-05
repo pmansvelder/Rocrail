@@ -129,10 +129,16 @@
   </div>
   </div>
 
-  <div data-role="popup" id="popupOptions" class="ui-popup" data-theme="a">
+  <div data-role="popup" id="popupOptions" class="ui-popup" data-theme="a" style="width: 300px;">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-    <input type="checkbox" name="checkbox-0 ">Check me</input>
+    <h3 id="optionsTitle">Options</h3>
+    <div data-role="fieldcontain">
+    <fieldset data-role="controlgroup">
+      <input type="checkbox" name="optionDebug" id="optionDebug" class="custom" onclick="onOptionDebug()" />
+      <label for="optionDebug">Debug</label>
+    </fieldset>
+  </div>
   </div>
   </div>
 

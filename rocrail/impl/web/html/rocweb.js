@@ -33,8 +33,9 @@ var rocrailversion = '';
 var rocrailpwd = '';
 
 function trace(msg) {
-  localStorage.setItem("debug", "false");
   var debug = localStorage.getItem("debug");
+  if( debug == undefined )
+    debug = "false";
   if( debug == "true" )
     console.log(msg);
 }
@@ -174,6 +175,8 @@ function openOptions() {
   $( "#popupMenu" ).popup( "close" );
   
   trace("open info");
+  var debug = localStorage.getItem("debug");
+  $('#optionDebug').prop('checked', debug=="true"?true:false);
   $('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
 }
 
@@ -524,6 +527,11 @@ function onFiddleYardPrevious() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function onOptionDebug() {
+  var optionDebug = document.getElementById("optionDebug");
+  localStorage.setItem("debug", optionDebug.checked ? "true":"false");
+  trace("option debug = "+ optionDebug.checked );
+}
 
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
