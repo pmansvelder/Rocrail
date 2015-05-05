@@ -25,6 +25,7 @@ var locoBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
+var autoMode = 'off';
 var donkey = 'false';
 var didShowDonkey = false;
 var shutdownTimer;
@@ -305,6 +306,8 @@ function actionLevelUp() {
 /* Item commands */
 function actionAuto(auto) {
   trace("auto action " + auto);
+  if( autoMode == "on" )
+    auto = "off";
   var cmd = "<auto cmd=\""+auto+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -968,6 +971,15 @@ function handleState(state) {
     document.getElementById("headerPower").style.backgroundColor= '';
 }
 
+function handleAuto(auto) {
+  autoMode = auto.getAttribute('cmd');
+  trace("auto: " + autoMode );
+  if( autoMode == "on" )
+    document.getElementById("headerAuto").style.backgroundColor= "#FF8888";
+  else 
+    document.getElementById("headerAuto").style.backgroundColor= '';
+}
+
 function handleSystem(sys) {
   //<sys cmd="shutdown" informall="true"/>
   var cmd = sys.getAttribute('cmd');
@@ -991,6 +1003,8 @@ function evaluateEvent(xmlStr) {
     handleBlock(root);
   else if( evtName == "state" )
     handleState(root);
+  else if( evtName == "auto" )
+    handleAuto(root);
   else if( evtName == "sys" )
     handleSystem(root);
   else if( evtName == "fn" )
@@ -1441,9 +1455,9 @@ function getSwitchImage(sw, div) {
       }
       var direction = (dir == "true" ? "left":"right");
       if (state=="turnout")
-        return "url('crossing"+direction+"-t."+ori+".svg')";
+        return "url('crossing"+direction+"-t"+suffix+"."+ori+".svg')";
       else
-        return "url('crossing"+direction+"."+ori+".svg')";
+        return "url('crossing"+direction+suffix+"."+ori+".svg')";
     }
   }
   else if (type=="ccrossing") {
@@ -1455,7 +1469,7 @@ function getSwitchImage(sw, div) {
       div.style.width    = "32px";
       div.style.height   = "64px";
     }
-    return "url('ccrossing"+"."+ori+".svg')";
+    return "url('ccrossing"+suffix+"."+ori+".svg')";
   }
   else if (type=="dcrossing") {
     if( ori == "west" || ori == "east") {
