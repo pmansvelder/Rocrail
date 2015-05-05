@@ -4,6 +4,10 @@ function debug(msg) {
   postMessage(JSON.stringify({type:'debug',msg:msg}));                          
 }
 
+function alert(msg) {                                                           
+  postMessage(JSON.stringify({type:'alert',msg:msg}));                          
+}
+
 function doWebSocket() {
   var host = location.hostname;
   host.replace("www.","");
@@ -12,7 +16,8 @@ function doWebSocket() {
   retryWebSocket++;
   ws.onopen = function()
   {
-     debug("websocket connection is established...");
+    retryWebSocket = 0;
+    debug("websocket connection is established...");
   };
   ws.onerror = function (error) {
     debug('WebSocket Error ' + error);
@@ -21,7 +26,7 @@ function doWebSocket() {
       debug('WebSocket retry='+retryWebSocket);
     }
     else
-      debug('WebSocket fatal error; Give up.');
+      alert('WebSocket fatal error; Give up.');
   };
   ws.onmessage = function (evt) 
   {
@@ -33,7 +38,11 @@ function doWebSocket() {
   ws.onclose = function(event)
   { 
      // websocket is closed.
-    debug("websocket is closed: " + event.code); 
+    alert("websocket is closed: " + event.code);
+    if( event.code == 1006 ) {
+      doWebSocket();
+      debug('WebSocket retry='+retryWebSocket);
+    }
   };
   
 }

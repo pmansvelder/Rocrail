@@ -1089,6 +1089,9 @@ function processResponse() {
           if(result.type == 'debug') {
             trace(result.msg);
           } 
+          else if(result.type == 'alert') {
+            alert(result.msg);
+          } 
           else if(result.type == 'response') {
             trace("response: "+result.answer);
             if( !didShowDonkey && donkey == 'false' ) {
