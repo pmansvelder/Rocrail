@@ -651,42 +651,6 @@ $(document).ready(function(){
 })
 
 
-/* Old update function: Deprecated */
-function processUpdate(p_req) {
-//only if req shows "loaded"
-if (p_req.readyState == 4) {
- trace("response status = "+p_req.status);
- if (p_req.status == 0 || p_req.status == 200) {
-   try {
-     xmlDoc = p_req.responseXML;
-     fblist = xmlDoc.getElementsByTagName("fb");
-     if( fblist.length > 0 )
-       trace("updating " + fblist.length + " sensors");
-
-     for (var i = 0; i < fblist.length; i++) {
-       trace("sensor: " + fblist[i].getAttribute('id'));
-       var div = document.getElementById("fb_"+fblist[i].getAttribute('id'));
-       if( div != null ) {
-         if( "true" == fblist[i].getAttribute('state') )
-           div.style.backgroundImage = "url(sensor_on_1.png)";
-         else
-           div.style.backgroundImage = "url(sensor_off_1.png)";
-       }
-       else {
-         trace("sensor: " + fblist[i].getAttribute('id') + " not found");
-       }
-     
-     }
-   }
-   catch(e) {
-     console.log("exception: " + e.stack);
-   }
-
- }
- }
-}
-
-
 /* Load the plan.xml at startup */
 function loadPlan() {
  // send an XMLHttpRequest
@@ -719,7 +683,9 @@ function handleSensor(fb) {
   if( div != null ) {
     fbNode = fbMap[fb.getAttribute('id')];
     fbNode.setAttribute('state', fb.getAttribute('state'));
+    div.style.display = 'none';
     div.style.backgroundImage = getSensorImage(fbNode);
+    div.style.display = 'block';
   }
   else {
     trace("sensor: " + fb.getAttribute('id') + " not found");
@@ -733,13 +699,22 @@ function handleText(tx) {
   if( div != null ) {
     var text = tx.getAttribute('text');
     if( text != undefined ) {
-      if( text.indexOf(".png") != -1 )
+      if( text.indexOf(".png") != -1 ) {
+        div.style.display = 'none';
         div.style.backgroundImage = "url('"+text+"')";
-      else  
+        div.style.display = 'block';
+      }
+      else {  
+        div.style.display = 'none';
         div.innerHTML = "<div style='font-size:10px'>" +text+ "</div>";
+        div.style.display = 'block';
+      }
     }
-    else
+    else {
+      div.style.display = 'none';
       div.innerHTML = "<div style='font-size:10px'>" + "</div>";
+      div.style.display = 'block';
+    }
   }
 }
 
@@ -749,7 +724,9 @@ function handleOutput(co) {
   if( div != null ) {
     coNode = coMap[co.getAttribute('id')];
     coNode.setAttribute('state', co.getAttribute('state'));
+    div.style.display = 'none';
     div.style.backgroundImage = getOutputImage(coNode);
+    div.style.display = 'block';
   }
   else {
     trace("output: " + co.getAttribute('id') + " not found");
@@ -763,7 +740,9 @@ function handleSwitch(sw) {
   if( div != null ) {
     swNode = swMap[sw.getAttribute('id')];
     swNode.setAttribute('state', sw.getAttribute('state'));
+    div.style.display = 'none';
     div.style.backgroundImage = getSwitchImage(swNode, div);
+    div.style.display = 'block';
   }
   else {
     trace("switch: " + sw.getAttribute('id') + " not found");
@@ -778,7 +757,9 @@ function handleSignal(sg) {
     sgNode = sgMap[sg.getAttribute('id')];
     sgNode.setAttribute('state', sg.getAttribute('state'));
     sgNode.setAttribute('aspect', sg.getAttribute('aspect'));
+    div.style.display = 'none';
     div.style.backgroundImage = getSignalImage(sgNode, div);
+    div.style.display = 'block';
   }
   else {
     trace("signal: " + sg.getAttribute('id') + " not found");
@@ -878,7 +859,9 @@ function handleBlock(bk) {
     else
       div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
 
+    div.style.display = 'none';
     div.style.backgroundImage = getBlockImage(bkNode, div);
+    div.style.display = 'block';
   }
   else {
     trace("block: " + bk.getAttribute('id') + " not found");
@@ -955,7 +938,10 @@ function handleStageBlock(sb) {
     else
       div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
 
+    div.style.display = 'none';
     div.style.backgroundImage = getStageBlockImage(sbNode, div);
+    div.style.display = 'block';
+
   }
   else {
     trace("staging block: " + sb.getAttribute('id') + " not found");
