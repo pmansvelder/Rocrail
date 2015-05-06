@@ -1562,7 +1562,8 @@ static void _setTempWait(iIBlockBase inst, Boolean wait) {
 static void _setClass( iIBlockBase inst, const char* p_Class ) {
 }
 
-
+static void _setMasterID( iIBlockBase inst, const char* masterid ) {
+}
 
 
 static void _init( iIBlockBase inst ) {

@@ -2480,11 +2480,18 @@ static Boolean _unLockForGroup( iIBlockBase inst, const char* id ) {
 static void _init( iIBlockBase inst ) {
   iOBlockData data = Data(inst);
   iOModel model = AppOp.getModel(  );
+  Boolean slaveBlock = False;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "init block %s", data->id );
   /* ToDo: This string pointer is not persistent! */
   data->locId = wBlock.getlocid( data->props );
   data->ghost = False;
+
+  if( wBlock.getmasterid(data->props) != NULL && StrOp.len( wBlock.getmasterid(data->props) ) > 0 ) {
+    slaveBlock = True;
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "init slave block [%s] from master [%s]", data->id, wBlock.getmasterid(data->props)  );
+  }
+
 
   if( data->locId != NULL && StrOp.len( data->locId ) > 0 ) {
     iOLoc loc = ModelOp.getLoc( model, data->locId, NULL, False );
@@ -2494,7 +2501,10 @@ static void _init( iIBlockBase inst ) {
             "reject init block [%s] because loco [%s] is still in automode", data->id, LocOp.getId( loc ) );
         return;
       }
-      LocOp.setCurBlock( loc, data->id );
+
+      if( !slaveBlock )
+        LocOp.setCurBlock( loc, data->id );
+
       /* overwrite data->locId with the static id from the loc object: */
       data->locId = LocOp.getId( loc );
       data->occtime = SystemOp.getTick();
@@ -2529,6 +2539,7 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
   if( wBlock.getmasterid(data->props) != NULL && StrOp.len( wBlock.getmasterid(data->props) ) > 0 ) {
     if( !wBlock.ismastercmd(nodeA) )
       slaveBlock = True;
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "slave block [%s] cmd=%s", data->id, slaveBlock?"slave":"normal");
   }
 
   if( cmd != NULL && (StrOp.equals(cmd, wBlock.nop) || StrOp.equals(cmd, wBlock.bsp) || StrOp.equals(cmd, wBlock.bsm) ) ) {
@@ -2609,7 +2620,10 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
         if( bk != NULL ) {
           iONode slaveCmd = (iONode)NodeOp.base.clone(nodeA);
           wBlock.setmastercmd(slaveCmd, True);
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,"inform slave block [%s]", blockid);
+          bk->setMasterID(bk, data->id);
           bk->cmd(bk, slaveCmd);
+
         }
       };
       StrTokOp.base.del(tok);
@@ -2980,6 +2994,12 @@ static void _setClass( iIBlockBase inst, const char* p_Class ) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set class to [%s] in block [%s]", wBlock.getclass(data->props),  data->id );
   /* Broadcast to clients. */
   AppOp.broadcastEvent( (iONode)NodeOp.base.clone( data->props ) );
+}
+
+
+static void _setMasterID( iIBlockBase inst, const char* masterid ) {
+  iOBlockData data = Data(inst);
+  wBlock.setmasterid(data->props, masterid);
 }
 
 

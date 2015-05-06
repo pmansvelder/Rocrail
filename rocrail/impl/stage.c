@@ -2087,6 +2087,9 @@ static void _setGhostDetected(iIBlockBase inst, const char* key, const char* ide
 static void _setClass( iIBlockBase inst, const char* p_Class ) {
 }
 
+static void _setMasterID( iIBlockBase inst, const char* masterid ) {
+}
+
 
 /**  */
 static struct OStage* _inst( iONode props ) {
