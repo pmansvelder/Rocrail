@@ -20,6 +20,7 @@ var txMap = {};
 var sbMap = {};
 var ttMap = {};
 var fyMap = {};
+var lcCatMap = {};
 var locoSelected = 'none';
 var locoBlockSelect = 'none';
 var zlevelSelected = 'none';
@@ -1626,6 +1627,42 @@ function getStageBlockImage(sb, div) {
   
 }
 
+function addLocoToList(lc) {
+  var div = document.getElementById("locoSelectList");
+  var lcCat = lc.getAttribute('engine');
+  if( lcCat == undefined )
+    lcCat = "diesel";
+  var cat = lcCatMap[lcCat];
+  if( cat == undefined ) {
+    /*
+    <div data-role="collapsible">
+   class="ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child"
+    <h2>Diesel</h2>
+    <ul id="locoSelect1" data-role="listview">
+      <li onclick="onLocoSelected('V200')"><a href="#">V200</a></li>
+    </ul>
+    </div>
+   */
+    var newdiv = document.createElement('div');
+    newdiv.setAttribute('data-role', "collapsible");
+    newdiv.setAttribute('class', "ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child");
+    var h2 = document.createElement('h2');
+    h2.innerHTML = lcCat;
+    newdiv.appendChild(h2);
+    var ul = document.createElement('ul');
+    ul.setAttribute('id', lcCat);
+    ul.setAttribute('data-role', "listview");
+    newdiv.appendChild(ul);
+    div.appendChild(newdiv);
+    cat = ul;
+    lcCatMap[lcCat] = cat;
+  }
+  var li = document.createElement('li');
+  li.setAttribute('onclick', "onLocoSelected('"+lc.getAttribute('id')+"')");
+  li.innerHTML = lc.getAttribute('id');
+  cat.appendChild(li);
+}
+
 /* Process the plan.xml */
 function processPlan() {
 //only if req shows "loaded"
@@ -1671,6 +1708,7 @@ function processPlan() {
      for (var i = 0; i < lclist.length; i++) {
        trace('loco: ' + lclist[i].getAttribute('id') );
        lcMap[lclist[i].getAttribute('id')] = lclist[i];
+       addLocoToList(lclist[i]);
      }
      
      

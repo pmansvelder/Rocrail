@@ -730,6 +730,12 @@ static Boolean _isLocked( iOSwitch inst, const char* id, Boolean manual ) {
       return True;
     }
   }
+  if( (data->fbOcc != NULL && FBackOp.getState(data->fbOcc)) || (data->fbOcc2 != NULL && FBackOp.getState(data->fbOcc2)) ) {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "Switch [%s] is electrically occupied",
+                 SwitchOp.getId( inst ) );
+
+    return True;
+  }
   return False;
 }
 

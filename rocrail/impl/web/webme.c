@@ -431,29 +431,29 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
     int len = StrOp.len(info);
     char* b = allocMem(20 + len + 1);
     b[0] = 0x81;
-    if( len+1 < 126 ) {
-      b[1] = len+1;
+    if( len < 126 ) {
+      b[1] = len;
       StrOp.copy(b+2, info);
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event[%d]=%.40s", len+1, b+2 );
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event[%d]=%.40s", len, b+2 );
       ok = SocketOp.write( data->socket, b, 2 + (b[1]&0x7F) );
     }
     else if( len+1 < 32767 ) {
       b[1] = 126;
-      b[2] = ((len+1)/256) & 0x7F;
-      b[3] = (len+1)%256;
+      b[2] = (len/256) & 0x7F;
+      b[3] = len%256;
       StrOp.copy(b+4, info);
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event[%d]=%.40s", len+1, b+4 );
-      ok = SocketOp.write( data->socket, b, 4 + len+1 );
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event[%d]=%.40s", len, b+4 );
+      ok = SocketOp.write( data->socket, b, 4 + len );
     }
     else {
       b[1] = 127;
-      b[2] = ((len+1) >> 24) & 0x7F;
-      b[3] = ((len+1) >> 16) & 0xFF;
-      b[4] = ((len+1) >>  8) & 0xFF;
-      b[5] = (len+1)  & 0xFF;
+      b[2] = (len >> 24) & 0x7F;
+      b[3] = (len >> 16) & 0xFF;
+      b[4] = (len >>  8) & 0xFF;
+      b[5] = len  & 0xFF;
       StrOp.copy(b+4, info);
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event[%d]=%.40s", len+1, b+6 );
-      ok = SocketOp.write( data->socket, b, 6 + len+1 );
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: event[%d]=%.40s", len, b+6 );
+      ok = SocketOp.write( data->socket, b, 6 + len );
     }
     freeMem(b);
     StrOp.free(info);
