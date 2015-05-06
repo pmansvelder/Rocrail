@@ -12,6 +12,17 @@ function doWebSocket() {
   var host = location.hostname;
   host.replace("www.","");
   debug("creating a websocket...ws://" + host + ":" + location.port);
+  
+  try {
+    if( WebSocket == undefined ) {
+      alert("RocWeb:\nThis browser does not support WebSockets.");
+    }
+  }
+  catch(e){
+    alert("RocWeb:\nThis browser does not support WebSockets.");
+    return;
+  }
+  
   ws = new WebSocket("ws://"+host+":"+location.port, "rcp");
   retryWebSocket++;
   ws.onopen = function()
@@ -20,13 +31,13 @@ function doWebSocket() {
     debug("websocket connection is established...");
   };
   ws.onerror = function (error) {
-    alert('WebSocket Error ' + error);
+    debug('WebSocket Error: ' + error);
     if( retryWebSocket < 10 ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
     else
-      alert('WebSocket fatal error; Give up.');
+      alert('RocWeb:\nWebSocket fatal error; Give up.');
   };
   ws.onmessage = function (evt) 
   {
@@ -38,10 +49,12 @@ function doWebSocket() {
   ws.onclose = function(event)
   { 
      // websocket is closed.
-    alert("websocket is closed: " + event.code);
     if( event.code == 1006 ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
+    }
+    else {
+      alert("RocWeb:\nWebSocket is closed: " + event.code);
     }
   };
   
