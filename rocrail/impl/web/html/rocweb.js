@@ -154,7 +154,7 @@ function updateFunctionLabels() {
   for(i = 1; i < 15; i++) {
     var F = document.getElementById("F"+i);
     F.innerHTML = "F" + (i + FGroup * 14); 
-    //trace("function button " + i + " = " + F.innerHTML);
+    F.style.backgroundColor = '';
   }
 
   lc = lcMap[locoSelected];
@@ -162,6 +162,8 @@ function updateFunctionLabels() {
     //var fundeflist = lc.childNodes;
     var fundeflist = lc.getElementsByTagName("fundef");
     trace("function defs " + fundeflist.length + " for " + lc.getAttribute('id'));
+
+    var fx = parseInt(lc.getAttribute('fx'));
     if( fundeflist.length > 0 ) {
       for( n = 0; n < fundeflist.length; n++ ) {
         var fn = fundeflist[n].getAttribute('fn');
@@ -173,14 +175,17 @@ function updateFunctionLabels() {
         if( FGroup == 1 && iFn > 14 ) {
           iFn -= 14;
         }
+        var F = document.getElementById("F"+iFn);
         if( fundeflist[n].getAttribute('icon') ) {
-          var F = document.getElementById("F"+iFn);
           F.innerHTML = "<img src='"+fundeflist[n].getAttribute('icon')+"'/>";
         }
         else if( fundeflist[n].getAttribute('text') ) {
-          var F = document.getElementById("F"+iFn);
           F.innerHTML = "<label style='font-size:10px'>" +fundeflist[n].getAttribute('text')+ "</label>";;
         }
+        var mask = 1 << iFn; 
+        if( fx & mask )
+          F.style.backgroundColor = "#FF8888";
+
       }
     }
   }
