@@ -199,6 +199,29 @@ static const char* __createRoute( iOModPlanData data, iONode model, iOList route
     bkc = StrOp.fmt( "%s", wRoute.getbkc(newRoute) );
   }
 
+  if( (wRoute.getctcaddr1(fromRoute) > 0) || ( wRoute.getctcoutput1(fromRoute) != NULL && StrOp.len( wRoute.getctcoutput1(fromRoute) ) > 0) ) {
+    wRoute.setctciid1( newRoute, wRoute.getctciid1( fromRoute ) );
+    wRoute.setctcbus1( newRoute, wRoute.getctcbus1( fromRoute ) );
+    wRoute.setctcaddr1( newRoute, wRoute.getctcaddr1( fromRoute ) );
+    wRoute.setctcoutput1( newRoute, wRoute.getctcoutput1( fromRoute ) );
+  }
+  if( (wRoute.getctcaddr2(fromRoute) > 0) || ( wRoute.getctcoutput2(fromRoute) != NULL && StrOp.len( wRoute.getctcoutput2(fromRoute) ) > 0) ) {
+    if( (wRoute.getctcaddr2(newRoute) < 1) && ( wRoute.getctcoutput2(toRoute) == NULL || StrOp.len( wRoute.getctcoutput2(toRoute) ) < 1) ) {
+      wRoute.setctciid2( newRoute, wRoute.getctciid2( fromRoute ) );
+      wRoute.setctcbus2( newRoute, wRoute.getctcbus2( fromRoute ) );
+      wRoute.setctcaddr2( newRoute, wRoute.getctcaddr2( fromRoute ) );
+      wRoute.setctcoutput2( newRoute, wRoute.getctcoutput2( fromRoute ) );
+    }
+  }
+  if( (wRoute.getctcaddr3(fromRoute) > 0) || ( wRoute.getctcoutput3(fromRoute) != NULL && StrOp.len( wRoute.getctcoutput3(fromRoute) ) > 0) ) {
+    if( (wRoute.getctcaddr3(newRoute) < 1) && ( wRoute.getctcoutput3(toRoute) == NULL || StrOp.len( wRoute.getctcoutput3(toRoute) ) < 1) ) {
+      wRoute.setctciid3( newRoute, wRoute.getctciid3( fromRoute ) );
+      wRoute.setctcbus3( newRoute, wRoute.getctcbus3( fromRoute ) );
+      wRoute.setctcaddr3( newRoute, wRoute.getctcaddr3( fromRoute ) );
+      wRoute.setctcoutput3( newRoute, wRoute.getctcoutput3( fromRoute ) );
+    }
+  }
+
   routeID = StrOp.fmt( "%s-%s", wRoute.getbka(newRoute), wRoute.getbkb(newRoute) );
 
   /* check if exist and create new */
