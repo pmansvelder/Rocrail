@@ -13,16 +13,6 @@ function doWebSocket() {
   host.replace("www.","");
   debug("creating a websocket...ws://" + host + ":" + location.port);
   
-  try {
-    if( WebSocket == undefined ) {
-      alert("RocWeb:\nThis browser does not support WebSockets.");
-    }
-  }
-  catch(e){
-    alert("RocWeb:\nThis browser does not support WebSockets.");
-    return;
-  }
-  
   ws = new WebSocket("ws://"+host+":"+location.port, "rcp");
   retryWebSocket++;
   ws.onopen = function()
