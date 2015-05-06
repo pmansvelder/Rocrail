@@ -7930,6 +7930,7 @@ static int __generateRoutes(iOAnalyse inst) {
 
     Boolean addToList = True;
     Boolean addRtId = True;
+    int rtIdx = 0;
 
     /* create new route element */
     iONode newRoute = NodeOp.inst( wRoute.name(), NULL, ELEMENT_NODE );
@@ -7997,18 +7998,25 @@ static int __generateRoutes(iOAnalyse inst) {
               wRoute.isbkaside( child) ==  wRoute.isbkaside( newRoute) &&
               wRoute.isbkbside( child) ==  wRoute.isbkbside( newRoute) ) {
 
-        if( !StrOp.equals( wRoute.getid( child), wRoute.getid( newRoute)) ) {
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "found an edited route: [%s] from [%s] to [%s] skip", 
-              wItem.getid( child), wRoute.getbka( child), wRoute.getbkb( child));
+        if( ! StrOp.startsWith( wRoute.getid( child), "autogen-" )) {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "found an edited route: [%s] from [%s%s] to [%s%s] skip creating route",
+              wItem.getid( child), wRoute.getbka(child), wRoute.isbkaside(child)?"+":"-", wRoute.getbkb(child), wRoute.isbkbside(child)?"+":"-");
           addToList = False;
           break;
         } else {
-          /* second route between two identical blocks found, make unique ID */
-          char* extID = StrOp.fmt( "%s-%d", wRoute.getid( newRoute ), i );
-          wRoute.setid( newRoute, extID );
-          StrOp.free( extID );
+          /* another route between two identical blocks found, increase idx counter to create unique ID */
+          rtIdx++;
         }
       }
+    }
+    if( rtIdx > 0 ) {
+      /* append rtIdx to route id */
+      char* extID = StrOp.fmt( "%s-%d", wRoute.getid( newRoute ), rtIdx++ );
+      wRoute.setid( newRoute, extID );
+      StrOp.free( extID );
+    }
+    if( addToList ) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "create new route: [%s]", wRoute.getid( newRoute ) );
     }
 
     /* second loop over all items of a possible route */
