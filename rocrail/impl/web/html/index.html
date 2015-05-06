@@ -182,7 +182,29 @@
     </div>
     </div>
  </div>
+ 
+ 
+ <div data-role="popup" id="popupLocoSelect" class="ui-popup" data-theme="a" style="width: 400px;">
+ <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+   <div style="padding:10px 10px;">
+   <div data-role="collapsibleset" data-theme="a" data-inset="false">
+   <div data-role="collapsible">
+   <h2>Diesel</h2>
+   <ul data-role="listview">
+     <li onclick="onLocoSelected('V200')"><a href="#">V200</a></li>
+   </ul>
+   </div>
+   <div data-role="collapsible">
+   <h2>Steam</h2>
+   <ul data-role="listview">
+   <li onclick="onLocoSelected('E03')"><a href="#">E03</a></li>
+   </ul>
+   </div>
+   </div>
+   </div>
+ </div>
 
-</body>
+ 
+ </body>
 
 </html>

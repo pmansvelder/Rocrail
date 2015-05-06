@@ -33,6 +33,13 @@ var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
 
+function forceRedraw(div){
+  var disp = div.style.display;
+  div.style.display = 'none';
+  var trick = div.offsetHeight;
+  div.style.display = disp;
+};
+
 function trace(msg) {
   var debug = localStorage.getItem("debug");
   if( debug == undefined )
@@ -74,6 +81,27 @@ function openInfo()
 
 //  trace("open info");
 //  $( "#popupInfo" ).popup( "open" );
+}
+
+function onLocoImage() {
+  trace("close throttle");
+  $( "#popupThrottle" ).popup( "close" );
+  trace("open loco select");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupLocoSelect" ).popup( "open" );
+    });
+}
+
+function onLocoSelected(sel) {
+  console.log("selected loco: " + sel);
+  trace("close loco select");
+  $( "#popupLocoSelect" ).popup( "close" );
+  trace("open throttle");
+  $('#popupLocoSelect').on("popupafterclose", function(){
+    $('#popupLocoSelect').unbind( "popupafterclose" );
+    $( "#popupThrottle" ).popup( "open" );
+    });
 }
 
 
@@ -683,9 +711,8 @@ function handleSensor(fb) {
   if( div != null ) {
     fbNode = fbMap[fb.getAttribute('id')];
     fbNode.setAttribute('state', fb.getAttribute('state'));
-    div.style.display = 'none';
     div.style.backgroundImage = getSensorImage(fbNode);
-    div.style.display = 'block';
+    forceRedraw(div);
   }
   else {
     trace("sensor: " + fb.getAttribute('id') + " not found");
@@ -700,21 +727,16 @@ function handleText(tx) {
     var text = tx.getAttribute('text');
     if( text != undefined ) {
       if( text.indexOf(".png") != -1 ) {
-        div.style.display = 'none';
         div.style.backgroundImage = "url('"+text+"')";
-        div.style.display = 'block';
       }
       else {  
-        div.style.display = 'none';
         div.innerHTML = "<div style='font-size:10px'>" +text+ "</div>";
-        div.style.display = 'block';
       }
     }
     else {
-      div.style.display = 'none';
       div.innerHTML = "<div style='font-size:10px'>" + "</div>";
-      div.style.display = 'block';
     }
+    forceRedraw(div);
   }
 }
 
@@ -724,9 +746,8 @@ function handleOutput(co) {
   if( div != null ) {
     coNode = coMap[co.getAttribute('id')];
     coNode.setAttribute('state', co.getAttribute('state'));
-    div.style.display = 'none';
     div.style.backgroundImage = getOutputImage(coNode);
-    div.style.display = 'block';
+    forceRedraw(div);
   }
   else {
     trace("output: " + co.getAttribute('id') + " not found");
@@ -740,9 +761,8 @@ function handleSwitch(sw) {
   if( div != null ) {
     swNode = swMap[sw.getAttribute('id')];
     swNode.setAttribute('state', sw.getAttribute('state'));
-    div.style.display = 'none';
     div.style.backgroundImage = getSwitchImage(swNode, div);
-    div.style.display = 'block';
+    forceRedraw(div);
   }
   else {
     trace("switch: " + sw.getAttribute('id') + " not found");
@@ -757,9 +777,8 @@ function handleSignal(sg) {
     sgNode = sgMap[sg.getAttribute('id')];
     sgNode.setAttribute('state', sg.getAttribute('state'));
     sgNode.setAttribute('aspect', sg.getAttribute('aspect'));
-    div.style.display = 'none';
     div.style.backgroundImage = getSignalImage(sgNode, div);
-    div.style.display = 'block';
+    forceRedraw(div);
   }
   else {
     trace("signal: " + sg.getAttribute('id') + " not found");
@@ -838,6 +857,7 @@ function updateBlockstate( sgid, lcid ) {
       label = "H";
   }
   div.innerHTML = "<label class='itemtext'>"+label+"</label>";
+  forceRedraw(div);
 }
 
 function handleBlock(bk) {
@@ -859,9 +879,8 @@ function handleBlock(bk) {
     else
       div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
 
-    div.style.display = 'none';
     div.style.backgroundImage = getBlockImage(bkNode, div);
-    div.style.display = 'block';
+    forceRedraw(div);
   }
   else {
     trace("block: " + bk.getAttribute('id') + " not found");
@@ -882,6 +901,7 @@ function handleTurntable(tt) {
     ttNode.setAttribute('state2', tt.getAttribute('state2'));
     
     div.innerHTML = getTurntableImage(ttNode, div);
+    forceRedraw(div);
   }
   else {
     trace("turntable: " + tt.getAttribute('id') + " not found");
@@ -899,6 +919,7 @@ function handleFiddleYard(fy) {
     fyNode.setAttribute('state', fy.getAttribute('state'));
     
     div.innerHTML = getFiddleYardImage(fyNode, div);
+    forceRedraw(div);
   }
   else {
     trace("fiddleyard: " + fy.getAttribute('id') + " not found");
@@ -938,9 +959,8 @@ function handleStageBlock(sb) {
     else
       div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
 
-    div.style.display = 'none';
     div.style.backgroundImage = getStageBlockImage(sbNode, div);
-    div.style.display = 'block';
+    forceRedraw(div);
 
   }
   else {
