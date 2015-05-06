@@ -33,6 +33,7 @@
 #include "rocrail/wrapper/public/RocRail.h"
 #include "rocrail/wrapper/public/State.h"
 #include "rocrail/wrapper/public/WebClient.h"
+#include "rocrail/wrapper/public/Exception.h"
 
 #include "rocs/public/str.h"
 #include "rocs/public/strtok.h"
@@ -425,7 +426,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
     return True;
   }
 
-  if( event != NULL ) {
+  if( event != NULL && !StrOp.equals( NodeOp.getName(event), wException.name() )) {
     char* info = NodeOp.base.toString( event );
     int len = StrOp.len(info);
     char* b = allocMem(20 + len + 1);
