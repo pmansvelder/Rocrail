@@ -104,4 +104,8 @@
 # define CMD_CAN_BOOT_BOUND  0x1B
 # define ID_CAN_BOOT_BOUND   0x36
 
+/* System Status data */
+#define CMD_SYS_STAT_DATA    0x1D
+#define ID_SYS_STAT_DATA     0x3A
+
 #endif /* MCS2CONST_H_ */

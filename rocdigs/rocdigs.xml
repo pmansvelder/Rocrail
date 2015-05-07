@@ -939,6 +939,13 @@
       <var name="xS2handling" vt="int" remark="address which is processed for bind verification"/>
       <var name="mgboxsvc" vt="iOThread"/>
       <var name="lstChn" vt="int" remark="monitor channel"/>
+      <var name="configchnl" vt="byte"/>
+      <var name="lastseqnr" vt="byte"/>
+      <var name="idxcnt" vt="byte"/>
+      <var name="loadStepRate" vt="float"/>
+      <var name="voltStepRate" vt="float"/>
+      <var name="tempStepRate" vt="float"/>
+      <var name="indices" vt="byte"/>
     </data>
   </object>
 
@@ -2071,6 +2078,13 @@
       <var name="locolist" vt="iONode"/>
       <var name="mfxbinder" vt="iOThread"/>
       <var name="mfxDetectInProgress" vt="Boolean"/>
+      <var name="configchnl" vt="byte"/>
+      <var name="lastseqnr" vt="byte"/>
+      <var name="idxcnt" vt="byte"/>
+      <var name="loadStepRate" vt="float"/>
+      <var name="voltStepRate" vt="float"/>
+      <var name="tempStepRate" vt="float"/>
+      <var name="indices" vt="byte"/>
     </data>
   </object>
 
