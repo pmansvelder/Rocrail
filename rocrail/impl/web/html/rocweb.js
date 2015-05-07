@@ -20,6 +20,7 @@ var txMap = {};
 var sbMap = {};
 var ttMap = {};
 var fyMap = {};
+var carMap = {};
 var lcCatMap = {};
 var locoSelected = 'none';
 var locoBlockSelect = 'none';
@@ -1644,6 +1645,52 @@ function getStageBlockImage(sb, div) {
   
 }
 
+function addCatToList(div, lcCat) {
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute('data-role', "collapsible");
+  newdiv.setAttribute('class', "ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child");
+  var h2 = document.createElement('h2');
+  h2.innerHTML = lcCat;
+  newdiv.appendChild(h2);
+  var ul = document.createElement('ul');
+  ul.setAttribute('id', lcCat);
+  ul.setAttribute('data-role', "listview");
+  ul.setAttribute('class', "ui-listview");
+  newdiv.appendChild(ul);
+  div.appendChild(newdiv);
+  cat = ul;
+  lcCatMap[lcCat] = cat;
+  return cat;
+}
+
+function addMobileToList(cat, id, image, dir, addr) {
+  if( dir == undefined || dir.length == 0 )
+    dir = "true";
+  var li = document.createElement('li');
+  li.setAttribute('onclick', "onLocoSelected('"+id+"')");
+  li.setAttribute('class', "ui-first-child ui-last-child");
+  var img = "<img src='noimg.png' width='120'/>";
+  if( image != undefined && image.length > 0 )
+    img = "<img src='"+image+"' width='120'/>";
+  var dirImg = "<img src='fwd.png'/>";
+  if( dir == "false" )
+    dirImg = "<img src='rev.png'/>";
+  var row = "<table><tr><td>"+img+"<td>"+dirImg+"<td>"+id+"<br>"+addr+"</table>";
+  li.innerHTML = "<a href='#' class='ui-btn ui-btn-icon-right ui-icon-carat-r'>"+row+"</a>";
+  cat.appendChild(li);
+  $('div[data-role=collapsible]').collapsible({refresh:true});  
+}
+
+function addCarToList(car) {
+  var div = document.getElementById("locoSelectList");
+  var lcCat = "car";
+  var cat = lcCatMap[lcCat];
+  if( cat == undefined ) {
+    cat = addCatToList(div, lcCat);
+  }
+  addMobileToList(cat, car.getAttribute('id'), car.getAttribute('image'), car.getAttribute('dir'), car.getAttribute('addr'));
+}
+
 function addLocoToList(lc) {
   var div = document.getElementById("locoSelectList");
   var lcCat = lc.getAttribute('engine');
@@ -1651,36 +1698,9 @@ function addLocoToList(lc) {
     lcCat = "diesel";
   var cat = lcCatMap[lcCat];
   if( cat == undefined ) {
-    /*
-    <div data-role="collapsible">
-   class="ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child"
-    <h2>Diesel</h2>
-    <ul id="locoSelect1" data-role="listview">
-      <li onclick="onLocoSelected('V200')"><a href="#">V200</a></li>
-    </ul>
-    </div>
-   */
-    var newdiv = document.createElement('div');
-    newdiv.setAttribute('data-role', "collapsible");
-    newdiv.setAttribute('class', "ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child");
-    var h2 = document.createElement('h2');
-    h2.innerHTML = lcCat;
-    newdiv.appendChild(h2);
-    var ul = document.createElement('ul');
-    ul.setAttribute('id', lcCat);
-    ul.setAttribute('data-role', "listview");
-    ul.setAttribute('class', "ui-listview");
-    newdiv.appendChild(ul);
-    div.appendChild(newdiv);
-    cat = ul;
-    lcCatMap[lcCat] = cat;
+    cat = addCatToList(div, lcCat);
   }
-  var li = document.createElement('li');
-  li.setAttribute('onclick', "onLocoSelected('"+lc.getAttribute('id')+"')");
-  li.setAttribute('class', "ui-first-child ui-last-child");
-  li.innerHTML = "<a href='#' class='ui-btn ui-btn-icon-right ui-icon-carat-r'>"+lc.getAttribute('id')+"</a>";
-  cat.appendChild(li);
-  $('div[data-role=collapsible]').collapsible({refresh:true});  
+  addMobileToList(cat, lc.getAttribute('id'), lc.getAttribute('image'), lc.getAttribute('dir'), lc.getAttribute('addr'));
 }
 
 /* Process the plan.xml */
@@ -1730,6 +1750,17 @@ function processPlan() {
        lcMap[lclist[i].getAttribute('id')] = lclist[i];
        addLocoToList(lclist[i]);
      }
+     
+     carlist = xmlDoc.getElementsByTagName("car");
+     if( carlist.length > 0 )
+       trace("processing " + carlist.length + " cars");
+
+     for (var i = 0; i < carlist.length; i++) {
+       trace('car: ' + carlist[i].getAttribute('id') );
+       carMap[carlist[i].getAttribute('id')] = carlist[i];
+       addCarToList(carlist[i]);
+     }
+     
      
      
      colist = xmlDoc.getElementsByTagName("co");

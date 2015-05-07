@@ -643,6 +643,12 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/noimg.png" )  ) {
         __getImage( inst, ROCWEB_NOIMG, True );
       }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/fwd.png" )  ) {
+        __getImage( inst, "fwd.png", True );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rev.png" )  ) {
+        __getImage( inst, "rev.png", True );
+      }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/logo.png" ) ) {
         __getImage( inst, ROCWEB_LOGO, True );
       }
