@@ -784,16 +784,19 @@ function handleText(tx) {
   var div = document.getElementById("tx_"+tx.getAttribute('id'));
   if( div != null ) {
     var text = tx.getAttribute('text');
+    var pointsize = tx.getAttribute('pointsize');
+    if( pointsize == undefined || pointsize == "0")
+      pointsize = "10";
     if( text != undefined ) {
       if( text.indexOf(".png") != -1 ) {
         div.style.backgroundImage = "url('"+text+"')";
       }
       else {  
-        div.innerHTML = "<div style='font-size:10px'>" +text+ "</div>";
+        div.innerHTML = "<div style='font-size:"+pointsize+"px'>" +text+ "</div>";
       }
     }
     else {
-      div.innerHTML = "<div style='font-size:10px'>" + "</div>";
+      div.innerHTML = "<div style='font-size:"+pointsize+"px'>" + "</div>";
     }
     forceRedraw(div);
   }
@@ -1974,6 +1977,17 @@ function processPlan() {
        newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
+       var backred = txlist[i].getAttribute('backred'); 
+       var backgreen = txlist[i].getAttribute('backgreen'); 
+       var backblue = txlist[i].getAttribute('backblue');
+       if( backred != undefined && backred != "-1" && backgreen != undefined && backgreen != "-1" && backblue != undefined && backblue != "-1" )
+         newdiv.style.backgroundColor = "rgb("+backred+","+backgreen+","+backblue+")";
+       var red = txlist[i].getAttribute('red'); 
+       var green = txlist[i].getAttribute('green'); 
+       var blue = txlist[i].getAttribute('blue');
+       if( red != undefined && green != undefined && blue != undefined )
+         newdiv.style.color = "rgb("+red+","+green+","+blue+")";
+       newdiv.style.textAlign = 'left';
        if( ori == "north" || ori == "south" ) {
          newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";
          newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
@@ -1992,11 +2006,15 @@ function processPlan() {
          else
            newdiv.innerHTML = "<div><img width='"+newdiv.style.width+"' src='"+text+"'/></div>";
        }
-       else  
+       else {  
+         var pointsize = txlist[i].getAttribute('pointsize');
+         if( pointsize == undefined || pointsize == "0")
+           pointsize = "10";
          if( ori == "north" || ori == "south" )
-           newdiv.innerHTML = "<div class='itemtextV' style='font-size:10px;'>"+text+"</div>";
+           newdiv.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+text+"</div>";
          else
-           newdiv.innerHTML = "<div style='font-size:10px; horizontal-align:left;'>" +text+ "</div>";
+           newdiv.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +text+ "</div>";
+       }
        //newdiv.style.backgroundImage = getTextImage(txlist[i]);
        leveldiv.appendChild(newdiv);
      }
