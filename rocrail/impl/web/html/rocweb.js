@@ -159,6 +159,8 @@ function updateFunctionLabels() {
   }
 
   lc = lcMap[locoSelected];
+  if(lc == undefined)
+    lc = carMap[locoSelected];
   if( lc != undefined ) {
     //var fundeflist = lc.childNodes;
     var fundeflist = lc.getElementsByTagName("fundef");
@@ -289,14 +291,19 @@ $(function(){
 function onDirection() {
   lc = lcMap[locoSelected];
   if( lc == undefined )
+    lc = carMap[locoSelected];
+  if( lc == undefined )
     return;
+  var V = lc.getAttribute('V');
   var dir = lc.getAttribute('dir');
   if( dir == 'true' )
     lc.setAttribute('dir', 'false');
   else
     lc.setAttribute('dir', 'true');
   updateDir();
-  speedUpdate(parseInt(lc.getAttribute('V')));
+  if( V == undefined )
+    V = "0";
+  speedUpdate(parseInt(V));
 }
 
 function updateDir() {
@@ -316,6 +323,8 @@ function onFunction(id, nr) {
     return;
   }
   lc = lcMap[locoSelected];
+  if(lc == undefined)
+    lc = carMap[locoSelected];
   if( lc == undefined ) return;
   trace("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
   var group = (nr-1)/4+1;
@@ -328,12 +337,14 @@ function onFunction(id, nr) {
 
 function speedUpdate(value) {
   lc = lcMap[locoSelected];
+  if( lc == undefined )
+    lc = carMap[locoSelected];
   if( lc == undefined ) return;
   trace("Speed: " + value + " for loco " + locoSelected);
   var vVal = value * (parseInt(lc.getAttribute('V_max')/100.00));
   lc.setAttribute('V', vVal);
-  updateDir();
   var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
+  updateDir();
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -487,8 +498,11 @@ function actionBlock(id) {
 
   $('#locoBlockSelect').selectmenu("refresh");
 
-  
+  var xPos = parseInt(bkNode.getAttribute('x')) * 32;
+  var yPos = parseInt(bkNode.getAttribute('y')) * 32;
+  //$( "#popupBlock" ).popup( "open" ).position({x: xPos, y: yPos, positionTo: window});
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
+
 }
 
 function onBlockStart() {
@@ -606,6 +620,8 @@ function onOptionDebug() {
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
+  if( lc == undefined )
+    lc = carMap[locoSelected];
   if( lc != undefined ) {
     var locoStatus = document.getElementById("locoStatus");
     var locoDescription = document.getElementById("locoDescription");
@@ -644,6 +660,8 @@ function initThrottleStatus() {
 function initThrottle() {
   trace("locoSelect: " + locoSelected );
   var lc = lcMap[locoSelected]
+  if( lc == undefined )
+    lc = carMap[locoSelected];
   if( lc != undefined ) {
     var img = document.getElementById("locoImage");
     var src = lc.getAttribute('image');
@@ -836,6 +854,10 @@ function findBlock4Loco(lcid) {
 
 function handleLoco(lc) {
   var lcNode = lcMap[lc.getAttribute('id')]
+  if( lc == undefined)
+    lc = carMap[fn.getAttribute('id')];
+
+  
   lcNode.setAttribute('mode', lc.getAttribute('mode'));
   lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
   lcNode.setAttribute('V', lc.getAttribute('V'));
@@ -854,6 +876,8 @@ function handleLoco(lc) {
 function handleFunction(fn) {
   trace("function event: " + fn.getAttribute('id') + " changed=" + fn.getAttribute('fnchanged'));
   var lc = lcMap[fn.getAttribute('id')];
+  if( lc == undefined)
+    lc = carMap[fn.getAttribute('id')];
   
   if( lc == undefined)
     return;
@@ -1709,6 +1733,9 @@ function addMobileToList(cat, id, image, dir, addr) {
 }
 
 function addCarToList(car) {
+  var addr = car.getAttribute('addr');
+  if( addr == "0" )
+    return;
   var category = localStorage.getItem("category");
   var div = document.getElementById("locoSelectList");
   
