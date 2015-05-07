@@ -1816,6 +1816,8 @@ function processPlan() {
 
          var newdiv = document.createElement('div');
          newdiv.setAttribute('id', "level_" + z);
+         newdiv.setAttribute('overflow-x', "auto");
+         newdiv.setAttribute('overflow-y', "auto");
          zlevelDivMap[z] = newdiv;
          zlevelDivList[i] = newdiv;
 
