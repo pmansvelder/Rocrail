@@ -222,8 +222,30 @@ function openOptions() {
   
   trace("open info");
   var debug = localStorage.getItem("debug");
-  $('#optionDebug').prop('checked', debug=="true"?true:false);
+  $('#optionDebug').prop('checked', debug=="true"?true:false).checkboxradio('refresh');
+
+  var category = localStorage.getItem("category");
+  
+  if( category == "era" )
+    $("#locoCatEra").prop("checked", true).checkboxradio('refresh');
+  else if( category == "roadname" )
+    $("#locoCatRoadname").prop("checked", true).checkboxradio('refresh');
+  else
+    $("#locoCatEngine").prop("checked", true).checkboxradio('refresh');
+
   $('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
+}
+
+function onCatEngine() {
+  localStorage.setItem("category", "engine");
+}
+
+function onCatEra() {
+  localStorage.setItem("category", "era");
+}
+
+function onCatRoadname() {
+  localStorage.setItem("category", "roadname");
 }
 
 function closeOptions()
@@ -1060,6 +1082,11 @@ function processResponse() {
     try {
       xmlDoc = req.responseXML;
       if( xmlDoc != null ) {
+        var category = localStorage.getItem("category");
+        if(category == undefined || category.length == 0) {
+          localStorage.setItem("category", "engine");
+        }
+
         planlist = xmlDoc.getElementsByTagName("plan")
         if( planlist.length > 0 ) {
           var h = document.getElementById("title");
@@ -1682,8 +1709,14 @@ function addMobileToList(cat, id, image, dir, addr) {
 }
 
 function addCarToList(car) {
+  var category = localStorage.getItem("category");
   var div = document.getElementById("locoSelectList");
+  
   var lcCat = "car";
+  if( category != "engine" ) {
+    lcCat = getMobileCategory(car);
+  }
+
   var cat = lcCatMap[lcCat];
   if( cat == undefined ) {
     cat = addCatToList(div, lcCat);
@@ -1691,11 +1724,45 @@ function addCarToList(car) {
   addMobileToList(cat, car.getAttribute('id'), car.getAttribute('image'), car.getAttribute('dir'), car.getAttribute('addr'));
 }
 
+function getMobileCategory(lc) {
+  var category = localStorage.getItem("category");
+  var lcCat = lc.getAttribute('era');
+  
+  if( category == "roadname" ) {
+    lcCat = lc.getAttribute('roadname');
+    if( lcCat == undefined || lcCat.length == 0 )
+      lcCat = "General";
+  }
+  else if( category == "era" ) {
+    lcCat = lc.getAttribute('era');
+    if( lcCat == undefined || lcCat.length == 0 )
+      lcCat = "I";
+    else {
+      if(lcCat == "0") lcCat = "I";
+      else if(lcCat == "1") lcCat = "II";
+      else if(lcCat == "2") lcCat = "III";
+      else if(lcCat == "3") lcCat = "IV";
+      else if(lcCat == "4") lcCat = "V";
+      else if(lcCat == "5") lcCat = "VI";
+      else if(lcCat == "6") lcCat = "VII";
+    }
+  }
+  return lcCat;
+}
+
 function addLocoToList(lc) {
+  var category = localStorage.getItem("category");
+
   var div = document.getElementById("locoSelectList");
-  var lcCat = lc.getAttribute('engine');
-  if( lcCat == undefined )
-    lcCat = "diesel";
+  var lcCat = "diesel";
+  if( category == "engine" ) {
+    lcCat = lc.getAttribute('engine');
+    if( lcCat == undefined || lcCat.length == 0 )
+      lcCat = "diesel";
+  }
+  else {
+    lcCat = getMobileCategory(lc);
+  }
   var cat = lcCatMap[lcCat];
   if( cat == undefined ) {
     cat = addCatToList(div, lcCat);

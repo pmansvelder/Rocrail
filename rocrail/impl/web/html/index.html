@@ -129,7 +129,7 @@
   </div>
   </div>
 
-  <div data-role="popup" id="popupOptions" class="ui-popup" data-theme="a" style="width: 300px;">
+  <div data-role="popup" id="popupOptions" class="ui-popup" data-theme="a">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
     <h3 id="optionsTitle">Options</h3>
@@ -138,7 +138,17 @@
       <input type="checkbox" name="optionDebug" id="optionDebug" class="custom" onclick="onOptionDebug()" />
       <label for="optionDebug">Debug</label>
     </fieldset>
-  </div>
+    </div>
+    <div data-role="fieldcontain">
+    <fieldset data-role="controlgroup" data-type="horizontal" >
+      <input type="radio" id="locoCatEngine" name="radio-choice-1" value="engine" onclick="onCatEngine()"/>
+      <label for="locoCatEngine">Engine</label>
+      <input type="radio" id="locoCatEra" name="radio-choice-1" value="era" onclick="onCatEra()"/>
+      <label for="locoCatEra">Era</label>
+      <input type="radio" id="locoCatRoadname" name="radio-choice-1" value="roadname" onclick="onCatRoadname()"/>
+      <label for="locoCatRoadname">Roadname</label>
+    </fieldset>
+    </div>    
   </div>
   </div>
 
