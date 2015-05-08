@@ -149,6 +149,21 @@ static Boolean _isFree( struct OBlockGroup* inst ,const char* BlockId, const cha
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "blockgroup %s followup allowed for loco %s", wLink.getid(data->props), LocoId);
       return True;
     }
+    else {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+          "blockgroup %s followup not allowed for loco %s: firstBlock=%s BlockId=%s followupend=%d",
+          wLink.getid(data->props), LocoId, data->firstBlock, BlockId, data->followupend );
+    }
+  }
+  else if(data->allowfollowup) {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+        "blockgroup %s followup not allowed for loco %s: firstBlock=%s BlockId=%s followupend=%d",
+        wLink.getid(data->props), LocoId, data->firstBlock, BlockId, data->followupend );
+  }
+  else {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+        "blockgroup %s followup not enabled for loco %s",
+        wLink.getid(data->props), LocoId);
   }
 
   if( wLink.getdst(data->props) != NULL ) {
@@ -245,7 +260,7 @@ static Boolean _lock( struct OBlockGroup* inst ,const char* BlockId ,const char*
         cond = wLink.nextlinkcond(data->props, cond);
       }
       if( condOK ) {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco %s locked blockgroup %s with block %s",
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco %s locked blockgroup %s with (first) block %s",
             LocoId, wLink.getid(data->props), BlockId);
         data->firstBlock = BlockId;
         data->firstLoco  = LocoId;
