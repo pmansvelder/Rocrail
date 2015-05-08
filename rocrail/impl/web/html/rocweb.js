@@ -779,6 +779,29 @@ function handleSensor(fb) {
 }
 
 
+function getTextFormat(tx) {
+  var text = tx.getAttribute('text');
+  var prefix = "";
+  var suffix = "";
+  var bold = tx.getAttribute('bold');
+  var underlined = tx.getAttribute('underlined');
+  var italic = tx.getAttribute('italic');
+
+  if( bold != undefined && bold == "true") {
+    prefix += "<b>";
+    suffix += "</b>";
+  }
+  if( underlined != undefined && underlined == "true") {
+    prefix += "<u>";
+    suffix += "</u>";
+  }
+  if( italic != undefined && italic == "true") {
+    prefix += "<i>";
+    suffix += "</i>";
+  }
+  return (prefix+text+suffix);
+}
+
 function handleText(tx) {
   trace("text event: " + tx.getAttribute('id') + " " + tx.getAttribute('text'));
   var div = document.getElementById("tx_"+tx.getAttribute('id'));
@@ -792,7 +815,7 @@ function handleText(tx) {
         div.style.backgroundImage = "url('"+text+"')";
       }
       else {  
-        div.innerHTML = "<div style='font-size:"+pointsize+"px'>" +text+ "</div>";
+        div.innerHTML = "<div style='font-size:"+pointsize+"px'>" +getTextFormat(tx)+ "</div>";
       }
     }
     else {
@@ -2010,10 +2033,11 @@ function processPlan() {
          var pointsize = txlist[i].getAttribute('pointsize');
          if( pointsize == undefined || pointsize == "0")
            pointsize = "10";
+         
          if( ori == "north" || ori == "south" )
-           newdiv.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+text+"</div>";
+           newdiv.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txlist[i])+"</div>";
          else
-           newdiv.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +text+ "</div>";
+           newdiv.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(txlist[i])+ "</div>";
        }
        //newdiv.style.backgroundImage = getTextImage(txlist[i]);
        leveldiv.appendChild(newdiv);
