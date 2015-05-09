@@ -1508,10 +1508,13 @@ function getTurntableImage(tt, div) {
   
   var symbolsize = parseInt(tt.getAttribute('symbolsize'));
   var bridgepos  = parseInt(tt.getAttribute('bridgepos'));
-  if( symbolsize < 2 )
-    symbolsize = 5;
-  var size   = 5 * 32;
-  var center = (5 * 32) / 2;
+  if( symbolsize < 1 )
+    symbolsize = 1;
+  if( symbolsize > 13 )
+    symbolsize = 13;
+  
+  var size   = symbolsize * 32;
+  var center = (symbolsize * 32) / 2;
   var radius1 = center - 2;
   var radius2 = center / 2;
   var radius3 = radius2 - 6;
