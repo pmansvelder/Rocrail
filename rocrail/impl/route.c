@@ -899,7 +899,7 @@ static Boolean __lockCrossingBlocks( iORoute inst, const char* id ) {
       const char* bk = StrTokOp.nextToken( tok );
       iIBlockBase block = ModelOp.getBlock( model, bk );
       if( block != NULL ) {
-        if( !block->lock( block, id, "", wRoute.getid(o->props), True, False, False, 0, NULL ) ) {
+        if( !block->lock( block, id, "", wRoute.getid(o->props), True, False, False, 0, NULL, False ) ) {
           StrTokOp.base.del(tok);
           return False;
         }
@@ -983,7 +983,7 @@ static Boolean __lockSwitches( iORoute inst, const char* locId ) {
       iOTT itt = ModelOp.getTurntable( model, swId );
       if( itt != NULL ) {
         if( !TTOp.lock( (iIBlockBase)itt, locId, NULL, NULL, False, False,
-            wRoute.isswappost( o->props ) ? !o->reverse : o->reverse, 0, NULL ) )
+            wRoute.isswappost( o->props ) ? !o->reverse : o->reverse, 0, NULL, False ) )
         {
           /* Rewind. */
           __unlockSwitches( inst, locId, False );
@@ -1004,7 +1004,7 @@ static Boolean __lockSwitches( iORoute inst, const char* locId ) {
                 wRoute.getid(o->props),
                 False,
                 False,
-                reverse, 0, NULL) ) {
+                reverse, 0, NULL, False) ) {
           /* Rewind. */
           __unlockSwitches( inst, locId, False );
           return False;

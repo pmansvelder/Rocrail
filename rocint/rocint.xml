@@ -209,6 +209,7 @@
       <param name="reverse" vt="Boolean" remark="reverse enter"/>
       <param name="indelay" vt="int" remark="in event delay timer"/>
       <param name="masterId" vt="const char*" remark="Master block"/>
+      <param name="force" vt="Boolean" remark="force reverse by action"/>
     </fun>
     <fun name="unLock" vt="Boolean">
       <param name="inst" vt="this"/>

@@ -1783,7 +1783,7 @@ static Boolean _link( iIBlockBase inst, iIBlockBase linkto ) {
  * Ignore all events wenn the crossing flag is set.
  */
 static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, const char* routeid,
-    Boolean crossing, Boolean reset, Boolean reverse, int indelay, const char* masterId )
+    Boolean crossing, Boolean reset, Boolean reverse, int indelay, const char* masterId, Boolean force )
 {
   iOBlockData data = NULL;
   Boolean ok = False;
@@ -1800,12 +1800,14 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
   if( id != NULL && data->locId != NULL && StrOp.equals( id, data->locId ) ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block [%s] already locked for loco [%s]", data->id, id );
     if( !StrOp.equals(data->fromBlockId, blockid) || !StrOp.equals(data->byRouteId, routeid) || data->crossing != crossing ) {
-      TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "second lock by loco [%s] block [%s] differs with settings! STOP", id, data->id );
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block [%s]-[%s] route [%s]-[%s] crossing %d-%d", data->fromBlockId, blockid, data->byRouteId, routeid, data->crossing, crossing );
-      if( lc != NULL ) {
-        LocOp.stop(lc, False);
+      if( !force ) {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "second lock by loco [%s] block [%s] differs with settings! STOP", id, data->id );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block [%s]-[%s] route [%s]-[%s] crossing %d-%d", data->fromBlockId, blockid, data->byRouteId, routeid, data->crossing, crossing );
+        if( lc != NULL ) {
+          LocOp.stop(lc, False);
+        }
+        return False;
       }
-      return False;
     }
     return True;
   }
@@ -1848,7 +1850,7 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
         const char* blockid = StrTokOp.nextToken( tok );
         iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), blockid);
         if( bk != NULL ) {
-          if( !bk->lock( bk, id, blockid, routeid, True, reset, reverse, indelay, wBlock.getid(data->props) ) ) {
+          if( !bk->lock( bk, id, blockid, routeid, True, reset, reverse, indelay, wBlock.getid(data->props) , force) ) {
             TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "virtual block [%s] could not lock slave block [%s]", wBlock.getid(data->props), blockid );
             Locked = False;
             break;
