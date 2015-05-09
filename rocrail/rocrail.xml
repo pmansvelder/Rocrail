@@ -183,6 +183,7 @@
       <var name="arrivalPending" vt="Boolean"/>
       <var name="inPending" vt="Boolean"/>
       <var name="fifo0departing" vt="Boolean"/>
+      <var name="forcelock" vt="Boolean"/>
     </data>
   </object>
 
