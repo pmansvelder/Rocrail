@@ -398,6 +398,8 @@ Boolean rocWebSocketMEClose( iOPClient inst ) {
   Boolean ok = True;
   char b[128];
 
+  data->websocketrun = False;
+
   if( data->socket == NULL || SocketOp.isBroken( data->socket ) ) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
@@ -410,6 +412,27 @@ Boolean rocWebSocketMEClose( iOPClient inst ) {
   ok = SocketOp.write( data->socket, b, 4 );
 
   return ok;
+}
+
+static void rocWebSocketReader( void* threadinst ) {
+  iOThread      th      = (iOThread)threadinst;
+  iOPClient     pclient = (iOPClient)ThreadOp.getParm(th);
+  iOPClientData data    = Data(pclient);
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket reader started" );
+
+  while( data->websocketrun && data->socket != NULL && !SocketOp.isBroken( data->socket ) ) {
+    if( !data->websocketavail ) {
+      if( SocketOp.read( data->socket, (char*)&data->firstbyte, 1 ) ) {
+        if( data->websocketrun )
+          data->websocketavail = True;
+      }
+    }
+    ThreadOp.sleep(50);
+  };
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket reader stopped" );
+  ThreadOp.base.del(th);
 }
 
 
@@ -464,14 +487,14 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
     return True;
   }
 
-  if( !SocketOp.peek( data->socket, b, 1) ) {
+  if( !data->websocketavail ) {
     ThreadOp.sleep(10);
     return False;
   }
 
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebSocketME" );
 
-  ok = SocketOp.read( data->socket, b, 1 );
+  b[0] = data->firstbyte;
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebSocketME: 0x%02X", b );
   if(ok) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: fin=%s opcode=%d", b[0]&0x80?"true":"false", b[0]&0x0F );
@@ -516,6 +539,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
       }
     }
   }
+  data->websocketavail = False;
 
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "ready work for rocWebSocketME" );
   return !ok;
@@ -590,8 +614,17 @@ Boolean rocWebME( iOPClient inst, const char* str ) {
     };
 
     if( data->websocket ) {
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "accept the websocket..." );
+      if( data->websocketrun ) {
+        data->websocketrun = False;
+        ThreadOp.sleep(50);
+      }
+      char* threadName = StrOp.fmt("webreader%X", inst);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "accept the websocket..." );
       webSocketHeader( data->socket, serverKey, protocol );
+      data->websocketreader = ThreadOp.inst( threadName, &rocWebSocketReader, inst );
+      data->websocketrun = True;
+      StrOp.free(threadName);
+      ThreadOp.start( data->websocketreader );
       return False;
     }
     else {

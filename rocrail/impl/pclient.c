@@ -72,10 +72,13 @@ static void __del( void* inst ) {
   if( inst != NULL ) {
     iOPClientData data = Data(inst);
     /* Cleanup data->xxx members...*/
+    data->websocketrun = False;
     if( data->socket != NULL && data->websocket ) {
       rocWebSocketMEClose(inst);
       SocketOp.base.del(data->socket);
+      data->socket = NULL;
     }
+    ThreadOp.sleep(50);
     ListOp.base.del( data->locIDs );
     freeMem( data );
     freeMem( inst );
