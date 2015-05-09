@@ -808,20 +808,24 @@ function handleText(tx) {
   var div = document.getElementById("tx_"+tx.getAttribute('id'));
   if( div != null ) {
     var text = tx.getAttribute('text');
-    var pointsize = tx.getAttribute('pointsize');
-    if( pointsize == undefined || pointsize == "0")
-      pointsize = "10";
-    if( text != undefined ) {
-      if( text.indexOf(".png") != -1 ) {
-        div.style.backgroundImage = "url('"+text+"')";
-      }
-      else {  
-        div.innerHTML = "<div style='font-size:"+pointsize+"px'>" +getTextFormat(tx)+ "</div>";
-      }
+    
+    if( text != undefined && text.indexOf(".png") != -1 ) {
+      if( ori == "north" || ori == "south" )
+        div.innerHTML = "<div class='imageV'><img height='"+newdiv.style.width+"' src='"+text+"'/></div>";
+      else
+        div.innerHTML = "<div><img width='"+newdiv.style.width+"' src='"+text+"'/></div>";
     }
-    else {
-      div.innerHTML = "<div style='font-size:"+pointsize+"px'>" + "</div>";
+    else {  
+      var pointsize = tx[i].getAttribute('pointsize');
+      if( pointsize == undefined || pointsize == "0")
+        pointsize = "10";
+      
+      if( ori == "north" || ori == "south" )
+        div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(tx)+"</div>";
+      else
+        div.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(tx)+ "</div>";
     }
+
     forceRedraw(div);
   }
 }
