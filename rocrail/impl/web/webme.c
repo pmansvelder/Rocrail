@@ -179,7 +179,6 @@ static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname)
             path = NodeOp.findNextNode(g, path);
           }
           StrOp.free(transform);
-          StrOp.free(transform);
         }
 
       }

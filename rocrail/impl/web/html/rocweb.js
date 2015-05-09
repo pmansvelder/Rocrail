@@ -1044,7 +1044,7 @@ function handleStageBlock(sb) {
     var ori   = getOri(sb);
     var label = sb.getAttribute('locid');
     if( label == undefined || label.length == 0 )
-      label = sb.getAttribute('id') + " [" + lcCount + "]";
+      label = sb.getAttribute('id') + "[" + lcCount + "]";
     if( ori == "north" || ori == "south" )
       div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
     else
@@ -1273,6 +1273,8 @@ function getOutputImage(co) {
   var suffix = '';
   if( state == undefined )
     state = "off";
+  if( svg == undefined )
+    svg = "0";
   return "url('button-"+svg+"-"+state+"."+ ori + ".svg')";
 }
 
@@ -2260,7 +2262,7 @@ function processPlan() {
 
        var label = sblist[i].getAttribute('locid');
        if( label == undefined || label.length == 0 )
-         label = sblist[i].getAttribute('id') + " [" + lcCount + "]";
+         label = sblist[i].getAttribute('id') + "[" + lcCount + "]";
        if( ori == "north" || ori == "south" ) {
          newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
        }
