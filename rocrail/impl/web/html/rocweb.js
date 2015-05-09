@@ -1088,6 +1088,16 @@ function handleRoute(st) {
           handleSensor(fb);
         }
       }
+      for (var key in sgMap) {
+        var sg = sgMap[key];
+        var routeids = sg.getAttribute('routeids');
+        if( routeids == undefined )
+          continue;
+        if( routeids.indexOf(stid) != -1 ) {
+          sg.setAttribute('route', locked)
+          handleSignal(sg);
+        }
+      }
     }
 
   }
@@ -1333,8 +1343,9 @@ function getSignalImage(sg) {
   var type    = sg.getAttribute('type');
   var aspects = sg.getAttribute('aspects');
   var pattern = parseInt( sg.getAttribute('usepatterns') );
-  var suffix  = '';
-  
+  var route   = sg.getAttribute('route');
+  var suffix  = (route=="1")?"-route":"";
+
   var greennr  = parseInt( sg.getAttribute('greennr') );;
   var rednr    = parseInt( sg.getAttribute('rednr') );;
   var yellownr = parseInt( sg.getAttribute('yellownr') );;
@@ -1377,13 +1388,13 @@ function getSignalImage(sg) {
     return "url('blockstate"+"."+ ori + ".svg')";
   }
   if( signal == "distant" ) {
-    return "url('"+type+"distant"+aspects+"-"+aspect+"."+ ori + ".svg')";
+    return "url('"+type+"distant"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
   }
   if( signal == "shunting" ) {
-    return "url('"+type+"shunting-2-"+aspect+"."+ ori + ".svg')";
+    return "url('"+type+"shunting-2-"+aspect+suffix+"."+ ori + ".svg')";
   }
 
-  return "url('"+type+"main"+aspects+"-"+aspect+"."+ ori + ".svg')";
+  return "url('"+type+"main"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
 }
 
 
