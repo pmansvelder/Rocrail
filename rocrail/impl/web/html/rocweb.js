@@ -2068,11 +2068,14 @@ function processPlan() {
        newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       var backred = txlist[i].getAttribute('backred'); 
-       var backgreen = txlist[i].getAttribute('backgreen'); 
-       var backblue = txlist[i].getAttribute('backblue');
-       if( backred != undefined && backred != "-1" && backgreen != undefined && backgreen != "-1" && backblue != undefined && backblue != "-1" )
-         newdiv.style.backgroundColor = "rgb("+backred+","+backgreen+","+backblue+")";
+       var transparent = txlist[i].getAttribute('transparent');
+       if( transparent != undefined && transparent == "false" ) {
+         var backred = txlist[i].getAttribute('backred'); 
+         var backgreen = txlist[i].getAttribute('backgreen'); 
+         var backblue = txlist[i].getAttribute('backblue');
+         if( backred != undefined && backred != "-1" && backgreen != undefined && backgreen != "-1" && backblue != undefined && backblue != "-1" )
+           newdiv.style.backgroundColor = "rgb("+backred+","+backgreen+","+backblue+")";
+       }
        var red = txlist[i].getAttribute('red'); 
        var green = txlist[i].getAttribute('green'); 
        var blue = txlist[i].getAttribute('blue');
@@ -2356,3 +2359,9 @@ function processPlan() {
 }
 
 
+function Item(props) {
+  this.props = props;
+}
+Item.prototype.getId = function() {
+  console.log("item id is " + this.props.getAttribute('id'));
+};
