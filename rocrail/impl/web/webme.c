@@ -166,6 +166,12 @@ static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname)
         else if( width == 128 && height == 64) {
           transform = StrOp.fmt("translate(16, -80)");
         }
+        else if( width == 96 && height == 64) {
+          transform = StrOp.fmt("translate(16, -48)");
+        }
+        else if( width == 64 && height == 64) {
+          transform = StrOp.fmt("translate(16, -16)");
+        }
 
         if( transform != NULL ) {
           iONode path = NodeOp.findNode(g, "path");
