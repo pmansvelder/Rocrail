@@ -1209,7 +1209,7 @@ static byte __getnewSID(iOMCS2Data data) {
 static void __clearRegMfxVar(iOMCS2Data data) {
   int i;
   if( data->sid != 0 ) 
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "mfx detection for loco: %s, sid: %d completed.", idname, data->sid);
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "mfx registration for loco: %s, sid: %d ended.", idname, data->sid);
   data->sid = 0;
   data->uid = 0;
   data->xS2handling = 0;
@@ -1311,26 +1311,26 @@ static void __evaluateMCS2ReadConfig(iOMCS2Data data, byte* in) {
   iONode loco;
 
   if( dlc == 7 ) {
-    if( cv != 3 || (cv == 3 && index == 0) || (cv == 3 && value == 0) )
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X", addr, index, cv, value);
-    if( index != 0 && cv == 3 && value != 0 ) {
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X,-> '%c'", addr, index, cv, value, value);
+    if( cv != 3 || (cv == 3 && value < 0x20) ) {
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X", addr, index, cv, value);
+    }
+    else {
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X,-> '%c'", addr, index, cv, value, value);
+    }
+    if( cv == 3 ) {
       if( index == 1 && StrOp.len(idname) > 0 ) {
         data->mfxDetectInProgress = True;
         for( i = 0; i < 17 ; i++ ) {
           idname[i] = '\0';
         }
       }
-
       idname[index - 1] = in[11];
       if( index == 0x10 || in[11] == 0 ) {
         data->sid = addr;
-
-  	/* in case of a xS2 controlled procedure, the sid adress changed from 1 to x in the end of the registering procedure */ 
         loco = __getBySID(data, addr);
         wProduct.setdesc(loco, data->id);
-        
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "catched sid: %d, product sid: %d, UID: 0x%08X, name: %s, iid: %s", addr, wProduct.getsid(loco), wProduct.getpid(loco), data->id, data->iid);
+  	/* in case of a xS2 controlled procedure, the sid adress changed from 1 to x in the end of the registering procedure */ 
         if( addr > 1 ) {   
           if( !__checkForValidName(data) )
               wProduct.setdesc(loco, data->id);
@@ -1382,44 +1382,46 @@ static void __evaluateMCS2WriteConfig( iOMCS2Data data, byte* in ) {
   int value =  in[11];
   int i     =  0;
   if( dlc == 8 ) {
-    if( cv != 3 || (cv == 3 && index == 0) || (cv == 3 && value == 0) )
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X", addr, index, cv, value);
-    if( index != 0 && cv == 3 && value != 0 ) {
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X,-> '%c'", addr, index, cv, value, value);
-
-      if( index == 1 && StrOp.len(idname) > 0 ) {
-        data->mfxDetectInProgress = True;
-        for( i = 0; i < StrOp.len(idname) ; i++ ) {
-          idname[i] = '\0';
-        }
-      }
-
-      idname[index - 1] = in[11];
-      if( in[11] == 0 ) {
-  	/* in case of a xS2 controlled procedure, 0 means end of name */ 
-        iONode loco = __getBySID(data, addr);
-        data->uid = wProduct.getpid(loco);
-        data->sid = wProduct.getsid(loco);
-        wProduct.setdesc(loco, data->id);
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, UID: 0x%08X, loc %s, iid: %s", data->sid, data->uid, data->id, data->iid);
-        TraceOp.trc(name, TRCLEVEL_MONITOR, __LINE__, 9999, "Name changed: %s, address: %d, UID: 0x%08X, valid at restart", data->id, wProduct.getsid(loco), wProduct.getpid(loco));
-        if( __checkForValidName(data) )
-            __registerMCS2DetectedMfxLoco(data);
-      }
+    if( cv != 3 || (cv == 3 && value < 0x20) ) {
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X", addr, index, cv, value);
     }
     else {
-      iONode node = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
-      cv = in[9]*256 + in[10];
-
-      wProgram.setcv( node, cv );
-      wProgram.setvalue( node, value );
-      wProgram.setcmd( node, wProgram.datarsp );
-      if( data->iid != NULL )
-          wProgram.setiid( node, data->iid );
-
-      if( data->listenerFun != NULL && data->listenerObj != NULL )
-          data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, index: %d, cv: %d, value: 0x%02X,-> '%c'", addr, index, cv, value, value);
     }
+    if( cv == 3 && index == 1 && StrOp.len(idname) > 0 ) {
+      data->mfxDetectInProgress = True;
+      for( i = 0; i < 17 ; i++ ) {
+        idname[i] = '\0';
+      }
+    }
+    if( index != 0 && cv == 3 ) {
+      idname[index - 1] = value;
+    }
+    if( cv == 3 && value == 0 ) {
+      iONode loco = __getBySID(data, addr);
+      data->uid = wProduct.getpid(loco);
+      data->sid = wProduct.getsid(loco);
+      wProduct.setdesc(loco, data->id);
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "sid: %d, UID: 0x%08X, loc %s, iid: %s", data->sid, data->uid, data->id, data->iid);
+      TraceOp.trc(name, TRCLEVEL_MONITOR, __LINE__, 9999, "Name changed: %s, address: %d, UID: 0x%08X, valid at restart", data->id, wProduct.getsid(loco), wProduct.getpid(loco));
+      if( __checkForValidName(data) ) {
+        __registerMCS2DetectedMfxLoco(data);
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Invalid name, loc not registered in loclist" );
+      }
+    }
+  }
+  else {
+    iONode node = NodeOp.inst( wProgram.name(), NULL, ELEMENT_NODE );
+    cv = in[9]*256 + in[10];
+    wProgram.setcv( node, cv );
+    wProgram.setvalue( node, value );
+    wProgram.setcmd( node, wProgram.datarsp );
+    if( data->iid != NULL )
+        wProgram.setiid( node, data->iid );
+    if( data->listenerFun != NULL && data->listenerObj != NULL )
+        data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
   }
 }
 
