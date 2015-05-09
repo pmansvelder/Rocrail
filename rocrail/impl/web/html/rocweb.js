@@ -20,6 +20,7 @@ var txMap = {};
 var sbMap = {};
 var ttMap = {};
 var fyMap = {};
+var stMap = {};
 var carMap = {};
 var lcCatMap = {};
 var locoSelected = 'none';
@@ -1059,6 +1060,49 @@ function handleStageBlock(sb) {
   }
 }
 
+function handleRoute(st) {
+  var stid = st.getAttribute('id');
+  stNode = stMap[stid];
+  if( stNode != undefined ) {
+    var locked = st.getAttribute('status');
+    if( locked != undefined ) {
+      stNode.setAttribute('status', locked);
+  
+      for (var key in tkMap) {
+        var tk = tkMap[key];
+        var routeids = tk.getAttribute('routeids');
+        if( routeids == undefined )
+          continue;
+        if( routeids.indexOf(stid) != -1 ) {
+          tk.setAttribute('route', locked)
+          handleTrack(tk);
+        }
+      }
+      for (var key in fbMap) {
+        var fb = fbMap[key];
+        var routeids = fb.getAttribute('routeids');
+        if( routeids == undefined )
+          continue;
+        if( routeids.indexOf(stid) != -1 ) {
+          fb.setAttribute('route', locked)
+          handleSensor(fb);
+        }
+      }
+    }
+
+  }
+}
+
+
+function handleTrack(tk) {
+  var div = document.getElementById("tk_"+tk.getAttribute('id'));
+  if( div == null )
+    return;
+  div.style.backgroundImage = getTrackImage(tk);
+  forceRedraw(div);
+}
+
+
 function handleState(state) {
   power = state.getAttribute('power');
   trace("power: " + power );
@@ -1122,6 +1166,8 @@ function evaluateEvent(xmlStr) {
     handleTurntable(root);
   else if( evtName == "seltab" )
     handleFiddleYard(root);
+  else if( evtName == "st" )
+    handleRoute(root);
 }
 
 function processResponse() {
@@ -1247,23 +1293,25 @@ function getOri(item) {
 
 function getSensorImage(fb) {
   var curve = fb.getAttribute('curve');
+  var route = fb.getAttribute('route');
   var accnr = parseInt(fb.getAttribute('accnr'));
   var ori   = getOri(fb);
+  var suffix = (route=="1")?"-route":"";
 
   if( "true" == fb.getAttribute('state') )
     if( accnr > 0 )
-      return "url('accessory-"+accnr+"-on."+ori+".svg')";
+      return "url('accessory-"+accnr+"-on"+suffix+"."+ori+".svg')";
     else if( curve == "true" )
-      return "url('curve-sensor-on."+ori+".svg')";
+      return "url('curve-sensor-on"+suffix+"."+ori+".svg')";
     else
-      return "url('sensor-on."+ori+".svg')";
+      return "url('sensor-on"+suffix+"."+ori+".svg')";
   else
     if( accnr > 0 )
-      return "url('accessory-"+accnr+"-off."+ori+".svg')";
+      return "url('accessory-"+accnr+"-off"+suffix+"."+ori+".svg')";
     else if( curve == "true" )
-      return "url('curve-sensor-off."+ori+".svg')";
+      return "url('curve-sensor-off"+suffix+"."+ori+".svg')";
     else
-      return "url('sensor-off."+ori+".svg')";
+      return "url('sensor-off"+suffix+"."+ori+".svg')";
 }
 
 function getOutputImage(co) {
@@ -1495,14 +1543,15 @@ function getTurntableImage(tt, div) {
 function getTrackImage(tk) {
   var ori   = getOri(tk);
   var type  = tk.getAttribute('type');
-  var suffix = '';
+  var route = tk.getAttribute('route');
+  var suffix = (route=="1")?"-route":"";
   if (type == "curve" )
-    return "url('curve."+ori+".svg')";
+    return "url('curve"+suffix+"."+ori+".svg')";
   else if( type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
-    return "url('"+type+"."+ori+".svg')";
+    return "url('"+type+suffix+"."+ori+".svg')";
   }
   else {
-    return "url('straight"+"."+ ori + ".svg')";
+    return "url('straight"+suffix+"."+ ori + ".svg')";
   }
 }
 
@@ -1517,6 +1566,8 @@ function getSwitchImage(sw, div) {
   var suffix = "-route";
 
   trace("switch type: " + type + " accnr="+accnr);
+  if( accnr != undefined && parseInt(accnr) > 1 )
+    type = "accessory";
   
   if (type=="right") {
     if (state=="straight")
@@ -2108,7 +2159,7 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(fblist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML      = "";
        
-       newdiv.style.backgroundImage = getSensorImage(fblist[i]);
+       newdiv.style.backgroundImage = getSensorImage(fblist[i], 0);
        //trace("Sensor image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
@@ -2189,6 +2240,14 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(ttlist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML  = getTurntableImage(ttlist[i], newdiv); 
        leveldiv.appendChild(newdiv);
+     }
+     
+     
+     stlist = xmlDoc.getElementsByTagName("st");
+     if( stlist.length > 0 )
+       trace("processing " + stlist.length + " routes");
+     for (var i = 0; i < stlist.length; i++) {
+       stMap[stlist[i].getAttribute('id')] = stlist[i];
      }
      
      
