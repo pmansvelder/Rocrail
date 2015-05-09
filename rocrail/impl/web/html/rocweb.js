@@ -966,7 +966,7 @@ function handleBlock(bk) {
     bkNode.setAttribute('reserved', bk.getAttribute('reserved'));
     bkNode.setAttribute('entering', bk.getAttribute('entering'));
     
-    var ori   = getOri(bk);
+    var ori   = getOri(bkNode);
     var label = bk.getAttribute('locid');
     if( label == undefined || label.length == 0 )
       label = bk.getAttribute('id');
