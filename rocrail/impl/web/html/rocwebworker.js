@@ -39,7 +39,7 @@ function doWebSocket() {
   ws.onclose = function(event)
   { 
      // websocket is closed.
-    if( event.code == 1006 ) {
+    if( event.code == 1006 && retryWebSocket < 10) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
@@ -61,6 +61,7 @@ onmessage = function(e) {
   if(result.type == 'shutdown') {
     debug("closing websocket...");
     ws.close(1000, "<shutdown/>");
+    retryWebSocket = 10; // Stop.
     return;
   }
   

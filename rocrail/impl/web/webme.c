@@ -276,10 +276,12 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
 
   char* png = NULL;
 
+  char* cleanFname = StrOp.replaceAllSub(fname, "%20", " ");
+
   if( !webPath && !StrOp.find(fname, "jquery") )
-    png = StrOp.fmt("%s/%s", wWebClient.getimgpath(data->ini), fname);
+    png = StrOp.fmt("%s/%s", wWebClient.getimgpath(data->ini), cleanFname);
   else
-    png = StrOp.fmt("%s/%s", wWebClient.getwebpath(data->ini), fname);
+    png = StrOp.fmt("%s/%s", wWebClient.getwebpath(data->ini), cleanFname);
 
   if( FileOp.exist( png ) ) {
     long size = FileOp.fileSize( png );
@@ -311,6 +313,7 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
     SocketOp.fmt( data->socket, "HTTP/1.1 404 Not found\r\n\r\n" );
   }
   StrOp.free(png);
+  StrOp.free(cleanFname);
 }
 
 static void __getModel(iOPClient inst) {
