@@ -864,7 +864,7 @@ $(document).ready(function(){
     langNL();
     sel.selectedIndex = 2;
   }
-  //$('#languageSelect').selectmenu("refresh");
+  $('#languageSelect').selectmenu("refresh");
 })
 
 
