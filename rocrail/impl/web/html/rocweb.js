@@ -1094,6 +1094,38 @@ function updateBlockstate( sgid, lcid ) {
   forceRedraw(div);
 }
 
+function getBlockLabel(bk, div) {
+  bkNode = bkMap[bk.getAttribute('id')];
+  var ori   = getOri(bkNode);
+  var label = bk.getAttribute('locid');
+  if( label == undefined || label.length == 0 )
+    label = bk.getAttribute('id');
+  label = label.split(' ').join('.');
+  label = label.split('-').join('.');
+  if( ori == "north" || ori == "south" ) {
+    var labdiv = document.createElement('div');
+    labdiv.setAttribute('class', "itemtextV");
+    if( bkNode.getAttribute('smallsymbol') == "true" ) {
+      labdiv.style.width    = "64px";
+      labdiv.style.top      = "16px";
+    }
+    else {
+      labdiv.style.width    = "128px";
+      labdiv.style.top      = "48px";
+    }
+    labdiv.style.height   = "32px";
+    labdiv.style.fontSize = ""+blockPointsize+"px";
+    labdiv.style.position = "absolute";
+    labdiv.style.left     = "0px";
+    labdiv.innerHTML      = label;
+    div.innerHTML      = "";
+    div.appendChild(labdiv);
+  }
+  else {
+    div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
+  }
+}
+
 function handleBlock(bk) {
   trace("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
   var div = document.getElementById("bk_"+bk.getAttribute('id'));
@@ -1104,15 +1136,7 @@ function handleBlock(bk) {
     bkNode.setAttribute('reserved', bk.getAttribute('reserved'));
     bkNode.setAttribute('entering', bk.getAttribute('entering'));
     
-    var ori   = getOri(bkNode);
-    var label = bk.getAttribute('locid');
-    if( label == undefined || label.length == 0 )
-      label = bk.getAttribute('id');
-    if( ori == "north" || ori == "south" )
-      div.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
-    else
-      div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
-
+    getBlockLabel(bk, div);
     div.style.backgroundImage = getBlockImage(bkNode, div);
     forceRedraw(div);
   }
@@ -2355,32 +2379,7 @@ function processPlan() {
        newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
        newdiv.style.lineHeight = newdiv.style.height;
 
-       var label = bklist[i].getAttribute('locid');
-       if( label == undefined || label.length == 0 )
-         label = bklist[i].getAttribute('id');
-       label = label.split(' ').join('.');
-       label = label.split('-').join('.');
-       if( ori == "north" || ori == "south" ) {
-         var labdiv = document.createElement('div');
-         labdiv.setAttribute('class', "itemtextV");
-         if( bklist[i].getAttribute('smallsymbol') == "true" ) {
-           labdiv.style.width    = "64px";
-           labdiv.style.top      = "16px";
-         }
-         else {
-           labdiv.style.width    = "128px";
-           labdiv.style.top      = "48px";
-         }
-         labdiv.style.height   = "32px";
-         labdiv.style.fontSize = ""+blockPointsize+"px";
-         labdiv.style.position = "absolute";
-         labdiv.style.left     = "0px";
-         labdiv.innerHTML      = label;
-         newdiv.appendChild(labdiv);
-       }
-       else {
-         newdiv.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
-       }
+       getBlockLabel(bklist[i], newdiv);
        
        leveldiv.appendChild(newdiv);
      }
