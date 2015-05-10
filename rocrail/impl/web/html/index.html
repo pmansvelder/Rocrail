@@ -89,23 +89,22 @@
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
   <h3 id="systemTitle">System</h3>
-  <div class="ui-grid-a">
-    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemInitfield()">Init field</a></div>
-    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemQuerySensors()">Query sensors</a></div>
-  </div>
-  <div><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionEBreak()">Emergency break</a></div>
+  <div><a id="systemInitField" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemInitfield()">Init field</a></div>
+  <div><a id="systemQuerySensors" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemQuerySensors()">Query sensors</a></div>
+  <div><a id="systemEmergencyBreak" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionEBreak()">Emergency break</a></div>
   </div>
   </div>
 
   <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <button class="ui-btn ui-icon-info  ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
-  <button class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;" onclick="openSystem()">System</button>
+  <button id="menuInfo" class="ui-btn ui-icon-info  ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
+  <button id="menuSystem" class="ui-btn ui-icon-star  ui-btn-icon-left" style="text-align:left;" onclick="openSystem()">System</button>
   <button id="menuOptions" class="ui-btn ui-icon-gear  ui-btn-icon-left" style="text-align:left;" onclick="openOptions()">Options</button>
     <select name="languageSelect" id="languageSelect" style="text-align:left;">
       <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
       <option id="langEN" value="en" style="text-align:left;">English</option>
+      <option id="langNL" value="nl" style="text-align:left;">Nederlands</option>
     </select>
   <!--
     <ul data-role="listview">
@@ -114,6 +113,7 @@
         <ul data-role="listview" data-theme="b">
           <li><a id="langDE" value="de"  href="#" onclick="langDE()">Deutsch</a></li>
           <li><a id="langEN" value="en"  href="#" onclick="langEN()">English</a></li>
+          <li><a id="langNL" value="nl"  href="#" onclick="langNL()">Nederlands</a></li>
         </ul>
       </li>
     </ul>
@@ -148,19 +148,19 @@
     <div data-role="fieldcontain">
     <fieldset data-role="controlgroup">
       <input type="checkbox" name="optionDebug" id="optionDebug" class="custom" onclick="onOptionDebug()" />
-      <label for="optionDebug">Debug</label>
+      <label id="labOptionDebug" for="optionDebug">Debug</label>
       <input type="checkbox" name="optionSimSensors" id="optionSimSensors" class="custom" onclick="onOptionSimSensors()" />
-      <label for="optionSimSensors">Simulate sensors</label>
+      <label id="labOptionSimSensors" for="optionSimSensors">Simulate sensors</label>
     </fieldset>
     </div>
     <div data-role="fieldcontain">
     <fieldset data-role="controlgroup" data-type="horizontal" >
       <input type="radio" id="locoCatEngine" name="radio-choice-1" value="engine" onclick="onCatEngine()"/>
-      <label for="locoCatEngine">Engine</label>
+      <label id="labLocoCatEngine" for="locoCatEngine">Engine</label>
       <input type="radio" id="locoCatEra" name="radio-choice-1" value="era" onclick="onCatEra()"/>
-      <label for="locoCatEra">Era</label>
+      <label id="labLocoCatEra" for="locoCatEra">Era</label>
       <input type="radio" id="locoCatRoadname" name="radio-choice-1" value="roadname" onclick="onCatRoadname()"/>
-      <label for="locoCatRoadname">Roadname</label>
+      <label id="labLocoCatRoadname" for="locoCatRoadname">Roadname</label>
     </fieldset>
     </div>    
   </div>

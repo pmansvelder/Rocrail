@@ -65,11 +65,63 @@ function jsonStorageTest() {
 
 /* Configuration */
 function langDE() {
- document.getElementById("menuOptions").innerHTML = "Optionen";
+  var donkey = "<br>Rocrail wird vollständig auf freiwilliger Basis betrieben. Trotzdem benötigt Rocrail Geld. Ihre fortwährende finanzielle Unterstützung ist notwendig, um Rocrail verfügbar zu halten. Falls Sie bereits einen Beitrag geleistet haben, können Sie einen Schlüssel beantragen, um diesen Dialog zu unterdrücken: donate@rocrail.net<br>";
+  donkey += "<div id=\"donkeyWarning\"><b>Rocweb beendet nach 5 Minuten die Kommunikation!</b></div>";
+  document.getElementById("donkey").innerHTML = donkey;
+
+  document.getElementById("menuInfo").innerHTML = "Informationen";
+  document.getElementById("menuSystem").innerHTML = "System";
+  document.getElementById("menuOptions").innerHTML = "Optionen";
+  document.getElementById("systemTitle").innerHTML = "System";
+  document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
+  document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
+  document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
+  document.getElementById("optionsTitle").innerHTML = "Optionen";
+  document.getElementById("labOptionDebug").innerHTML = "Debug";
+  document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
+  document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
+  document.getElementById("labLocoCatEra").innerHTML = "Epoche";
+  document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
 }
 
 function langEN() {
- document.getElementById("menuOptions").innerHTML = "Options";
+  var donkey = "<br>Rocrail runs entirely on volunteer labor. However, Rocrail also needs contributions of money. Your continued support is vital for keeping Rocrail available. If you already did support you can ask a key to disable this on startup dialog: donate@rocrail.net<br>";
+  donkey += "<div id=\"donkeyWarning\"><b>Rocweb will stop communicate in 5 minutes!</b></div>";
+  document.getElementById("donkey").innerHTML = donkey;
+
+  document.getElementById("menuInfo").innerHTML = "Information";
+  document.getElementById("menuSystem").innerHTML = "System";
+  document.getElementById("menuOptions").innerHTML = "Options";
+  document.getElementById("systemTitle").innerHTML = "System";
+  document.getElementById("systemInitField").innerHTML = "Init field";
+  document.getElementById("systemQuerySensors").innerHTML = "Start of day";
+  document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
+  document.getElementById("optionsTitle").innerHTML = "Options";
+  document.getElementById("labOptionDebug").innerHTML = "Debug";
+  document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
+  document.getElementById("labLocoCatEngine").innerHTML = "Engine";
+  document.getElementById("labLocoCatEra").innerHTML = "Era";
+  document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
+}
+
+function langNL() {
+  var donkey = "<br>Rocrail wordt uitsluitend door vrijwilligers ontwikkeld. Om Rocrail “in de lucht te houden” en steeds weer aan te kunnen passen aan nieuwe modelspoor hardware is er jaarlijks een bescheiden financieel budget nodig. Vrijwillige bijdragen zijn daarvoor noodzakelijk. Als je al een financiële ondersteuning gegeven hebt kun je op donate@rocrail.net een sleutel aanvragen om dit venster te onderdrukken.<br>";
+  donkey += "<div id=\"donkeyWarning\"><b>Rocweb stopt met communicatie na 5 minuten!</b></div>";
+  document.getElementById("donkey").innerHTML = donkey;
+  
+  document.getElementById("menuInfo").innerHTML = "Informatie";
+  document.getElementById("menuSystem").innerHTML = "Systeem";
+  document.getElementById("menuOptions").innerHTML = "Opties";
+  document.getElementById("systemTitle").innerHTML = "Systeem";
+  document.getElementById("systemInitField").innerHTML = "Init veld";
+  document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
+  document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
+  document.getElementById("optionsTitle").innerHTML = "Opties";
+  document.getElementById("labOptionDebug").innerHTML = "Debug";
+  document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
+  document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
+  document.getElementById("labLocoCatEra").innerHTML = "Periode";
+  document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
 }
 
 
@@ -746,6 +798,8 @@ $(document).on("pagecreate",function(){
       langDE();
     else if( this.value == "en" )
       langEN();
+    else if( this.value == "nl" )
+      langNL();
   } );
 
 });
@@ -761,11 +815,12 @@ $(document).ready(function(){
   
   if( lang == "de" ) {
     langDE();
-    //sel.selectedIndex = 0;
+  }
+  else if( lang == "nl" ) {
+    langNL();
   }
   else {
     langEN();
-    //sel.selectedIndex = 1;
   }
 
 })
@@ -1951,6 +2006,8 @@ function processPlan() {
          newdiv.setAttribute('id', "level_" + z);
          newdiv.setAttribute('overflow-x', "auto");
          newdiv.setAttribute('overflow-y', "auto");
+         //newdiv.style.backgroundColor = "#FF9999";
+
          zlevelDivMap[z] = newdiv;
          zlevelDivList[i] = newdiv;
 
