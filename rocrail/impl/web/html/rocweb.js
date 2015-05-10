@@ -2358,7 +2358,16 @@ function processPlan() {
        label = label.split(' ').join('.');
        label = label.split('-').join('.');
        if( ori == "north" || ori == "south" ) {
-         newdiv.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
+         var labdiv = document.createElement('div');
+         labdiv.setAttribute('class', "itemtextV");
+         labdiv.style.width    = "128px";
+         labdiv.style.height   = "32px";
+         labdiv.style.fontSize = ""+blockPointsize+"px";
+         labdiv.style.position = "absolute";
+         labdiv.style.left     = "0px";
+         labdiv.style.top      = "48px";
+         labdiv.innerHTML      = label;
+         newdiv.appendChild(labdiv);
        }
        else {
          newdiv.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
