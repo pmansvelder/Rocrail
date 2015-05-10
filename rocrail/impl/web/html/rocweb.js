@@ -1,6 +1,7 @@
 /* Variables */
 var req;
 var yoffset = 48;
+var blockPointsize = 12;
 var planloaded = false;
 var ws = null;
 var initWS;
@@ -1105,9 +1106,9 @@ function handleBlock(bk) {
     if( label == undefined || label.length == 0 )
       label = bk.getAttribute('id');
     if( ori == "north" || ori == "south" )
-      div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+      div.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
     else
-      div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+      div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
 
     div.style.backgroundImage = getBlockImage(bkNode, div);
     forceRedraw(div);
@@ -1185,9 +1186,9 @@ function handleStageBlock(sb) {
     if( label == undefined || label.length == 0 )
       label = sb.getAttribute('id') + "[" + lcCount + "]";
     if( ori == "north" || ori == "south" )
-      div.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+      div.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
     else
-      div.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+      div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
 
     div.style.backgroundImage = getStageBlockImage(sbNode, div);
     forceRedraw(div);
@@ -1577,7 +1578,7 @@ function getFiddleYardImage(fy, div) {
     "<svg xmlns='http://www.w3.org/2000/svg' width='"+symwidth+"' height='"+(div.style.height)+"'>" +
     "  <g transform='"+transform+"'>" +
     "   <rect x='2' y='2' rx='8' ry='8' width='"+width+"' height='28' fill='rgb("+fill+")' stroke-width='2' stroke='rgb(0,0,0)'/>" +
-    "   <text x='8' y='24' fill='black' >"+label+"</text>" +
+    "   <text x='8' y='24' fill='black' font-size='"+blockPointsize+"px'>"+label+"</text>" +
     "  </g>" +
     "</svg>";
   
@@ -2357,10 +2358,10 @@ function processPlan() {
        label = label.split(' ').join('.');
        label = label.split('-').join('.');
        if( ori == "north" || ori == "south" ) {
-         newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+         newdiv.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
        }
        else {
-         newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+         newdiv.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
        }
        
        leveldiv.appendChild(newdiv);
@@ -2480,10 +2481,10 @@ function processPlan() {
        if( label == undefined || label.length == 0 )
          label = sblist[i].getAttribute('id') + "[" + lcCount + "]";
        if( ori == "north" || ori == "south" ) {
-         newdiv.innerHTML      = "<div class='itemtextV'>"+label+"</div>";
+         newdiv.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
        }
        else {
-         newdiv.innerHTML      = "<label class='itemtext'>"+label+"</label>";
+         newdiv.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
        }
 
        leveldiv.appendChild(newdiv);
