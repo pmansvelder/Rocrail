@@ -1730,6 +1730,10 @@ function getTrackImage(tk) {
   else if( type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
     return "url('"+type+suffix+"."+ori+".svg')";
   }
+  else if (type == "tracknr" ) {
+    var tknr = parseInt(tk.getAttribute('tknr'));
+    return "url('track-"+tknr+suffix+"."+ ori + ".svg')";
+  }
   else {
     return "url('straight"+suffix+"."+ ori + ".svg')";
   }
