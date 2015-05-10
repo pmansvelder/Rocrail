@@ -75,7 +75,7 @@ function langDE() {
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
-  document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
+  document.getElementById("systemQuerySensors").innerHTML = "Rückmelder abfragen";
   document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
   document.getElementById("optionsTitle").innerHTML = "Optionen";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -106,7 +106,7 @@ function langEN() {
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Init field";
-  document.getElementById("systemQuerySensors").innerHTML = "Start of day";
+  document.getElementById("systemQuerySensors").innerHTML = "Query sensors";
   document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
   document.getElementById("optionsTitle").innerHTML = "Options";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -137,7 +137,7 @@ function langNL() {
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("systemTitle").innerHTML = "Systeem";
   document.getElementById("systemInitField").innerHTML = "Init veld";
-  document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
+  document.getElementById("systemQuerySensors").innerHTML = "Bezetmelders afvragen";
   document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
   document.getElementById("optionsTitle").innerHTML = "Opties";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
