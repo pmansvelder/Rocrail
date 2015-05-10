@@ -85,6 +85,18 @@
   </div>
   </div>
 
+  <div data-role="popup" id="popupSystem" class="ui-popup" data-theme="a" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <h3 id="systemTitle">System</h3>
+  <div class="ui-grid-a">
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemInitfield()">Init field</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemQuerySensors()">Query sensors</a></div>
+  </div>
+  <div><a href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionEBreak()">Emergency break</a></div>
+  </div>
+  </div>
+
   <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
@@ -137,6 +149,8 @@
     <fieldset data-role="controlgroup">
       <input type="checkbox" name="optionDebug" id="optionDebug" class="custom" onclick="onOptionDebug()" />
       <label for="optionDebug">Debug</label>
+      <input type="checkbox" name="optionSimSensors" id="optionSimSensors" class="custom" onclick="onOptionSimSensors()" />
+      <label for="optionSimSensors">Simulate sensors</label>
     </fieldset>
     </div>
     <div data-role="fieldcontain">

@@ -218,6 +218,12 @@ function openMenu()
 }
 
 
+function openSystem() {
+  trace("close menu");
+  $( "#popupMenu" ).popup( "close" );
+  $('#popupMenu').on("popupafterclose", function(){$( "#popupSystem" ).popup( "open" )});
+}
+
 /* Options Dialog */
 function openOptions() {
   trace("close menu");
@@ -226,6 +232,8 @@ function openOptions() {
   trace("open info");
   var debug = localStorage.getItem("debug");
   $('#optionDebug').prop('checked', debug=="true"?true:false).checkboxradio('refresh');
+  var simsensors = localStorage.getItem("simsensors");
+  $('#optionSimSensors').prop('checked', simsensors=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -397,8 +405,26 @@ function actionEBreak() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function actionSystemInitfield() {
+  $( "#popupSystem" ).popup( "close" );
+  var cmd = "<model cmd=\"initfield\" informall=\"true\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function actionSystemQuerySensors() {
+  $( "#popupSystem" ).popup( "close" );
+  var cmd = "<sys cmd=\"sod\" informall=\"true\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 function actionSensor(id)
 {
+  var simsensors = localStorage.getItem("simsensors");
+  if( simsensors == undefined )
+    simsensors = "false";
+  if( simsensors == "false" )
+    return;
+
   fbid = id.replace("fb_","");
   trace("sensor action on " + fbid );
   fb = fbMap[fbid];
@@ -618,6 +644,12 @@ function onOptionDebug() {
   trace("option debug = "+ optionDebug.checked );
 }
 
+function onOptionSimSensors() {
+  var optionSimSensors = document.getElementById("optionSimSensors");
+  localStorage.setItem("simsensors", optionSimSensors.checked ? "true":"false");
+  trace("option simsensors = "+ optionSimSensors.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -816,7 +848,7 @@ function handleText(tx) {
         div.innerHTML = "<div><img width='"+newdiv.style.width+"' src='"+text+"'/></div>";
     }
     else {  
-      var pointsize = tx[i].getAttribute('pointsize');
+      var pointsize = tx.getAttribute('pointsize');
       if( pointsize == undefined || pointsize == "0")
         pointsize = "10";
       
