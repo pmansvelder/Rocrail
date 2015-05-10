@@ -2363,12 +2363,18 @@ function processPlan() {
        if( ori == "north" || ori == "south" ) {
          var labdiv = document.createElement('div');
          labdiv.setAttribute('class', "itemtextV");
-         labdiv.style.width    = "128px";
+         if( bklist[i].getAttribute('smallsymbol') == "true" ) {
+           labdiv.style.width    = "64px";
+           labdiv.style.top      = "16px";
+         }
+         else {
+           labdiv.style.width    = "128px";
+           labdiv.style.top      = "48px";
+         }
          labdiv.style.height   = "32px";
          labdiv.style.fontSize = ""+blockPointsize+"px";
          labdiv.style.position = "absolute";
          labdiv.style.left     = "0px";
-         labdiv.style.top      = "48px";
          labdiv.innerHTML      = label;
          newdiv.appendChild(labdiv);
        }
