@@ -86,6 +86,13 @@ function langDE() {
   document.getElementById("labBlockStop").innerHTML = "Zug anhalten";
   document.getElementById("labBlockClose").innerHTML = "Schliessen";
   document.getElementById("labBlockOpen").innerHTML = "Öffnen";
+  document.getElementById("labTTNext").innerHTML = "Nächstes Gleis";
+  document.getElementById("labTTPrev").innerHTML = "Vorheriges Gleis";
+  document.getElementById("labFYNext").innerHTML = "Nächstes Gleis";
+  document.getElementById("labFYPrev").innerHTML = "Vorheriges Gleis";
+  document.getElementById("labStageClose").innerHTML = "Schliessen";
+  document.getElementById("labStageOpen").innerHTML = "Öffnen";
+  document.getElementById("labStageCompress").innerHTML = "Komprimieren";
 }
 
 function langEN() {
@@ -110,6 +117,13 @@ function langEN() {
   document.getElementById("labBlockStop").innerHTML = "Stop train";
   document.getElementById("labBlockClose").innerHTML = "Close";
   document.getElementById("labBlockOpen").innerHTML = "Open";
+  document.getElementById("labTTNext").innerHTML = "Next track";
+  document.getElementById("labTTPrev").innerHTML = "Previous track";
+  document.getElementById("labFYNext").innerHTML = "Next track";
+  document.getElementById("labFYPrev").innerHTML = "Previous track";
+  document.getElementById("labStageClose").innerHTML = "Close";
+  document.getElementById("labStageOpen").innerHTML = "Open";
+  document.getElementById("labStageCompress").innerHTML = "Compress";
 }
 
 function langNL() {
@@ -134,6 +148,13 @@ function langNL() {
   document.getElementById("labBlockStop").innerHTML = "Stop trein";
   document.getElementById("labBlockClose").innerHTML = "Sluiten";
   document.getElementById("labBlockOpen").innerHTML = "Openen";
+  document.getElementById("labTTNext").innerHTML = "Volgende spoor";
+  document.getElementById("labTTPrev").innerHTML = "Vorige spoor";
+  document.getElementById("labFYNext").innerHTML = "Volgende spoor";
+  document.getElementById("labFYPrev").innerHTML = "Vorige spoor";
+  document.getElementById("labStageClose").innerHTML = "Sluiten";
+  document.getElementById("labStageOpen").innerHTML = "Openen";
+  document.getElementById("labStageCompress").innerHTML = "Comprimeer";
 }
 
 
@@ -530,7 +551,7 @@ function actionSignal(id) {
 function actionTurntable(id) {
   ttid = id.replace("tt_","");
   sessionStorage.setItem("turntable", ttid);
-  document.getElementById("turntableTitle").innerHTML = "Turntable: " + ttid;
+  document.getElementById("turntableTitle").innerHTML = ttid;
 
   ttNode = ttMap[ttid];
   $( "#popupTurntable" ).popup( "open", {positionTo: '#'+id} );
@@ -540,7 +561,7 @@ function actionTurntable(id) {
 function actionFiddleYard(id) {
   fyid = id.replace("fy_","");
   sessionStorage.setItem("fiddleyard", fyid);
-  document.getElementById("fiddleyardTitle").innerHTML = "FiddleYard: " + fyid;
+  document.getElementById("fiddleyardTitle").innerHTML = fyid;
 
   fyNode = fyMap[fyid];
   $( "#popupFiddleYard" ).popup( "open", {positionTo: '#'+id} );
@@ -646,7 +667,7 @@ function actionStageBlock(id)
 {
   sbid = id.replace("sb_","");
   sessionStorage.setItem("stageblock", sbid);
-  document.getElementById("stageblockTitle").innerHTML = "Staging Block: " + sbid;
+  document.getElementById("stageblockTitle").innerHTML = sbid;
   $( "#popupStageBlock" ).popup( "open", {positionTo: '#'+id} );
 }
 
