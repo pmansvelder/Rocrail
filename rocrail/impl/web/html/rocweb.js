@@ -262,6 +262,9 @@ function updateFunctionLabels() {
         if( FGroup == 0 && iFn > 14 ) {
           continue;
         }
+        if( FGroup == 1 && iFn < 15 ) {
+          continue;
+        }
         if( FGroup == 1 && iFn > 14 ) {
           iFn -= 14;
         }
