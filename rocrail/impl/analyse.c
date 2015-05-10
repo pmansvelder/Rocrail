@@ -1389,12 +1389,13 @@ static Boolean checkActionCondText( const char* state ) {
   return( state != NULL );
 }
 
-/* condState(route) == [locked, unlocked, closed, open] */
+/* condState(route) == [locked, unlocked, closed, open, =] */
 static Boolean checkActionCondRoute( const char* state ) {
-  if( StrOp.equals( state, "unlocked" ) ||
-      StrOp.equals( state, "locked"   ) ||
-      StrOp.equals( state, "closed"   ) ||
-      StrOp.equals( state, "open"     )
+  if(  StrOp.equals( state, "unlocked" )
+    || StrOp.equals( state, "locked" )
+    || StrOp.equals( state, "closed" )
+    || StrOp.equals( state, "open" )
+    || StrOp.equals( state, "=" )
     )
     return True;
 
