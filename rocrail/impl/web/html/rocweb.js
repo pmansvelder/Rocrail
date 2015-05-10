@@ -82,6 +82,10 @@ function langDE() {
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
+  document.getElementById("labBlockStart").innerHTML = "Zug starten";
+  document.getElementById("labBlockStop").innerHTML = "Zug anhalten";
+  document.getElementById("labBlockClose").innerHTML = "Schliessen";
+  document.getElementById("labBlockOpen").innerHTML = "Öffnen";
 }
 
 function langEN() {
@@ -102,6 +106,10 @@ function langEN() {
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
+  document.getElementById("labBlockStart").innerHTML = "Start train";
+  document.getElementById("labBlockStop").innerHTML = "Stop train";
+  document.getElementById("labBlockClose").innerHTML = "Close";
+  document.getElementById("labBlockOpen").innerHTML = "Open";
 }
 
 function langNL() {
@@ -122,6 +130,10 @@ function langNL() {
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
+  document.getElementById("labBlockStart").innerHTML = "Start trein";
+  document.getElementById("labBlockStop").innerHTML = "Stop trein";
+  document.getElementById("labBlockClose").innerHTML = "Sluiten";
+  document.getElementById("labBlockOpen").innerHTML = "Openen";
 }
 
 
@@ -295,6 +307,9 @@ function openOptions() {
     $("#locoCatRoadname").prop("checked", true).checkboxradio('refresh');
   else
     $("#locoCatEngine").prop("checked", true).checkboxradio('refresh');
+  
+  var select = document.getElementById("languageSelect");
+
 
   $('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
 }
@@ -535,7 +550,7 @@ function actionFiddleYard(id) {
 function actionBlock(id) {
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
-  document.getElementById("blockTitle").innerHTML = "Block: " + bkid;
+  document.getElementById("blockTitle").innerHTML = bkid;
 
   bkNode = bkMap[bkid];
 
@@ -815,13 +830,17 @@ $(document).ready(function(){
   
   if( lang == "de" ) {
     langDE();
+    sel.selectedIndex = 0;
+  }
+  else if( lang == "en" ) {
+    langEN();
+    sel.selectedIndex = 1;
   }
   else if( lang == "nl" ) {
     langNL();
+    sel.selectedIndex = 2;
   }
-  else {
-    langEN();
-  }
+  $('#languageSelect').selectmenu("refresh");
 
 })
 
