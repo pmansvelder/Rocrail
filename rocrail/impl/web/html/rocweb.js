@@ -840,12 +840,16 @@ function handleText(tx) {
   var div = document.getElementById("tx_"+tx.getAttribute('id'));
   if( div != null ) {
     var text = tx.getAttribute('text');
+    var txNode = txMap[tx.getAttribute('id')];
     
+    var ori = getOri(txNode);
+    txNode.setAttribute('text', text);
+
     if( text != undefined && text.indexOf(".png") != -1 ) {
       if( ori == "north" || ori == "south" )
-        div.innerHTML = "<div class='imageV'><img height='"+newdiv.style.width+"' src='"+text+"'/></div>";
+        div.innerHTML = "<div class='imageV'><img height='"+div.style.width+"' src='"+text+"'/></div>";
       else
-        div.innerHTML = "<div><img width='"+newdiv.style.width+"' src='"+text+"'/></div>";
+        div.innerHTML = "<div><img width='"+div.style.width+"' src='"+text+"'/></div>";
     }
     else {  
       var pointsize = tx.getAttribute('pointsize');
