@@ -423,6 +423,8 @@ function onFunction(id, nr) {
   if(lc == undefined)
     lc = carMap[locoSelected];
   if( lc == undefined ) return;
+  if( FGroup == 1 )
+    nr += 14;
   trace("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
   var group = (nr-1)/4+1;
   var fx = parseInt(lc.getAttribute('fx'));
@@ -1043,9 +1045,9 @@ function handleFunction(fn) {
   if( lc == undefined)
     return;
   
-  var fnchanged = fn.getAttribute('fnchanged');
+  var fnchanged = parseInt(fn.getAttribute('fnchanged'));
   var fx = parseInt(lc.getAttribute('fx'));
-  var mask = 1 << parseInt(fnchanged); 
+  var mask = 1 << fnchanged; 
   var on = fn.getAttribute("f"+fnchanged);
   
   if( on == "true")
@@ -1055,6 +1057,8 @@ function handleFunction(fn) {
   lc.setAttribute('fx', ""+fx)
   
   if( fn.getAttribute('id') == locoSelected ) {
+    if(fnchanged > 14)
+      fnchanged -= 14;
     var div = document.getElementById("F"+fnchanged);
     if( on == "true")
       div.style.backgroundColor = "#FF8888";
