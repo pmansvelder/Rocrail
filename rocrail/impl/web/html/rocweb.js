@@ -76,7 +76,7 @@ function langDE() {
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
-  document.getElementById("systemQuerySensors").innerHTML = "Rückmelder abfragen";
+  document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
   document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
   document.getElementById("optionsTitle").innerHTML = "Optionen";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -107,7 +107,7 @@ function langEN() {
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Init field";
-  document.getElementById("systemQuerySensors").innerHTML = "Query sensors";
+  document.getElementById("systemQuerySensors").innerHTML = "Start of day";
   document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
   document.getElementById("optionsTitle").innerHTML = "Options";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -138,7 +138,7 @@ function langNL() {
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("systemTitle").innerHTML = "Systeem";
   document.getElementById("systemInitField").innerHTML = "Init veld";
-  document.getElementById("systemQuerySensors").innerHTML = "Bezetmelders afvragen";
+  document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
   document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
   document.getElementById("optionsTitle").innerHTML = "Opties";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -1534,7 +1534,7 @@ function getRouteImage(st) {
   var suffix = '';
   if( status == undefined )
     status = "0";
-  console.log("route status = "+status);
+  trace("route status = "+status);
   if( status == "0")
     status = "free";
   else if( status == "1")
@@ -1545,7 +1545,7 @@ function getRouteImage(st) {
     status = "deselected";
   else if( status == "4")
     status = "closed";
-  console.log("route status = "+status);
+  trace("route status = "+status);
   return "url('route-"+status+"."+ ori + ".svg')";
 }
 
