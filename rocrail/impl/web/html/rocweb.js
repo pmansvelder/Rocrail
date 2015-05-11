@@ -6,7 +6,7 @@ var planloaded = false;
 var ws = null;
 var initWS;
 var worker;
-var tapholdF1 = 0;
+var tapholdFkey = 0;
 var zlevelDivMap = {};
 var zlevelDivList = [];
 var zlevelMap = {};
@@ -26,6 +26,8 @@ var stMap = {};
 var carMap = {};
 var lcCatMap = {};
 var locoSelected = 'none';
+var locoSelectedList = [];
+var locoSelectedIdx = 0;
 var locoBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
@@ -188,6 +190,8 @@ function onLocoSelected(sel) {
   
   locoSelected = sel;
   localStorage.setItem("locoSelected", locoSelected);
+  locoSelectedList[locoSelectedIdx] = locoSelected;
+  localStorage.setItem("locoSelected"+locoSelectedIdx, locoSelected);
   initThrottle();
   updateDir();
   updateFunctionLabels();
@@ -383,10 +387,45 @@ function sendCommand(cmd) {
 /* Throttle commands */
 $(function(){
   $("#F1").bind("taphold", tapholdF1Handler);
+  $("#F2").bind("taphold", tapholdF2Handler);
+  $("#F3").bind("taphold", tapholdF3Handler);
+  $("#F4").bind("taphold", tapholdF4Handler);
  
   function tapholdF1Handler(e) {
-    tapholdF1 = 1;
+    tapholdFkey = 1;
     trace("taphold F1");
+    locoSelectedIdx = 0;
+    locoSelected = locoSelectedList[locoSelectedIdx];
+    initThrottle();
+    updateDir();
+    updateFunctionLabels();
+  }
+  function tapholdF2Handler(e) {
+    tapholdFkey = 1;
+    trace("taphold F2");
+    locoSelectedIdx = 1;
+    locoSelected = locoSelectedList[locoSelectedIdx];
+    initThrottle();
+    updateDir();
+    updateFunctionLabels();
+  }
+  function tapholdF3Handler(e) {
+    tapholdFkey = 1;
+    trace("taphold F3");
+    locoSelectedIdx = 2;
+    locoSelected = locoSelectedList[locoSelectedIdx];
+    initThrottle();
+    updateDir();
+    updateFunctionLabels();
+  }
+  function tapholdF4Handler(e) {
+    tapholdFkey = 1;
+    trace("taphold F4");
+    locoSelectedIdx = 3;
+    locoSelected = locoSelectedList[locoSelectedIdx];
+    initThrottle();
+    updateDir();
+    updateFunctionLabels();
   }
 });
 
@@ -420,8 +459,8 @@ function updateDir() {
 }
 
 function onFunction(id, nr) {
-  if( tapholdF1 == 1 ) {
-    tapholdF1 = 0;
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
     return;
   }
   lc = lcMap[locoSelected];
@@ -801,6 +840,13 @@ function initThrottleStatus() {
     locoDescription.innerHTML = lc.getAttribute('desc');
     trace("init throttle status: " + lc.getAttribute('id') + " [" + mode + "]" + fromTo);
   }
+  else {
+    var locoStatus = document.getElementById("locoStatus");
+    var locoDescription = document.getElementById("locoDescription");
+    locoStatus.style.backgroundColor = "transparent";
+    locoStatus.innerHTML = "";
+    locoDescription.innerHTML = "";
+  }
 }
 
 
@@ -821,6 +867,13 @@ function initThrottle() {
     document.getElementById("speedSlider").value = lc.getAttribute('V');
     $("#speedSlider").slider("refresh");
     updateDir();
+    initThrottleStatus();
+  }
+  else {
+    var img = document.getElementById("locoImage");
+    img.src = "noimg.png";
+    document.getElementById("speedSlider").value = "0";
+    $("#speedSlider").slider("refresh");
     initThrottleStatus();
   }
 }
@@ -1402,6 +1455,11 @@ function processResponse() {
           processPlan();
           planloaded = true;
           locoSelected = localStorage.getItem("locoSelected");
+          locoSelectedList[0] = localStorage.getItem("locoSelected0");
+          locoSelectedList[1] = localStorage.getItem("locoSelected1");
+          locoSelectedList[2] = localStorage.getItem("locoSelected2");
+          locoSelectedList[3] = localStorage.getItem("locoSelected3");
+          
           trace("selected loco = " + locoSelected);
 
           if( donkey == 'true') {
