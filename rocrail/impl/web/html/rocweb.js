@@ -1864,6 +1864,16 @@ function getSwitchImage(sw, div) {
         div.style.height   = "128px";
       }
     }
+    else if( accnr == "41" ) {
+      if( ori == "west" || ori == "east") {
+        div.style.width    = "128px";
+        div.style.height   = "32px";
+      }
+      else {
+        div.style.width    = "32px";
+        div.style.height   = "128px";
+      }
+    }
     else if( accnr == "51" ) {
       if( ori == "west" || ori == "east") {
         div.style.width    = "128px";
