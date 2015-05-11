@@ -1859,8 +1859,8 @@ function getSwitchImage(sw, div) {
   var rasterStr = "";
   var suffix    = "-route";
   var nomotor   = false;
-  
-  if( addr1 != undefined && port1 != undefined && addr1 == "0" && port1 == "0" )
+
+  if( ( (addr1 == undefined) || (addr1 == "0") ) && ( (port1 == undefined) || (port1 == "0") ) )
     nomotor = true;
 
   trace("switch type: " + type + " accnr="+accnr);
@@ -1896,9 +1896,10 @@ function getSwitchImage(sw, div) {
   else if (type=="crossing") {
     var nullM = "";
     if( nomotor ) {
-      nullM = "0m";
+      if( rectc != "true")
+        nullM = "0m";
       state = "straight";
-      suffix = "";
+      suffix = "-route";
     }
     
     if( rectc == "true") {
