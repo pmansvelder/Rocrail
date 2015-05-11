@@ -1569,7 +1569,10 @@ function getSignalImage(sg) {
     return "url('"+type+"distant"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
   }
   if( signal == "shunting" ) {
-    return "url('"+type+"shunting-2-"+aspect+suffix+"."+ ori + ".svg')";
+    if( state == "red"  )
+      return "url('"+type+"shunting-2-"+"r"+suffix+"."+ ori + ".svg')";
+    else
+      return "url('"+type+"shunting-2-"+"w"+suffix+"."+ ori + ".svg')";
   }
 
   return "url('"+type+"main"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
