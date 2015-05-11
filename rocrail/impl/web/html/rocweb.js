@@ -523,6 +523,14 @@ function actionSystemQuerySensors() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function actionRoute(id) {
+  stid = id.replace("st_","");
+  trace("route action on " + stid );
+  st = stMap[stid];
+  var cmd = "<st cmd=\"test\" id=\""+stid+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 function actionSensor(id)
 {
   var simsensors = localStorage.getItem("simsensors");
@@ -1278,6 +1286,12 @@ function handleRoute(st) {
       }
     }
 
+    var div = document.getElementById("st_"+st.getAttribute('id'));
+    if( div != undefined ) {
+      div.style.backgroundImage = getRouteImage(st);
+      forceRedraw(div);
+    }
+
   }
 }
 
@@ -1512,6 +1526,27 @@ function getOutputImage(co) {
   if( svg == undefined )
     svg = "0";
   return "url('button-"+svg+"-"+state+"."+ ori + ".svg')";
+}
+
+function getRouteImage(st) {
+  var ori    = getOri(st);
+  var status = st.getAttribute('status');
+  var suffix = '';
+  if( status == undefined )
+    status = "0";
+  console.log("route status = "+status);
+  if( status == "0")
+    status = "free";
+  else if( status == "1")
+    status = "locked";
+  else if( status == "2")
+    status = "selected";
+  else if( status == "3")
+    status = "deselected";
+  else if( status == "4")
+    status = "closed";
+  console.log("route status = "+status);
+  return "url('route-"+status+"."+ ori + ".svg')";
 }
 
 function getSignalImage(sg) {
@@ -2453,6 +2488,33 @@ function processPlan() {
        trace("processing " + stlist.length + " routes");
      for (var i = 0; i < stlist.length; i++) {
        stMap[stlist[i].getAttribute('id')] = stlist[i];
+       var show = stlist[i].getAttribute('show');
+       if( show != undefined && show == "true" ) {
+         var z     = stlist[i].getAttribute('z');
+         var ori   = getOriNr(stlist[i].getAttribute('ori'));
+         if( z == undefined )
+           z = '0';
+         var leveldiv = zlevelDivMap[z]; 
+         trace('route: ' + stlist[i].getAttribute('id') + "at level " + z);
+         if( leveldiv == undefined ) {
+           trace("Error: zlevel ["+z+"] does not exist!");
+           continue;
+         }
+         var newdiv = document.createElement('div');
+         newdiv.setAttribute('id', "st_"+stlist[i].getAttribute('id'));
+         newdiv.setAttribute('onClick', "actionRoute(this.id)");
+         newdiv.setAttribute('class', "item");
+         newdiv.style.position = "absolute";
+         newdiv.style.width    = "32px";
+         newdiv.style.height   = "32px";
+         newdiv.style.left     = "" + (parseInt(stlist[i].getAttribute('x')) * 32) + "px";
+         newdiv.style.top      = "" + (parseInt(stlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+         newdiv.innerHTML      = "";
+         
+         newdiv.style.backgroundImage = getRouteImage(stlist[i]);
+         leveldiv.appendChild(newdiv);
+         
+       }
      }
      
      
