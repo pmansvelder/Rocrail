@@ -569,7 +569,7 @@ static void __transactor( void* threadinst ) {
       StrOp.free(cmd->request);
       freeMem(cmd);
     }
-    ThreadOp.sleep(10);
+    ThreadOp.sleep(100);
   } while( data->run );
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Transactor has stopped.");
