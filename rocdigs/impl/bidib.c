@@ -3565,8 +3565,12 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
   case MSG_LC_KEY:
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
         "MSG_LC_KEY path=%s port=%d state=%d", pathKey, pdata[0], pdata[1] );
-    if( bidibnode != NULL )
-      __handleSensor(bidib, bidibnode, pdata[0], pdata[1] > 0 ? True:False, 0, -1, 0);
+    if( bidibnode != NULL ) {
+      if( bidibnode->sensorcnt > 0 )
+        __handleSensor(bidib, bidibnode, (pdata[0] + 200), pdata[1] > 0 ? True:False, 0, -1, 0);
+      else
+        __handleSensor(bidib, bidibnode, pdata[0], pdata[1] > 0 ? True:False, 0, -1, 0);
+    }
     break;
 
   case MSG_ACCESSORY_STATE:
