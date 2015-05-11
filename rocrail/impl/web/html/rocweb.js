@@ -10,6 +10,7 @@ var tapholdF1 = 0;
 var zlevelDivMap = {};
 var zlevelDivList = [];
 var zlevelMap = {};
+var zlevelList = [];
 var fbMap = {};
 var tkMap = {};
 var bkMap = {};
@@ -469,8 +470,14 @@ function actionLevelDown() {
     zlevelIdx = 0;
   }
   zlevelSelected = zleveldiv;
-  zleveldiv.style.display = 'block'
+  zleveldiv.style.display = 'block';
+    
+  var zlevel = zlevelList[zlevelIdx];
+  var title = zlevel.getAttribute('title');
+  var h = document.getElementById("title");
+  h.innerHTML = title;
 }
+
 function actionLevelUp() {
   zlevelSelected.style.display = 'none'
     zlevelIdx--;
@@ -480,7 +487,12 @@ function actionLevelUp() {
       zlevelIdx = 0;
     }
     zlevelSelected = zleveldiv;
-    zleveldiv.style.display = 'block'
+    zleveldiv.style.display = 'block';
+
+    var zlevel = zlevelList[zlevelIdx];
+    var title = zlevel.getAttribute('title');
+    var h = document.getElementById("title");
+    h.innerHTML = title;
 }
 
 
@@ -2076,6 +2088,7 @@ function processPlan() {
          if( z == undefined )
            z = "0";
          trace('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
+         zlevelList[i] = zlevellist[i];
 
          var newdiv = document.createElement('div');
          newdiv.setAttribute('id', "level_" + z);
