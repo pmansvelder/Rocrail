@@ -1796,8 +1796,14 @@ function getSwitchImage(sw, div) {
   var accnr = sw.getAttribute('accnr');
   var dir   = sw.getAttribute('dir');
   var rectc = sw.getAttribute('rectcrossing');
+  var addr1 = sw.getAttribute('addr1');
+  var port1 = sw.getAttribute('port1');
   var rasterStr = "";
-  var suffix = "-route";
+  var suffix    = "-route";
+  var nomotor   = false;
+  
+  if( addr1 != undefined && port1 != undefined && addr1 == "0" && port1 == "0" )
+    nomotor = true;
 
   trace("switch type: " + type + " accnr="+accnr);
   if( accnr != undefined && parseInt(accnr) > 1 )
@@ -1830,9 +1836,16 @@ function getSwitchImage(sw, div) {
       return "url('threeway"+suffix+"."+ori+".svg')";
   }
   else if (type=="crossing") {
+    var nullM = "";
+    if( nomotor ) {
+      nullM = "0m";
+      state = "straight";
+      suffix = "";
+    }
+    
     if( rectc == "true") {
       if (state=="straight")
-        return "url('crossing"+suffix+"."+ori+".svg')";
+        return "url('crossing"+nullM+suffix+"."+ori+".svg')";
       else
         return "url('crossing-t"+suffix+"."+ori+".svg')";
     }
@@ -1849,7 +1862,7 @@ function getSwitchImage(sw, div) {
       if (state=="turnout")
         return "url('crossing"+direction+"-t"+suffix+"."+ori+".svg')";
       else
-        return "url('crossing"+direction+suffix+"."+ori+".svg')";
+        return "url('crossing"+direction+nullM+suffix+"."+ori+".svg')";
     }
   }
   else if (type=="ccrossing") {
