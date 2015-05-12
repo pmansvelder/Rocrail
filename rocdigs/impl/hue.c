@@ -430,6 +430,13 @@ static iONode __translate( iOHUE inst, iONode node ) {
       ColorUtilsOp.RGBtoXY(wColor.getred(color), wColor.getgreen(color), wColor.getblue(color), &x, &y );
       useXY = True;
     }
+
+    /* check the limits */
+    if( sat > 254 )
+      sat = 254;
+    if( val > 254 )
+      val = 254;
+
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output addr=%d active=%d cmd=%s bri=%d RGB=%d,%d,%d xy=%f,%f hue=%d sat=%d",
         addr, active, wOutput.getcmd( node ), val, r, g, b, x, y, hue, sat );
 
