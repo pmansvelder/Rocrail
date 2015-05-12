@@ -1239,6 +1239,7 @@ function handleLoco(lc) {
   lcNode.setAttribute('mode', lc.getAttribute('mode'));
   lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
   lcNode.setAttribute('V', lc.getAttribute('V'));
+  lcNode.setAttribute('dir', lc.getAttribute('dir'));
   lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
   lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
 
@@ -1246,8 +1247,12 @@ function handleLoco(lc) {
   if( bk != undefined )
     updateBlockstate(bk.getAttribute('statesignal'), lc.getAttribute('id'));
   
-  if( lc.getAttribute('id') == locoSelected )
+  if( lc.getAttribute('id') == locoSelected ) {
     initThrottleStatus();
+    updateDir();
+    document.getElementById("speedSlider").value = lc.getAttribute('V');
+    $("#speedSlider").slider("refresh");
+  }
 }
 
 
@@ -2240,6 +2245,7 @@ function addCatToList(div, lcCat) {
   ul.setAttribute('id', lcCat);
   ul.setAttribute('data-role', "listview");
   ul.setAttribute('class', "ui-listview");
+  ul.setAttribute('style', "max-height: 200px; overflow: auto;");
   newdiv.appendChild(ul);
   div.appendChild(newdiv);
   cat = ul;
