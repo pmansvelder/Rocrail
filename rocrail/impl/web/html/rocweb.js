@@ -498,6 +498,18 @@ $(function(){
   function tapholdLocoImageHandler(e) {
     tapholdFkey = 1;
     trace("taphold locoImage: loco management");
+    trace("close throttle");
+    $( "#popupThrottle" ).popup( "close" );
+    trace("open loco control");
+    $('#popupThrottle').on("popupafterclose", function(){
+      $('#popupThrottle').unbind( "popupafterclose" );
+      $( "#popupLocoControl" ).popup( "open" );
+      });
+    $('#popupLocoControl').on("popupafterclose", function(){
+      $('#popupLocoControl').unbind( "popupafterclose" );
+      $( "#popupThrottle" ).popup( "open" );
+      });
+
   }
 });
 
