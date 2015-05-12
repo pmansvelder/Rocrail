@@ -291,6 +291,10 @@ function updateFunctionLabels() {
 }
 
 function onFG() {
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
+    return;
+  }
   if( FGroup == 0 )
     FGroup = 1;
   else
@@ -391,6 +395,10 @@ $(function(){
   $("#F3").bind("taphold", tapholdF3Handler);
   $("#F4").bind("taphold", tapholdF4Handler);
   $("#RE").bind("taphold", tapholdREHandler);
+  $("#FG").bind("taphold", tapholdFGHandler);
+  $("#F0").bind("taphold", tapholdF0Handler);
+  $("#F13").bind("taphold", tapholdF13Handler);
+  $("#F14").bind("taphold", tapholdF14Handler);
  
   function tapholdF1Handler(e) {
     tapholdFkey = 1;
@@ -430,13 +438,60 @@ $(function(){
   }
   function tapholdREHandler(e) {
     tapholdFkey = 1;
-    trace("taphold RE");
+    trace("taphold RE: power off");
     var cmd = "<sys informall=\"true\" cmd=\"stop\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+  function tapholdFGHandler(e) {
+    tapholdFkey = 1;
+    trace("taphold FG: emergancy break");
+    var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+  function tapholdF0Handler(e) {
+    tapholdFkey = 1;
+    trace("taphold F0: dispatch");
+    var cmd = "<lc id=\""+locoSelected+"\" cmd=\"dispatch\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+  function tapholdF13Handler(e) {
+    tapholdFkey = 1;
+    trace("taphold F13: manual mode");
+    var lc = lcMap[locoSelected];
+    var manualon = lc.getAttribute('manualon');
+    var cmd = "";
+    if( manualon == undefined || manualon == "false" ) {
+      cmd = "<lc id=\""+locoSelected+"\" cmd=\"manualon\"/>";
+      lc.setAttribute('manualon', "true");
+    }
+    else {
+      cmd = "<lc id=\""+locoSelected+"\" cmd=\"manualoff\"/>";
+      lc.setAttribute('manualon', "false");
+    }
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+  function tapholdF14Handler(e) {
+    tapholdFkey = 1;
+    trace("taphold F14: shunting");
+    var shuntingon = lc.getAttribute('shuntingon');
+    var cmd = "";
+    if( shuntingon == undefined || shuntingon == "false" ) {
+      cmd = "<lc id=\""+locoSelected+"\" cmd=\"shuntingon\"/>";
+      lc.setAttribute('shuntingon', "true");
+    }
+    else {
+      cmd = "<lc id=\""+locoSelected+"\" cmd=\"shuntingoff\"/>";
+      lc.setAttribute('shuntingon', "false");
+    }
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
 });
 
 function onDirection() {
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
+    return;
+  }
   lc = lcMap[locoSelected];
   if( lc == undefined )
     lc = carMap[locoSelected];
@@ -471,7 +526,19 @@ function onRE() {
     return;
   }
   trace("release loco " + locoSelected);
-  var cmd = "<lc throttleid=\"rocweb\" cmd=\"release\" id=\""+locoSelected+"\"/>"";
+  var cmd = "<lc throttleid=\"rocweb\" cmd=\"release\" id=\""+locoSelected+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function onST() {
+  trace("start/stop loco " + locoSelected);
+  var lc = lcMap[locoSelected];
+  var mode = lc.getAttribute('mode');
+  var cmd = "";
+  if( mode != undefined && (mode == "auto" || mode == "halfauto") )
+    cmd = "<lc id=\""+locoSelected+"\" cmd=\"stop\"/>";
+  else
+    cmd = "<lc id=\""+locoSelected+"\" cmd=\"go\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
