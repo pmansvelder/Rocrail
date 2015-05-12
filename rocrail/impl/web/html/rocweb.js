@@ -601,7 +601,32 @@ function actionOutput(id) {
   coid = id.replace("co_","");
   co = coMap[coid];
   trace("output action on " + coid + " state=" + co.getAttribute('state'));
-  var cmd = "<co cmd=\"flip\" id=\""+coid+"\"/>";
+  var toggleswitch = co.getAttribute('toggleswitch');
+  if( toggleswitch == undefined || toggleswitch == "true" ) {
+    var cmd = "<co cmd=\"flip\" id=\""+coid+"\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+}
+
+function actionOutputDown(id) {
+  coid = id.replace("co_","");
+  co = coMap[coid];
+  trace("output down action on " + coid + " state=" + co.getAttribute('state'));
+  var toggleswitch = co.getAttribute('toggleswitch');
+  if( toggleswitch == undefined || toggleswitch == "true" )
+    return;
+  var cmd = "<co cmd=\"on\" id=\""+coid+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+function actionOutputUp(id) {
+  coid = id.replace("co_","");
+  co = coMap[coid];
+  trace("output up action on " + coid + " state=" + co.getAttribute('state'));
+  var toggleswitch = co.getAttribute('toggleswitch');
+  if( toggleswitch == undefined || toggleswitch == "true" )
+    return;
+  var cmd = "<co cmd=\"off\" id=\""+coid+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -2274,6 +2299,8 @@ function processPlan() {
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "co_"+colist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionOutput(this.id)");
+       newdiv.setAttribute('onmousedown', "actionOutputDown(this.id)");
+       newdiv.setAttribute('onmouseup', "actionOutputUp(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
        newdiv.style.width    = "32px";
