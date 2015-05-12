@@ -176,6 +176,10 @@ function openInfo()
 }
 
 function onLocoImage() {
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
+    return;
+  }
   trace("close throttle");
   $( "#popupThrottle" ).popup( "close" );
   trace("open loco select");
@@ -399,6 +403,8 @@ $(function(){
   $("#F0").bind("taphold", tapholdF0Handler);
   $("#F13").bind("taphold", tapholdF13Handler);
   $("#F14").bind("taphold", tapholdF14Handler);
+  $("#direction").bind("taphold", tapholdDirectionHandler);
+  $("#locoImage").bind("taphold", tapholdLocoImageHandler);
  
   function tapholdF1Handler(e) {
     tapholdFkey = 1;
@@ -484,6 +490,14 @@ $(function(){
       lc.setAttribute('shuntingon', "false");
     }
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+  function tapholdDirectionHandler(e) {
+    tapholdFkey = 1;
+    trace("taphold direction: consist management");
+  }
+  function tapholdLocoImageHandler(e) {
+    tapholdFkey = 1;
+    trace("taphold locoImage: loco management");
   }
 });
 
