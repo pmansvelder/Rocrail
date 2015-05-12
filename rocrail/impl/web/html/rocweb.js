@@ -390,6 +390,7 @@ $(function(){
   $("#F2").bind("taphold", tapholdF2Handler);
   $("#F3").bind("taphold", tapholdF3Handler);
   $("#F4").bind("taphold", tapholdF4Handler);
+  $("#RE").bind("taphold", tapholdREHandler);
  
   function tapholdF1Handler(e) {
     tapholdFkey = 1;
@@ -427,6 +428,12 @@ $(function(){
     updateDir();
     updateFunctionLabels();
   }
+  function tapholdREHandler(e) {
+    tapholdFkey = 1;
+    trace("taphold RE");
+    var cmd = "<sys informall=\"true\" cmd=\"stop\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
 });
 
 function onDirection() {
@@ -456,6 +463,16 @@ function updateDir() {
     document.getElementById("direction").innerHTML = "" + V + " >";
   else
     document.getElementById("direction").innerHTML = "< " + V;
+}
+
+function onRE() {
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
+    return;
+  }
+  trace("release loco " + locoSelected);
+  var cmd = "<lc throttleid=\"rocweb\" cmd=\"release\" id=\""+locoSelected+"\"/>"";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
 function onFunction(id, nr) {
