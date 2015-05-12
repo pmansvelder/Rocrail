@@ -1122,6 +1122,9 @@ function handleSensor(fb) {
 
 function getTextFormat(tx) {
   var text = tx.getAttribute('text');
+  if( text == undefined )
+    return "";
+  
   var prefix = "";
   var suffix = "";
   var bold = tx.getAttribute('bold');
@@ -1155,9 +1158,9 @@ function handleText(tx) {
 
     if( text != undefined && text.indexOf(".png") != -1 ) {
       if( ori == "north" || ori == "south" )
-        div.innerHTML = "<div class='imageV'><img height='"+div.style.width+"' src='"+text+"'/></div>";
+        div.innerHTML = "<div class='imageV'><img width='"+div.style.height+"' src='"+text+"'/></div>";
       else
-        div.innerHTML = "<div><img width='"+div.style.width+"' src='"+text+"'/></div>";
+        div.innerHTML = "<div><img height='"+div.style.height+"' src='"+text+"'/></div>";
     }
     else {  
       var pointsize = tx.getAttribute('pointsize');
@@ -2539,7 +2542,7 @@ function processPlan() {
          if( ori == "north" || ori == "south" )
            newdiv.innerHTML = "<div class='imageV'><img height='"+newdiv.style.width+"' src='"+text+"'/></div>";
          else
-           newdiv.innerHTML = "<div><img width='"+newdiv.style.width+"' src='"+text+"'/></div>";
+           newdiv.innerHTML = "<div><img height='"+newdiv.style.height+"' src='"+text+"'/></div>";
        }
        else {  
          var pointsize = txlist[i].getAttribute('pointsize');
