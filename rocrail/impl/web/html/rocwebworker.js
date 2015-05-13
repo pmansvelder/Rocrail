@@ -19,6 +19,7 @@ function doWebSocket() {
   {
     retryWebSocket = 0;
     debug("websocket connection is established...");
+    ws.send("<sys cmd=\"getstate\"/>");
   };
   ws.onerror = function (error) {
     debug('WebSocket Error: ' + error);

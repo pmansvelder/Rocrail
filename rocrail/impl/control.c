@@ -1174,7 +1174,15 @@ static void __callback( obj inst, iONode nodeA ) {
       NodeOp.base.del( nodeA );
       return;
     }
-
+    else if( StrOp.equals( wSysCmd.getstate, wSysCmd.getcmd(nodeA) ) ) {
+      iONode stateevent = ControlOp.getState(AppOp.getControl());
+      iONode autoevent = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( autoevent, ModelOp.isAuto(AppOp.getModel())?wAutoCmd.on:wAutoCmd.off );
+      AppOp.broadcastEvent( stateevent );
+      AppOp.broadcastEvent( autoevent );
+      NodeOp.base.del( nodeA );
+      return;
+    }
 
   }
   else if( StrOp.equals( wAutoCmd.name(), nodeName ) ) {

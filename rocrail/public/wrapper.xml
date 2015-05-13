@@ -1284,6 +1284,7 @@
     <const name="updateserver" vt="string" val="updateserver"/>
     <const name="resetfx" vt="string" val="resetfx"/>
     <const name="weather" vt="string" val="weather"/>
+    <const name="getstate" vt="string" val="getstate"/>
     <var name="cmd" vt="string" defval="" range="*"/>
     <var name="informall" vt="bool" defval="false" remark="send command to all interfaces"/>
     <var name="iid" vt="string" defval="NULL" range="*" remark="Interface ID"/>

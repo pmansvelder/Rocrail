@@ -2828,9 +2828,3 @@ function processPlan() {
 }
 
 
-function Item(props) {
-  this.props = props;
-}
-Item.prototype.getId = function() {
-  console.log("item id is " + this.props.getAttribute('id'));
-};
