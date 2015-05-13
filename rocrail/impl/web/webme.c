@@ -435,6 +435,11 @@ static void rocWebSocketReader( void* threadinst ) {
         if( data->websocketrun )
           data->websocketavail = True;
       }
+      else {
+        data->websocketerror = True;
+        data->websocketrun = False;
+        break;
+      }
     }
     ThreadOp.sleep(50);
   };
@@ -452,7 +457,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
   int payload = 0;
   Boolean mask = False;
 
-  if( SocketOp.isBroken( data->socket ) ) {
+  if( SocketOp.isBroken( data->socket ) || data->websocketerror ) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
   }

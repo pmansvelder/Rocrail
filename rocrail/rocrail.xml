@@ -2032,6 +2032,7 @@
       <var name="websocketreader" vt="iOThread"/>
       <var name="firstbyte" vt="unsigned char"/>
       <var name="websocketavail" vt="Boolean" remark=""/>
+      <var name="websocketerror" vt="Boolean" remark=""/>
       <var name="websocketrun" vt="Boolean" remark=""/>
       <var name="websocket" vt="Boolean" remark=""/>
       <var name="socket" vt="iOSocket" remark="Client socket."/>
