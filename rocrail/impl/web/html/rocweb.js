@@ -1163,9 +1163,11 @@ function handleText(tx) {
         div.innerHTML = "<div><img height='"+div.style.height+"' src='"+text+"'/></div>";
     }
     else {  
-      var pointsize = tx.getAttribute('pointsize');
+      var pointsize = txNode.getAttribute('pointsize');
       if( pointsize == undefined || pointsize == "0")
         pointsize = "10";
+      if( text == undefined )
+        text = "";
       
       if( ori == "north" || ori == "south" )
         div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(tx)+"</div>";
