@@ -250,9 +250,21 @@ function updateFunctionLabels() {
   lights.innerHTML = "F0"
   for(i = 1; i < 15; i++) {
     var F = document.getElementById("F"+i);
-    F.innerHTML = "F" + (i + FGroup * 14); 
+    F.innerHTML = "<label style='font-size:13px;font-weight:bold;'>"+"F" + (i + FGroup * 14) + "</label>"; 
     F.style.backgroundColor = '';
   }
+  var eF = document.getElementById("F0");
+  eF.innerHTML = "<label style='font-size:13px;font-weight:bold;'>"+"F0"+"</label>"; 
+  eF.style.backgroundColor = '';
+  eF = document.getElementById("ST");
+  eF.innerHTML = "<label style='font-size:13px;font-weight:bold;'>"+"ST"+"</label>"; 
+  eF.style.backgroundColor = '';
+  eF = document.getElementById("RE");
+  eF.innerHTML = "<label style='font-size:13px;font-weight:bold;'>"+"RE"+"</label>"; 
+  eF.style.backgroundColor = '';
+  eF = document.getElementById("FG");
+  eF.innerHTML = "<label style='font-size:13px;font-weight:bold;'>"+"FG"+"</label>"; 
+  eF.style.backgroundColor = '';
 
   lc = lcMap[locoSelected];
   if(lc == undefined)
@@ -2044,7 +2056,7 @@ function getSwitchImage(sw, div) {
       if( rectc != "true")
         nullM = "0m";
       state = "straight";
-      suffix = "-route";
+      suffix = "";
     }
     
     if( rectc == "true") {
@@ -2360,7 +2372,7 @@ function processPlan() {
          newdiv.setAttribute('id', "level_" + z);
          newdiv.setAttribute('overflow-x', "auto");
          newdiv.setAttribute('overflow-y', "auto");
-         //newdiv.style.backgroundColor = "#FF9999";
+         //newdiv.style.background = '#ff9999';
 
          zlevelDivMap[z] = newdiv;
          zlevelDivList[i] = newdiv;
