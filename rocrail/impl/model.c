@@ -3890,19 +3890,30 @@ static void _event( iOModel inst, iONode nodeC ) {
     int bus = wAccessory.getnodenr( nodeC );
     int addr = wAccessory.getdevid( nodeC );
     int val = wAccessory.getval1( nodeC );
+    int acc = wAccessory.isaccevent( nodeC );
 
-    /* First we try a sensor. */
-    NodeOp.setName(nodeC, wFeedback.name());
-    wFeedback.setbus( nodeC, bus );
-    wFeedback.setaddr( nodeC, addr );
-    wFeedback.setstate(nodeC, val?True:False);
-
-    /* Prepare some attributes in case no sensor was found. */
-    wSwitch.setaccessory(nodeC, True);
-    wSwitch.setaddr1( nodeC, addr );
-    wSwitch.setport1( nodeC, 0 );
-    wSwitch.setstate( nodeC, wAccessory.getstate(nodeC) );
-    wSwitch.setgatevalue(nodeC, val);
+    if( acc ) {
+      /* accevent has no sensor feedback */
+      NodeOp.setName(nodeC, wSwitch.name());
+      wSwitch.setbus( nodeC, bus );
+      wSwitch.setaddr1( nodeC, addr );
+      wSwitch.setport1( nodeC, 0 );
+      wSwitch.setgatevalue(nodeC, val);
+      wSwitch.setstate( nodeC, val==0?"straight":"turnout" );
+    }
+    else {
+      /* First we try a sensor. */
+      NodeOp.setName(nodeC, wFeedback.name());
+      wFeedback.setbus( nodeC, bus );
+      wFeedback.setaddr( nodeC, addr );
+      wFeedback.setstate(nodeC, val?True:False);
+      /* Prepare some attributes in case no sensor was found. */
+      wSwitch.setaccessory(nodeC, True);
+      wSwitch.setaddr1( nodeC, addr );
+      wSwitch.setport1( nodeC, 0 );
+      wSwitch.setstate( nodeC, wAccessory.getstate(nodeC) );
+      wSwitch.setgatevalue( nodeC, val );
+    }
   }
 
 

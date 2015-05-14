@@ -195,7 +195,6 @@ static const char* __getPatternState(iOSignal inst, int pattern, int gate) {
 static void _event( iOSignal inst, iONode nodeC ) {
   iOSignalData data = Data(inst);
   Boolean update = False;
-  Boolean acc = wAccessory.isaccevent(nodeC);
   int val = wAccessory.getval1( nodeC );
   const char* state = wSwitch.getstate(nodeC);
   const char* id  = wSignal.getid( data->props );
