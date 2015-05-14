@@ -270,15 +270,32 @@ function updateFunctionLabels() {
   if(lc == undefined)
     lc = carMap[locoSelected];
   if( lc != undefined ) {
+    var fx = parseInt(lc.getAttribute('fx'));
+    var fn = lc.getAttribute('fn');
+    
+    if( fn != undefined && fn == "true")
+      lights.style.backgroundColor = "#FF8888";
+      
+    for(i = 1; i < 15; i++) {
+      var F = document.getElementById("F"+i);
+      var iFnShift = i;
+      if( FGroup == 1 )
+        iFnShift += 14;
+      var mask = 1 << (iFnShift-1); 
+      //console.log("i="+i+" iFnShift="+iFnShift+" mask="+mask+" fx="+fx);
+      if( fx & mask )
+        F.style.backgroundColor = "#FF8888";
+    }
+
     //var fundeflist = lc.childNodes;
     var fundeflist = lc.getElementsByTagName("fundef");
     trace("function defs " + fundeflist.length + " for " + lc.getAttribute('id'));
 
-    var fx = parseInt(lc.getAttribute('fx'));
     if( fundeflist.length > 0 ) {
       for( n = 0; n < fundeflist.length; n++ ) {
         var fn = fundeflist[n].getAttribute('fn');
         var iFn = parseInt(fn);
+        var iFnShift = iFn;
         trace("fundef " + fn + " text: " + fundeflist[n].getAttribute('text'));
         if( FGroup == 0 && iFn > 14 ) {
           continue;
@@ -296,7 +313,7 @@ function updateFunctionLabels() {
         else if( fundeflist[n].getAttribute('text') ) {
           F.innerHTML = "<label style='font-size:10px'>" +fundeflist[n].getAttribute('text')+ "</label>";;
         }
-        var mask = 1 << iFn; 
+        var mask = 1 << (iFnShift-1); 
         if( fx & mask )
           F.style.backgroundColor = "#FF8888";
 
@@ -1270,6 +1287,7 @@ function handleLoco(lc) {
   lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
   lcNode.setAttribute('V', lc.getAttribute('V'));
   lcNode.setAttribute('dir', lc.getAttribute('dir'));
+  lcNode.setAttribute('fn', lc.getAttribute('fn'));
   lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
   lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
 
