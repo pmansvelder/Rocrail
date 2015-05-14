@@ -372,25 +372,7 @@
       <var name="refresh" vt="int" defval="10" range="0-*" unit="s" remark="browser refresh time: 0=no refresh"/>
       <var name="enable" vt="bool" defval="true"/>
       <webclient wrappername="WebClient" cardinality="1">
-        <var name="me" vt="bool" defval="false" remark="rocWeb Mobile Edition V2"/>
-        <var name="enable" vt="bool" defval="true"/>
         <var name="port" vt="int" defval="0" range="0-65535" remark="Port number server socket for webclients. Deactivated when 0."/>
-        <var name="xsize" vt="int" defval="640" range="0-*" remark=""/>
-        <var name="ysize" vt="int" defval="0" range="0-*" remark="no height is set when 0 which is recommended"/>
-        <var name="refresh" vt="int" defval="0" range="0-*" unit="s" remark="browser refresh time: 0=no refresh"/>
-        <var name="symboltype" vt="string" defval="png" range="*" remark="symbol type"/>
-        <var name="symbolpath" vt="string" defval="symbols" range="*" remark="where to look for symbol png's"/>
-        <var name="webcampath" vt="string" defval="webcam" range="*" remark="where to look for symbol png's"/>
-        <const name="bottom" vt="string" val="bottom"/>
-        <const name="right" vt="string" val="right"/>
-        <var name="webcampos" vt="string" defval="bottom" range="bottom,right" remark="where to locate the cam images"/>
-        <var name="symbolsize" vt="int" defval="16" range="16,24,32"/>
-        <var name="rulerbackground" vt="string" defval="#CCCCCC" range="*" remark="background color"/>
-        <var name="planbackground" vt="string" defval="#EEEEEE" range="*" remark="background color"/>
-        <webcam wrappername="WebCam" cardinality="n">
-          <var name="title" vt="string" defval="WebCam" range="*"/>
-          <var name="imagefile" vt="string" defval="webcam.jpg" range="*"/>
-        </webcam>
 	      <var name="svgpath1" vt="string" defval="svg/themes/SpDrS60" remark="scan this path for svg symbols"/>
 	      <var name="svgpath2" vt="string" defval="svg/themes/Accessories" remark="scan this path for svg symbols"/>
 	      <var name="svgpath3" vt="string" defval="svg/themes/Roads" remark="scan this path for svg symbols"/>

@@ -22,8 +22,7 @@
 */
 #include "rocrail/impl/pclient_impl.h"
 
-#include "rocrail/impl/web/webme.h"
-#include "rocrail/impl/web/web.h"
+#include "rocrail/impl/web/rocweb.h"
 
 #include "rocrail/public/model.h"
 #include "rocrail/public/app.h"
@@ -52,6 +51,17 @@ static const char* ROCWEBWORKER_JS = "rocwebworker.js";
 static const char* ROCWEB_CSS      = "rocweb.css";
 static const char* ROCWEB_LOGO     = "logo.png";
 static const char* ROCWEB_NOIMG    = "noimg.png";
+
+Boolean webSocketHeader( iOSocket s, const char* key, const char* protocol ) {
+  Boolean ok = True;
+  TraceOp.trc( "web", TRCLEVEL_USER2, __LINE__, 9999, "webSocketHeader key=%s protocol=%s", key, protocol );
+  if(ok) ok=SocketOp.fmt( s, "HTTP/1.1 101 Switching Protocols\r\n" );
+  if(ok) ok=SocketOp.fmt( s, "Connection: Upgrade\r\n" );
+  if(ok) ok=SocketOp.fmt( s, "Upgrade: websocket\r\n" );
+  if(ok) ok=SocketOp.fmt( s, "Sec-WebSocket-Accept: %s\r\n", key );
+  if(ok) ok=SocketOp.fmt( s, "Sec-WebSocket-Protocol: %s\r\n\r\n", protocol );
+  return  ok;
+}
 
 static void __getFile(iOPClient inst, const char* fname) {
   iOPClientData data = Data(inst);
@@ -401,7 +411,7 @@ for (var i = 0; i < ENCODED.length; i++) {
 }
 
  */
-Boolean rocWebSocketMEClose( iOPClient inst ) {
+Boolean rocWebSocketClose( iOPClient inst ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
   char b[128];
@@ -449,7 +459,7 @@ static void rocWebSocketReader( void* threadinst ) {
 }
 
 
-Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
+Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
   char b[128];
@@ -559,7 +569,7 @@ Boolean rocWebSocketME( iOPClient inst, iONode event, char** cmd ) {
 }
 
 
-Boolean rocWebME( iOPClient inst, const char* str ) {
+Boolean rocWeb( iOPClient inst, const char* str ) {
   char serverKey[128];
   char protocol[128];
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebME [%s]", str );

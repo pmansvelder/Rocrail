@@ -466,9 +466,6 @@ public:
     wxStaticBoxSizer* m_WebServiceBox;
     wxStaticText* m_LabWebServicePort;
     wxTextCtrl* m_WebServicePort;
-    wxStaticText* m_LabWebServiceRefresh;
-    wxTextCtrl* m_WebServiceRefresh;
-    wxCheckBox* m_WebV2;
     wxStaticText* m_labWebPath;
     wxTextCtrl* m_WebPath;
     wxButton* m_WebPathDlg;
