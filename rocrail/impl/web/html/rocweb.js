@@ -1290,6 +1290,7 @@ function handleLoco(lc) {
   lcNode.setAttribute('fn', lc.getAttribute('fn'));
   lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
   lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
+  lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
 
   var bk = findBlock4Loco(lc.getAttribute('id'));
   if( bk != undefined )
@@ -1364,9 +1365,35 @@ function getBlockLabel(bk, div) {
   var label = bk.getAttribute('locid');
   if( label == undefined || label.length == 0 )
     label = bk.getAttribute('id');
-  label = label.split(' ').join('.');
-  label = label.split('-').join('.');
+  else {
+    var lc = lcMap[label];
+    if( lc != undefined ) {
+      var rotate = lc.getAttribute('blockenterside');
+      if( rotate == undefined )
+        rotate = "true";
+      
+      var newLabel = "";
+      if( ori=="east" || ori=="west" ) {
+        newLabel = "< " + label;
+        if( (ori=="east" && rotate=="false" ) || (ori=="west" && rotate=="true" ) ) {
+          newLabel = label + " >";
+        }
+      }
+      else if( ori=="north" || ori=="south" ) {
+        newLabel = "< " + label;
+        if( (ori=="north" && rotate=="false" ) || (ori=="south" && rotate=="true" ) ) {
+          newLabel = label + " >";
+        }
+      }
+      label = newLabel;
+      
+    }
+  }
   if( ori == "north" || ori == "south" ) {
+    // Work around for rotated labels:
+    label = label.split(' ').join('.');
+    label = label.split('-').join('.');
+    
     var labdiv = document.createElement('div');
     labdiv.setAttribute('class', "itemtextV");
     if( bkNode.getAttribute('smallsymbol') == "true" ) {
