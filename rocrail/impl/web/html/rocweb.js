@@ -405,6 +405,11 @@ function sendCommand(cmd) {
 
 
 /* Throttle commands */
+window.oncontextmenu = function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  return false;
+};
 $(function(){
   $("#F1").bind("taphold", tapholdF1Handler);
   $("#F2").bind("taphold", tapholdF2Handler);
@@ -419,6 +424,7 @@ $(function(){
   $("#locoImage").bind("taphold", tapholdLocoImageHandler);
  
   function tapholdF1Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F1");
     locoSelectedIdx = 0;
@@ -428,6 +434,7 @@ $(function(){
     updateFunctionLabels();
   }
   function tapholdF2Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F2");
     locoSelectedIdx = 1;
@@ -437,6 +444,7 @@ $(function(){
     updateFunctionLabels();
   }
   function tapholdF3Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F3");
     locoSelectedIdx = 2;
@@ -446,6 +454,7 @@ $(function(){
     updateFunctionLabels();
   }
   function tapholdF4Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F4");
     locoSelectedIdx = 3;
@@ -455,24 +464,28 @@ $(function(){
     updateFunctionLabels();
   }
   function tapholdREHandler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold RE: power off");
     var cmd = "<sys informall=\"true\" cmd=\"stop\"/>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
   function tapholdFGHandler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold FG: emergancy break");
     var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
   function tapholdF0Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F0: dispatch");
     var cmd = "<lc id=\""+locoSelected+"\" cmd=\"dispatch\"/>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
   function tapholdF13Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F13: manual mode");
     var lc = lcMap[locoSelected];
@@ -489,6 +502,7 @@ $(function(){
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
   function tapholdF14Handler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F14: shunting");
     var shuntingon = lc.getAttribute('shuntingon');
@@ -504,10 +518,12 @@ $(function(){
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
   function tapholdDirectionHandler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold direction: consist management");
   }
   function tapholdLocoImageHandler(e) {
+    e.preventDefault();
     tapholdFkey = 1;
     trace("taphold locoImage: loco management");
     trace("close throttle");

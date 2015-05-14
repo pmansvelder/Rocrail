@@ -7,6 +7,10 @@
 .full-width-slider .ui-slider-input {display: none; width: 0px;}
 .full-width-slider .ui-slider-track {margin-left: 15px;}
 
+*:not(textarea) {
+ -webkit-user-select: none; /* disable selection/Copy of UIWebView */
+ -webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
+}
 /* the thumb will not listen... .full-width-slider .ui-slider-handle {height: 50px;}*/
 
 .led-green {
