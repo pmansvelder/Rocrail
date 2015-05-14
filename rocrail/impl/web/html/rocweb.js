@@ -43,6 +43,8 @@ var shutdownTimer;
 var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
+var prevPopup = "";
+
 
 function forceRedraw(div){
   var disp = div.style.display;
@@ -95,6 +97,7 @@ function langDE() {
   document.getElementById("labBlockStop").innerHTML = "Zug anhalten";
   document.getElementById("labBlockClose").innerHTML = "Schliessen";
   document.getElementById("labBlockOpen").innerHTML = "Öffnen";
+  document.getElementById("blockResetLoco").innerHTML = "Lokbelegung zurücknehmen";
   document.getElementById("labTTNext").innerHTML = "Nächstes Gleis";
   document.getElementById("labTTPrev").innerHTML = "Vorheriges Gleis";
   document.getElementById("labFYNext").innerHTML = "Nächstes Gleis";
@@ -127,6 +130,7 @@ function langEN() {
   document.getElementById("labBlockStop").innerHTML = "Stop train";
   document.getElementById("labBlockClose").innerHTML = "Close";
   document.getElementById("labBlockOpen").innerHTML = "Open";
+  document.getElementById("blockResetLoco").innerHTML = "Reset Locomotive assignment";
   document.getElementById("labTTNext").innerHTML = "Next track";
   document.getElementById("labTTPrev").innerHTML = "Previous track";
   document.getElementById("labFYNext").innerHTML = "Next track";
@@ -159,6 +163,7 @@ function langNL() {
   document.getElementById("labBlockStop").innerHTML = "Stop trein";
   document.getElementById("labBlockClose").innerHTML = "Sluiten";
   document.getElementById("labBlockOpen").innerHTML = "Openen";
+  document.getElementById("blockResetLoco").innerHTML = "Loc bezetting opheffen";
   document.getElementById("labTTNext").innerHTML = "Volgende spoor";
   document.getElementById("labTTPrev").innerHTML = "Vorige spoor";
   document.getElementById("labFYNext").innerHTML = "Volgende spoor";
@@ -188,6 +193,7 @@ function onLocoImage() {
     return;
   }
   trace("close throttle");
+  prevPopup = "popupThrottle;"
   $( "#popupThrottle" ).popup( "close" );
   trace("open loco select");
   $('#popupThrottle').on("popupafterclose", function(){
@@ -196,21 +202,43 @@ function onLocoImage() {
     });
 }
 
-function onLocoSelected(sel) {
-  console.log("selected loco: " + sel);
-  
-  locoSelected = sel;
-  localStorage.setItem("locoSelected", locoSelected);
-  locoSelectedList[locoSelectedIdx] = locoSelected;
-  localStorage.setItem("locoSelected"+locoSelectedIdx, locoSelected);
-  initThrottle();
-  updateDir();
-  updateFunctionLabels();
+function onBlockLocoImage() {
+  trace("close block popup");
+  prevPopup = "popupBlock";
+  $( "#popupBlock" ).popup( "close" );
+  trace("open loco select");
+  $('#popupBlock').on("popupafterclose", function(){
+    $('#popupBlock').unbind( "popupafterclose" );
+    $( "#popupLocoSelect" ).popup( "open" );
+    });
+}
 
+function onLocoSelected(sel) {
+  trace("selected loco: " + sel);
   
   trace("close loco select");
   $( "#popupLocoSelect" ).popup( "close" );
-  trace("open throttle");
+
+  if( prevPopup == "popupBlock") {
+    locoBlockSelect = sel;
+    sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
+    bkid = sessionStorage.getItem("block");
+    trace("locoBlockSelect: " + locoBlockSelect + " in block " + bkid);
+    onLocoInBlock(locoBlockSelect);
+    return;
+  }
+  else {
+    locoSelected = sel;
+    localStorage.setItem("locoSelected", locoSelected);
+    locoSelectedList[locoSelectedIdx] = locoSelected;
+    localStorage.setItem("locoSelected"+locoSelectedIdx, locoSelected);
+    initThrottle();
+    updateDir();
+    updateFunctionLabels();
+  }
+
+  
+  trace("open " + popupThrottle);
   $('#popupLocoSelect').on("popupafterclose", function(){
     $('#popupLocoSelect').unbind( "popupafterclose" );
     $( "#popupThrottle" ).popup( "open" );
@@ -447,7 +475,7 @@ $(function(){
   $("#F13").bind("taphold", tapholdF13Handler);
   $("#F14").bind("taphold", tapholdF14Handler);
   $("#direction").bind("taphold", tapholdDirectionHandler);
-  $("#locoImage").bind("taphold", tapholdLocoImageHandler);
+  //$("#locoImage").bind("taphold", tapholdLocoImageHandler);
  
   function tapholdF1Handler(e) {
     e.preventDefault();
@@ -838,9 +866,12 @@ function isBlockInSchedule(bkid, sc) {
   for( n = 0; n < all; n++ ) {
     var block    = scentrylist[n].getAttribute('block');
     var location = scentrylist[n].getAttribute('location');
-    if( block == bkid ) {
+    
+    if( block != undefined && block == bkid )
       return true;
-    }
+    
+    if( location != undefined && isBlockInLocation(bkid, location) )
+      return true;
   }
   return false;
 }
@@ -854,27 +885,32 @@ function addSchedule(bkid, sc, scheduleSelect, scid) {
   }
 }
 
+function isBlockInLocation(bkid, locationid) {
+  var location = locationMap[locationid];
+  if( location == undefined )
+    return false;
+
+  var blocks = location.getAttribute('blocks');
+  for( var i = 0; i < blocks.length; i++ ) {
+    if( bkid == blocks[i] )
+      return true;
+  }
+  
+  return false;
+}
+
 function actionBlock(id) {
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
-  document.getElementById("blockTitle").innerHTML = bkid;
+  document.getElementById("blockTitle").innerHTML = getString("block") + ": " + bkid;
+  document.getElementById("labBlockLocoID").innerHTML = "";
 
   bkNode = bkMap[bkid];
-
-  var select = document.getElementById("locoBlockSelect");
-  while(select.options.length > 0) {
-    select.remove(0);
-  }
 
   var scheduleSelect = document.getElementById("scheduleBlockSelect");
   while(scheduleSelect.options.length > 0) {
     scheduleSelect.remove(0);
   }
-
-  option = document.createElement( 'option' );
-  option.value = "";
-  option.innerHTML = "";
-  select.add( option );
 
   scoption = document.createElement( 'option' );
   scoption.value = "";
@@ -888,34 +924,17 @@ function actionBlock(id) {
   var img = document.getElementById("locoImageBlock");
   img.src = "noimg.png";
 
-  for (var i in lcMap){
-    var lc = lcMap[i];
-    option = document.createElement( 'option' );
-    option.value = lc.getAttribute('id');
-    option.innerHTML = lc.getAttribute('id');
-    select.add( option );
-    if( bkNode.getAttribute('locid') == lc.getAttribute('id')) {
-      select.selectedIndex = i+1;
-      option.selected = 'selected';
-      select.value = lc.getAttribute('id'); 
-      selected = true;
-      locoBlockSelect = lc.getAttribute('id');
+  var lc = lcMap[bkNode.getAttribute('locid')];
+  if( lc != undefined ) {
+    locoBlockSelect = lc.getAttribute('id');
+    document.getElementById("labBlockLocoID").innerHTML = locoBlockSelect;
 
-      var src = lc.getAttribute('image');
-      if( src == undefined || src.length == 0 )
-        img.src = "noimg.png";
-      else
-        img.src = lc.getAttribute('image');
-    }
-  }
-  
-  if( !selected ) {
-    select.selectedIndex = 0;
-    option.selected = 'selected';
-    select.value = ""; 
-    locoBlockSelect = 'none';
-  }
-  else {
+    var src = lc.getAttribute('image');
+    if( src == undefined || src.length == 0 )
+      img.src = "noimg.png";
+    else
+      img.src = lc.getAttribute('image');
+
     // Fill up the schedule list.
     for (var i in scMap){
       var sc = scMap[i];
@@ -937,11 +956,11 @@ function actionBlock(id) {
   
   sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
 
-  $('#locoBlockSelect').selectmenu("refresh");
   $('#scheduleBlockSelect').selectmenu("refresh");
 
   var xPos = parseInt(bkNode.getAttribute('x')) * 32;
   var yPos = parseInt(bkNode.getAttribute('y')) * 32;
+  prevPopup = "popupBlock";
   //$( "#popupBlock" ).popup( "open" ).position({x: xPos, y: yPos, positionTo: window});
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
 
@@ -981,6 +1000,12 @@ function onBlockClose() {
   bkid = sessionStorage.getItem("block");
   var cmd = "<bk id=\""+bkid+"\" state=\"closed\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onLocoResetInBlock() {
+  $( "#popupBlock" ).popup( "close" );
+  onLocoInBlock("");
 }
 
 function onLocoInBlock(lcid) {
@@ -1164,7 +1189,7 @@ $(document).on("pagecreate",function(){
     locoBlockSelect = this.value;
     trace("locoBlockSelect: " + locoBlockSelect);
     sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
-    onLocoInBlock(locoBlockSelect);
+    (locoBlockSelect);
   } );
   
   $('#scheduleBlockSelect').change(function() {
@@ -1221,6 +1246,33 @@ $(document).ready(function(){
   $('#languageSelect').selectmenu("refresh");
 })
 
+function getString(s) {
+  var lang = localStorage.lang;
+  
+  if( lang == "de" ) {
+    if( s == "block" ) return "Block";
+    if( s == "diesel" ) return "Diesel";
+    if( s == "steam" ) return "Dampf";
+    if( s == "electric" ) return "Elektrisch";
+    if( s == "car" ) return "Wagen";
+  }
+  else if( lang == "en" ) {
+    if( s == "block" ) return "Block";
+    if( s == "diesel" ) return "Diesel";
+    if( s == "steam" ) return "Steam";
+    if( s == "electric" ) return "Electric";
+    if( s == "car" ) return "Car";
+  }
+  else if( lang == "nl" ) {
+    if( s == "block" ) return "Blok";
+    if( s == "diesel" ) return "Diesel";
+    if( s == "steam" ) return "Stoom";
+    if( s == "electric" ) return "Elektrisch";
+    if( s == "car" ) return "Wagon";
+  }
+
+  return s;
+}
 
 /* Load the plan.xml at startup */
 function loadPlan() {
@@ -2412,7 +2464,7 @@ function addCatToList(div, lcCat) {
   newdiv.setAttribute('data-role', "collapsible");
   newdiv.setAttribute('class', "ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child");
   var h2 = document.createElement('h2');
-  h2.innerHTML = lcCat;
+  h2.innerHTML = getString(lcCat);
   newdiv.appendChild(h2);
   var ul = document.createElement('ul');
   ul.setAttribute('id', lcCat);

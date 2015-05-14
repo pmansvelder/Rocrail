@@ -39,10 +39,15 @@
   <div data-role="popup" id="popupBlock" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <h3 id="blockTitle">Block</h3>
-  <center><img id="locoImageBlock" src="noimg.png""/></center>
+  <h4 id="blockTitle">Block</h4>
+  <center><img id="locoImageBlock" src="noimg.png" onclick="onBlockLocoImage()"/></center>
+  <div id="labBlockLocoID"></div>
+  <!--
   <select name="locoBlockSelect" id="locoBlockSelect">
   </select>
+  -->
+  <div><a id="blockResetLoco" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onLocoResetInBlock()">Reset loco assignment</a></div>
+
   <select name="scheduleBlockSelect" id="scheduleBlockSelect">
   </select>
   <div class="ui-grid-a">
