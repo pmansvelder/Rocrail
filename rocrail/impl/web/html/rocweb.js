@@ -909,7 +909,7 @@ function isBlockInLocation(bkid, locationid) {
 function actionBlock(id) {
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
-  document.getElementById("blockTitle").innerHTML = getString("block") + ": " + bkid;
+  document.getElementById("blockTitle").innerHTML = "<b>" + getString("block") + ": " + bkid + "</b>";
   document.getElementById("labBlockLocoID").innerHTML = "";
 
   bkNode = bkMap[bkid];
@@ -1925,6 +1925,15 @@ function processResponse() {
             trace("data: " + e.data);
           }
         }
+        
+        var pingTimer = setInterval(function () {doPing()}, (60 * 1000) );
+        function doPing() {
+          trace("ping...");
+          var cmd = "<sys cmd=\"getstate\"/>";
+          worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+        }
+
+        
       }
      
     }
