@@ -23,12 +23,14 @@ var sbMap = {};
 var ttMap = {};
 var fyMap = {};
 var stMap = {};
+var scMap = {};
 var carMap = {};
 var lcCatMap = {};
 var locoSelected = 'none';
 var locoSelectedList = [];
 var locoSelectedIdx = 0;
 var locoBlockSelect = 'none';
+var scheduleBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
@@ -825,13 +827,28 @@ function actionBlock(id) {
     select.remove(0);
   }
 
+  var scheduleSelect = document.getElementById("scheduleBlockSelect");
+  while(scheduleSelect.options.length > 0) {
+    scheduleSelect.remove(0);
+  }
+
   option = document.createElement( 'option' );
   option.value = "";
   option.innerHTML = "";
   select.add( option );
 
+  scoption = document.createElement( 'option' );
+  scoption.value = "";
+  scoption.innerHTML = "";
+  scoption.selected = 'selected';
+  scheduleSelect.add( scoption );
+
+
   var selected = false;
-  
+
+  var img = document.getElementById("locoImageBlock");
+  img.src = "noimg.png";
+
   for (var i in lcMap){
     var lc = lcMap[i];
     option = document.createElement( 'option' );
@@ -844,6 +861,12 @@ function actionBlock(id) {
       select.value = lc.getAttribute('id'); 
       selected = true;
       locoBlockSelect = lc.getAttribute('id');
+
+      var src = lc.getAttribute('image');
+      if( src == undefined || src.length == 0 )
+        img.src = "noimg.png";
+      else
+        img.src = lc.getAttribute('image');
     }
   }
   
@@ -853,10 +876,31 @@ function actionBlock(id) {
     select.value = ""; 
     locoBlockSelect = 'none';
   }
+  else {
+    // Fill up the schedule list.
+    for (var i in scMap){
+      var sc = scMap[i];
+      var scentrylist = sc.getElementsByTagName("scentry");
+      trace("scentry " + scentrylist.length + " for " + sc.getAttribute('id'));
+      for( n = 0; n < scentrylist.length; n++ ) {
+        var block    = scentrylist[n].getAttribute('block');
+        var location = scentrylist[n].getAttribute('location');
+        if( block == bkid ) {
+          var scoption = document.createElement( 'option' );
+          scoption.value = sc.getAttribute('id');
+          scoption.innerHTML = sc.getAttribute('id');
+          scheduleSelect.add( scoption );
+        }
+      }
+    }
+    scheduleSelect.selectedIndex = 0;
+    scheduleSelect.value = ""; 
+  }
   
   sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
 
   $('#locoBlockSelect').selectmenu("refresh");
+  $('#scheduleBlockSelect').selectmenu("refresh");
 
   var xPos = parseInt(bkNode.getAttribute('x')) * 32;
   var yPos = parseInt(bkNode.getAttribute('y')) * 32;
@@ -869,6 +913,10 @@ function onBlockStart() {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
+    if( scheduleBlockSelect != "none" && scheduleBlockSelect.length > 0 ) {
+      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"useschedule\" scheduleid=\""+scheduleBlockSelect+"\"/>";
+      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    }    
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"go\"/>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
@@ -1073,6 +1121,12 @@ $(document).on("pagecreate",function(){
     trace("locoBlockSelect: " + locoBlockSelect);
     sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
     onLocoInBlock(locoBlockSelect);
+  } );
+  
+  $('#scheduleBlockSelect').change(function() {
+    scheduleBlockSelect = this.value;
+    trace("scheduleBlockSelect: " + scheduleBlockSelect);
+    sessionStorage.setItem("scheduleBlockSelect", scheduleBlockSelect);
   } );
   
   /*
@@ -2773,6 +2827,14 @@ function processPlan() {
        newdiv.style.top      = "" + (parseInt(ttlist[i].getAttribute('y')) * 32 + yoffset) + "px";
        newdiv.innerHTML  = getTurntableImage(ttlist[i], newdiv); 
        leveldiv.appendChild(newdiv);
+     }
+     
+     
+     sclist = xmlDoc.getElementsByTagName("sc");
+     if( sclist.length > 0 )
+       trace("processing " + sclist.length + " schedules");
+     for (var i = 0; i < sclist.length; i++) {
+       scMap[sclist[i].getAttribute('id')] = sclist[i];
      }
      
      

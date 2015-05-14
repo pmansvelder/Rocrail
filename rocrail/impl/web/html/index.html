@@ -40,7 +40,10 @@
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
   <h3 id="blockTitle">Block</h3>
+  <center><img id="locoImageBlock" src="noimg.png""/></center>
   <select name="locoBlockSelect" id="locoBlockSelect">
+  </select>
+  <select name="scheduleBlockSelect" id="scheduleBlockSelect">
   </select>
   <div class="ui-grid-a">
     <div class="ui-block-a"><a id="labBlockStart" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart()">Start</a></div>
@@ -223,10 +226,10 @@
     <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="StartLocoHalfAuto" onclick="onSTHalfAuto()">Half auto</a></div>
    </div>
     <select name="scheduleSelect" id="scheduleSelect" style="text-align:left;">
-      <option id="schedul_test" value="test" style="text-align:left;">Schedule-Test</option>
+      <option id="schedul_test" value="test" style="text-align:left;">Schedules</option>
     </select>
     <select name="blockSelect" id="blockSelect" style="text-align:left;">
-      <option id="block_test" value="test" style="text-align:left;">Block-Test</option>
+      <option id="block_test" value="test" style="text-align:left;">Blocks</option>
     </select>
     <div class="ui-grid-a">
     <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="SetLocoInBlock" onclick="onSetLocoInBlock()">Set in block</a></div>
