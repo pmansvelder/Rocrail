@@ -678,7 +678,7 @@ function speedUpdate(value) {
   trace("Speed: " + value + " for loco " + locoSelected);
   var vVal = value * (parseFloat(lc.getAttribute('V_max')/100.0));
   lc.setAttribute('V', vVal);
-  console.log("value="+value+" vVal="+vVal+" V_max="+parseInt(lc.getAttribute('V_max')));
+  trace("value="+value+" vVal="+vVal+" V_max="+parseInt(lc.getAttribute('V_max')));
   var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
@@ -1151,7 +1151,7 @@ function updateSpeed(lc) {
   var slider = document.getElementById("speedSlider");
   var V = parseInt(lc.getAttribute('V'));
   var vVal = V * (100/parseInt(lc.getAttribute('V_max')));
-  console.log("V="+V+" vVal="+vVal+" V_max="+lc.getAttribute('V_max'));
+  trace("V="+V+" vVal="+vVal+" V_max="+lc.getAttribute('V_max'));
   slider.value = vVal;
   $("#speedSlider").slider("refresh");
 
