@@ -676,8 +676,9 @@ function speedUpdate(value) {
     lc = carMap[locoSelected];
   if( lc == undefined ) return;
   trace("Speed: " + value + " for loco " + locoSelected);
-  var vVal = value * (parseInt(lc.getAttribute('V_max')/100.00));
+  var vVal = value * (parseFloat(lc.getAttribute('V_max')/100.0));
   lc.setAttribute('V', vVal);
+  console.log("value="+value+" vVal="+vVal+" V_max="+parseInt(lc.getAttribute('V_max')));
   var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
@@ -1146,6 +1147,15 @@ function initThrottleStatus() {
   }
 }
 
+function updateSpeed(lc) {
+  var slider = document.getElementById("speedSlider");
+  var V = parseInt(lc.getAttribute('V'));
+  var vVal = V * (100/parseInt(lc.getAttribute('V_max')));
+  console.log("V="+V+" vVal="+vVal+" V_max="+lc.getAttribute('V_max'));
+  slider.value = vVal;
+  $("#speedSlider").slider("refresh");
+
+}
 
 function initThrottle() {
   trace("locoSelect: " + locoSelected );
@@ -1161,8 +1171,7 @@ function initThrottle() {
       img.src = lc.getAttribute('image');
     trace("new image: " + img.src);
 
-    document.getElementById("speedSlider").value = lc.getAttribute('V');
-    $("#speedSlider").slider("refresh");
+    updateSpeed(lc);
     updateDir();
     initThrottleStatus();
   }
@@ -1449,8 +1458,7 @@ function handleLoco(lc) {
   if( lc.getAttribute('id') == locoSelected ) {
     initThrottleStatus();
     updateDir();
-    document.getElementById("speedSlider").value = lc.getAttribute('V');
-    $("#speedSlider").slider("refresh");
+    updateSpeed(lcNode);
   }
 }
 
