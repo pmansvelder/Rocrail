@@ -24,6 +24,8 @@ var ttMap = {};
 var fyMap = {};
 var stMap = {};
 var scMap = {};
+var tourMap = {};
+var locationMap = {};
 var carMap = {};
 var lcCatMap = {};
 var locoSelected = 'none';
@@ -85,6 +87,7 @@ function langDE() {
   document.getElementById("optionsTitle").innerHTML = "Optionen";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
+  document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -116,6 +119,7 @@ function langEN() {
   document.getElementById("optionsTitle").innerHTML = "Options";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
+  document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -147,6 +151,7 @@ function langNL() {
   document.getElementById("optionsTitle").innerHTML = "Opties";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
+  document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle rooster zien";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -367,6 +372,8 @@ function openOptions() {
   $('#optionDebug').prop('checked', debug=="true"?true:false).checkboxradio('refresh');
   var simsensors = localStorage.getItem("simsensors");
   $('#optionSimSensors').prop('checked', simsensors=="true"?true:false).checkboxradio('refresh');
+  var showallschedules = localStorage.getItem("showallschedules");
+  $('#optionShowAllSchedules').prop('checked', showallschedules=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -815,6 +822,38 @@ function actionFiddleYard(id) {
 
 }
 
+
+function isBlockInSchedule(bkid, sc) {
+  var scentrylist = sc.getElementsByTagName("scentry");
+  trace("scentry " + scentrylist.length + " for " + sc.getAttribute('id'));
+  // Check only the first entry:
+
+  var showallschedules = localStorage.getItem("showallschedules");
+  if( showallschedules == undefined )
+    showallschedules = "false";
+
+  var all = scentrylist.length;
+  if(showallschedules == "false")
+    all = 1;
+  for( n = 0; n < all; n++ ) {
+    var block    = scentrylist[n].getAttribute('block');
+    var location = scentrylist[n].getAttribute('location');
+    if( block == bkid ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function addSchedule(bkid, sc, scheduleSelect, scid) {
+  if( isBlockInSchedule(bkid, sc) ) {
+    var scoption = document.createElement( 'option' );
+    scoption.value = scid;
+    scoption.innerHTML = scid;
+    scheduleSelect.add( scoption );
+  }
+}
+
 function actionBlock(id) {
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
@@ -880,17 +919,16 @@ function actionBlock(id) {
     // Fill up the schedule list.
     for (var i in scMap){
       var sc = scMap[i];
-      var scentrylist = sc.getElementsByTagName("scentry");
-      trace("scentry " + scentrylist.length + " for " + sc.getAttribute('id'));
-      for( n = 0; n < scentrylist.length; n++ ) {
-        var block    = scentrylist[n].getAttribute('block');
-        var location = scentrylist[n].getAttribute('location');
-        if( block == bkid ) {
-          var scoption = document.createElement( 'option' );
-          scoption.value = sc.getAttribute('id');
-          scoption.innerHTML = sc.getAttribute('id');
-          scheduleSelect.add( scoption );
-        }
+      trace("add schedule from list");
+      addSchedule(bkid, sc, scheduleSelect, sc.getAttribute('id'));
+    }
+    for (var i in tourMap){
+      var tour = tourMap[i];
+      var schedulelist = tour.getAttribute("schedules").split(",");
+      var sc = scMap[schedulelist[0]];
+      if( sc != undefined ) {
+        trace("add schedule from tour: " + schedulelist[0]);
+        addSchedule(bkid, sc, scheduleSelect, tour.getAttribute('id'));
       }
     }
     scheduleSelect.selectedIndex = 0;
@@ -1029,6 +1067,12 @@ function onOptionSimSensors() {
   var optionSimSensors = document.getElementById("optionSimSensors");
   localStorage.setItem("simsensors", optionSimSensors.checked ? "true":"false");
   trace("option simsensors = "+ optionSimSensors.checked );
+}
+
+function onOptionShowAllSchedules() {
+  var optionShowAllSchedules = document.getElementById("optionShowAllSchedules");
+  localStorage.setItem("showallschedules", optionShowAllSchedules.checked ? "true":"false");
+  trace("option showallschedules = "+ optionShowAllSchedules.checked );
 }
 
 function initThrottleStatus() {
@@ -2835,6 +2879,22 @@ function processPlan() {
        trace("processing " + sclist.length + " schedules");
      for (var i = 0; i < sclist.length; i++) {
        scMap[sclist[i].getAttribute('id')] = sclist[i];
+     }
+     
+     
+     tourlist = xmlDoc.getElementsByTagName("tour");
+     if( tourlist.length > 0 )
+       trace("processing " + tourlist.length + " tours");
+     for (var i = 0; i < tourlist.length; i++) {
+       tourMap[tourlist[i].getAttribute('id')] = tourlist[i];
+     }
+     
+     
+     locationlist = xmlDoc.getElementsByTagName("location");
+     if( locationlist.length > 0 )
+       trace("processing " + locationlist.length + " locations");
+     for (var i = 0; i < locationlist.length; i++) {
+       locationMap[locationlist[i].getAttribute('id')] = locationlist[i];
      }
      
      
