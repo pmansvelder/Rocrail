@@ -95,6 +95,8 @@ function langDE() {
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
   document.getElementById("labBlockStart").innerHTML = "Zug starten";
   document.getElementById("labBlockStop").innerHTML = "Zug anhalten";
+  document.getElementById("labBlockSwapPlacing").innerHTML = "Umdrehen";
+  document.getElementById("labBlockSwapEnter").innerHTML = "Einfahrtseite drehen";
   document.getElementById("labBlockClose").innerHTML = "Schliessen";
   document.getElementById("labBlockOpen").innerHTML = "Öffnen";
   document.getElementById("blockResetLoco").innerHTML = "Lokbelegung zurücknehmen";
@@ -128,6 +130,8 @@ function langEN() {
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
   document.getElementById("labBlockStart").innerHTML = "Start train";
   document.getElementById("labBlockStop").innerHTML = "Stop train";
+  document.getElementById("labBlockSwapPlacing").innerHTML = "Swap placing";
+  document.getElementById("labBlockSwapEnter").innerHTML = "Swap enter side";
   document.getElementById("labBlockClose").innerHTML = "Close";
   document.getElementById("labBlockOpen").innerHTML = "Open";
   document.getElementById("blockResetLoco").innerHTML = "Reset Locomotive assignment";
@@ -161,6 +165,8 @@ function langNL() {
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
   document.getElementById("labBlockStart").innerHTML = "Start trein";
   document.getElementById("labBlockStop").innerHTML = "Stop trein";
+  document.getElementById("labBlockSwapPlacing").innerHTML = "Omkeren";
+  document.getElementById("labBlockSwapEnter").innerHTML = "Aankomst omkeren";
   document.getElementById("labBlockClose").innerHTML = "Sluiten";
   document.getElementById("labBlockOpen").innerHTML = "Openen";
   document.getElementById("blockResetLoco").innerHTML = "Loc bezetting opheffen";
@@ -989,6 +995,24 @@ function onBlockStop() {
   }
 }
 
+function onBlockSwapPalcing() {
+  $( "#popupBlock" ).popup( "close" );
+  locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
+  if( locoBlockSelect != "none" ) {
+    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"swap\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+}
+
+function onBlockSwapEnter() {
+  $( "#popupBlock" ).popup( "close" );
+  locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
+  if( locoBlockSelect != "none" ) {
+    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"blockside\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+}
+
 function onBlockOpen() {
   $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
@@ -1109,6 +1133,7 @@ function initThrottleStatus() {
   if( lc != undefined ) {
     var locoStatus = document.getElementById("locoStatus");
     var locoDescription = document.getElementById("locoDescription");
+    var locoConsist = document.getElementById("locoConsist");
 
     var modeLabel = "";
     var modeColor = "#FFAAAA";
@@ -1136,6 +1161,7 @@ function initThrottleStatus() {
     locoStatus.style.backgroundColor = modeColor;
     locoStatus.innerHTML = lc.getAttribute('id') + " [" + mode + "]" + fromTo;
     locoDescription.innerHTML = lc.getAttribute('desc');
+    locoConsist.innerHTML = lc.getAttribute('consist');
     trace("init throttle status: " + lc.getAttribute('id') + " [" + mode + "]" + fromTo);
   }
   else {
@@ -1144,6 +1170,7 @@ function initThrottleStatus() {
     locoStatus.style.backgroundColor = "transparent";
     locoStatus.innerHTML = "";
     locoDescription.innerHTML = "";
+    locoConsist.innerHTML = "";
   }
 }
 
@@ -1452,8 +1479,13 @@ function handleLoco(lc) {
   lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
 
   var bk = findBlock4Loco(lc.getAttribute('id'));
-  if( bk != undefined )
+  if( bk != undefined ) {
     updateBlockstate(bk.getAttribute('statesignal'), lc.getAttribute('id'));
+    if( lc.getAttribute('blockenterside') != undefined ) {
+      var div = document.getElementById("bk_"+bk.getAttribute('id'));
+      getBlockLabel(bk, div);
+    }
+  }
   
   if( lc.getAttribute('id') == locoSelected ) {
     initThrottleStatus();
