@@ -32,7 +32,6 @@ mkdir -p $RPM_BUILD_ROOT/opt/rocrail/default
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/svg
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/stylesheets
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/decspecs
-mkdir -p $RPM_BUILD_ROOT/opt/rocrail/symbols
 mkdir -p $RPM_BUILD_ROOT/opt/rocrail/web
 mkdir -p $RPM_BUILD_ROOT/usr/share/applications
 mkdir -p $RPM_BUILD_ROOT/usr/share/desktop-directories
@@ -61,7 +60,6 @@ chown -R :users  $RPM_BUILD_ROOT/opt/rocrail/svg
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type d -exec chmod 755 {} \;
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type f -exec chmod 666 {} \;
 
-install -g users -m 666 Rocrail/rocrail/symbols/*.* $RPM_BUILD_ROOT/opt/rocrail/symbols
 install -g users -m 666 Rocrail/rocrail/impl/web/html/*.* $RPM_BUILD_ROOT/opt/rocrail/web
 
 %clean
@@ -83,7 +81,6 @@ install -g users -m 666 Rocrail/rocrail/impl/web/html/*.* $RPM_BUILD_ROOT/opt/ro
 /opt/rocrail/stylesheets/*.*
 /opt/rocrail/decspecs/*.*
 /opt/rocrail/svg
-/opt/rocrail/symbols/*.*
 /usr/share/desktop-directories/Rocrail.directory
 /usr/share/applications/Rocrail.desktop
 /usr/share/applications/Rocview.desktop
