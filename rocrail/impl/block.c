@@ -1799,6 +1799,12 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
 
   if( id != NULL && data->locId != NULL && StrOp.equals( id, data->locId ) ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block [%s] already locked for loco [%s]", data->id, id );
+
+    if( StrOp.equals(LocOp.getCurBlock(lc), data->id) ) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "daisy chaining loco in block %s", data->id);
+      return True;
+    }
+
     if( !StrOp.equals(data->fromBlockId, blockid) || !StrOp.equals(data->byRouteId, routeid) || data->crossing != crossing ) {
       if( !force && !data->forcelock ) {
         TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "second lock by loco [%s] block [%s] differs with settings! STOP", id, data->id );
