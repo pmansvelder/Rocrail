@@ -384,7 +384,8 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
   Boolean automode = ModelOp.isAuto(model);
   Boolean rc = True;
   Boolean oneconditiontrue = False;
-  Boolean allconditions = wActionCtrl.isallconditions(actionctrl);
+  Boolean hasconditions    = False;
+  Boolean allconditions    = wActionCtrl.isallconditions(actionctrl);
 
   if( actionctrl != NULL ) {
     iONode actionCond = wActionCtrl.getactioncond(actionctrl);
@@ -394,6 +395,8 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
             wActionCond.gettype(actionCond),
             wActionCond.getid(actionCond),
             wActionCond.getstate(actionCond) );
+
+        hasconditions = True;
 
         if( !allconditions )
           rc = True;
@@ -653,7 +656,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
     }
   }
 
-  if( !allconditions && !oneconditiontrue ) {
+  if( hasconditions && !allconditions && !oneconditiontrue ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "No 'or' condition is not true; Skip action." );
     rc = False;
   }
