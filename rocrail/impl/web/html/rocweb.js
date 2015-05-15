@@ -430,8 +430,11 @@ function openGuest() {
 
   trace("close menu");
   $( "#popupMenu" ).popup( "close" );
-  guestProt = "P";
+  guestProt = "N";
   guestSteps = "28";
+  $("#guestProtDCC").prop("checked", true).checkboxradio('refresh');
+  $("#guestStep28").prop("checked", true).checkboxradio('refresh');
+
   $('#popupMenu').on("popupafterclose", function(){$( "#popupGuestLoco" ).popup( "open" )});
 }
 
