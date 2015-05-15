@@ -487,7 +487,8 @@ static byte* _cmdRaw( obj inst ,const byte* cmd ) {
 /**  */
 static void _halt( obj inst ,Boolean poweroff, Boolean shutdown ) {
   iOHUEData data = Data(inst);
-  ThreadOp.sleep(500);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Shutdown HUE");
+  ThreadOp.sleep(1000);
   data->run = False;
   ThreadOp.sleep(500);
 }
