@@ -2713,7 +2713,7 @@ static iOLoc _getLoc( iOModel inst, const char* id, iONode props, Boolean genera
       addr = atoi(id);
 
     if( addr > 0 ) {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "try to find loco by addres [%d] generate=%s", addr, generate?"true":"false" );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "try to find loco by addres [%d] generate=%s props=%X", addr, generate?"true":"false", props );
       loc = ModelOp.getLocByAddress(inst, addr, NULL);
       if( loc != NULL )
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco by addres [%d] is [%s]", addr, LocOp.getId(loc) );
@@ -2729,7 +2729,7 @@ static iOLoc _getLoc( iOModel inst, const char* id, iONode props, Boolean genera
           if( wLoc.getshortid(props) != NULL && StrOp.len(wLoc.getshortid(props)) > 0 ) {
             wLoc.setid( lc, wLoc.getshortid(props) );
           }
-          if( wLoc.getid(props) != NULL && StrOp.len(wLoc.getid(props)) > 0 ) {
+          else if( wLoc.getid(props) != NULL && StrOp.len(wLoc.getid(props)) > 0 ) {
             wLoc.setid( lc, wLoc.getid(props) );
             id = wLoc.getid(props);
           }

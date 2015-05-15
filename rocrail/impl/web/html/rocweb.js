@@ -83,6 +83,7 @@ function langDE() {
   document.getElementById("menuInfo").innerHTML = "Informationen";
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Optionen";
+  document.getElementById("menuGuest").innerHTML = "Gast-Lok";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
@@ -111,6 +112,7 @@ function langDE() {
   document.getElementById("labConsistView").innerHTML = "Anzeigen";
   document.getElementById("labConsistAdd").innerHTML = "Hinzufügen";
   document.getElementById("labConsistDel").innerHTML = "Löschen";
+  document.getElementById("titleGuestLoco").innerHTML = "Gast-Lok";
 }
 
 function langEN() {
@@ -121,6 +123,7 @@ function langEN() {
   document.getElementById("menuInfo").innerHTML = "Information";
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Options";
+  document.getElementById("menuGuest").innerHTML = "Guest loco";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
@@ -149,6 +152,7 @@ function langEN() {
   document.getElementById("labConsistView").innerHTML = "Show";
   document.getElementById("labConsistAdd").innerHTML = "Add";
   document.getElementById("labConsistDel").innerHTML = "Delete";
+  document.getElementById("titleGuestLoco").innerHTML = "Guest loco";
 }
 
 function langNL() {
@@ -159,6 +163,7 @@ function langNL() {
   document.getElementById("menuInfo").innerHTML = "Informatie";
   document.getElementById("menuSystem").innerHTML = "Systeem";
   document.getElementById("menuOptions").innerHTML = "Opties";
+  document.getElementById("menuGuest").innerHTML = "Gast locomotief";
   document.getElementById("systemTitle").innerHTML = "Systeem";
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
@@ -187,6 +192,7 @@ function langNL() {
   document.getElementById("labConsistView").innerHTML = "Tonen";
   document.getElementById("labConsistAdd").innerHTML = "Toevoegen";
   document.getElementById("labConsistDel").innerHTML = "Verwijderen";
+  document.getElementById("titleGuestLoco").innerHTML = "Gast locomotief";
 }
 
 
@@ -404,6 +410,16 @@ function openSystem() {
   trace("close menu");
   $( "#popupMenu" ).popup( "close" );
   $('#popupMenu').on("popupafterclose", function(){$( "#popupSystem" ).popup( "open" )});
+}
+
+/* Guest Loco Dialog */
+function openGuest() {
+  document.getElementById("guestAddress").value = "";
+  document.getElementById("guestShortID").value = "";
+
+  trace("close menu");
+  $( "#popupMenu" ).popup( "close" );
+  $('#popupMenu').on("popupafterclose", function(){$( "#popupGuestLoco" ).popup( "open" )});
 }
 
 /* Options Dialog */
@@ -1050,6 +1066,15 @@ function onBlockClose() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+
+function onAddGuest() {
+  $( "#popupGuestLoco" ).popup( "close" );
+  var address = document.getElementById("guestAddress").value;
+  var id = document.getElementById("guestShortID").value;
+  console.log("add guest: "+address+" id="+id);
+  var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" V=\"0\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
 
 function onLocoResetInBlock() {
   $( "#popupBlock" ).popup( "close" );
@@ -1794,6 +1819,24 @@ function handleStageBlock(sb) {
   }
 }
 
+function handleModel(model) {
+  var cmd = model.getAttribute('cmd');
+  trace("model: "+cmd);
+  if( cmd == "add" ) {
+    lclist = model.getElementsByTagName("lc");
+    for( var i = 0; i < lclist.length; i++ ) {
+      var lc = lcMap[lclist[i].getAttribute('id')];
+      if( lc != undefined ) {
+        trace("loco "+lclist[i].getAttribute('id')+" already exist");
+        continue;
+      }
+      trace('add loco: ' + lclist[i].getAttribute('id') );
+      lcMap[lclist[i].getAttribute('id')] = lclist[i];
+      addLocoToList(lclist[i]);
+    }
+  }
+}
+
 function handleRoute(st) {
   var stid = st.getAttribute('id');
   stNode = stMap[stid];
@@ -1918,6 +1961,8 @@ function evaluateEvent(xmlStr) {
     handleFiddleYard(root);
   else if( evtName == "st" )
     handleRoute(root);
+  else if( evtName == "model" )
+    handleModel(root);
 }
 
 function processResponse() {
