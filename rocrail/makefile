@@ -209,7 +209,6 @@ install_all:
 	-cp -p ..$(FS)rocview$(FS)xpm$(FS)rocrail.xpm $(DESTDIR)
 	-cp -Rp ..$(FS)rocview$(FS)icons $(DESTDIR)
 	-cp -Rp ..$(FS)rocview$(FS)svg $(DESTDIR)
-	-cp -Rp$(CPUPDATE) symbols $(DESTDIR)
 	-cp -Rp$(CPUPDATE) ..$(FS)stylesheets $(DESTDIR)
 	-cp -Rp$(CPUPDATE) package$(FS)images $(DESTDIR)
 	-cp -Rp$(CPUPDATE) ..$(FS)decspecs $(DESTDIR)
