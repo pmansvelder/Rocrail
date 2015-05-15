@@ -23,16 +23,16 @@
   <div id="header" data-role="header" data-position="fixed" style="overflow:hidden;">
     <h1 id="title">Rocweb</h1>
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
-      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
-      <a href="#" id="headerPower" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
-      <a href="#" id="headerAuto" class="ui-btn ui-btn-icon-right ui-icon-recycle ui-btn-icon-notext" onclick="actionAuto('on')">Automode</a>
-      <a href="#" id="headerStop" class="ui-btn ui-btn-icon-right ui-icon-delete ui-btn-icon-notext" onclick="actionAuto('off')">Automode</a>
+      <a href="#" id="headerThrottle" title="Throttle" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
+      <a href="#" id="headerPower" title="Power" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
+      <a href="#" id="headerAuto" title="Automatic" class="ui-btn ui-btn-icon-right ui-icon-recycle ui-btn-icon-notext" onclick="actionAuto('on')">Automode</a>
+      <a href="#" id="headerStop" title="Stop all" class="ui-btn ui-btn-icon-right ui-icon-delete ui-btn-icon-notext" onclick="actionAuto('off')">Automode</a>
     </div>  
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
-      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-alert ui-btn-icon-notext" onclick="actionEBreak()">EBreak</a>
-      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
-      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
-      <a href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
+      <a id="headerEBreak" title="Emergency break" href="#" class="ui-btn ui-btn-icon-right ui-icon-alert ui-btn-icon-notext" onclick="actionEBreak()">EBreak</a>
+      <a id="headerUp" title="Level up" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
+      <a id="headerDown" title="Level down" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
+      <a id="headerMenu" title="Menu" href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
     </div>  
   </div>
 
@@ -158,21 +158,21 @@
     <div data-role="fieldcontain">
     <fieldset data-role="controlgroup">
       <input type="checkbox" name="optionDebug" id="optionDebug" class="custom" onclick="onOptionDebug()" />
-      <label id="labOptionDebug" for="optionDebug">Debug</label>
+      <label id="labOptionDebug" title="Trace debug info on the JavaScript console" for="optionDebug">Debug</label>
       <input type="checkbox" name="optionSimSensors" id="optionSimSensors" class="custom" onclick="onOptionSimSensors()" />
-      <label id="labOptionSimSensors" for="optionSimSensors">Simulate sensors</label>
+      <label id="labOptionSimSensors" title="Simulate sensor events by clicking on it" for="optionSimSensors">Simulate sensors</label>
       <input type="checkbox" name="optionShowAllSchedules" id="optionShowAllSchedules" class="custom" onclick="onOptionShowAllSchedules()" />
-      <label id="labOptionShowAllSchedules" for="optionShowAllSchedules">Show all schedules</label>
+      <label id="labOptionShowAllSchedules" title="Show all schedules which includes the selected block" for="optionShowAllSchedules">Show all schedules</label>
     </fieldset>
     </div>
     <div data-role="fieldcontain">
     <fieldset data-role="controlgroup" data-type="horizontal" >
       <input type="radio" id="locoCatEngine" name="radio-choice-1" value="engine" onclick="onCatEngine()"/>
-      <label id="labLocoCatEngine" for="locoCatEngine">Engine</label>
+      <label id="labLocoCatEngine" title="Sort the Loco selection list by engine type" for="locoCatEngine">Engine</label>
       <input type="radio" id="locoCatEra" name="radio-choice-1" value="era" onclick="onCatEra()"/>
-      <label id="labLocoCatEra" for="locoCatEra">Era</label>
+      <label id="labLocoCatEra" title="Sort the Loco selection list by Era" for="locoCatEra">Era</label>
       <input type="radio" id="locoCatRoadname" name="radio-choice-1" value="roadname" onclick="onCatRoadname()"/>
-      <label id="labLocoCatRoadname" for="locoCatRoadname">Roadname</label>
+      <label id="labLocoCatRoadname" title="Sort the Loco selection list by Roadname" for="locoCatRoadname">Roadname</label>
     </fieldset>
     </div>    
   </div>
@@ -185,7 +185,7 @@
     <center><img id="locoImage" src="noimg.png" onclick="onLocoImage()"/></center>
     <div id="locoStatus"></div>
     <div id="locoDescription"></div>
-    <div id="locoConsist"></div>
+    <div id="locoConsist" onclick="onMaster()"></div>
 
     <div class="ui-grid-d">
     <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F1" onclick="onFunction('F1', 1)">F1</a></div>

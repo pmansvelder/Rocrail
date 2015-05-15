@@ -29,6 +29,7 @@ var locationMap = {};
 var carMap = {};
 var lcCatMap = {};
 var locoSelected = 'none';
+var masterSelected = "";
 var locoSelectedList = [];
 var locoSelectedIdx = 0;
 var locoBlockSelect = 'none';
@@ -1161,12 +1162,18 @@ function initThrottleStatus() {
     locoStatus.style.backgroundColor = modeColor;
     locoStatus.innerHTML = lc.getAttribute('id') + " [" + mode + "]" + fromTo;
     locoDescription.innerHTML = lc.getAttribute('desc');
-    locoConsist.innerHTML = lc.getAttribute('consist');
+    var consist = lc.getAttribute('consist');
+    if( consist == undefined || consist.length == 0 ) {
+      locoConsist.innerHTML = findMaster(lc.getAttribute('id'));
+    }
+    else 
+      locoConsist.innerHTML = consist;
     trace("init throttle status: " + lc.getAttribute('id') + " [" + mode + "]" + fromTo);
   }
   else {
     var locoStatus = document.getElementById("locoStatus");
     var locoDescription = document.getElementById("locoDescription");
+    var locoConsist = document.getElementById("locoConsist");
     locoStatus.style.backgroundColor = "transparent";
     locoStatus.innerHTML = "";
     locoDescription.innerHTML = "";
@@ -1184,8 +1191,19 @@ function updateSpeed(lc) {
 
 }
 
+
+function onMaster() {
+  if( masterSelected.length > 0 ) {
+    locoSelected = masterSelected;
+    initThrottle();
+    updateDir();
+    updateFunctionLabels();
+  }
+}
+
 function initThrottle() {
   trace("locoSelect: " + locoSelected );
+  masterSelected = "";
   var lc = lcMap[locoSelected]
   if( lc == undefined )
     lc = carMap[locoSelected];
@@ -1461,6 +1479,18 @@ function findBlock4Loco(lcid) {
     if( lcid == bk.getAttribute('locid'))
       return bk;
   }
+}
+
+function findMaster(lcid) {
+  for (var key in lcMap) {
+    var lc = lcMap[key];
+    var consist = lc.getAttribute('consist');
+    if( consist != undefined && consist.indexOf(lcid) != -1 ) {
+      masterSelected = lc.getAttribute('id');
+      return "<b>" + lc.getAttribute('id') + "</b>=" + consist;
+    }
+  }
+  return "";
 }
 
 function handleLoco(lc) {
