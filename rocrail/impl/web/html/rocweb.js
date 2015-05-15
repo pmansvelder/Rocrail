@@ -113,6 +113,9 @@ function langDE() {
   document.getElementById("labConsistAdd").innerHTML = "Hinzufügen";
   document.getElementById("labConsistDel").innerHTML = "Löschen";
   document.getElementById("titleGuestLoco").innerHTML = "Gast-Lok";
+  document.getElementById("guestAddress").placeholder = "Adresse";
+  document.getElementById("guestShortID").placeholder = "Kennung";
+  document.getElementById("guestAdd").innerHTML = "Hinzufügen";
 }
 
 function langEN() {
@@ -153,6 +156,9 @@ function langEN() {
   document.getElementById("labConsistAdd").innerHTML = "Add";
   document.getElementById("labConsistDel").innerHTML = "Delete";
   document.getElementById("titleGuestLoco").innerHTML = "Guest loco";
+  document.getElementById("guestAddress").placeholder = "Address";
+  document.getElementById("guestShortID").placeholder = "Short ID";
+  document.getElementById("guestAdd").innerHTML = "Add";
 }
 
 function langNL() {
@@ -193,6 +199,9 @@ function langNL() {
   document.getElementById("labConsistAdd").innerHTML = "Toevoegen";
   document.getElementById("labConsistDel").innerHTML = "Verwijderen";
   document.getElementById("titleGuestLoco").innerHTML = "Gast locomotief";
+  document.getElementById("guestAddress").placeholder = "Adres";
+  document.getElementById("guestShortID").placeholder = "Korte ID";
+  document.getElementById("guestAdd").innerHTML = "Toevoegen";
 }
 
 
@@ -1072,7 +1081,7 @@ function onAddGuest() {
   var address = document.getElementById("guestAddress").value;
   var id = document.getElementById("guestShortID").value;
   console.log("add guest: "+address+" id="+id);
-  var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" V=\"0\"/>";
+  var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" spcnt=\"28\" V=\"0\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
