@@ -428,13 +428,13 @@ function openGuest() {
   document.getElementById("guestAddress").value = "";
   document.getElementById("guestShortID").value = "";
 
-  trace("close menu");
-  $( "#popupMenu" ).popup( "close" );
   guestProt = "N";
   guestSteps = "28";
   $("#guestProtDCC").prop("checked", true).checkboxradio('refresh');
   $("#guestStep28").prop("checked", true).checkboxradio('refresh');
 
+  trace("close menu");
+  $( "#popupMenu" ).popup( "close" );
   $('#popupMenu').on("popupafterclose", function(){$( "#popupGuestLoco" ).popup( "open" )});
 }
 
