@@ -1699,23 +1699,27 @@ function getBlockLabel(bk, div) {
       if( rotate == undefined )
         rotate = "true";
       
-      var newLabel = "";
-      if( ori=="east" || ori=="west" ) {
-        newLabel = "< " + label;
-        if( (ori=="east" && rotate=="false" ) || (ori=="west" && rotate=="true" ) ) {
-          newLabel = label + " >";
+      if( "true" != bk.getAttribute('reserved') ) {
+        var newLabel = "";
+        if( ori=="east" || ori=="west" ) {
+          newLabel = "< " + label;
+          if( (ori=="east" && rotate=="false" ) || (ori=="west" && rotate=="true" ) ) {
+            newLabel = label + " >";
+          }
         }
-      }
-      else if( ori=="north" || ori=="south" ) {
-        newLabel = "< " + label;
-        if( (ori=="north" && rotate=="false" ) || (ori=="south" && rotate=="true" ) ) {
-          newLabel = label + " >";
+        else if( ori=="north" || ori=="south" ) {
+          newLabel = "< " + label;
+          if( (ori=="north" && rotate=="false" ) || (ori=="south" && rotate=="true" ) ) {
+            newLabel = label + " >";
+          }
         }
+        label = newLabel;
       }
-      label = newLabel;
       
     }
   }
+  
+  
   if( ori == "north" || ori == "south" ) {
     // Work around for rotated labels:
     label = label.split(' ').join('.');

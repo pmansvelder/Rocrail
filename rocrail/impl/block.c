@@ -1801,7 +1801,7 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block [%s] already locked for loco [%s]", data->id, id );
 
     if( StrOp.equals(LocOp.getCurBlock(lc), data->id) ) {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "daisy chaining loco in block %s", data->id);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "looping loco %s in block %s", id, data->id);
       return True;
     }
 
