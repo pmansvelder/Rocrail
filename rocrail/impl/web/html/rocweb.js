@@ -45,6 +45,8 @@ var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
 var prevPopup = "";
+var guestProt = "P"
+var guestSteps = "28"
 
 
 function forceRedraw(div){
@@ -428,6 +430,8 @@ function openGuest() {
 
   trace("close menu");
   $( "#popupMenu" ).popup( "close" );
+  guestProt = "P";
+  guestSteps = "28";
   $('#popupMenu').on("popupafterclose", function(){$( "#popupGuestLoco" ).popup( "open" )});
 }
 
@@ -1075,13 +1079,22 @@ function onBlockClose() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function onGuestProt(prot) {
+  guestProt = prot;
+}
+
+function onGuestSteps(steps) {
+  guestSteps = steps;
+}
 
 function onAddGuest() {
   $( "#popupGuestLoco" ).popup( "close" );
   var address = document.getElementById("guestAddress").value;
   var id = document.getElementById("guestShortID").value;
+  if( address.length == 0 )
+    return;
   console.log("add guest: "+address+" id="+id);
-  var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" spcnt=\"28\" V=\"0\"/>";
+  var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" spcnt=\""+guestSteps+"\" prot=\""+guestProt+"\" V=\"0\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 

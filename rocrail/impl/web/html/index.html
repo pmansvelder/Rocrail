@@ -248,6 +248,26 @@
    <h3 id="titleGuestLoco">Guest loco</h3>
      <input type="text" name="guestAddress" id="guestAddress" value="" placeholder="Address" data-theme="a">
      <input type="text" name="guestShortID" id="guestShortID" value="" placeholder="Short ID" data-theme="a">
+     <div data-role="fieldcontain">
+     <fieldset data-role="controlgroup" data-type="horizontal" >
+       <input type="radio" id="guestStep14" name="radio-choice-1" value="14" onclick="onGuestSteps('14')"/>
+       <label for="guestStep14">14</label>
+       <input type="radio" id="guestStep28" name="radio-choice-1" value="28" onclick="onGuestSteps('28')"/>
+       <label for="guestStep28">28</label>
+       <input type="radio" id="guestStep128" name="radio-choice-1" value="128" onclick="onGuestSteps('128')"/>
+       <label for="guestStep128">128</label>
+     </fieldset>
+     </div>    
+     <div data-role="fieldcontain">
+     <fieldset data-role="controlgroup" data-type="horizontal" >
+       <input type="radio" id="guestProtDCC" name="radio-choice-2" value="dcc" onclick="onGuestProt('N')"/>
+       <label for="guestProtDCC">DCC</label>
+       <input type="radio" id="guestProtMM" name="radio-choice-2" value="mm" onclick="onGuestProt('M')"/>
+       <label for="guestProtMM">MM</label>
+       <input type="radio" id="guestProtMFX" name="radio-choice-2" value="mfx" onclick="onGuestProt('F')"/>
+       <label for="guestProtMFX">MFX</label>
+     </fieldset>
+     </div>    
      <button id="guestAdd" class="ui-btn ui-corner-all" onclick="onAddGuest()">Add</button>
    </div>
  </div>
