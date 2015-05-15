@@ -53,7 +53,7 @@
   <div class="ui-grid-a">
     <div class="ui-block-a"><a id="labBlockStart" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart()">Start</a></div>
     <div class="ui-block-b"><a id="labBlockStop" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStop()">Stop</a></div>
-    <div class="ui-block-a"><a id="labBlockSwapPlacing" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockswapPlacing()">Swap placing</a></div>
+    <div class="ui-block-a"><a id="labBlockSwapPlacing" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockSwapPlacing()">Swap placing</a></div>
     <div class="ui-block-b"><a id="labBlockSwapEnter" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockSwapEnter()">Swap enter side</a></div>
     <div class="ui-block-a"><a id="labBlockClose" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockClose()">Close</a></div>
     <div class="ui-block-b"><a id="labBlockOpen" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockOpen()">Open</a></div>
@@ -61,6 +61,21 @@
   </div>
   </div>
 
+  <div data-role="popup" id="popupConsist" class="ui-popup" data-theme="a" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <label id="consistTitle">Consist</label>
+  <center><img id="locoImageConsist" src="noimg.png""/></center>
+  <div><a id="labConsistView" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onConsistView()">View</a></div>
+  <div class="ui-grid-a">
+    <div class="ui-block-a"><a id="labConsistAdd" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onConsistAdd()">Add</a></div>
+    <div class="ui-block-b"><a id="labConsistDel" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onConsistDel()">Delete</a></div>
+  </div>
+  </div>
+  </div>
+
+  
+  
   <div data-role="popup" id="popupTurntable" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">

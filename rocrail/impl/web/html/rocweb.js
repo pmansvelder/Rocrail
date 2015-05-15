@@ -108,6 +108,9 @@ function langDE() {
   document.getElementById("labStageClose").innerHTML = "Schliessen";
   document.getElementById("labStageOpen").innerHTML = "Öffnen";
   document.getElementById("labStageCompress").innerHTML = "Komprimieren";
+  document.getElementById("labConsistView").innerHTML = "Anzeigen";
+  document.getElementById("labConsistAdd").innerHTML = "Hinzufügen";
+  document.getElementById("labConsistDel").innerHTML = "Löschen";
 }
 
 function langEN() {
@@ -143,6 +146,9 @@ function langEN() {
   document.getElementById("labStageClose").innerHTML = "Close";
   document.getElementById("labStageOpen").innerHTML = "Open";
   document.getElementById("labStageCompress").innerHTML = "Compress";
+  document.getElementById("labConsistView").innerHTML = "Show";
+  document.getElementById("labConsistAdd").innerHTML = "Add";
+  document.getElementById("labConsistDel").innerHTML = "Delete";
 }
 
 function langNL() {
@@ -178,6 +184,9 @@ function langNL() {
   document.getElementById("labStageClose").innerHTML = "Sluiten";
   document.getElementById("labStageOpen").innerHTML = "Openen";
   document.getElementById("labStageCompress").innerHTML = "Comprimeer";
+  document.getElementById("labConsistView").innerHTML = "Tonen";
+  document.getElementById("labConsistAdd").innerHTML = "Toevoegen";
+  document.getElementById("labConsistDel").innerHTML = "Verwijderen";
 }
 
 
@@ -582,6 +591,19 @@ $(function(){
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold direction: consist management");
+    trace("close throttle");
+    $( "#popupThrottle" ).popup( "close" );
+    
+    initConsist();
+    trace("open loco consist");
+    $('#popupThrottle').on("popupafterclose", function(){
+      $('#popupThrottle').unbind( "popupafterclose" );
+      $( "#popupConsist" ).popup( "open" );
+      });
+    $('#popupConsist').on("popupafterclose", function(){
+      $('#popupConsist').unbind( "popupafterclose" );
+      $( "#popupThrottle" ).popup( "open" );
+      });
   }
   function tapholdLocoImageHandler(e) {
     e.preventDefault();
@@ -996,7 +1018,7 @@ function onBlockStop() {
   }
 }
 
-function onBlockSwapPalcing() {
+function onBlockSwapPlacing() {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
@@ -1201,6 +1223,37 @@ function onMaster() {
   }
 }
 
+
+function onConsistView() {
+  
+}
+
+
+function onConsistAdd() {
+  
+}
+
+
+function onConsistDel() {
+  
+}
+
+
+function initConsist() {
+  trace("consist master loco: " + locoSelected );
+  var img = document.getElementById("locoImageConsist");
+  var title = document.getElementById("consistTitle");
+  var lc = lcMap[locoSelected]
+  if( lc == undefined ) {
+    img.src = "noimg.png";
+    title.innerHTML = getString("consist");
+    return;
+  }
+  img.src = lc.getAttribute('image');
+  title.innerHTML = getString("consist") +": "+locoSelected;
+}
+
+
 function initThrottle() {
   trace("locoSelect: " + locoSelected );
   masterSelected = "";
@@ -1309,6 +1362,7 @@ function getString(s) {
     if( s == "steam" ) return "Dampf";
     if( s == "electric" ) return "Elektrisch";
     if( s == "car" ) return "Wagen";
+    if( s == "consist" ) return "Mehrfachtraktion";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -1316,6 +1370,7 @@ function getString(s) {
     if( s == "steam" ) return "Steam";
     if( s == "electric" ) return "Electric";
     if( s == "car" ) return "Car";
+    if( s == "consist" ) return "Consist";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -1323,6 +1378,7 @@ function getString(s) {
     if( s == "steam" ) return "Stoom";
     if( s == "electric" ) return "Elektrisch";
     if( s == "car" ) return "Wagon";
+    if( s == "consist" ) return "Multitractie";
   }
 
   return s;
@@ -1510,7 +1566,7 @@ function handleLoco(lc) {
 
   var bk = findBlock4Loco(lc.getAttribute('id'));
   if( bk != undefined ) {
-    updateBlockstate(bk.getAttribute('statesignal'), lc.getAttribute('id'));
+    updateBlockstate(bk.getAttribute('id'), bk.getAttribute('statesignal'), lc.getAttribute('id'), "loco");
     if( lc.getAttribute('blockenterside') != undefined ) {
       var div = document.getElementById("bk_"+bk.getAttribute('id'));
       getBlockLabel(bk, div);
@@ -1556,7 +1612,7 @@ function handleFunction(fn) {
   }
 }
 
-function updateBlockstate( sgid, lcid ) {
+function updateBlockstate( bkid, sgid, lcid, from ) {
   sg = sgMap[sgid];
   lc = lcMap[lcid];
   if( sg == undefined )
@@ -1575,6 +1631,7 @@ function updateBlockstate( sgid, lcid ) {
     else if( mode == "halfauto" )
       label = "H";
   }
+  trace("blockstate: block="+bkid+" signal="+sgid+" loco="+lcid+" from="+from+" label="+label);
   div.innerHTML = "<label class='itemtext'>"+label+"</label>";
   forceRedraw(div);
 }
@@ -1655,7 +1712,7 @@ function handleBlock(bk) {
     trace("block: " + bk.getAttribute('id') + " not found");
   }
   
-  updateBlockstate( bk.getAttribute('statesignal'), bk.getAttribute('locid'));
+  updateBlockstate( bkNode.getAttribute('id'), bkNode.getAttribute('statesignal'), bkNode.getAttribute('locid'), "block");
 }
 
 
