@@ -2078,6 +2078,8 @@ function processResponse() {
             if( localStorage.getItem("moduleview") == "true" ) {
               trace("activating module view");
               ModPlan = true;
+              document.getElementById("headerUp").style.display = 'none';
+              document.getElementById("headerDown").style.display = 'none';
             }
           }
 
@@ -2098,7 +2100,7 @@ function processResponse() {
           trace("selected loco = " + locoSelected);
 
           if( donkey == 'true') {
-            document.getElementById("donkey").style.display = 'none'
+            document.getElementById("donkey").style.display = 'none';
           }
           else {
             trace( "5 minutes before shutdown..." );
