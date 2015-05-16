@@ -2011,15 +2011,18 @@ function handleSystem(sys) {
   var cmd = sys.getAttribute('cmd');
   if( cmd == "shutdown" ) {
     trace("server shutdown");
-    Disconnect();
+    Disconnect(false);
   }
 }
 
-function Disconnect() {
+function Disconnect(closemenu) {
   var cmd = "<sys shutdown=\"true\"/>";
   worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
   for( var i = 0; i < zlevelDivList.length; i++ )
     zlevelDivList[i].style.display = 'none';
+  if(closemenu)
+    $( "#popupMenu" ).popup( "close" );
+
 }
 
 /* Processing events from server */
