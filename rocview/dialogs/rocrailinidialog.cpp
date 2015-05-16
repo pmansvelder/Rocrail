@@ -489,9 +489,7 @@ void RocrailIniDialog::initValues() {
 
     iONode web = wHttpService.getwebclient( http );
     if( web != NULL ) {
-      val = StrOp.fmt( "%d", wWebClient.getport( web ) );
-      m_WebServicePort->SetValue( wxString( val,wxConvUTF8) );
-      StrOp.free( val );
+      m_WebServicePort->SetValue( wWebClient.getport( web ) );
 
       // RocWeb
       m_WebPath->SetValue( wxString(wWebClient.getwebpath( web ),wxConvUTF8) );
@@ -825,7 +823,7 @@ void RocrailIniDialog::evaluate() {
     NodeOp.addChild( http, web );
   }
 
-  wWebClient.setport( web, atoi( m_WebServicePort->GetValue().mb_str(wxConvUTF8) ) );
+  wWebClient.setport( web, m_WebServicePort->GetValue() );
   wWebClient.setwebpath( web, m_WebPath->GetValue().mb_str(wxConvUTF8) );
   wWebClient.setsvgpath1( web, m_SVGPath->GetValue().mb_str(wxConvUTF8) );
   wWebClient.setsvgpath2( web, m_SVGPath2->GetValue().mb_str(wxConvUTF8) );
@@ -2122,8 +2120,7 @@ void RocrailIniDialog::CreateControls()
     m_LabWebServicePort = new wxStaticText( m_RocWebPanel, wxID_ANY, _("Port"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer267->Add(m_LabWebServicePort, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
-    m_WebServicePort = new wxTextCtrl( m_RocWebPanel, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
-    m_WebServicePort->SetMaxLength(5);
+    m_WebServicePort = new wxSpinCtrl( m_RocWebPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(120, -1), wxSP_ARROW_KEYS, 0, 65535, 0 );
     itemFlexGridSizer267->Add(m_WebServicePort, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxFlexGridSizer* itemFlexGridSizer270 = new wxFlexGridSizer(0, 3, 0, 0);
@@ -2132,7 +2129,7 @@ void RocrailIniDialog::CreateControls()
     itemFlexGridSizer270->Add(m_labWebPath, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_WebPath = new wxTextCtrl( m_RocWebPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer270->Add(m_WebPath, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer270->Add(m_WebPath, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     m_WebPathDlg = new wxButton( m_RocWebPanel, ID_ROCWEB_WEB_BUTTON, _("..."), wxDefaultPosition, wxSize(40, 25), 0 );
     itemFlexGridSizer270->Add(m_WebPathDlg, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);

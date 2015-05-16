@@ -465,7 +465,7 @@ public:
     wxPanel* m_RocWebPanel;
     wxStaticBoxSizer* m_WebServiceBox;
     wxStaticText* m_LabWebServicePort;
-    wxTextCtrl* m_WebServicePort;
+    wxSpinCtrl* m_WebServicePort;
     wxStaticText* m_labWebPath;
     wxTextCtrl* m_WebPath;
     wxButton* m_WebPathDlg;
