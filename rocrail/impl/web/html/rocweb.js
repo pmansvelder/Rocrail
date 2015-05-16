@@ -90,6 +90,7 @@ function langDE() {
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
+  document.getElementById("menuDisconnect").innerHTML = "Serververbindung trennen";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
@@ -134,6 +135,7 @@ function langEN() {
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("menuGuest").innerHTML = "Guest loco";
+  document.getElementById("menuDisconnect").innerHTML = "Disconnect from server";
   document.getElementById("systemTitle").innerHTML = "System";
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
@@ -178,6 +180,7 @@ function langNL() {
   document.getElementById("menuSystem").innerHTML = "Systeem";
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
+  document.getElementById("menuDisconnect").innerHTML = "Server verbinding verbreken";
   document.getElementById("systemTitle").innerHTML = "Systeem";
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
@@ -2002,10 +2005,15 @@ function handleSystem(sys) {
   var cmd = sys.getAttribute('cmd');
   if( cmd == "shutdown" ) {
     trace("server shutdown");
-    var cmd = "<sys shutdown=\"true\"/>";
-    worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
-    zlevelSelected.style.display = 'none'
+    Disconnect();
   }
+}
+
+function Disconnect() {
+  var cmd = "<sys shutdown=\"true\"/>";
+  worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
+  for( var i = 0; i < zlevelDivList.length; i++ )
+    zlevelDivList[i].style.display = 'none';
 }
 
 /* Processing events from server */
