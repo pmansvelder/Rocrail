@@ -28,6 +28,7 @@ var tourMap = {};
 var locationMap = {};
 var carMap = {};
 var lcCatMap = {};
+var ModPlan = false;
 var locoSelected = 'none';
 var masterSelected = "";
 var locoSelectedList = [];
@@ -97,6 +98,7 @@ function langDE() {
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
+  document.getElementById("labOptionModuleView").innerHTML = "Modul Ansicht";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -140,6 +142,7 @@ function langEN() {
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
+  document.getElementById("labOptionModuleView").innerHTML = "Module view";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -182,7 +185,8 @@ function langNL() {
   document.getElementById("optionsTitle").innerHTML = "Opties";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
-  document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle rooster zien";
+  document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
+  document.getElementById("labOptionModuleView").innerHTML = "Moduul aanzicht";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -462,6 +466,8 @@ function openOptions() {
   $('#optionSimSensors').prop('checked', simsensors=="true"?true:false).checkboxradio('refresh');
   var showallschedules = localStorage.getItem("showallschedules");
   $('#optionShowAllSchedules').prop('checked', showallschedules=="true"?true:false).checkboxradio('refresh');
+  var moduleview = localStorage.getItem("moduleview");
+  $('#optionModuleView').prop('checked', moduleview=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -780,6 +786,8 @@ function actionPower() {
 
 
 function actionLevelDown() {
+  if( ModPlan )
+    return;
   zlevelSelected.style.display = 'none'
   zlevelIdx++;
   var zleveldiv = zlevelDivList[zlevelIdx];
@@ -797,20 +805,22 @@ function actionLevelDown() {
 }
 
 function actionLevelUp() {
+  if( ModPlan )
+    return;
   zlevelSelected.style.display = 'none'
-    zlevelIdx--;
-    var zleveldiv = zlevelDivList[zlevelIdx];
-    if(zleveldiv == undefined ) {
-      zleveldiv = zlevelDivList[0];
-      zlevelIdx = 0;
-    }
-    zlevelSelected = zleveldiv;
-    zleveldiv.style.display = 'block';
+  zlevelIdx--;
+  var zleveldiv = zlevelDivList[zlevelIdx];
+  if(zleveldiv == undefined ) {
+    zleveldiv = zlevelDivList[0];
+    zlevelIdx = 0;
+  }
+  zlevelSelected = zleveldiv;
+  zleveldiv.style.display = 'block';
 
-    var zlevel = zlevelList[zlevelIdx];
-    var title = zlevel.getAttribute('title');
-    var h = document.getElementById("title");
-    h.innerHTML = title;
+  var zlevel = zlevelList[zlevelIdx];
+  var title = zlevel.getAttribute('title');
+  var h = document.getElementById("title");
+  h.innerHTML = title;
 }
 
 
@@ -1223,6 +1233,12 @@ function onOptionShowAllSchedules() {
   trace("option showallschedules = "+ optionShowAllSchedules.checked );
 }
 
+function onOptionModuleView() {
+  var optionModuleView = document.getElementById("optionModuleView");
+  localStorage.setItem("moduleview", optionModuleView.checked ? "true":"false");
+  trace("option moduleview = "+ optionModuleView.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -1491,7 +1507,8 @@ function xml2string(node) {
   if (typeof(XMLSerializer) !== 'undefined') {
      var serializer = new XMLSerializer();
      return serializer.serializeToString(node);
-  } else if (node.xml) {
+  } 
+  else if (node.xml) {
      return node.xml;
   }
 }
@@ -2045,13 +2062,25 @@ function processResponse() {
         }
 
         planlist = xmlDoc.getElementsByTagName("plan")
+        if(planlist.length == 0)
+          planlist = xmlDoc.getElementsByTagName("modplan")
+          
         if( planlist.length > 0 ) {
           var h = document.getElementById("title");
           donkey = planlist[0].getAttribute('donkey');
           title = planlist[0].getAttribute('title');
+          console.log("title: "+title);
           rocrailversion = planlist[0].getAttribute('rocrailversion');
           rocrailpwd = planlist[0].getAttribute('rocrailpwd');
+          var modplan = planlist[0].getAttribute('modplan');
           
+          if( modplan != undefined && modplan == "true") {
+            if( localStorage.getItem("moduleview") == "true" ) {
+              trace("activating module view");
+              ModPlan = true;
+            }
+          }
+
           var serverInfo = document.getElementById("serverInfo");
           serverInfo.innerHTML = "Server version: " + rocrailversion + "<br>" + "Server path: " + rocrailpwd;
           
@@ -2808,9 +2837,28 @@ function addLocoToList(lc) {
   addMobileToList(cat, lc.getAttribute('id'), lc.getAttribute('image'), lc.getAttribute('dir'), lc.getAttribute('addr'));
 }
 
-/* Process the plan.xml */
+/* Process the plan.xml 
+ * 
+ * 
+  <zlevel title="Module 1" modid="m6" modnr="6" z="0" modviewx="0" modviewy="0" modviewcx="13" modviewcy="4"/>
+  <zlevel title="Module 1" modid="m5" modnr="5" z="1" modviewx="13" modviewy="1" modviewcx="9" modviewcy="3"/>
+ * 
+ * */
+
+function setXY(item, zlevel, div) {
+  var zX = 0;
+  var zY = 0;
+  if( ModPlan ) {
+    zX = parseInt(zlevel.getAttribute('modviewx'));
+    zY = parseInt(zlevel.getAttribute('modviewy'));
+  }
+  div.style.left = "" + ((parseInt(item.getAttribute('x')) + zX) * 32) + "px";
+  div.style.top  = "" + ((parseInt(item.getAttribute('y')) + zY) * 32 + yoffset) + "px";
+}
+
+
 function processPlan() {
-//only if req shows "loaded"
+  
    try {
      xmlDoc = req.responseXML;
      
@@ -2819,11 +2867,11 @@ function processPlan() {
        var title = "";
        trace("processing " + zlevellist.length + " zlevels");
        for (var i = 0; i < zlevellist.length; i++) {
-         zlevelMap[z] = zlevellist[i];
          var z = zlevellist[i].getAttribute('z');
          if( z == undefined )
            z = "0";
-         trace('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title'));
+         trace('zlevel: ' + z + " title: " + zlevellist[i].getAttribute('title')  + " " +xml2string(zlevellist[i]) );
+         zlevelMap[z]  = zlevellist[i];
          zlevelList[i] = zlevellist[i];
 
          var newdiv = document.createElement('div');
@@ -2840,14 +2888,16 @@ function processPlan() {
            zlevelIdx = i;
            title = zlevellist[i].getAttribute('title');
          }
-         else {
+         else if( !ModPlan ) {
            trace("disable level " + z);
            newdiv.style.display = 'none'
          }
          document.body.appendChild(newdiv);
        }
-       var h = document.getElementById("title");
-       h.innerHTML = title;
+       if( !ModPlan ) {
+         var h = document.getElementById("title");
+         h.innerHTML = title;
+       }
      }
      
      
@@ -2896,8 +2946,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
-       newdiv.style.left     = "" + (parseInt(colist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(colist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(colist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getOutputImage(colist[i]);
        trace("Output image="+newdiv.style.backgroundImage);
@@ -2928,8 +2977,7 @@ function processPlan() {
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
        newdiv.style.lineHeight = "32px";
-       newdiv.style.left     = "" + (parseInt(sglist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(sglist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(sglist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getSignalImage(sglist[i]);
        trace("Signal image="+newdiv.style.backgroundImage);
@@ -2958,8 +3006,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
-       newdiv.style.left     = "" + (parseInt(tklist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(tklist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(tklist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getTrackImage(tklist[i]);
        //trace("Track image="+newdiv.style.backgroundImage + "    " + getTrackImage(tklist[i]));
@@ -3012,8 +3059,8 @@ function processPlan() {
          newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
          newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";
        }
-       newdiv.style.left     = "" + (parseInt(txlist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(txlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(txlist[i], zlevelMap[z], newdiv);
+
        if( text != undefined && text.indexOf(".png") != -1 ) {
          //newdiv.style.backgroundImage = "url('"+text+"')";
          newdiv.style.backgroundSize = newdiv.style.width;
@@ -3057,8 +3104,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
-       newdiv.style.left     = "" + (parseInt(swlist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(swlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(swlist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        
        newdiv.style.backgroundImage = getSwitchImage(swlist[i], newdiv);
@@ -3095,8 +3141,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "32px";
        newdiv.style.height   = "32px";
-       newdiv.style.left     = "" + (parseInt(fblist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(fblist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(fblist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        
        newdiv.style.backgroundImage = getSensorImage(fblist[i], 0);
@@ -3129,8 +3174,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "128px";
        newdiv.style.height   = "32px";
-       newdiv.style.left     = "" + (parseInt(bklist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(bklist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(bklist[i], zlevelMap[z], newdiv);
        newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
        newdiv.style.lineHeight = newdiv.style.height;
 
@@ -3166,8 +3210,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = ""+(symbolsize*32)+"px";
        newdiv.style.height   = ""+(symbolsize*32)+"px";
-       newdiv.style.left     = "" + (parseInt(ttlist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(ttlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(ttlist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML  = getTurntableImage(ttlist[i], newdiv); 
        leveldiv.appendChild(newdiv);
      }
@@ -3221,8 +3264,7 @@ function processPlan() {
          newdiv.style.position = "absolute";
          newdiv.style.width    = "32px";
          newdiv.style.height   = "32px";
-         newdiv.style.left     = "" + (parseInt(stlist[i].getAttribute('x')) * 32) + "px";
-         newdiv.style.top      = "" + (parseInt(stlist[i].getAttribute('y')) * 32 + yoffset) + "px";
+         setXY(stlist[i], zlevelMap[z], newdiv);
          newdiv.innerHTML      = "";
          
          newdiv.style.backgroundImage = getRouteImage(stlist[i]);
@@ -3253,8 +3295,7 @@ function processPlan() {
        newdiv.setAttribute('onClick', "actionFiddleYard(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       newdiv.style.left     = "" + (parseInt(fylist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(fylist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(fylist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML  = getFiddleYardImage(fylist[i], newdiv); 
        
        leveldiv.appendChild(newdiv);
@@ -3283,8 +3324,7 @@ function processPlan() {
        newdiv.style.position = "absolute";
        newdiv.style.width    = "128px";
        newdiv.style.height   = "32px";
-       newdiv.style.left     = "" + (parseInt(sblist[i].getAttribute('x')) * 32) + "px";
-       newdiv.style.top      = "" + (parseInt(sblist[i].getAttribute('y')) * 32 + yoffset) + "px";
+       setXY(sblist[i], zlevelMap[z], newdiv);
        newdiv.style.backgroundImage = getStageBlockImage(sblist[i], newdiv);
        newdiv.style.lineHeight = newdiv.style.height;
 

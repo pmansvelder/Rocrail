@@ -326,15 +326,18 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
   StrOp.free(cleanFname);
 }
 
-static void __getModel(iOPClient inst) {
+static void __getModel(iOPClient inst, Boolean modplan) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
   char* xml = NULL;
   int size = 0;
   iONode model = ModelOp.getModel( AppOp.getModel() );
-
   unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
   char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
+
+  if( modplan && ModelOp.getModPlan(AppOp.getModel()) != NULL ) {
+    model = ModelOp.getModPlan(AppOp.getModel());
+  }
 
   if( !SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
     wPlan.setdonkey(model, True);
@@ -350,7 +353,7 @@ static void __getModel(iOPClient inst) {
 
   xml = NodeOp.base.toString( model );
   size = StrOp.len(xml);
-  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "write model %d", size );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "write model %s %d", NodeOp.getName(model), size );
   if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 0 OK\r\n" );
   if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
   if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
@@ -676,7 +679,11 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/plan.xml" ) ) {
         Boolean ok = True;
-        __getModel( inst );
+        __getModel( inst, False );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/modplan.xml" ) ) {
+        Boolean ok = True;
+        __getModel( inst, True );
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.xml?" ) ) {
         Boolean ok = True;
