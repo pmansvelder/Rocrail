@@ -98,7 +98,7 @@ function langDE() {
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
-  document.getElementById("labOptionModuleView").innerHTML = "Modul Ansicht";
+  document.getElementById("labOptionModuleView").innerHTML = "Modul-Ansicht";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -186,7 +186,7 @@ function langNL() {
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
-  document.getElementById("labOptionModuleView").innerHTML = "Moduul aanzicht";
+  document.getElementById("labOptionModuleView").innerHTML = "Module weergave";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
