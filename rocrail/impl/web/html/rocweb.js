@@ -33,6 +33,9 @@ var masterSelected = "";
 var locoSelectedList = [];
 var locoSelectedIdx = 0;
 var locoBlockSelect = 'none';
+var locoConsistSelect = 'none';
+var locoConsistAction = 'show';
+var locoConsistMembers = "";
 var scheduleBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
@@ -258,6 +261,15 @@ function onLocoSelected(sel) {
     bkid = sessionStorage.getItem("block");
     trace("locoBlockSelect: " + locoBlockSelect + " in block " + bkid);
     onLocoInBlock(locoBlockSelect);
+    return;
+  }
+  else if( prevPopup == "popupConsist") {
+    locoConsistSelect = sel;
+    trace("locoConsistSelect: " + locoConsistSelect);
+    $('#popupLocoSelect').on("popupafterclose", function(){
+      $('#popupLocoSelect').unbind( "popupafterclose" );
+      $( "#popupConsist" ).popup( "open" );
+      });
     return;
   }
   else {
@@ -506,6 +518,41 @@ function sendCommand(cmd) {
 }
 
 
+function openConsist() {
+  if( true ) {
+    trace("consist is disabled");
+    return;
+  }
+  trace("close throttle");
+  $( "#popupThrottle" ).popup( "close" );
+  
+  initConsist();
+  trace("open loco consist");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupConsist" ).popup( "open" );
+    });
+  $('#popupConsist').on("popupafterclose", function(){
+    $('#popupConsist').unbind( "popupafterclose" );
+    $( "#popupThrottle" ).popup( "open" );
+    });
+  
+}
+
+function openLocoControl() {
+  trace("close throttle");
+  $( "#popupThrottle" ).popup( "close" );
+  trace("open loco control");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupLocoControl" ).popup( "open" );
+    });
+  $('#popupLocoControl').on("popupafterclose", function(){
+    $('#popupLocoControl').unbind( "popupafterclose" );
+    $( "#popupThrottle" ).popup( "open" );
+    });
+}
+
 /* Throttle commands */
 window.oncontextmenu = function(event) {
   event.preventDefault();
@@ -623,36 +670,14 @@ $(function(){
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold direction: consist management");
-    trace("close throttle");
-    $( "#popupThrottle" ).popup( "close" );
-    
-    initConsist();
-    trace("open loco consist");
-    $('#popupThrottle').on("popupafterclose", function(){
-      $('#popupThrottle').unbind( "popupafterclose" );
-      $( "#popupConsist" ).popup( "open" );
-      });
-    $('#popupConsist').on("popupafterclose", function(){
-      $('#popupConsist').unbind( "popupafterclose" );
-      $( "#popupThrottle" ).popup( "open" );
-      });
+    openConsist();
   }
+  
   function tapholdLocoImageHandler(e) {
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold locoImage: loco management");
-    trace("close throttle");
-    $( "#popupThrottle" ).popup( "close" );
-    trace("open loco control");
-    $('#popupThrottle').on("popupafterclose", function(){
-      $('#popupThrottle').unbind( "popupafterclose" );
-      $( "#popupLocoControl" ).popup( "open" );
-      });
-    $('#popupLocoControl').on("popupafterclose", function(){
-      $('#popupLocoControl').unbind( "popupafterclose" );
-      $( "#popupThrottle" ).popup( "open" );
-      });
-
+    openLocoControl();
   }
 });
 
@@ -1275,7 +1300,19 @@ function onMaster() {
 
 
 function onConsistView() {
-  
+  locoConsistAction = 'show';
+  var lc = lcMap[locoSelected];
+  locoConsistMembers = lc.getAttribute('consist');
+  $( "#popupConsist" ).popup( "close" );
+  trace("open loco select");
+  $('#popupConsist').on("popupafterclose", function(){
+    $('#popupConsist').unbind( "popupafterclose" );
+    $( "#popupConsist" ).popup( "open" );
+    });
+  $('#popupConsist').on("popupafterclose", function(){
+    $('#popupConsist').unbind( "popupafterclose" );
+    $( "#popupConsist" ).popup( "open" );
+    });
 }
 
 
