@@ -1,6 +1,7 @@
 /* Variables */
 var req;
 var yoffset = 48;
+var symsize = 32;
 var blockPointsize = 12;
 var planloaded = false;
 var ws = null;
@@ -1753,6 +1754,11 @@ function getBlockLabel(bk, div) {
     var lc = lcMap[label];
     if( lc != undefined ) {
       var rotate = lc.getAttribute('blockenterside');
+      var train  = lc.getAttribute('train');
+      
+      if( train != undefined && train.length > 0 )
+        label = label + "_" + train;
+      
       if( rotate == undefined )
         rotate = "true";
       
@@ -3014,8 +3020,8 @@ function processPlan() {
        newdiv.setAttribute('id', "tk_"+tklist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       newdiv.style.width    = "32px";
-       newdiv.style.height   = "32px";
+       newdiv.style.width    = ""+symsize+"px";
+       newdiv.style.height   = ""+symsize+"px";
        setXY(tklist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getTrackImage(tklist[i]);
