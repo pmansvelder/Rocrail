@@ -719,9 +719,14 @@ static iONode __scan4Trc( iOControl inst ) {
 
 static void __callback( obj inst, iONode nodeA ) {
   iOControlData data    = Data(inst);
-  iOModel model         = AppOp.getModel(  );
-  const char* nodeName  = NodeOp.getName( nodeA );
+  iOModel model         = AppOp.getModel();
+  const char* nodeName  = NULL;
   int error             = 0;
+
+  if( nodeA == NULL )
+    return;
+
+  nodeName  = NodeOp.getName( nodeA );
 
   TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "__callback..." );
   TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "nodeName=%s", nodeName );

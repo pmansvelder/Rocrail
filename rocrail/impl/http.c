@@ -229,8 +229,11 @@ static void __pportserver( void* threadinst ) {
           iODoc doc = DocOp.parse( cmd );
           if( doc != NULL ) {
             iONode nodeA = DocOp.getRootNode( doc );
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
-            data->callback( data->callbackObj, nodeA );
+            if( nodeA != NULL ) {
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
+              data->callback( data->callbackObj, nodeA );
+            }
+            DocOp.base.del(doc);
           }
         }
         StrOp.free(cmd);

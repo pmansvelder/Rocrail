@@ -2048,8 +2048,11 @@ function Disconnect(closemenu) {
 }
 
 function onZoom(zoomin) {
+  trace("scale="+scale);
   if( zoomin && scale < 2.0 ) {
     scale += 0.1;
+    if( scale > 2.0 )
+      scale = 1.0 + 0.1;
     localStorage.setItem("scale", scale);
     for( var i = 0; i < zlevelDivList.length; i++ )
       $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
@@ -2117,9 +2120,10 @@ function processResponse() {
     try {
       xmlDoc = req.responseXML;
       if( xmlDoc != null ) {
-        scale = localStorage.getItem("scale");
-        if( scale == undefined )
+        scale = parseFloat(localStorage.getItem("scale"));
+        if( scale == undefined || isNaN(scale) || scale == "1")
           scale = 1.0;
+        trace("scale="+scale);
         
         var category = localStorage.getItem("category");
         if(category == undefined || category.length == 0) {
