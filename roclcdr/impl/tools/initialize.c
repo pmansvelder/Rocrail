@@ -136,6 +136,10 @@ Boolean initializeGroup( iOLcDriver inst, iIBlockBase block, iIBlockBase curBloc
 
   if( curBlock != NULL)
     curgroup = data->model->checkForBlockGroup( data->model, curBlock->base.id(curBlock) );
+  if( curgroup == NULL && data->next1Block != NULL )
+    curgroup = data->model->checkForBlockGroup( data->model, data->next1Block->base.id(data->next1Block) );
+  if( curgroup == NULL && data->next2Block != NULL )
+    curgroup = data->model->checkForBlockGroup( data->model, data->next2Block->base.id(data->next2Block) );
 
   if( block != NULL ) {
     group = data->model->checkForBlockGroup( data->model, block->base.id(block) );
