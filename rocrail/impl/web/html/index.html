@@ -30,6 +30,7 @@
     </div>  
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
       <a id="headerEBreak" title="Emergency break" href="#" class="ui-btn ui-btn-icon-right ui-icon-alert ui-btn-icon-notext" onclick="actionEBreak()">EBreak</a>
+      <a id="headerZoom" title="Zoom" href="#" class="ui-btn ui-btn-icon-right ui-icon-eye ui-btn-icon-notext" onclick="openZoom(false)">Zoom</a>
       <a id="headerUp" title="Level up" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
       <a id="headerDown" title="Level down" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
       <a id="headerMenu" title="Menu" href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
@@ -128,6 +129,7 @@
   <button id="menuOptions" class="ui-btn ui-icon-gear ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openOptions()">Options</button>
   <button id="menuGuest" class="ui-btn ui-icon-user ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openGuest()">Guest loco</button>
   <button id="menuDisconnect" class="ui-btn ui-icon-action ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="Disconnect(true)">Disconnect</button>
+  <button id="menuZoom" class="ui-btn ui-icon-eye ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openZoom(true)">Zoom</button>
     <select name="languageSelect" id="languageSelect" style="text-align:left;">
       <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
       <option id="langEN" value="en" style="text-align:left;">English</option>
@@ -275,6 +277,18 @@
    </div>
  </div>
 
+ <div data-role="popup" id="popupZoom" class="ui-popup" data-theme="a">
+ <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+   <div style="padding:10px 10px;">
+    <label id="titleZoom"><b>Zoom</b></label>
+    <div class="ui-grid-b">
+    <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-left ui-btn-icon-notext" id="ZoomIn" onclick="onZoom(true)">In</a></div>
+    <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-home ui-btn-icon-left ui-btn-icon-notext" id="Zoom100" onclick="onZoom100()">100%</a></div>
+    <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-left ui-btn-icon-notext" id="ZoomOut" onclick="onZoom(false)">Out</a></div>
+   </div>
+   </div>
+ </div>
+ 
  <div data-role="popup" id="popupLocoControl" class="ui-popup" data-theme="a" style="width: 400px;">
  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
    <div style="padding:10px 10px;">

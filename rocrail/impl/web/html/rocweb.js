@@ -1,7 +1,7 @@
 /* Variables */
 var req;
 var yoffset = 48;
-var symsize = 100; // %
+var scale = 1.0;
 var blockPointsize = 12;
 var planloaded = false;
 var ws = null;
@@ -441,6 +441,17 @@ function openSystem() {
   trace("close menu");
   $( "#popupMenu" ).popup( "close" );
   $('#popupMenu').on("popupafterclose", function(){$( "#popupSystem" ).popup( "open" )});
+}
+
+function openZoom(fromMenu) {
+  if( fromMenu ) {
+    trace("close menu");
+    $( "#popupMenu" ).popup( "close" );
+    $('#popupMenu').on("popupafterclose", function(){$( "#popupZoom" ).popup( "open" )});
+  }
+  else {
+    $( "#popupZoom" ).popup( "open" );
+  }
 }
 
 /* Guest Loco Dialog */
@@ -2030,6 +2041,28 @@ function Disconnect(closemenu) {
 
 }
 
+function onZoom(zoomin) {
+  if( zoomin && scale < 2.0 ) {
+    scale += 0.1;
+    localStorage.setItem("scale", scale);
+    for( var i = 0; i < zlevelDivList.length; i++ )
+      $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
+  }
+  else if( !zoomin && scale > 0.5 ) {
+    scale -= 0.1;
+    localStorage.setItem("scale", scale);
+    for( var i = 0; i < zlevelDivList.length; i++ )
+      $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
+  }
+}
+
+function onZoom100() {
+  scale = 1.0;
+  localStorage.setItem("scale", scale);
+  for( var i = 0; i < zlevelDivList.length; i++ )
+    $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
+}
+
 /* Processing events from server */
 function evaluateEvent(xmlStr) {
   var xmlDoc = ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
@@ -2078,6 +2111,10 @@ function processResponse() {
     try {
       xmlDoc = req.responseXML;
       if( xmlDoc != null ) {
+        scale = localStorage.getItem("scale");
+        if( scale == undefined )
+          scale = 1.0;
+        
         var category = localStorage.getItem("category");
         if(category == undefined || category.length == 0) {
           localStorage.setItem("category", "engine");
@@ -2091,7 +2128,7 @@ function processResponse() {
           var h = document.getElementById("title");
           donkey = planlist[0].getAttribute('donkey');
           title = planlist[0].getAttribute('title');
-          console.log("title: "+title);
+          trace("title: "+title);
           rocrailversion = planlist[0].getAttribute('rocrailversion');
           rocrailpwd = planlist[0].getAttribute('rocrailpwd');
           var modplan = planlist[0].getAttribute('modplan');
@@ -2509,7 +2546,7 @@ function getTrackImage(tk) {
     return "url('track-"+tknr+suffix+"."+ ori + ".svg')";
   }
   else {
-    return "url('straight"+suffix+"."+ ori + "." + symsize + ".svg')";
+    return "url('straight"+suffix+"."+ ori + ".svg')";
   }
 }
 
@@ -2875,7 +2912,7 @@ function setXY(item, zlevel, div) {
     zY = parseInt(zlevel.getAttribute('modviewy'));
   }
   div.style.left = "" + ((parseInt(item.getAttribute('x')) + zX) * 32) + "px";
-  div.style.top  = "" + ((parseInt(item.getAttribute('y')) + zY) * 32 + yoffset) + "px";
+  div.style.top  = "" + ((parseInt(item.getAttribute('y')) + zY) * 32) + "px";
 }
 
 
@@ -2900,8 +2937,15 @@ function processPlan() {
          newdiv.setAttribute('id', "level_" + z);
          newdiv.setAttribute('overflow-x', "auto");
          newdiv.setAttribute('overflow-y', "auto");
-         //newdiv.style.background = '#ff9999';
+         newdiv.style.position = "absolute";
+         newdiv.style.left = "0px";
+         newdiv.style.top = ""+yoffset+"px";
 
+         //newdiv.style.background = '#ff9999';
+         //newdiv.style.transform = 'scale(.5)';
+         //$('#level_0').css({ transform: 'scale(.5)' });
+         $(newdiv).css({'-webkit-transform': 'scale(' + scale + ')'});
+         
          zlevelDivMap[z] = newdiv;
          zlevelDivList[i] = newdiv;
 
