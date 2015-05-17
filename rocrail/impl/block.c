@@ -1805,14 +1805,16 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
       return True;
     }
 
-    if( !StrOp.equals(data->fromBlockId, blockid) || !StrOp.equals(data->byRouteId, routeid) || data->crossing != crossing ) {
-      if( !force && !data->forcelock ) {
-        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "second lock by loco [%s] block [%s] differs with settings! STOP", id, data->id );
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block [%s]-[%s] route [%s]-[%s] crossing %d-%d", data->fromBlockId, blockid, data->byRouteId, routeid, data->crossing, crossing );
-        if( lc != NULL ) {
-          LocOp.stop(lc, False);
+    if( !crossing ) {
+      if( !StrOp.equals(data->fromBlockId, blockid) || !StrOp.equals(data->byRouteId, routeid) || data->crossing != crossing ) {
+        if( !force && !data->forcelock) {
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "second lock by loco [%s] block [%s] differs with settings! STOP", id, data->id );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block [%s]-[%s] route [%s]-[%s] crossing %d-%d", data->fromBlockId, blockid, data->byRouteId, routeid, data->crossing, crossing );
+          if( lc != NULL ) {
+            LocOp.stop(lc, False);
+          }
+          return False;
         }
-        return False;
       }
     }
     if( !force && !data->forcelock )
