@@ -397,14 +397,14 @@ static iONode __translate( iOXpressNet xpressnet, iONode node ) {
       byte* outa = allocMem(32);
       outa[0] = 0x52;
       outa[1] = addr;
-      outa[2] = 0x80 | 0x08 | (port << 1) | gate;
+      outa[2] = 0x80 | 0x00 | (port << 1) | gate;
       ThreadOp.post( data->transactor, (obj)outa );
     }
     else {
       byte* outa = allocMem(32);
       outa[0] = 0x52;
       outa[1] = addr;
-      outa[2] = 0x80 | 0x00 | (port << 1) | gate;
+      outa[2] = 0x80 | 0x08 | (port << 1) | gate;
       ThreadOp.post( data->transactor, (obj)outa );
     }
 
