@@ -1486,6 +1486,8 @@ function getString(s) {
     if( s == "electric" ) return "Elektrisch";
     if( s == "car" ) return "Wagen";
     if( s == "consist" ) return "Mehrfachtraktion";
+    if( s == "version" ) return "Version";
+    if( s == "workspace" ) return "Arbeitsbereich";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -1494,6 +1496,8 @@ function getString(s) {
     if( s == "electric" ) return "Electric";
     if( s == "car" ) return "Car";
     if( s == "consist" ) return "Consist";
+    if( s == "version" ) return "Version";
+    if( s == "workspace" ) return "Workspace";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -1502,6 +1506,8 @@ function getString(s) {
     if( s == "electric" ) return "Elektrisch";
     if( s == "car" ) return "Wagon";
     if( s == "consist" ) return "Multitractie";
+    if( s == "version" ) return "Versie";
+    if( s == "workspace" ) return "Werkruimte";
   }
 
   return s;
@@ -2143,7 +2149,7 @@ function processResponse() {
           }
 
           var serverInfo = document.getElementById("serverInfo");
-          serverInfo.innerHTML = "Server version: " + rocrailversion + "<br>" + "Server path: " + rocrailpwd;
+          serverInfo.innerHTML = "<table><tr><td>"+getString("version")+":<td>" + rocrailversion + "<tr><td>" + getString("workspace")+":<td>" + rocrailpwd;
           
           
           trace( "processing plan: " + title + " key=" + donkey );
