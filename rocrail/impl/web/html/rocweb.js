@@ -1,7 +1,7 @@
 /* Variables */
 var req;
 var yoffset = 48;
-var symsize = 32;
+var symsize = 100; // %
 var blockPointsize = 12;
 var planloaded = false;
 var ws = null;
@@ -971,13 +971,14 @@ function isBlockInSchedule(bkid, sc) {
     if( block != undefined && block == bkid )
       return true;
     
-    if( location != undefined && isBlockInLocation(bkid, location) )
+    if( location != undefined && location.length > 0 && isBlockInLocation(bkid, location) )
       return true;
   }
   return false;
 }
 
 function addSchedule(bkid, sc, scheduleSelect, scid) {
+  trace("addSchedule: "+scid);
   if( isBlockInSchedule(bkid, sc) ) {
     var scoption = document.createElement( 'option' );
     scoption.value = scid;
@@ -987,12 +988,16 @@ function addSchedule(bkid, sc, scheduleSelect, scid) {
 }
 
 function isBlockInLocation(bkid, locationid) {
+  trace("isBlockInLocation: block="+bkid+" location="+locationid);
   var location = locationMap[locationid];
-  if( location == undefined )
+  if( location == undefined ) {
+    trace("location ["+locationid+"] not found");
     return false;
+  }
 
-  var blocks = location.getAttribute('blocks');
+  var blocks = location.getAttribute('blocks').split(",");
   for( var i = 0; i < blocks.length; i++ ) {
+    trace(bkid+" == "+blocks[i]);
     if( bkid == blocks[i] )
       return true;
   }
@@ -2496,9 +2501,7 @@ function getTrackImage(tk) {
   var type  = tk.getAttribute('type');
   var route = tk.getAttribute('route');
   var suffix = (route=="1")?"-route":"";
-  if (type == "curve" )
-    return "url('curve"+suffix+"."+ori+".svg')";
-  else if( type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
+  if( type == "curve" || type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
     return "url('"+type+suffix+"."+ori+".svg')";
   }
   else if (type == "tracknr" ) {
@@ -2506,7 +2509,7 @@ function getTrackImage(tk) {
     return "url('track-"+tknr+suffix+"."+ ori + ".svg')";
   }
   else {
-    return "url('straight"+suffix+"."+ ori + ".svg')";
+    return "url('straight"+suffix+"."+ ori + "." + symsize + ".svg')";
   }
 }
 
@@ -3023,8 +3026,8 @@ function processPlan() {
        newdiv.setAttribute('id', "tk_"+tklist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
-       newdiv.style.width    = ""+symsize+"px";
-       newdiv.style.height   = ""+symsize+"px";
+       newdiv.style.width    = ""+32+"px";
+       newdiv.style.height   = ""+32+"px";
        setXY(tklist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        newdiv.style.backgroundImage = getTrackImage(tklist[i]);
