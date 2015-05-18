@@ -117,6 +117,8 @@ function langDE() {
   document.getElementById("labFYPrev").innerHTML = "Vorheriges Gleis";
   document.getElementById("labStageClose").innerHTML = "Schliessen";
   document.getElementById("labStageOpen").innerHTML = "Öffnen";
+  document.getElementById("labStageCloseExit").innerHTML = "Ausfahrt schliessen";
+  document.getElementById("labStageOpenExit").innerHTML = "Ausfahrt öffnen";
   document.getElementById("labStageCompress").innerHTML = "Komprimieren";
   document.getElementById("labConsistView").innerHTML = "Anzeigen";
   document.getElementById("labConsistAdd").innerHTML = "Hinzufügen";
@@ -162,6 +164,8 @@ function langEN() {
   document.getElementById("labFYPrev").innerHTML = "Previous track";
   document.getElementById("labStageClose").innerHTML = "Close";
   document.getElementById("labStageOpen").innerHTML = "Open";
+  document.getElementById("labStageCloseExit").innerHTML = "Close exit";
+  document.getElementById("labStageOpenExit").innerHTML = "Open exit";
   document.getElementById("labStageCompress").innerHTML = "Compress";
   document.getElementById("labConsistView").innerHTML = "Show";
   document.getElementById("labConsistAdd").innerHTML = "Add";
@@ -207,6 +211,8 @@ function langNL() {
   document.getElementById("labFYPrev").innerHTML = "Vorige spoor";
   document.getElementById("labStageClose").innerHTML = "Sluiten";
   document.getElementById("labStageOpen").innerHTML = "Openen";
+  document.getElementById("labStageCloseExit").innerHTML = "Sluit uitgang";
+  document.getElementById("labStageOpenExit").innerHTML = "Open uitgang";
   document.getElementById("labStageCompress").innerHTML = "Comprimeer";
   document.getElementById("labConsistView").innerHTML = "Tonen";
   document.getElementById("labConsistAdd").innerHTML = "Toevoegen";
@@ -1204,6 +1210,22 @@ function onStageClose() {
 }
 
 
+function onStageOpenExit() {
+  $( "#popupStageBlock" ).popup( "close" );
+  sbid = sessionStorage.getItem("stageblock");
+  var cmd = "<sb id=\""+sbid+"\" exitstate=\"open\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
+function onStageCloseExit() {
+  $( "#popupStageBlock" ).popup( "close" );
+  sbid = sessionStorage.getItem("stageblock");
+  var cmd = "<sb id=\""+sbid+"\" exitstate=\"closed\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
+
 function onTurntableNext() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
@@ -1892,6 +1914,33 @@ function handleFiddleYard(fy) {
   
 }
 
+function getStageLabel(sb, div) {
+  var lcCount = 0;
+  sectionlist = sb.getElementsByTagName("section");
+  if( sectionlist.length > 0 ) {
+    trace("updating " + sectionlist.length + " staging block sections");
+    for (var n = 0; n < sectionlist.length; n++) {
+      var lcid = sectionlist[n].getAttribute('lcid');
+      if( lcid != undefined && lcid.length > 0 ) {
+        lcCount++;
+      }
+    }
+  }
+
+  var ori   = getOri(sb);
+  var exitstate = sb.getAttribute('exitstate');
+  var labelsuffix = "";
+  if( exitstate != undefined && exitstate == "closed" )
+    labelsuffix = "<";
+  var label = sb.getAttribute('locid');
+  if( label == undefined || label.length == 0 )
+    label = sb.getAttribute('id') + "[" + lcCount + "]";
+  label += labelsuffix;
+  if( ori == "north" || ori == "south" )
+    div.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
+  else
+    div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
+}
 
 function handleStageBlock(sb) {
   trace("staging block event: " + sb.getAttribute('id') + " " + sb.getAttribute('state'));
@@ -1904,27 +1953,8 @@ function handleStageBlock(sb) {
     sbNode.setAttribute('reserved', sb.getAttribute('reserved'));
     sbNode.setAttribute('entering', sb.getAttribute('entering'));
     
-    var lcCount = 0;
-    sectionlist = sb.getElementsByTagName("section");
-    if( sectionlist.length > 0 ) {
-      trace("updating " + sectionlist.length + " staging block sections");
-      for (var n = 0; n < sectionlist.length; n++) {
-        var lcid = sectionlist[n].getAttribute('lcid');
-        if( lcid != undefined && lcid.length > 0 ) {
-          lcCount++;
-        }
-      }
-    }
-
-    var ori   = getOri(sb);
-    var label = sb.getAttribute('locid');
-    if( label == undefined || label.length == 0 )
-      label = sb.getAttribute('id') + "[" + lcCount + "]";
-    if( ori == "north" || ori == "south" )
-      div.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
-    else
-      div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
-
+    getStageLabel(sb, div);
+    
     div.style.backgroundImage = getStageBlockImage(sbNode, div);
     forceRedraw(div);
 
@@ -3419,15 +3449,7 @@ function processPlan() {
          }
        }
 
-       var label = sblist[i].getAttribute('locid');
-       if( label == undefined || label.length == 0 )
-         label = sblist[i].getAttribute('id') + "[" + lcCount + "]";
-       if( ori == "north" || ori == "south" ) {
-         newdiv.innerHTML      = "<div class='itemtextV' style='font-size:"+blockPointsize+"px;'>"+label+"</div>";
-       }
-       else {
-         newdiv.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
-       }
+       getStageLabel(sblist[i], newdiv);
 
        leveldiv.appendChild(newdiv);
      }
