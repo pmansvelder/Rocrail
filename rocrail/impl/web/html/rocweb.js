@@ -1899,7 +1899,8 @@ function handleStageBlock(sb) {
   if( div != null ) {
     sbNode = sbMap[sb.getAttribute('id')];
     sbNode.setAttribute('state', sb.getAttribute('state'));
-    sbNode.setAttribute('locid', sb.getAttribute('locid'));
+    if( sb.getAttribute('locid') != undefined )
+      sbNode.setAttribute('locid', sb.getAttribute('locid'));
     sbNode.setAttribute('reserved', sb.getAttribute('reserved'));
     sbNode.setAttribute('entering', sb.getAttribute('entering'));
     
@@ -2791,14 +2792,16 @@ function getStageBlockImage(sb, div) {
     div.style.height   = "32px";
   }
 
-  if( "true" == sb.getAttribute('entering') )
-    return "url('stage-ent"+"."+ori+".svg')";
-  else if( "closed" == sb.getAttribute('state') )
+  if( "closed" == sb.getAttribute('state') )
     return "url('stage-closed"+"."+ori+".svg')";
-  if( "true" == sb.getAttribute('reserved') )
-    return "url('stage-res"+"."+ori+".svg')";
-  else if( label != undefined && label.length > 0 )
-    return "url('stage-occ"+"."+ori+".svg')";
+  else if( label != undefined && label.length > 0 ) {
+    if( "true" == sb.getAttribute('reserved') )
+      return "url('stage-res"+"."+ori+".svg')";
+    else if( "true" == sb.getAttribute('entering') )
+      return "url('stage-ent"+"."+ori+".svg')";
+    else 
+      return "url('stage-occ"+"."+ori+".svg')";
+  }
   else
     return "url('stage"+"."+ori+".svg')";
   
