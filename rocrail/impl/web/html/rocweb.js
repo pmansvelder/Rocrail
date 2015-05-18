@@ -1866,6 +1866,9 @@ function handleBlock(bk) {
     bkNode.setAttribute('locid', bk.getAttribute('locid'));
     bkNode.setAttribute('reserved', bk.getAttribute('reserved'));
     bkNode.setAttribute('entering', bk.getAttribute('entering'));
+    var occ = "false";
+    if( bk.getAttribute('locid') != undefined && bk.getAttribute('locid').length > 0 )
+      occ = "true";
     
     getBlockLabel(bk, div);
     div.style.backgroundImage = getBlockImage(bkNode, div);
@@ -1876,6 +1879,39 @@ function handleBlock(bk) {
   }
   
   updateBlockstate( bkNode.getAttribute('id'), bkNode.getAttribute('statesignal'), bkNode.getAttribute('locid'), "block");
+  
+  for (var key in tkMap) {
+    var tk = tkMap[key];
+    var blockid = tk.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bkNode.getAttribute('id') ) {
+      tk.setAttribute('occ', occ)
+      handleTrack(tk);
+    }
+  }
+  for (var key in fbMap) {
+    var fb = fbMap[key];
+    var blockid = fb.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bkNode.getAttribute('id') ) {
+      fb.setAttribute('occ', occ)
+      handleSensor(fb);
+    }
+  }
+  for (var key in sgMap) {
+    var sg = sgMap[key];
+    var blockid = sg.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bkNode.getAttribute('id') ) {
+      sg.setAttribute('occ', occ)
+      handleSignal(sg);
+    }
+  }
+
+
 }
 
 
@@ -2302,9 +2338,15 @@ function getOri(item) {
 function getSensorImage(fb) {
   var curve = fb.getAttribute('curve');
   var route = fb.getAttribute('route');
+  var occ   = fb.getAttribute('occ');
   var accnr = parseInt(fb.getAttribute('accnr'));
   var ori   = getOri(fb);
-  var suffix = (route=="1")?"-route":"";
+  var suffix = ""; 
+  
+  if( route=="1" )
+    suffix = "-route";
+  else if( occ == "true" )
+    suffix = "-occ";
 
   if( "true" == fb.getAttribute('state') )
     if( accnr > 0 )
@@ -2363,7 +2405,13 @@ function getSignalImage(sg) {
   var aspects = sg.getAttribute('aspects');
   var pattern = parseInt( sg.getAttribute('usepatterns') );
   var route   = sg.getAttribute('route');
-  var suffix  = (route=="1")?"-route":"";
+  var occ     = sg.getAttribute('occ');
+  var suffix = ""; 
+  
+  if( route=="1" )
+    suffix = "-route";
+  else if( occ == "true" )
+    suffix = "-occ";
 
   var greennr  = parseInt( sg.getAttribute('greennr') );;
   var rednr    = parseInt( sg.getAttribute('rednr') );;
@@ -2577,10 +2625,17 @@ function getTurntableImage(tt, div) {
 }
 
 function getTrackImage(tk) {
-  var ori   = getOri(tk);
-  var type  = tk.getAttribute('type');
-  var route = tk.getAttribute('route');
-  var suffix = (route=="1")?"-route":"";
+  var ori    = getOri(tk);
+  var type   = tk.getAttribute('type');
+  var route  = tk.getAttribute('route');
+  var occ    = tk.getAttribute('occ');
+  var suffix = ""; 
+  
+  if( route=="1" )
+    suffix = "-route";
+  else if( occ == "true" )
+    suffix = "-occ";
+  
   if( type == "curve" || type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
     return "url('"+type+suffix+"."+ori+".svg')";
   }
@@ -2611,7 +2666,7 @@ function getSwitchImage(sw, div, checkSet) {
     nomotor = true;
 
   if( checkSet && set != undefined && set == "false" ) {
-    console.log("set="+set);
+    trace("set="+set);
     div.style.backgroundColor = "red";
   }
   else 
