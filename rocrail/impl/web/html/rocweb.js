@@ -1157,7 +1157,7 @@ function onAddGuest() {
   var id = document.getElementById("guestShortID").value;
   if( address.length == 0 )
     return;
-  console.log("add guest: "+address+" id="+id);
+  trace("add guest: "+address+" id="+id);
   var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" spcnt=\""+guestSteps+"\" prot=\""+guestProt+"\" V=\"0\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -1657,7 +1657,9 @@ function handleSwitch(sw) {
   if( div != null ) {
     swNode = swMap[sw.getAttribute('id')];
     swNode.setAttribute('state', sw.getAttribute('state'));
-    div.style.backgroundImage = getSwitchImage(swNode, div);
+    if( sw.getAttribute('set') != undefined )
+      swNode.setAttribute('set', sw.getAttribute('set'));
+    div.style.backgroundImage = getSwitchImage(swNode, div, true);
     forceRedraw(div);
   }
   else {
@@ -2591,10 +2593,11 @@ function getTrackImage(tk) {
   }
 }
 
-function getSwitchImage(sw, div) {
+function getSwitchImage(sw, div, checkSet) {
   var ori   = getOri(sw);
   var type  = sw.getAttribute('type');
   var state = sw.getAttribute('state');
+  var set   = sw.getAttribute('set');
   var accnr = sw.getAttribute('accnr');
   var dir   = sw.getAttribute('dir');
   var rectc = sw.getAttribute('rectcrossing');
@@ -2607,6 +2610,14 @@ function getSwitchImage(sw, div) {
   if( ( (addr1 == undefined) || (addr1 == "0") ) && ( (port1 == undefined) || (port1 == "0") ) )
     nomotor = true;
 
+  if( checkSet && set != undefined && set == "false" ) {
+    console.log("set="+set);
+    div.style.backgroundColor = "red";
+  }
+  else 
+    div.style.backgroundColor = "transparent";
+
+  
   trace("switch type: " + type + " accnr="+accnr);
   if( accnr != undefined && parseInt(accnr) > 1 )
     type = "accessory";
@@ -3216,7 +3227,7 @@ function processPlan() {
        setXY(swlist[i], zlevelMap[z], newdiv);
        newdiv.innerHTML      = "";
        
-       newdiv.style.backgroundImage = getSwitchImage(swlist[i], newdiv);
+       newdiv.style.backgroundImage = getSwitchImage(swlist[i], newdiv, false);
        trace("Switch image="+newdiv.style.backgroundImage);
 
        leveldiv.appendChild(newdiv);
