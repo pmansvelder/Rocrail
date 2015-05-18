@@ -251,11 +251,11 @@ cp -u ../rocrail/package/plan.xml debian/usr/share/rocrail/default
 
 cp ../rocrail/package/rocraild.png debian/usr/share/pixmaps
 cp ../rocrail/package/rocrail.xpm debian/usr/share/pixmaps
-cp -R ../stylesheets/*.* debian/usr/share/rocrail/stylesheets
-cp -R ../decspecs/*.* debian/usr/share/rocrail/decspecs
+cp -R ../stylesheets/* debian/usr/share/rocrail/stylesheets
+cp -R ../decspecs/* debian/usr/share/rocrail/decspecs
 cp -R ../rocview/svg/* debian/usr/share/rocrail/svg
-cp -R ../rocrail/impl/web/html/*.* debian/usr/share/rocrail/web
-cp -R ../rocrail/package/images/*.* debian/usr/share/rocrail/images
+cp -R ../rocrail/impl/web/html/* debian/usr/share/rocrail/web
+cp -R ../rocrail/package/images/* debian/usr/share/rocrail/images
 
 cp -R ../COPYING debian/usr/share/rocrail
 

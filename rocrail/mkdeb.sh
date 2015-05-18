@@ -68,11 +68,11 @@ cp ../rocrail/package/rocrail.xpm debian/opt/rocrail
 cp ../rocrail/package/rocrail.mib debian/opt/rocrail
 cp -u ../rocrail/package/plan.xml debian/opt/rocrail/default
 
-cp -R ../rocrail/package/images/*.* debian/opt/rocrail/images
-cp -R ../stylesheets/*.* debian/opt/rocrail/stylesheets
-cp -R ../decspecs/*.* debian/opt/rocrail/decspecs
+cp -R ../rocrail/package/images/* debian/opt/rocrail/images
+cp -R ../stylesheets/* debian/opt/rocrail/stylesheets
+cp -R ../decspecs/* debian/opt/rocrail/decspecs
 cp -R ../rocview/svg/* debian/opt/rocrail/svg
-cp -R ../rocrail/impl/web/html/*.* debian/opt/rocrail/web
+cp -R ../rocrail/impl/web/html/* debian/opt/rocrail/web
 cp -R ../COPYING debian/opt/rocrail
 
 fakeroot dpkg-deb --build debian

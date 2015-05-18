@@ -60,7 +60,7 @@ chown -R :users  $RPM_BUILD_ROOT/opt/rocrail/svg
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type d -exec chmod 755 {} \;
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type f -exec chmod 666 {} \;
 
-install -g users -m 666 Rocrail/rocrail/impl/web/html/*.* $RPM_BUILD_ROOT/opt/rocrail/web
+install -pr users -m 666 Rocrail/rocrail/impl/web/html/* $RPM_BUILD_ROOT/opt/rocrail/web
 
 %clean
 #rm -rf $RPM_BUILD_ROOT
@@ -81,6 +81,7 @@ install -g users -m 666 Rocrail/rocrail/impl/web/html/*.* $RPM_BUILD_ROOT/opt/ro
 /opt/rocrail/stylesheets/*.*
 /opt/rocrail/decspecs/*.*
 /opt/rocrail/svg
+/opt/rocrail/web
 /usr/share/desktop-directories/Rocrail.directory
 /usr/share/applications/Rocrail.desktop
 /usr/share/applications/Rocview.desktop
