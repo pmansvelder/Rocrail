@@ -63,6 +63,7 @@ mkdir -p $TMP
 # copy the files
 mkdir -p $TMP/Rocrail/rocdata/
 mkdir -p $TMP/Rocrail/rocdata/trace/
+mkdir -p $TMP/Rocrail/rocdata/web/
 
 cp -r rocrail/package/images $TMP/Rocrail/rocdata/
 cp -r decspecs $TMP/Rocrail/rocdata/
@@ -70,6 +71,7 @@ cp -r stylesheets $TMP/Rocrail/rocdata/
 cp -r unxbin/Rocrail.app $TMP/Rocrail
 cp rocrail/package/plan.xml $TMP/Rocrail/rocdata/
 cp -r rocview/svg/themes $TMP/Rocrail/rocdata/
+cp -r rocrail/impl/web/html/* $TMP/Rocrail/rocdata/web
 cp rocview/mac_default_rocview.ini $TMP/Rocrail/rocdata/rocview.ini
 
 # pimp the dmg
