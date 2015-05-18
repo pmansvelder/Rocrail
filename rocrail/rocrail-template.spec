@@ -56,11 +56,12 @@ install -g users -m 666 Rocrail/decspecs/*.* $RPM_BUILD_ROOT/opt/rocrail/decspec
 ### install does not handle directory (sub-)trees, so we have to do this manually
 # install -d -g users -m 666 Rocrail/rocview/svg/* $RPM_BUILD_ROOT/opt/rocrail/svg
 cp -pr Rocrail/rocview/svg $RPM_BUILD_ROOT/opt/rocrail/
+cp -pr Rocrail/rocrail/impl/web/html/* $RPM_BUILD_ROOT/opt/rocrail/web
 chown -R :users  $RPM_BUILD_ROOT/opt/rocrail/svg
+chown -R :users  $RPM_BUILD_ROOT/opt/rocrail/web
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type d -exec chmod 755 {} \;
 find $RPM_BUILD_ROOT/opt/rocrail/svg -type f -exec chmod 666 {} \;
 
-install -pr users -m 666 Rocrail/rocrail/impl/web/html/* $RPM_BUILD_ROOT/opt/rocrail/web
 
 %clean
 #rm -rf $RPM_BUILD_ROOT
@@ -79,7 +80,7 @@ install -pr users -m 666 Rocrail/rocrail/impl/web/html/* $RPM_BUILD_ROOT/opt/roc
 /etc/init.d/rocraild
 /opt/rocrail/rocrail.xpm
 /opt/rocrail/stylesheets/*.*
-/opt/rocrail/decspecs/*.*
+/opt/rocrail/decspecs
 /opt/rocrail/svg
 /opt/rocrail/web
 /usr/share/desktop-directories/Rocrail.directory
