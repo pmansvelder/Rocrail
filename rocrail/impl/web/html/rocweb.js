@@ -1857,6 +1857,46 @@ function getBlockLabel(bk, div) {
   }
 }
 
+
+function updateBlockOcc(bk) {
+  var occ = "false";
+  if( bk.getAttribute('locid') != undefined && bk.getAttribute('locid').length > 0 )
+    occ = "true";
+
+  for (var key in tkMap) {
+    var tk = tkMap[key];
+    var blockid = tk.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bk.getAttribute('id') ) {
+      tk.setAttribute('occ', occ)
+      handleTrack(tk);
+    }
+  }
+  for (var key in fbMap) {
+    var fb = fbMap[key];
+    var blockid = fb.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bk.getAttribute('id') ) {
+      fb.setAttribute('occ', occ)
+      handleSensor(fb);
+    }
+  }
+  for (var key in sgMap) {
+    var sg = sgMap[key];
+    var blockid = sg.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bk.getAttribute('id') ) {
+      sg.setAttribute('occ', occ)
+      handleSignal(sg);
+    }
+  }
+  
+}
+
+
 function handleBlock(bk) {
   trace("block event: " + bk.getAttribute('id') + " " + bk.getAttribute('state'));
   var div = document.getElementById("bk_"+bk.getAttribute('id'));
@@ -1866,9 +1906,6 @@ function handleBlock(bk) {
     bkNode.setAttribute('locid', bk.getAttribute('locid'));
     bkNode.setAttribute('reserved', bk.getAttribute('reserved'));
     bkNode.setAttribute('entering', bk.getAttribute('entering'));
-    var occ = "false";
-    if( bk.getAttribute('locid') != undefined && bk.getAttribute('locid').length > 0 )
-      occ = "true";
     
     getBlockLabel(bk, div);
     div.style.backgroundImage = getBlockImage(bkNode, div);
@@ -1880,37 +1917,7 @@ function handleBlock(bk) {
   
   updateBlockstate( bkNode.getAttribute('id'), bkNode.getAttribute('statesignal'), bkNode.getAttribute('locid'), "block");
   
-  for (var key in tkMap) {
-    var tk = tkMap[key];
-    var blockid = tk.getAttribute('blockid');
-    if( blockid == undefined )
-      continue;
-    if( blockid == bkNode.getAttribute('id') ) {
-      tk.setAttribute('occ', occ)
-      handleTrack(tk);
-    }
-  }
-  for (var key in fbMap) {
-    var fb = fbMap[key];
-    var blockid = fb.getAttribute('blockid');
-    if( blockid == undefined )
-      continue;
-    if( blockid == bkNode.getAttribute('id') ) {
-      fb.setAttribute('occ', occ)
-      handleSensor(fb);
-    }
-  }
-  for (var key in sgMap) {
-    var sg = sgMap[key];
-    var blockid = sg.getAttribute('blockid');
-    if( blockid == undefined )
-      continue;
-    if( blockid == bkNode.getAttribute('id') ) {
-      sg.setAttribute('occ', occ)
-      handleSignal(sg);
-    }
-  }
-
+  updateBlockOcc(bkNode);
 
 }
 
@@ -3356,6 +3363,7 @@ function processPlan() {
        getBlockLabel(bklist[i], newdiv);
        
        leveldiv.appendChild(newdiv);
+       updateBlockOcc(bklist[i]);
      }
      
 
