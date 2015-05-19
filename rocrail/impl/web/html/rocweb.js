@@ -101,6 +101,7 @@ function langDE() {
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
   document.getElementById("labOptionModuleView").innerHTML = "Modul-Ansicht";
+  document.getElementById("labOptionShowOcc").innerHTML = "Blockbelegung";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -148,6 +149,7 @@ function langEN() {
   document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
   document.getElementById("labOptionModuleView").innerHTML = "Module view";
+  document.getElementById("labOptionShowOcc").innerHTML = "Block occupancy";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -195,6 +197,7 @@ function langNL() {
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
   document.getElementById("labOptionModuleView").innerHTML = "Module weergave";
+  document.getElementById("labOptionShowOcc").innerHTML = "Blok bezetting";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -489,6 +492,8 @@ function openOptions() {
   $('#optionShowAllSchedules').prop('checked', showallschedules=="true"?true:false).checkboxradio('refresh');
   var moduleview = localStorage.getItem("moduleview");
   $('#optionModuleView').prop('checked', moduleview=="true"?true:false).checkboxradio('refresh');
+  var showocc = localStorage.getItem("showocc");
+  $('#optionShowOcc').prop('checked', showocc=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -1281,6 +1286,12 @@ function onOptionModuleView() {
   trace("option moduleview = "+ optionModuleView.checked );
 }
 
+function onOptionShowOcc() {
+  var optionShowOcc = document.getElementById("optionShowOcc");
+  localStorage.setItem("showocc", optionShowOcc.checked ? "true":"false");
+  trace("option showocc = "+ optionShowOcc.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -1859,6 +1870,10 @@ function getBlockLabel(bk, div) {
 
 
 function updateBlockOcc(bk) {
+  if( localStorage.getItem("showocc") != "true" ) {
+    return;
+  }
+  
   var occ = "false";
   if( bk.getAttribute('locid') != undefined && bk.getAttribute('locid').length > 0 )
     occ = "true";
@@ -2205,6 +2220,11 @@ function processResponse() {
         if(category == undefined || category.length == 0) {
           localStorage.setItem("category", "engine");
         }
+        var showocc = localStorage.getItem("showocc");
+        if(showocc == undefined || showocc.length == 0) {
+          localStorage.setItem("showocc", "true");
+        }
+
 
         planlist = xmlDoc.getElementsByTagName("plan")
         if(planlist.length == 0)
