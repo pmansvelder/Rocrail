@@ -1458,6 +1458,7 @@ function initThrottle() {
 }
 
 
+var speedUpdateVal = 0;
 /* Initial functions */
 $(document).on("pagecreate",function(){
 
@@ -1465,6 +1466,14 @@ $(document).on("pagecreate",function(){
   $("#speedSlider").on( "slidestop", function( event, ui ) {
   value = this.value;
   speedUpdate(value);} );
+  
+  $('#speedSlider').change(function(){
+    var value = parseInt($(this).val());
+    if( value < speedUpdateVal - 5 || value > speedUpdateVal + 5) {
+      speedUpdateVal = value;
+      speedUpdate(value);
+    }
+    })
   
   $('#locoBlockSelect').change(function() {
     $( "#popupBlock" ).popup( "close" );
