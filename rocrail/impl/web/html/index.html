@@ -80,7 +80,7 @@
   <div data-role="popup" id="popupTurntable" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <h3 id="turntableTitle">Turntable</h3>
+  <label id="turntableTitle">Turntable</label>
   <div class="ui-grid-a">
     <div class="ui-block-a"><a id="labTTNext" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onTurntableNext()">Next</a></div>
     <div class="ui-block-b"><a id="labTTPrev" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onTurntablePrevious()">Previous</a></div>
@@ -91,7 +91,7 @@
   <div data-role="popup" id="popupFiddleYard" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <h3 id="fiddleyardTitle">FiddleYard</h3>
+  <label id="fiddleyardTitle">FiddleYard</label>
   <div class="ui-grid-a">
     <div class="ui-block-a"><a id="labFYNext" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onFiddleYardNext()">Next</a></div>
     <div class="ui-block-b"><a id="labFYPrev" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onFiddleYardPrevious()">Previous</a></div>
@@ -102,7 +102,7 @@
   <div data-role="popup" id="popupStageBlock" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <h3 id="stageblockTitle">Staging Block</h3>
+  <label id="stageblockTitle">Staging Block</label>
   <div class="ui-grid-a">
     <div class="ui-block-a"><a id="labStageClose" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onStageClose()">Close</a></div>
     <div class="ui-block-b"><a id="labStageOpen" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onStageOpen()">Open</a></div>
@@ -116,7 +116,7 @@
   <div data-role="popup" id="popupSystem" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-  <h3 id="systemTitle">System</h3>
+  <label id="systemTitle">System</label>
   <div><a id="systemInitField" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemInitfield()">Init field</a></div>
   <div><a id="systemQuerySensors" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionSystemQuerySensors()">Query sensors</a></div>
   <div><a id="systemEmergencyBreak" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="actionEBreak()">Emergency break</a></div>
@@ -175,7 +175,7 @@
   <div data-role="popup" id="popupOptions" class="ui-popup" data-theme="a">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
-    <h3 id="optionsTitle">Options</h3>
+    <label id="optionsTitle">Options</label>
     <div data-role="fieldcontain">
     <fieldset data-role="controlgroup">
       <input type="checkbox" name="optionDebug" id="optionDebug" class="custom" onclick="onOptionDebug()" />
@@ -253,7 +253,7 @@
 
  <div data-role="popup" id="popupText" class="ui-popup" data-theme="a">
  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-   <div style="padding:10px 20px;">
+   <div style="padding:10px 10px;">
      <input type="text" name="newText" id="newText" value="" placeholder="new text" data-theme="a">
      <button id="changeText" class="ui-btn ui-corner-all" onclick="onChangeText()">OK</button>
    </div>
@@ -261,8 +261,8 @@
    
  <div data-role="popup" id="popupGuestLoco" class="ui-popup" data-theme="a">
  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-   <h3 id="titleGuestLoco">Guest loco</h3>
-   <div style="padding:10px 20px;">
+   <div style="padding:10px 10px;">
+   <label id="titleGuestLoco">Guest loco</label>
      <input type="text" name="guestAddress" id="guestAddress" value="" placeholder="Address" data-theme="a">
      <input type="text" name="guestShortID" id="guestShortID" value="" placeholder="Short ID" data-theme="a">
      <div data-role="fieldcontain">

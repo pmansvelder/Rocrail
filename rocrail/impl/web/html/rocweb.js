@@ -92,11 +92,11 @@ function langDE() {
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
   document.getElementById("menuDisconnect").innerHTML = "Serververbindung trennen";
-  document.getElementById("systemTitle").innerHTML = "System";
+  document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
   document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
-  document.getElementById("optionsTitle").innerHTML = "Optionen";
+  document.getElementById("optionsTitle").innerHTML = "<b>Optionen</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
@@ -124,7 +124,7 @@ function langDE() {
   document.getElementById("labConsistView").innerHTML = "Anzeigen";
   document.getElementById("labConsistAdd").innerHTML = "Hinzufügen";
   document.getElementById("labConsistDel").innerHTML = "Löschen";
-  document.getElementById("titleGuestLoco").innerHTML = "Gast-Lok";
+  document.getElementById("titleGuestLoco").innerHTML = "<b>Gast-Lok</b>";
   document.getElementById("guestAddress").placeholder = "Adresse";
   document.getElementById("guestShortID").placeholder = "Kennung";
   document.getElementById("guestAdd").innerHTML = "Hinzufügen";
@@ -140,11 +140,11 @@ function langEN() {
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("menuGuest").innerHTML = "Guest loco";
   document.getElementById("menuDisconnect").innerHTML = "Disconnect from server";
-  document.getElementById("systemTitle").innerHTML = "System";
+  document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
   document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
-  document.getElementById("optionsTitle").innerHTML = "Options";
+  document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
@@ -172,7 +172,7 @@ function langEN() {
   document.getElementById("labConsistView").innerHTML = "Show";
   document.getElementById("labConsistAdd").innerHTML = "Add";
   document.getElementById("labConsistDel").innerHTML = "Delete";
-  document.getElementById("titleGuestLoco").innerHTML = "Guest loco";
+  document.getElementById("titleGuestLoco").innerHTML = "<b>Guest loco</b>";
   document.getElementById("guestAddress").placeholder = "Address";
   document.getElementById("guestShortID").placeholder = "Short ID";
   document.getElementById("guestAdd").innerHTML = "Add";
@@ -188,11 +188,11 @@ function langNL() {
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
   document.getElementById("menuDisconnect").innerHTML = "Server verbinding verbreken";
-  document.getElementById("systemTitle").innerHTML = "Systeem";
+  document.getElementById("systemTitle").innerHTML = "<b>Systeem</b>";
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
   document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
-  document.getElementById("optionsTitle").innerHTML = "Opties";
+  document.getElementById("optionsTitle").innerHTML = "<b>Opties</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
@@ -220,7 +220,7 @@ function langNL() {
   document.getElementById("labConsistView").innerHTML = "Tonen";
   document.getElementById("labConsistAdd").innerHTML = "Toevoegen";
   document.getElementById("labConsistDel").innerHTML = "Verwijderen";
-  document.getElementById("titleGuestLoco").innerHTML = "Gast locomotief";
+  document.getElementById("titleGuestLoco").innerHTML = "<b>Gast locomotief</b>";
   document.getElementById("guestAddress").placeholder = "Adres";
   document.getElementById("guestShortID").placeholder = "Korte ID";
   document.getElementById("guestAdd").innerHTML = "Toevoegen";
@@ -974,7 +974,7 @@ function actionSignal(id) {
 function actionTurntable(id) {
   ttid = id.replace("tt_","");
   sessionStorage.setItem("turntable", ttid);
-  document.getElementById("turntableTitle").innerHTML = ttid;
+  document.getElementById("turntableTitle").innerHTML = "<b>" + getString("turntable") + ": " + ttid + "</b>";
 
   ttNode = ttMap[ttid];
   $( "#popupTurntable" ).popup( "open", {positionTo: '#'+id} );
@@ -984,7 +984,7 @@ function actionTurntable(id) {
 function actionFiddleYard(id) {
   fyid = id.replace("fy_","");
   sessionStorage.setItem("fiddleyard", fyid);
-  document.getElementById("fiddleyardTitle").innerHTML = fyid;
+  document.getElementById("fiddleyardTitle").innerHTML = "<b>" + getString("fiddleyard") + ": " + fyid + "</b>";
 
   fyNode = fyMap[fyid];
   $( "#popupFiddleYard" ).popup( "open", {positionTo: '#'+id} );
@@ -1205,7 +1205,7 @@ function actionStageBlock(id)
 {
   sbid = id.replace("sb_","");
   sessionStorage.setItem("stageblock", sbid);
-  document.getElementById("stageblockTitle").innerHTML = sbid;
+  document.getElementById("stageblockTitle").innerHTML = "<b>" + getString("stageblock") + ": " + sbid + "</b>";
   $( "#popupStageBlock" ).popup( "open", {positionTo: '#'+id} );
 }
 
@@ -1539,6 +1539,9 @@ function getString(s) {
     if( s == "consist" ) return "Mehrfachtraktion";
     if( s == "version" ) return "Version";
     if( s == "workspace" ) return "Arbeitsbereich";
+    if( s == "stageblock" ) return "Aufstell-Block";
+    if( s == "fiddleyard" ) return "Fiddle Yard";
+    if( s == "turntable" ) return "Drehscheibe";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -1549,6 +1552,9 @@ function getString(s) {
     if( s == "consist" ) return "Consist";
     if( s == "version" ) return "Version";
     if( s == "workspace" ) return "Workspace";
+    if( s == "stageblock" ) return "Staging block";
+    if( s == "fiddleyard" ) return "Fiddle Yard";
+    if( s == "turntable" ) return "Turntable";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -1559,6 +1565,9 @@ function getString(s) {
     if( s == "consist" ) return "Multitractie";
     if( s == "version" ) return "Versie";
     if( s == "workspace" ) return "Werkruimte";
+    if( s == "stageblock" ) return "Opstel blok";
+    if( s == "fiddleyard" ) return "Fiddle Yard";
+    if( s == "turntable" ) return "Draaischijf";
   }
 
   return s;
