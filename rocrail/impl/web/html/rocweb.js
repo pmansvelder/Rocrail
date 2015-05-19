@@ -909,6 +909,7 @@ function actionText(id) {
   txid = id.replace("tx_","");
   sessionStorage.setItem("text", txid);
   var tx = txMap[txid];
+  document.getElementById("textTitle").innerHTML = "<b>" + getString("text") + ": " + txid + "</b>";
   document.getElementById("newText").placeholder = tx.getAttribute('text');
   $( "#popupText" ).popup( "open", {positionTo: '#'+id} );
 }
@@ -1542,6 +1543,7 @@ function getString(s) {
     if( s == "stageblock" ) return "Aufstell-Block";
     if( s == "fiddleyard" ) return "Fiddle Yard";
     if( s == "turntable" ) return "Drehscheibe";
+    if( s == "text" ) return "Text";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -1555,6 +1557,7 @@ function getString(s) {
     if( s == "stageblock" ) return "Staging block";
     if( s == "fiddleyard" ) return "Fiddle Yard";
     if( s == "turntable" ) return "Turntable";
+    if( s == "text" ) return "Text";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -1568,6 +1571,7 @@ function getString(s) {
     if( s == "stageblock" ) return "Opstel blok";
     if( s == "fiddleyard" ) return "Fiddle Yard";
     if( s == "turntable" ) return "Draaischijf";
+    if( s == "text" ) return "Tekst";
   }
 
   return s;
