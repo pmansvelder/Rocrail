@@ -904,6 +904,24 @@ function actionSensor(id)
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+
+function actionText(id) {
+  txid = id.replace("tx_","");
+  sessionStorage.setItem("text", txid);
+  var tx = txMap[txid];
+  document.getElementById("newText").placeholder = tx.getAttribute('text');
+  $( "#popupText" ).popup( "open", {positionTo: '#'+id} );
+}
+
+function onChangeText() {
+  $( "#popupText" ).popup( "close" );
+  txid = sessionStorage.getItem("text");
+  var text = document.getElementById("newText").value;
+  var cmd = "<model cmd=\"modify\"><tx id=\""+txid+"\" text=\""+text+"\"/></model>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+
+}
+
 function actionSwitch(id) {
   swid = id.replace("sw_","");
   sw = swMap[swid];
@@ -3239,6 +3257,10 @@ function processPlan() {
        newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
+       var input = txlist[i].getAttribute('manualinput');
+       if( input != undefined && input == "true")
+         newdiv.setAttribute('onClick', "actionText(this.id)");
+       
        var transparent = txlist[i].getAttribute('transparent');
        if( transparent != undefined && transparent == "false" ) {
          var backred = txlist[i].getAttribute('backred'); 
