@@ -115,6 +115,7 @@ function langDE() {
   document.getElementById("blockResetLoco").innerHTML = "Lokbelegung zurücknehmen";
   document.getElementById("labTTNext").innerHTML = "Nächstes Gleis";
   document.getElementById("labTTPrev").innerHTML = "Vorheriges Gleis";
+  document.getElementById("labTTGoto").innerHTML = "Gehe zum Gleis";
   document.getElementById("labFYNext").innerHTML = "Nächstes Gleis";
   document.getElementById("labFYPrev").innerHTML = "Vorheriges Gleis";
   document.getElementById("labStageClose").innerHTML = "Schliessen";
@@ -163,6 +164,7 @@ function langEN() {
   document.getElementById("blockResetLoco").innerHTML = "Reset Locomotive assignment";
   document.getElementById("labTTNext").innerHTML = "Next track";
   document.getElementById("labTTPrev").innerHTML = "Previous track";
+  document.getElementById("labTTGoto").innerHTML = "Goto track";
   document.getElementById("labFYNext").innerHTML = "Next track";
   document.getElementById("labFYPrev").innerHTML = "Previous track";
   document.getElementById("labStageClose").innerHTML = "Close";
@@ -211,6 +213,7 @@ function langNL() {
   document.getElementById("blockResetLoco").innerHTML = "Loc bezetting opheffen";
   document.getElementById("labTTNext").innerHTML = "Volgende spoor";
   document.getElementById("labTTPrev").innerHTML = "Vorige spoor";
+  document.getElementById("labTTGoto").innerHTML = "Ga naar spoor";
   document.getElementById("labFYNext").innerHTML = "Volgende spoor";
   document.getElementById("labFYPrev").innerHTML = "Vorige spoor";
   document.getElementById("labStageClose").innerHTML = "Sluiten";
@@ -1000,7 +1003,8 @@ function actionTurntable(id) {
     track.setAttribute('onclick', "onTTTrackSelected('"+nr+"')");
     trackSelect.add( track );
   }
-  
+  $('#trackTTSelect').selectmenu("refresh");
+
   $( "#popupTurntable" ).popup( "open", {positionTo: '#'+id} );
 
 }
