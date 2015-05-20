@@ -976,21 +976,38 @@ static void __evaluateMCS2PingCmd( iOMCS2Data data, byte* in ) {
   }
 }
 
+static int __calculateGfpHash( byte* in ) {
+  int ctrlhash =  ((in[6] ^ in[8]) << 8) + (in[5] ^ in[7]);
+  ctrlhash &= 0xFF7F;
+  ctrlhash |= 0x0300;
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "calculated hash gfp 0x%04X", ctrlhash );
+  return(ctrlhash);
+}
+
+static int __calculateGuiHash( byte* in ) {
+  int ctrlhash = ((in[5] ^ in[7]) << 8) + (in[6] ^ in[8]);
+  ctrlhash &= 0xFF80;
+  ctrlhash = (ctrlhash << 3);
+  ctrlhash |= (in[6] ^ in[8]);
+  ctrlhash &= 0xFF7F;
+  ctrlhash |= 0x0300;
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "calculated hash gui 0x%04X", ctrlhash );
+  return(ctrlhash);
+}
 
 static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
 /* 00000000: 00 31 23 09 08 47 43 4E 61 01 27 00 10 */
   int cstype = in[11] * 256 + in[12];
   int rcvuid = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
   int rcvhash = (in[2] << 8) + in[3];
-  int ctrlhash =  ((in[6] ^ in[8]) << 8) + (in[5] ^ in[7]);
-  ctrlhash &= 0xFF7F;
-  ctrlhash |= 0x0300;
+  int ctrlhash;
+  cstype &= 0xFFF0;
   if( in[1] == ( CAN_ID_PING | BIT_RESPONSE ) ) {
-    cstype &= 0xFFF0;
     switch( cstype )
     {
       case 0x0010:
         if(  data->gbUID != rcvuid ) {
+          ctrlhash = __calculateGfpHash( in );
           if( rcvhash == ctrlhash ) {
             data->gbUID = rcvuid;
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> Gleisbox UID: 0x%04X stored", cstype, data->gbUID );
@@ -1003,6 +1020,7 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
         break;
       case 0x0000: 
         if( data->mcs2gfpUID != rcvuid ) {
+          ctrlhash = __calculateGfpHash( in );
           if( rcvhash == ctrlhash ) {
             data->mcs2gfpUID = rcvuid;
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> CS2-GFP UID: 0x%04X stored", cstype, data->mcs2gfpUID );
@@ -1017,7 +1035,8 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
           }
         }
         break;
-      case 0xFFF0: 
+      case 0xFFF0:
+        ctrlhash = __calculateGuiHash( in );
         if( data->mcs2guiUID != rcvuid ) { 
 /* the CS2 GUI type responses with the CAN hash of the PING sender.... it looks a bug to me, the calculated hash seems to be half correct in case of a CS2 :( */
           if( rcvhash == ctrlhash || (rcvhash == rrHash && ((rcvuid - 1) == data->mcs2gfpUID)) ) {
@@ -1032,6 +1051,7 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
         break;
     /* despite the CAN documentation the "Geraetekennung" of a MS2 is 0x0032 */
       case 0x0030:
+        ctrlhash = __calculateGuiHash( in );
         if( data->ms2UID != rcvuid ) {
           if( rcvhash == ctrlhash ) {
             data->ms2UID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
@@ -1279,6 +1299,7 @@ static void __registerMCS2DetectedMfxLoco(iOMCS2Data data) {
       wProduct.setdesc(loco, data->id);
       TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "product added sid: %d, UID: 0x%08X, id: %s",  wProduct.getsid(loco), data->uid, data->id);
     }
+    wProduct.setsid(loco, data->sid);
     TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "product marked sid: %d, UID: 0x%08X, id: %s registrated",  wProduct.getsid(loco), data->uid, data->id);
     wProduct.setcid(loco,1);
 
@@ -1558,7 +1579,7 @@ static void __evaluateMCS2Discovery( iOMCS2Data mcs2, byte* in ) {
   }
 
 /*  if( !mcs2->mfxDetectInProgress && dlc == 6 && (in[5] & in[6] & in[7] & in[8] == 0xFF) && ( in[9] == 0x03 || in[9] == 0x01 ) && wMCS2.isdiscovery(mcs2->mcs2ini) ) { */
-  if( !mcs2->mfxDetectInProgress && dlc == 6 && (in[5] & in[6] & in[7] & in[8] == 0xFF) && ( in[9] == 0x03 || in[9] == 0x01 ) ) {
+  if( !mcs2->mfxDetectInProgress && dlc == 6 && in[1] == 0x03 && (in[5] & in[6] & in[7] & in[8] == 0xFF) ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Start mfx detect by gfp software detected" );
     mcs2->mfxDetectInProgress = True;
   }
@@ -2132,6 +2153,9 @@ static void __reader( void* threadinst ) {
 
 static void __binder( iOMCS2Data data) {
   byte  buffer[32];
+  int guiTimeout = 0;
+  int mfxTimeout = 0;
+  int regTimeout = 0;
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Bind/Discovery option started." );
   
@@ -2149,15 +2173,21 @@ static void __binder( iOMCS2Data data) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Number of locos in product table: %d", __countUID(data) );
     loco = wMCS2.getproduct(data->mcs2ini);
     while( data->run && loco != NULL ) {
-      while( data->run && (!data->power || data->mfxDetectInProgress) ) {
+      while( data->run && (!data->power || (data->mfxDetectInProgress && (mfxTimeout < 100))) ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Waiting for power (%s) or mfx detection in progress (%s)", data->power?"on":"off", data->mfxDetectInProgress?"yes":"no" );
         ThreadOp.sleep(1150);
         if( !data->mfxDetectInProgress )
             ThreadOp.sleep(5500);
+        mfxTimeout++;
       }
+      mfxTimeout = 0;
+      regTimeout++;
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "product list waiting, handling UID: %08X", data->uid );
+      if( regTimeout == 481 ) {
+        data->uid = 0;
+      }
       if( data->run && data->uid == 0 ) {
-        
+        regTimeout = 0;
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Fetching product UID: %08X", wProduct.getpid(loco) );
         if( wProduct.getcid(loco) == 0 ) {
           data->uid = wProduct.getpid(loco);
@@ -2192,9 +2222,11 @@ static void __binder( iOMCS2Data data) {
                 ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_LOCO_DISCOVERY, False, 5, buffer) );
               }
 /* A CS2 GUI accepts a verify for a loco without marking it as found new (the mfx logo appearing in the display) */
-              while( data->mcs2gfpUID == 0 ) {
-                TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Product 0x%08X %s, sid %d waiting for the CS2 gui device.", data->uid, data->id, data->sid);
+              guiTimeout = 0;
+              while( data->mcs2guiUID == 0 && data->ms2UID == 0 && guiTimeout < 12) {
+                TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Product 0x%08X %s, sid %d waiting for the gui device.", data->uid, data->id, data->sid);
                 ThreadOp.sleep(5000);
+                guiTimeout++;
               }
               if( (wMCS2.isdiscovery(data->mcs2ini)  && !wMCS2.isbind(data->mcs2ini)) || data->mcs2gfpUID != 0 ) {
                 TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Verify requested UID=0x%08X on sid: %d", data->uid, data->sid);
