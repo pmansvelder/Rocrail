@@ -50,8 +50,9 @@ var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
 var prevPopup = "";
-var guestProt = "P"
-var guestSteps = "28"
+var guestProt = "P";
+var guestSteps = "28";
+var trackTTSelect = 'none';
 
 
 function forceRedraw(div){
@@ -976,8 +977,30 @@ function actionTurntable(id) {
   ttid = id.replace("tt_","");
   sessionStorage.setItem("turntable", ttid);
   document.getElementById("turntableTitle").innerHTML = "<b>" + getString("turntable") + ": " + ttid + "</b>";
-
   ttNode = ttMap[ttid];
+
+  var trackSelect = document.getElementById("trackTTSelect");
+  while(trackSelect.options.length > 0) {
+    trackSelect.remove(0);
+  }
+
+  track = document.createElement( 'option' );
+  track.value = "";
+  track.innerHTML = "";
+  track.selected = 'selected';
+  trackSelect.add( track );
+
+  tracklist = ttNode.getElementsByTagName("track");
+  for (var i = 0; i < tracklist.length; i++) {
+    var nr   = tracklist[i].getAttribute('nr');
+    var desc = tracklist[i].getAttribute('desc');
+    track = document.createElement( 'option' );
+    track.value = nr;
+    track.innerHTML = nr+" "+desc;
+    track.setAttribute('onclick', "onTTTrackSelected('"+nr+"')");
+    trackSelect.add( track );
+  }
+  
   $( "#popupTurntable" ).popup( "open", {positionTo: '#'+id} );
 
 }
@@ -1249,6 +1272,12 @@ function onStageCloseExit() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function onTurntableGotoTrack() {
+  $( "#popupTurntable" ).popup( "close" );
+  ttid = sessionStorage.getItem("turntable");
+  var cmd = "<tt id=\""+ttid+"\" cmd=\""+trackTTSelect+"\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
 
 function onTurntableNext() {
   $( "#popupTurntable" ).popup( "close" );
@@ -1487,6 +1516,12 @@ $(document).on("pagecreate",function(){
     scheduleBlockSelect = this.value;
     trace("scheduleBlockSelect: " + scheduleBlockSelect);
     sessionStorage.setItem("scheduleBlockSelect", scheduleBlockSelect);
+  } );
+  
+  $('#trackTTSelect').change(function() {
+    trackTTSelect = this.value;
+    trace("trackTTSelect: " + trackTTSelect);
+    sessionStorage.setItem("trackTTSelect", trackTTSelect);
   } );
   
   /*
