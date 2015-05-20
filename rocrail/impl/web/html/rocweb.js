@@ -1621,6 +1621,7 @@ function handleSensor(fb) {
     fbNode.setAttribute('state', fb.getAttribute('state'));
     div.style.backgroundImage = getSensorImage(fbNode);
     forceRedraw(div);
+    updateSensorOcc(fbNode);
   }
   else {
     trace("sensor: " + fb.getAttribute('id') + " not found");
@@ -1944,6 +1945,39 @@ function updateBlockOcc(bk) {
     if( blockid == undefined )
       continue;
     if( blockid == bk.getAttribute('id') ) {
+      sg.setAttribute('occ', occ)
+      handleSignal(sg);
+    }
+  }
+  
+}
+
+
+function updateSensorOcc(fb) {
+  if( localStorage.getItem("showocc") != "true" ) {
+    return;
+  }
+  
+  var occ = "false";
+  if( fb.getAttribute('state') != undefined && fb.getAttribute('state') == "true" )
+    occ = "true";
+
+  for (var key in tkMap) {
+    var tk = tkMap[key];
+    var blockid = tk.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == fb.getAttribute('id') ) {
+      tk.setAttribute('occ', occ)
+      handleTrack(tk);
+    }
+  }
+  for (var key in sgMap) {
+    var sg = sgMap[key];
+    var blockid = sg.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == fb.getAttribute('id') ) {
       sg.setAttribute('occ', occ)
       handleSignal(sg);
     }
@@ -3395,6 +3429,7 @@ function processPlan() {
 
        leveldiv.appendChild(newdiv);
        //document.body.appendChild(newdiv);
+       updateSensorOcc(fblist[i]);
      }
      
      bklist = xmlDoc.getElementsByTagName("bk");
