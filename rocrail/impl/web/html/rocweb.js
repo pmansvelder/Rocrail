@@ -866,8 +866,8 @@ function actionLevelUp() {
   zlevelIdx--;
   var zleveldiv = zlevelDivList[zlevelIdx];
   if(zleveldiv == undefined ) {
-    zleveldiv = zlevelDivList[0];
-    zlevelIdx = 0;
+    zleveldiv = zlevelDivList[zlevelDivList.length-1];
+    zlevelIdx = zlevelDivList.length-1;
   }
   zlevelSelected = zleveldiv;
   zleveldiv.style.display = 'block';
