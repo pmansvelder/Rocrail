@@ -53,6 +53,7 @@ var prevPopup = "";
 var guestProt = "P";
 var guestSteps = "28";
 var trackTTSelect = 'none';
+var speedStepDelta = 3;
 
 
 function forceRedraw(div){
@@ -1536,7 +1537,7 @@ $(document).on("pagecreate",function(){
       return;
     }
     var value = parseInt($(this).val());
-    if( value < speedUpdateVal - 5 || value > speedUpdateVal + 5) {
+    if( value < speedUpdateVal - speedStepDelta || value > speedUpdateVal + speedStepDelta) {
       speedUpdateVal = value;
       speedUpdate(value);
     }
