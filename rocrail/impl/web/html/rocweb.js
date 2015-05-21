@@ -514,6 +514,8 @@ function openOptions() {
   $('#optionModuleView').prop('checked', moduleview=="true"?true:false).checkboxradio('refresh');
   var showocc = localStorage.getItem("showocc");
   $('#optionShowOcc').prop('checked', showocc=="true"?true:false).checkboxradio('refresh');
+  var allspeedsteps = localStorage.getItem("allspeedsteps");
+  $('#optionAllSpeedSteps').prop('checked', allspeedsteps=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -1525,8 +1527,9 @@ $(document).on("pagecreate",function(){
 
   // jQuery events go here...
   $("#speedSlider").on( "slidestop", function( event, ui ) {
-  value = this.value;
-  speedUpdate(value);} );
+    value = this.value;
+    speedUpdate(value);
+  } );
   
   $('#speedSlider').change(function(){
     if( localStorage.getItem("allspeedsteps") != "true" ) {
@@ -1852,7 +1855,9 @@ function handleLoco(lc) {
   if( lc.getAttribute('id') == locoSelected ) {
     initThrottleStatus();
     updateDir();
-    updateSpeed(lcNode);
+    if( localStorage.getItem("allspeedsteps") != "true" ) {
+      updateSpeed(lcNode);
+    }
   }
 }
 
