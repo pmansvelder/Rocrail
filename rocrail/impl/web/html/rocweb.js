@@ -103,6 +103,7 @@ function langDE() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
   document.getElementById("labOptionModuleView").innerHTML = "Modul-Ansicht";
   document.getElementById("labOptionShowOcc").innerHTML = "Blockbelegung";
+  document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -152,6 +153,7 @@ function langEN() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
   document.getElementById("labOptionModuleView").innerHTML = "Module view";
   document.getElementById("labOptionShowOcc").innerHTML = "Block occupancy";
+  document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -201,6 +203,7 @@ function langNL() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
   document.getElementById("labOptionModuleView").innerHTML = "Module weergave";
   document.getElementById("labOptionShowOcc").innerHTML = "Blok bezetting";
+  document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -1363,6 +1366,12 @@ function onOptionShowOcc() {
   trace("option showocc = "+ optionShowOcc.checked );
 }
 
+function onOptionAllSpeedSteps() {
+  var optionAllSpeedSteps = document.getElementById("optionAllSpeedSteps");
+  localStorage.setItem("allspeedsteps", optionAllSpeedSteps.checked ? "true":"false");
+  trace("option allspeedsteps = "+ optionAllSpeedSteps.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -1520,6 +1529,9 @@ $(document).on("pagecreate",function(){
   speedUpdate(value);} );
   
   $('#speedSlider').change(function(){
+    if( localStorage.getItem("allspeedsteps") != "true" ) {
+      return;
+    }
     var value = parseInt($(this).val());
     if( value < speedUpdateVal - 5 || value > speedUpdateVal + 5) {
       speedUpdateVal = value;
