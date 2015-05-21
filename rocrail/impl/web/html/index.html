@@ -33,7 +33,7 @@
       <a id="headerZoom" title="Zoom" href="#" class="ui-btn ui-btn-icon-right ui-icon-eye ui-btn-icon-notext" onclick="openZoom(false)">Zoom</a>
       <a id="headerUp" title="Level up" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
       <a id="headerDown" title="Level down" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
-      <a id="headerMenu" title="Menu" href="#" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="openMenu()">Menu</a>
+      <a id="headerMenu" title="Menu" href="#popupMenu" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext">Menu</a>
     </div>  
   </div>
 
@@ -125,15 +125,16 @@
   </div>
   </div>
 
-  <div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin">
-  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div data-role="panel" id="popupMenu" data-position="right"  data-display="overlay"> 
+ <!--div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin"-->
+  <!--a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a-->
   <div style="padding:10px 10px;">
-  <button id="menuInfo" class="ui-btn ui-icon-info ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
-  <button id="menuSystem" class="ui-btn ui-icon-star ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openSystem()">System</button>
-  <button id="menuOptions" class="ui-btn ui-icon-gear ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openOptions()">Options</button>
-  <button id="menuGuest" class="ui-btn ui-icon-user ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openGuest()">Guest loco</button>
-  <button id="menuDisconnect" class="ui-btn ui-icon-action ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="Disconnect(true)">Disconnect</button>
-  <button id="menuZoom" class="ui-btn ui-icon-eye ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openZoom(true)">Zoom</button>
+  <button id="menuInfo" data-rel="close" class="ui-btn ui-icon-info ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openInfo()">Info</button>
+  <button id="menuSystem" data-rel="close" class="ui-btn ui-icon-star ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openSystem()">System</button>
+  <button id="menuOptions" data-rel="close" class="ui-btn ui-icon-gear ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openOptions()">Options</button>
+  <button id="menuGuest" data-rel="close" class="ui-btn ui-icon-user ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openGuest()">Guest loco</button>
+  <button id="menuDisconnect" data-rel="close" class="ui-btn ui-icon-action ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="Disconnect(true)">Disconnect</button>
+  <button id="menuZoom" data-rel="close" class="ui-btn ui-icon-eye ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openZoom(true)">Zoom</button>
     <select name="languageSelect" id="languageSelect" style="text-align:left;">
       <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
       <option id="langEN" value="en" style="text-align:left;">English</option>
@@ -206,7 +207,7 @@
   </div>
 
   
-  <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a">
+  <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a" data-dismissible="false">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
     <div style="padding:10px 10px;">
     <center><img id="locoImage" src="noimg.png" onclick="onLocoImage()"/></center>

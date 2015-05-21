@@ -234,14 +234,15 @@ function langNL() {
 /* Info Dialog */
 function openInfo()
 {
-  trace("close menu");
-  $( "#popupMenu" ).popup( "close" );
+  //trace("close menu");
+  //$( "#popupMenu" ).popup( "close" );
   
   trace("open info");
-  $('#popupMenu').on("popupafterclose", function(){$( "#popupInfo" ).popup( "open" )});
-
-//  trace("open info");
-//  $( "#popupInfo" ).popup( "open" );
+  //$('#popupMenu').on("popupafterclose", function(){$( "#popupInfo" ).popup( "open" )});
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupInfo" ).popup( "open" );
+    });
 }
 
 function onLocoImage() {
@@ -452,15 +453,22 @@ function openMenu()
 
 function openSystem() {
   trace("close menu");
-  $( "#popupMenu" ).popup( "close" );
-  $('#popupMenu').on("popupafterclose", function(){$( "#popupSystem" ).popup( "open" )});
+  //$( "#popupMenu" ).popup( "close" );
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupSystem" ).popup( "open" );
+    });
 }
 
 function openZoom(fromMenu) {
   if( fromMenu ) {
-    trace("close menu");
-    $( "#popupMenu" ).popup( "close" );
-    $('#popupMenu').on("popupafterclose", function(){$( "#popupZoom" ).popup( "open" )});
+    //trace("close menu");
+    //$( "#popupMenu" ).popup( "close" );
+    //$('#popupMenu').on("popupafterclose", function(){$( "#popupZoom" ).popup( "open" )});
+    $('#popupMenu').on("panelclose", function(){
+      $('#popupMenu').unbind( "panelclose" );
+      $( "#popupZoom" ).popup( "open" );
+      });
   }
   else {
     $( "#popupZoom" ).popup( "open" );
@@ -477,15 +485,20 @@ function openGuest() {
   $("#guestProtDCC").prop("checked", true).checkboxradio('refresh');
   $("#guestStep28").prop("checked", true).checkboxradio('refresh');
 
-  trace("close menu");
-  $( "#popupMenu" ).popup( "close" );
-  $('#popupMenu').on("popupafterclose", function(){$( "#popupGuestLoco" ).popup( "open" )});
+  //trace("close menu");
+  //$( "#popupMenu" ).popup( "close" );
+  //$('#popupMenu').on("popupafterclose", function(){$( "#popupGuestLoco" ).popup( "open" )});
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupGuestLoco" ).popup( "open" );
+    });
+
 }
 
 /* Options Dialog */
 function openOptions() {
-  trace("close menu");
-  $( "#popupMenu" ).popup( "close" );
+  //trace("close menu");
+  //$( "#popupMenu" ).popup( "close" );
   
   trace("open info");
   var debug = localStorage.getItem("debug");
@@ -511,7 +524,12 @@ function openOptions() {
   var select = document.getElementById("languageSelect");
 
 
-  $('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
+  //$('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupOptions" ).popup( "open" );
+    });
+
 }
 
 function onCatEngine() {
@@ -799,9 +817,10 @@ function speedUpdate(value) {
   if( lc == undefined ) return;
   trace("Speed: " + value + " for loco " + locoSelected);
   var vVal = value * (parseFloat(lc.getAttribute('V_max')/100.0));
-  lc.setAttribute('V', vVal);
+  var iVal = Math.floor(vVal);
+  lc.setAttribute('V', iVal);
   trace("value="+value+" vVal="+vVal+" V_max="+parseInt(lc.getAttribute('V_max')));
-  var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+vVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
+  var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+iVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
