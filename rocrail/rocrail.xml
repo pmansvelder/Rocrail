@@ -2042,7 +2042,8 @@
       <var name="refresh" vt="int" remark="browser refresh time"/>
       <var name="locIDs" vt="iOList" remark="LocID's"/>
       <var name="ini" vt="iONode" remark="webclient ini"/>
-      </data>
+      <var name="startTime" vt="long"/>
+    </data>
     <struct name="extraItem" typedef="*iOExtraItem">
       <var name="skip" vt="Boolean"/>
       <var name="html[256]" vt="char"/>

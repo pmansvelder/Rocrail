@@ -372,7 +372,8 @@ static void __getModel(iOPClient inst, Boolean modplan) {
   }
   else {
     wPlan.setdonkey(model, False);
-    TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "no valid donation key found" );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid donation key found" );
+    data->startTime = time(NULL);
   }
 
   freeMem(decodedKey);
@@ -500,6 +501,15 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   if( SocketOp.isBroken( data->socket ) || data->websocketerror ) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
+  }
+
+  /* extra demo check */
+  if( data->startTime > 0 ) {
+    long l_Time = time(NULL);
+    if( (l_Time - data->startTime) >= (5 * 60) ) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Rocweb demo time expired: goodbye" );
+      return True;
+    }
   }
 
   if( event != NULL && !StrOp.equals( NodeOp.getName(event), wException.name() )) {
@@ -672,6 +682,15 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
         ThreadOp.sleep(50);
       }
       char* threadName = StrOp.fmt("webreader%X", inst);
+      iONode model = ModelOp.getModel( AppOp.getModel() );
+      unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
+      char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
+
+      if( SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid donation key found: 5 minutes demo of Rocweb" );
+        data->startTime = time(NULL);
+      }
+
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "accept the websocket..." );
       webSocketHeader( data->socket, serverKey, protocol );
       data->websocketreader = ThreadOp.inst( threadName, &rocWebSocketReader, inst );
