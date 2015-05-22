@@ -388,7 +388,7 @@ function updateFunctionLabels() {
       if( FGroup == 1 )
         iFnShift += 14;
       var mask = 1 << (iFnShift-1); 
-      //console.log("i="+i+" iFnShift="+iFnShift+" mask="+mask+" fx="+fx);
+      trace("i="+i+" iFnShift="+(iFnShift-1)+" mask="+mask.toString(16)+" fx="+fx.toString(16));
       if( fx & mask )
         F.style.backgroundColor = "#FF8888";
     }
@@ -810,7 +810,7 @@ function onFunction(id, nr) {
   trace("Funtion: " + id + " ("+nr+") for loco " + locoSelected);
   var group = (nr-1)/4+1;
   var fx = parseInt(lc.getAttribute('fx'));
-  var mask = 1 << nr;
+  var mask = 1 << (nr-1);
   var on = fx&mask?"false":"true";
   var cmd = "<fn id=\""+locoSelected+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
@@ -1873,16 +1873,20 @@ function handleFunction(fn) {
     return;
   
   var fnchanged = parseInt(fn.getAttribute('fnchanged'));
-  var fx = parseInt(lc.getAttribute('fx'));
-  var mask = 1 << fnchanged; 
-  var on = fn.getAttribute("f"+fnchanged);
   
-  if( on == "true")
-    fx = fx | mask;
-  else
-    fx = fx & ~mask;
-  lc.setAttribute('fx', ""+fx)
-  
+  if( fnchanged > 0 ) {
+    var fx = parseInt(lc.getAttribute('fx'));
+    var mask = 1 << (fnchanged-1); 
+    var on = fn.getAttribute("f"+fnchanged);
+    
+    if( on == "true")
+      fx = fx | mask;
+    else
+      fx = fx & ~mask;
+    lc.setAttribute('fx', ""+fx)
+    trace("mask="+mask.toString(16)+" fnchanged="+fnchanged+" fx="+fx.toString(16));
+  }
+
   if( fn.getAttribute('id') == locoSelected ) {
     if(fnchanged > 14)
       fnchanged -= 14;
