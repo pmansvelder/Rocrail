@@ -2920,18 +2920,24 @@ function getTrackImage(tk) {
 }
 
 function getSwitchImage(sw, div, checkSet) {
-  var ori   = getOri(sw);
-  var type  = sw.getAttribute('type');
-  var state = sw.getAttribute('state');
-  var set   = sw.getAttribute('set');
-  var accnr = sw.getAttribute('accnr');
-  var dir   = sw.getAttribute('dir');
-  var rectc = sw.getAttribute('rectcrossing');
-  var addr1 = sw.getAttribute('addr1');
-  var port1 = sw.getAttribute('port1');
+  var ori    = getOri(sw);
+  var type   = sw.getAttribute('type');
+  var swtype = sw.getAttribute('swtype');
+  var state  = sw.getAttribute('state');
+  var set    = sw.getAttribute('set');
+  var accnr  = sw.getAttribute('accnr');
+  var dir    = sw.getAttribute('dir');
+  var rectc  = sw.getAttribute('rectcrossing');
+  var addr1  = sw.getAttribute('addr1');
+  var port1  = sw.getAttribute('port1');
   var rasterStr = "";
   var suffix    = "-route";
   var nomotor   = false;
+  
+  if( swtype != undefined && swtype == "raster" ) {
+    var suffix = "";
+    rasterStr  = "-r";
+  }
 
   if( ( (addr1 == undefined) || (addr1 == "0") ) && ( (port1 == undefined) || (port1 == "0") ) )
     nomotor = true;
@@ -2950,29 +2956,29 @@ function getSwitchImage(sw, div, checkSet) {
   
   if (type=="right") {
     if (state=="straight")
-      return "url('turnoutright"+suffix+"."+ori+".svg')";
+      return "url('turnoutright"+rasterStr+suffix+"."+ori+".svg')";
     else
-      return "url('turnoutright-t"+suffix+"."+ori+".svg')";
+      return "url('turnoutright"+rasterStr+"-t"+suffix+"."+ori+".svg')";
   }
   else if (type=="left") {
     if (state=="straight")
-      return "url('turnoutleft"+suffix+"."+ori+".svg')";
+      return "url('turnoutleft"+rasterStr+suffix+"."+ori+".svg')";
     else
-      return "url('turnoutleft-t"+suffix+"."+ori+".svg')";
+      return "url('turnoutleft"+rasterStr+"-t"+suffix+"."+ori+".svg')";
   }
   else if (type=="twoway") {
     if (state=="straight")
-      return "url('twoway-tr"+suffix+"."+ori+".svg')";
+      return "url('twoway"+rasterStr+"-tr"+suffix+"."+ori+".svg')";
     else
-      return "url('twoway-tl"+suffix+"."+ori+".svg')";
+      return "url('twoway"+rasterStr+"-tl"+suffix+"."+ori+".svg')";
   }
   else if (type=="threeway") {
     if (state=="left")
-      return "url('threeway-tl"+suffix+"."+ori+".svg')";
+      return "url('threeway"+rasterStr+"-tl"+suffix+"."+ori+".svg')";
     else if (state=="right")
-      return "url('threeway-tr"+suffix+"."+ori+".svg')";
+      return "url('threeway"+rasterStr+"-tr"+suffix+"."+ori+".svg')";
     else
-      return "url('threeway"+suffix+"."+ori+".svg')";
+      return "url('threeway"+rasterStr+suffix+"."+ori+".svg')";
   }
   else if (type=="crossing") {
     var nullM = "";
@@ -2985,9 +2991,9 @@ function getSwitchImage(sw, div, checkSet) {
     
     if( rectc == "true") {
       if (state=="straight")
-        return "url('crossing"+nullM+suffix+"."+ori+".svg')";
+        return "url('crossing"+rasterStr+nullM+suffix+"."+ori+".svg')";
       else
-        return "url('crossing-t"+suffix+"."+ori+".svg')";
+        return "url('crossing"+rasterStr+"-t"+suffix+"."+ori+".svg')";
     }
     else {
       if( ori == "west" || ori == "east") {
@@ -3000,9 +3006,9 @@ function getSwitchImage(sw, div, checkSet) {
       }
       var direction = (dir == "true" ? "left":"right");
       if (state=="turnout")
-        return "url('crossing"+direction+"-t"+suffix+"."+ori+".svg')";
+        return "url('crossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
       else
-        return "url('crossing"+direction+nullM+suffix+"."+ori+".svg')";
+        return "url('crossing"+direction+nullM+rasterStr+suffix+"."+ori+".svg')";
     }
   }
   else if (type=="ccrossing") {
@@ -3027,13 +3033,13 @@ function getSwitchImage(sw, div, checkSet) {
     }
     var direction = (dir == "true" ? "left":"right");
     if (state=="left")
-      return "url('dcrossing"+direction+"-tl"+suffix+"."+ori+".svg')";
+      return "url('dcrossing"+direction+rasterStr+"-tl"+suffix+"."+ori+".svg')";
     else if (state=="right")
-      return "url('dcrossing"+direction+"-tr"+suffix+"."+ori+".svg')";
+      return "url('dcrossing"+direction+rasterStr+"-tr"+suffix+"."+ori+".svg')";
     else if (state=="turnout")
-      return "url('dcrossing"+direction+"-t"+suffix+"."+ori+".svg')";
+      return "url('dcrossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
     else
-      return "url('dcrossing"+direction+""+suffix+"."+ori+".svg')";
+      return "url('dcrossing"+direction+rasterStr+suffix+"."+ori+".svg')";
   }
   else if (type=="decoupler") {
     if (state=="straight")
