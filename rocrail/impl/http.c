@@ -1,7 +1,7 @@
 /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  
 
@@ -25,13 +25,16 @@
 #include "rocrail/impl/http_impl.h"
 #include "rocrail/wrapper/public/HttpService.h"
 #include "rocrail/wrapper/public/WebClient.h"
+#include "rocrail/wrapper/public/Global.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
 #include "rocs/public/map.h"
 #include "rocs/public/strtok.h"
 #include "rocs/public/doc.h"
+#include "rocs/public/system.h"
 
+#include "rocrail/public/app.h"
 
 static int instCnt = 0;
 
@@ -360,8 +363,20 @@ static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, 
     }
   
     if( data->webclient && wWebClient.getport( data->webclient ) > 0 ) {
-      char*  phtmName = StrOp.fmt( "phtm%08X", __Http );
-      char*  phtsName = StrOp.fmt( "phts%08X", __Http );
+      char*  phtmName = NULL;
+      char*  phtsName = NULL;
+
+      unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
+      char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
+
+      if( SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid donation key found: sorry, no Rocweb" );
+        return NULL;
+      }
+
+      phtmName = StrOp.fmt( "phtm%08X", __Http );
+      phtsName = StrOp.fmt( "phts%08X", __Http );
+
       
       wWebClient.setimgpath( data->webclient, imgpath );
 
