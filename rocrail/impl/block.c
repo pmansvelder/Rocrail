@@ -1779,6 +1779,20 @@ static Boolean _link( iIBlockBase inst, iIBlockBase linkto ) {
   return False;
 }
 
+
+static void __broadcastLockState(iIBlockBase inst, const char* id) {
+  iOBlockData data = Data(inst);
+
+  iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
+  wBlock.setid( nodeD, data->id );
+  wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
+  wBlock.setreserved( nodeD, True );
+  wBlock.setlocid( nodeD, id );
+  wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
+  wBlock.setacceptident(nodeD, data->acceptident);
+  AppOp.broadcastEvent( nodeD );
+}
+
 /**
  * Ignore all events wenn the crossing flag is set.
  */
@@ -1801,7 +1815,8 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block [%s] already locked for loco [%s]", data->id, id );
 
     if( StrOp.equals(LocOp.getCurBlock(lc), data->id) ) {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "looping loco %s in block %s", id, data->id);
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "looping loco %s in block %s", id, data->id);
+      __broadcastLockState(inst, id);
       return True;
     }
 
@@ -1929,15 +1944,8 @@ static Boolean _lock( iIBlockBase inst, const char* id, const char* blockid, con
 
     /* Broadcast to clients. */
     if( ok && !fifo ) {
-      iONode nodeD = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
-      wBlock.setid( nodeD, data->id );
-      wBlock.setmasterid(nodeD, wBlock.getmasterid(data->props));
-      wBlock.setreserved( nodeD, True );
+      __broadcastLockState(inst, id);
       wBlock.setreserved( data->props, True );
-      wBlock.setlocid( nodeD, id );
-      wBlock.setfifoids(nodeD, wBlock.getfifoids(data->props));
-      wBlock.setacceptident(nodeD, data->acceptident);
-      AppOp.broadcastEvent( nodeD );
     }
     else if(!ok) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999,
