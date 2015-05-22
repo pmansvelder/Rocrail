@@ -105,6 +105,7 @@ function langDE() {
   document.getElementById("labOptionModuleView").innerHTML = "Modul-Ansicht";
   document.getElementById("labOptionShowOcc").innerHTML = "Blockbelegung";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
+  document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -157,6 +158,7 @@ function langEN() {
   document.getElementById("labOptionModuleView").innerHTML = "Module view";
   document.getElementById("labOptionShowOcc").innerHTML = "Block occupancy";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
+  document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -209,6 +211,7 @@ function langNL() {
   document.getElementById("labOptionModuleView").innerHTML = "Module weergave";
   document.getElementById("labOptionShowOcc").innerHTML = "Blok bezetting";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
+  document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -545,6 +548,8 @@ function openOptions() {
   $('#optionShowOcc').prop('checked', showocc=="true"?true:false).checkboxradio('refresh');
   var allspeedsteps = localStorage.getItem("allspeedsteps");
   $('#optionAllSpeedSteps').prop('checked', allspeedsteps=="true"?true:false).checkboxradio('refresh');
+  var speedbuttons = localStorage.getItem("speedbuttons");
+  $('#optionSpeedButtons').prop('checked', speedbuttons=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -1426,6 +1431,14 @@ function onOptionAllSpeedSteps() {
   trace("option allspeedsteps = "+ optionAllSpeedSteps.checked );
 }
 
+function onOptionSpeedButtons() {
+  var optionSpeedButtons = document.getElementById("optionSpeedButtons");
+  localStorage.setItem("speedbuttons", optionSpeedButtons.checked ? "true":"false");
+  trace("option speedbuttons = "+ optionSpeedButtons.checked );
+  document.getElementById("speedSliderDiv").style.display = optionSpeedButtons.checked ? 'none':'block';
+  document.getElementById("speedButtonsDiv").style.display = optionSpeedButtons.checked ? 'block':'none';
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -1574,6 +1587,20 @@ function initThrottle() {
 
 
 var speedUpdateVal = 0;
+function onVUp() {
+  speedUpdateVal++;
+  if(speedUpdateVal > 100)
+    speedUpdateVal = 100;
+  speedUpdate(speedUpdateVal);
+}
+
+function onVDown() {
+  speedUpdateVal--;
+  if(speedUpdateVal < 0)
+    speedUpdateVal = 0;
+  speedUpdate(speedUpdateVal);
+}
+
 /* Initial functions */
 $(document).on("pagecreate",function(){
 
@@ -2471,6 +2498,13 @@ function processResponse() {
           locoSelectedList[1] = localStorage.getItem("locoSelected1");
           locoSelectedList[2] = localStorage.getItem("locoSelected2");
           locoSelectedList[3] = localStorage.getItem("locoSelected3");
+          
+          var speedbuttons = localStorage.getItem("speedbuttons");
+          document.getElementById("speedButtonsDiv").style.display = 'none';
+          if( speedbuttons != undefined && speedbuttons == "true" ) {
+            document.getElementById("speedSliderDiv").style.display = 'none';
+            document.getElementById("speedButtonsDiv").style.display = 'block';
+          }
           
           trace("selected loco = " + locoSelected);
 

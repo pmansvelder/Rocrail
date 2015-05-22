@@ -185,6 +185,8 @@
       <label id="labOptionShowOcc" for="optionShowOcc">Show occupancy</label>
       <input type="checkbox" name="optionAllSpeedSteps" id="optionAllSpeedSteps" class="custom" onclick="onOptionAllSpeedSteps()" />
       <label id="labOptionAllSpeedSteps" for="optionAllSpeedSteps">All speed steps</label>
+      <input type="checkbox" name="optionSpeedButtons" id="optionSpeedButtons" class="custom" onclick="onOptionSpeedButtons()" />
+      <label id="labOptionSpeedButtons" for="optionSpeedButtons">Speed buttons</label>
     </fieldset>
     </div>
     <div data-role="fieldcontain">
@@ -233,8 +235,12 @@
     <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F14" onclick="onFunction('F14', 14)">F14</a></div>
     <div class="ui-block-d"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="F0" onclick="onFunction('F0', 0)">F0</a></div>
     </div>
-    <div class="full-width-slider">
+    <div id="speedSliderDiv" class="full-width-slider">
       <input type="range" name="speedSlider" id="speedSlider" value="0" min="0" max="100" data-highlight="true">
+    </div>
+    <div id="speedButtonsDiv" class="ui-grid-a">
+      <div class="ui-block-a"><a id="VUpl" href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-arrow-d ui-btn-icon-right" onclick="onVDown()">V</a></div>
+      <div class="ui-block-b"><a id="VDown" href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-arrow-u ui-btn-icon-left" onclick="onVUp()">V</a></div>
     </div>
     </div>
  </div>
