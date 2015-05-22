@@ -2910,6 +2910,12 @@ function getTrackImage(tk) {
   if( type == "curve" || type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
     return "url('"+type+suffix+"."+ori+".svg')";
   }
+  else if( type == "concurveleft" ) {
+    return "url('"+"connector-curve-left"+suffix+"."+ori+".svg')";
+  }
+  else if( type == "concurveright" ) {
+    return "url('"+"connector-curve-right"+suffix+"."+ori+".svg')";
+  }
   else if (type == "tracknr" ) {
     var tknr = parseInt(tk.getAttribute('tknr'));
     return "url('track-"+tknr+suffix+"."+ ori + ".svg')";
