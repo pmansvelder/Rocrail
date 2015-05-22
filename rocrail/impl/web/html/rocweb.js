@@ -3303,6 +3303,10 @@ function processPlan() {
        trace("processing " + lclist.length + " locos");
 
      for (var i = 0; i < lclist.length; i++) {
+       var show  = lclist[i].getAttribute('show');
+       if( show != undefined && show == "false" )
+         continue;
+
        trace('loco: ' + lclist[i].getAttribute('id') );
        lcMap[lclist[i].getAttribute('id')] = lclist[i];
        addLocoToList(lclist[i]);
@@ -3520,6 +3524,9 @@ function processPlan() {
        trace("processing " + fblist.length + " sensors");
 
      for (var i = 0; i < fblist.length; i++) {
+       var show  = fblist[i].getAttribute('show');
+       if( show != undefined && show == "false" )
+         continue;
        var z     = fblist[i].getAttribute('z');
        var curve = fblist[i].getAttribute('curve');
        var ori   = getOriNr(fblist[i].getAttribute('ori'));
