@@ -3549,6 +3549,9 @@ function processPlan() {
        trace("processing " + swlist.length + " switches");
 
      for (var i = 0; i < swlist.length; i++) {
+       var show  = swlist[i].getAttribute('show');
+       if( show != undefined && show == "false" )
+         continue;
        var z     = swlist[i].getAttribute('z');
        var leveldiv = zlevelDivMap[z]; 
        trace('switch: ' + swlist[i].getAttribute('id') + "at level " + z);
