@@ -33,7 +33,7 @@
       <a id="headerZoom" title="Zoom" href="#" class="ui-btn ui-btn-icon-right ui-icon-eye ui-btn-icon-notext" onclick="openZoom(false)">Zoom</a>
       <a id="headerUp" title="Level up" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-u ui-btn-icon-notext" onclick="actionLevelUp()">Up</a>
       <a id="headerDown" title="Level down" href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-d ui-btn-icon-notext" onclick="actionLevelDown()">Down</a>
-      <a id="headerMenu" title="Menu" href="#popupMenu" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext">Menu</a>
+      <a id="headerMenu" title="Menu" href="#popupMenu" class="ui-btn ui-btn-icon-right ui-icon-bars ui-btn-icon-notext" onclick="initMenu()">Menu</a>
     </div>  
   </div>
 
@@ -135,23 +135,13 @@
   <button id="menuGuest" data-rel="close" class="ui-btn ui-icon-user ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openGuest()">Guest loco</button>
   <button id="menuDisconnect" data-rel="close" class="ui-btn ui-icon-action ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="Disconnect(true)">Disconnect</button>
   <button id="menuZoom" data-rel="close" class="ui-btn ui-icon-eye ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openZoom(true)">Zoom</button>
-    <select name="languageSelect" id="languageSelect" style="text-align:left;">
-      <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
-      <option id="langEN" value="en" style="text-align:left;">English</option>
-      <option id="langNL" value="nl" style="text-align:left;">Nederlands</option>
-    </select>
-  <!--
-    <ul data-role="listview">
-      <li  name="languageSelect" id="languageSelect" data-role="collapsible" data-iconpos="right" data-inset="false">
-        <h2>Language</h2>
-        <ul data-role="listview" data-theme="b">
-          <li><a id="langDE" value="de"  href="#" onclick="langDE()">Deutsch</a></li>
-          <li><a id="langEN" value="en"  href="#" onclick="langEN()">English</a></li>
-          <li><a id="langNL" value="nl"  href="#" onclick="langNL()">Nederlands</a></li>
-        </ul>
-      </li>
-    </ul>
-    -->
+  <select name="levelSelect" id="levelSelect" style="text-align:left;">
+  </select>
+  <select name="languageSelect" id="languageSelect" style="text-align:left;">
+    <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
+    <option id="langEN" value="en" style="text-align:left;">English</option>
+    <option id="langNL" value="nl" style="text-align:left;">Nederlands</option>
+  </select>
   </div>
   </div>
 

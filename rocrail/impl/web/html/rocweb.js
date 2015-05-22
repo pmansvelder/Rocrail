@@ -448,10 +448,32 @@ function closeThrottle()
 
 
 /* Menu Dialog */
-function openMenu()
+function initMenu()
 {
-  $('#popupMenu').unbind("popupafterclose");
-  $( "#popupMenu" ).popup( "open" );
+  var levelSelect = document.getElementById("levelSelect");
+  while(levelSelect.options.length > 0) {
+    levelSelect.remove(0);
+  }
+  
+  levelSelect.selectedIndex = 0;
+  
+  for (var i in zlevelMap){
+    var zlevel = zlevelMap[i];
+    var title  = zlevel.getAttribute('title');
+    var z      = zlevel.getAttribute('z');
+    if( z == undefined )
+      z = "0";
+    zoption = document.createElement( 'option' );
+    zoption.value = z;
+    zoption.innerHTML = title;
+    levelSelect.add( zoption );
+    if( document.getElementById("title").innerHTML == title )
+      levelSelect.selectedIndex = i;
+  }
+  $('#levelSelect').selectmenu("refresh");
+
+  //$('#popupMenu').unbind("popupafterclose");
+  //$( "#popupMenu" ).popup( "open" );
 }
 
 
@@ -839,6 +861,20 @@ function actionPower() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+
+function actionLevelSelect(z) {
+  if( ModPlan )
+    return;
+  zlevelSelected.style.display = 'none';
+  zleveldiv = zlevelDivMap[z];
+  zlevelSelected = zleveldiv;
+  zleveldiv.style.display = 'block';
+    
+  var zlevel = zlevelMap[z];
+  var title = zlevel.getAttribute('title');
+  var h = document.getElementById("title");
+  h.innerHTML = title;
+}
 
 function actionLevelDown() {
   if( ModPlan )
@@ -1583,6 +1619,11 @@ $(document).on("pagecreate",function(){
       langEN();
     else if( this.value == "nl" )
       langNL();
+  } );
+
+  $('#levelSelect').change(function() {
+    trace("levelSelect: " + this.value );
+    actionLevelSelect(this.value);
   } );
 
 });
