@@ -110,6 +110,8 @@ function langDE() {
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
   document.getElementById("labBlockStart").innerHTML = "Zug starten";
   document.getElementById("labBlockStop").innerHTML = "Zug anhalten";
+  document.getElementById("labBlockManual").innerHTML = "Halbautomatisch";
+  document.getElementById("labBlockReset").innerHTML = "Zurücksetzen";
   document.getElementById("labBlockSwapPlacing").innerHTML = "Umdrehen";
   document.getElementById("labBlockSwapEnter").innerHTML = "Einfahrtseite drehen";
   document.getElementById("labBlockClose").innerHTML = "Schliessen";
@@ -160,6 +162,8 @@ function langEN() {
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
   document.getElementById("labBlockStart").innerHTML = "Start train";
   document.getElementById("labBlockStop").innerHTML = "Stop train";
+  document.getElementById("labBlockManual").innerHTML = "Half automatic";
+  document.getElementById("labBlockReset").innerHTML = "Soft reset";
   document.getElementById("labBlockSwapPlacing").innerHTML = "Swap placing";
   document.getElementById("labBlockSwapEnter").innerHTML = "Swap enter side";
   document.getElementById("labBlockClose").innerHTML = "Close";
@@ -210,6 +214,8 @@ function langNL() {
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
   document.getElementById("labBlockStart").innerHTML = "Start trein";
   document.getElementById("labBlockStop").innerHTML = "Stop trein";
+  document.getElementById("labBlockManual").innerHTML = "Half automaat";
+  document.getElementById("labBlockReset").innerHTML = "Reset";
   document.getElementById("labBlockSwapPlacing").innerHTML = "Omkeren";
   document.getElementById("labBlockSwapEnter").innerHTML = "Aankomst omkeren";
   document.getElementById("labBlockClose").innerHTML = "Sluiten";
@@ -1201,7 +1207,7 @@ function actionBlock(id) {
 
 }
 
-function onBlockStart() {
+function onBlockStart(gomanual) {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
@@ -1209,7 +1215,16 @@ function onBlockStart() {
       var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"useschedule\" scheduleid=\""+scheduleBlockSelect+"\"/>";
       worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
     }    
-    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"go\"/>";
+    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(gomanual?"gomanual":"go")+"\"/>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+}
+
+function onBlockReset(soft) {
+  $( "#popupBlock" ).popup( "close" );
+  locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
+  if( locoBlockSelect != "none" ) {
+    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(soft?"softreset":"reset")+"\"/>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
 }

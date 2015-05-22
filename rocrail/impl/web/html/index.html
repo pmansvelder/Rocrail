@@ -52,8 +52,10 @@
   <select name="scheduleBlockSelect" id="scheduleBlockSelect">
   </select>
   <div class="ui-grid-a">
-    <div class="ui-block-a"><a id="labBlockStart" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart()">Start</a></div>
+    <div class="ui-block-a"><a id="labBlockStart" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart(false)">Start</a></div>
     <div class="ui-block-b"><a id="labBlockStop" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStop()">Stop</a></div>
+    <div class="ui-block-a"><a id="labBlockManual" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart(true)">Manual</a></div>
+    <div class="ui-block-b"><a id="labBlockReset" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockReset(true)">Reset</a></div>
     <div class="ui-block-a"><a id="labBlockSwapPlacing" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockSwapPlacing()">Swap placing</a></div>
     <div class="ui-block-b"><a id="labBlockSwapEnter" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockSwapEnter()">Swap enter side</a></div>
     <div class="ui-block-a"><a id="labBlockClose" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockClose()">Close</a></div>
