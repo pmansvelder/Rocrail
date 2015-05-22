@@ -93,7 +93,7 @@ function langDE() {
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
-  document.getElementById("menuDisconnect").innerHTML = "Serververbindung trennen";
+  document.getElementById("menuDisconnect").innerHTML = "Server trennen";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
@@ -146,7 +146,7 @@ function langEN() {
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("menuGuest").innerHTML = "Guest loco";
-  document.getElementById("menuDisconnect").innerHTML = "Disconnect from server";
+  document.getElementById("menuDisconnect").innerHTML = "Disconnect server";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
@@ -199,7 +199,7 @@ function langNL() {
   document.getElementById("menuSystem").innerHTML = "Systeem";
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
-  document.getElementById("menuDisconnect").innerHTML = "Server verbinding verbreken";
+  document.getElementById("menuDisconnect").innerHTML = "Server loskoppelen";
   document.getElementById("systemTitle").innerHTML = "<b>Systeem</b>";
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
@@ -2930,6 +2930,7 @@ function getSwitchImage(sw, div, checkSet) {
   var rectc  = sw.getAttribute('rectcrossing');
   var addr1  = sw.getAttribute('addr1');
   var port1  = sw.getAttribute('port1');
+  var raster = false;
   var rasterStr = "";
   var suffix    = "-route";
   var nomotor   = false;
@@ -2937,6 +2938,7 @@ function getSwitchImage(sw, div, checkSet) {
   if( swtype != undefined && swtype == "raster" ) {
     var suffix = "";
     rasterStr  = "-r";
+    raster = true;
   }
 
   if( ( (addr1 == undefined) || (addr1 == "0") ) && ( (port1 == undefined) || (port1 == "0") ) )
@@ -2983,8 +2985,11 @@ function getSwitchImage(sw, div, checkSet) {
   else if (type=="crossing") {
     var nullM = "";
     if( nomotor ) {
-      if( rectc != "true")
+      if( rectc != "true") {
         nullM = "0m";
+        if( rasterStr == "-r" )
+          rasterStr += "-";
+      }
       state = "straight";
       suffix = "";
     }
@@ -2997,18 +3002,18 @@ function getSwitchImage(sw, div, checkSet) {
     }
     else {
       if( ori == "west" || ori == "east") {
-        div.style.width    = "64px";
+        div.style.width    = raster?"32px":"64px";
         div.style.height   = "32px";
       }
       else {
         div.style.width    = "32px";
-        div.style.height   = "64px";
+        div.style.height   = raster?"32px":"64px";
       }
       var direction = (dir == "true" ? "left":"right");
       if (state=="turnout")
         return "url('crossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
       else
-        return "url('crossing"+direction+nullM+rasterStr+suffix+"."+ori+".svg')";
+        return "url('crossing"+direction+rasterStr+nullM+suffix+"."+ori+".svg')";
     }
   }
   else if (type=="ccrossing") {
@@ -3024,12 +3029,12 @@ function getSwitchImage(sw, div, checkSet) {
   }
   else if (type=="dcrossing") {
     if( ori == "west" || ori == "east") {
-      div.style.width    = "64px";
+      div.style.width    = raster?"32px":"64px";
       div.style.height   = "32px";
     }
     else {
       div.style.width    = "32px";
-      div.style.height   = "64px";
+      div.style.height   = raster?"32px":"64px";
     }
     var direction = (dir == "true" ? "left":"right");
     if (state=="left")
