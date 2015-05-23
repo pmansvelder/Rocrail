@@ -139,7 +139,7 @@ function langDE() {
   document.getElementById("colorNone").innerHTML = "Durchsichtig";
   document.getElementById("colorGreen").innerHTML = "Grün";
   document.getElementById("colorGrey").innerHTML = "Grau";
-  document.getElementById("colorDarkGrey").innerHTML = "Dunkel Grau";
+  document.getElementById("colorWhite").innerHTML = "Weiß";
   document.getElementById("colorBlue").innerHTML = "Blau";
   document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
@@ -201,7 +201,7 @@ function langEN() {
   document.getElementById("colorNone").innerHTML = "Transparent";
   document.getElementById("colorGreen").innerHTML = "Green";
   document.getElementById("colorGrey").innerHTML = "Grey";
-  document.getElementById("colorDarkGrey").innerHTML = "Dark grey";
+  document.getElementById("colorWhite").innerHTML = "White";
   document.getElementById("colorBlue").innerHTML = "Blue";
   document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
@@ -263,7 +263,7 @@ function langNL() {
   document.getElementById("colorNone").innerHTML = "Transparant";
   document.getElementById("colorGreen").innerHTML = "Groen";
   document.getElementById("colorGrey").innerHTML = "Grijs";
-  document.getElementById("colorDarkGrey").innerHTML = "Donker grijs";
+  document.getElementById("colorWhite").innerHTML = "Wit";
   document.getElementById("colorBlue").innerHTML = "Blauw";
   document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
@@ -1683,10 +1683,10 @@ $(document).delegate(".ui-page", "pagebeforeshow", function () {
     $(this).css('background', '#CCEECC');
   else if( color == "grey" )
     $(this).css('background', '#CCCCCC');
-  else if( color == "darkgrey" )
-    $(this).css('background', '#666');
+  else if( color == "white" )
+    $(this).css('background', '#FFFFFF');
   else if( color == "blue" )
-    $(this).css('background', '#CCCCEE');
+    $(this).css('background', '#CCCCDD');
   else if( color == "user" ) {
     var red   = localStorage.getItem("red");
     var green = localStorage.getItem("green");
@@ -1806,7 +1806,7 @@ $(document).ready(function(){
   else if( color == "grey" ) {
     sel.selectedIndex = 2;
   }
-  else if( color == "darkgrey" ) {
+  else if( color == "white" ) {
     sel.selectedIndex = 3;
   }
   else if( color == "blue" ) {
