@@ -791,8 +791,7 @@ function onDirection() {
   else
     lc.setAttribute('dir', 'true');
   updateDir();
-  if( V == undefined )
-    V = "0";
+  V = "0";
   speedUpdate(parseInt(V));
 }
 
@@ -1602,6 +1601,20 @@ function onVDown() {
 }
 
 /* Initial functions */
+$(document).delegate(".ui-page", "pagebeforeshow", function () {
+  var color = localStorage.getItem("color");
+  if( color == undefined ) {
+    color = "none";
+    localStorage.setItem("color", color);
+  }
+  if( color == "green" )
+    $(this).css('background', '#CCEECC');
+  else if( color == "grey" )
+    $(this).css('background', '#CCCCCC');
+  else if( color == "blue" )
+    $(this).css('background', '#CCCCEE');
+});
+
 $(document).on("pagecreate",function(){
 
   // jQuery events go here...
@@ -1668,6 +1681,10 @@ $(document).on("pagecreate",function(){
     actionLevelSelect(this.value);
   } );
 
+  $('#colorSelect').change(function() {
+    trace("colorSelect: " + this.value );
+    localStorage.color = this.value;
+  } );
 });
 
 $(document).ready(function(){
@@ -1692,6 +1709,23 @@ $(document).ready(function(){
     sel.selectedIndex = 2;
   }
   $('#languageSelect').selectmenu("refresh");
+  
+  var color = localStorage.color;
+  sel = document.getElementById('colorSelect');
+  if( color == "none" ) {
+    sel.selectedIndex = 0;
+  }
+  else if( color == "green" ) {
+    sel.selectedIndex = 1;
+  }
+  else if( color == "grey" ) {
+    sel.selectedIndex = 2;
+  }
+  else if( color == "blue" ) {
+    sel.selectedIndex = 3;
+  }
+  $('#colorSelect').selectmenu("refresh");
+  
 })
 
 function getString(s) {
