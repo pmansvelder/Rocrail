@@ -104,6 +104,7 @@ function langDE() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
   document.getElementById("labOptionModuleView").innerHTML = "Modul-Ansicht";
   document.getElementById("labOptionShowOcc").innerHTML = "Blockbelegung";
+  document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Zeige Fahrstraßen bei Weichen";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
@@ -165,6 +166,7 @@ function langEN() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
   document.getElementById("labOptionModuleView").innerHTML = "Module view";
   document.getElementById("labOptionShowOcc").innerHTML = "Block occupancy";
+  document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Show routes on switches";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
@@ -226,6 +228,7 @@ function langNL() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
   document.getElementById("labOptionModuleView").innerHTML = "Module weergave";
   document.getElementById("labOptionShowOcc").innerHTML = "Blok bezetting";
+  document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Toon rijwegen over wissels";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
@@ -573,6 +576,8 @@ function openOptions() {
   $('#optionModuleView').prop('checked', moduleview=="true"?true:false).checkboxradio('refresh');
   var showocc = localStorage.getItem("showocc");
   $('#optionShowOcc').prop('checked', showocc=="true"?true:false).checkboxradio('refresh');
+  var showroutesonswitches = localStorage.getItem("showroutesonswitches");
+  $('#optionShowRoutesOnSwitches').prop('checked', showroutesonswitches=="true"?true:false).checkboxradio('refresh');
   var allspeedsteps = localStorage.getItem("allspeedsteps");
   $('#optionAllSpeedSteps').prop('checked', allspeedsteps=="true"?true:false).checkboxradio('refresh');
   var speedbuttons = localStorage.getItem("speedbuttons");
@@ -1483,6 +1488,12 @@ function onOptionShowOcc() {
   var optionShowOcc = document.getElementById("optionShowOcc");
   localStorage.setItem("showocc", optionShowOcc.checked ? "true":"false");
   trace("option showocc = "+ optionShowOcc.checked );
+}
+
+function onOptionShowRoutesOnSwitches() {
+  var optionShowRoutesOnSwitches = document.getElementById("optionShowRoutesOnSwitches");
+  localStorage.setItem("showroutesonswitches", optionShowRoutesOnSwitches.checked ? "true":"false");
+  trace("option showroutesonswitches = "+ optionShowRoutesOnSwitches.checked );
 }
 
 function onOptionAllSpeedSteps() {
@@ -2446,6 +2457,18 @@ function handleRoute(st) {
           handleSignal(sg);
         }
       }
+      if( localStorage.getItem("showroutesonswitches") == "true" ) {
+        for (var key in swMap) {
+          var sw = swMap[key];
+          var routeids = sw.getAttribute('routeids');
+          if( routeids == undefined )
+            continue;
+          if( routeids.indexOf(stid) != -1 ) {
+            sw.setAttribute('route', locked)
+            handleSwitch(sw);
+          }
+        }
+      }
     }
 
     var div = document.getElementById("st_"+st.getAttribute('id'));
@@ -3071,6 +3094,10 @@ function getSwitchImage(sw, div, checkSet) {
   var rasterStr = "";
   var suffix    = "-route";
   var nomotor   = false;
+  
+  if( localStorage.getItem("showroutesonswitches") == "true" ) {
+    suffix = "";
+  }
   
   if( route=="1" )
     suffix = "-route";
