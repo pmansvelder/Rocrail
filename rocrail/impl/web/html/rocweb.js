@@ -2231,6 +2231,16 @@ function updateBlockOcc(bk) {
       handleSignal(sg);
     }
   }
+  for (var key in swMap) {
+    var sw = swMap[key];
+    var blockid = sw.getAttribute('blockid');
+    if( blockid == undefined )
+      continue;
+    if( blockid == bk.getAttribute('id') ) {
+      sw.setAttribute('occ', occ)
+      handleSwitch(sw);
+    }
+  }
   
 }
 
@@ -3055,11 +3065,18 @@ function getSwitchImage(sw, div, checkSet) {
   var rectc  = sw.getAttribute('rectcrossing');
   var addr1  = sw.getAttribute('addr1');
   var port1  = sw.getAttribute('port1');
+  var route  = sw.getAttribute('route');
+  var occ    = sw.getAttribute('occ');
   var raster = false;
   var rasterStr = "";
   var suffix    = "-route";
   var nomotor   = false;
   
+  if( route=="1" )
+    suffix = "-route";
+  else if( occ == "true" )
+    suffix = "-occ";
+
   if( swtype != undefined && swtype == "raster" ) {
     var suffix = "";
     rasterStr  = "-r";
