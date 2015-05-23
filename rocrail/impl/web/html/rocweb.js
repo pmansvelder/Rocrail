@@ -138,6 +138,7 @@ function langDE() {
   document.getElementById("colorNone").innerHTML = "Durchsichtig";
   document.getElementById("colorGreen").innerHTML = "Grün";
   document.getElementById("colorGrey").innerHTML = "Grau";
+  document.getElementById("colorDarkGrey").innerHTML = "Dunkel Grau";
   document.getElementById("colorBlue").innerHTML = "Blau";
   $('#colorSelect').selectmenu("refresh");
 }
@@ -196,6 +197,7 @@ function langEN() {
   document.getElementById("colorNone").innerHTML = "Transparent";
   document.getElementById("colorGreen").innerHTML = "Green";
   document.getElementById("colorGrey").innerHTML = "Grey";
+  document.getElementById("colorDarkGrey").innerHTML = "Dark grey";
   document.getElementById("colorBlue").innerHTML = "Blue";
   $('#colorSelect').selectmenu("refresh");
 }
@@ -254,6 +256,7 @@ function langNL() {
   document.getElementById("colorNone").innerHTML = "Transparant";
   document.getElementById("colorGreen").innerHTML = "Groen";
   document.getElementById("colorGrey").innerHTML = "Grijs";
+  document.getElementById("colorDarkGrey").innerHTML = "Donker grijs";
   document.getElementById("colorBlue").innerHTML = "Blauw";
   $('#colorSelect').selectmenu("refresh");
 }
@@ -1629,6 +1632,8 @@ $(document).delegate(".ui-page", "pagebeforeshow", function () {
     $(this).css('background', '#CCEECC');
   else if( color == "grey" )
     $(this).css('background', '#CCCCCC');
+  else if( color == "darkgrey" )
+    $(this).css('background', '#666');
   else if( color == "blue" )
     $(this).css('background', '#CCCCEE');
 });
@@ -1739,8 +1744,11 @@ $(document).ready(function(){
   else if( color == "grey" ) {
     sel.selectedIndex = 2;
   }
-  else if( color == "blue" ) {
+  else if( color == "darkgrey" ) {
     sel.selectedIndex = 3;
+  }
+  else if( color == "blue" ) {
+    sel.selectedIndex = 4;
   }
   $('#colorSelect').selectmenu("refresh");
   
