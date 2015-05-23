@@ -145,6 +145,7 @@
     <option id="colorGrey" value="grey" style="text-align:left;">Grey</option>
     <option id="colorDarkGrey" value="darkgrey" style="text-align:left;">Dark grey</option>
     <option id="colorBlue" value="blue" style="text-align:left;">Blue</option>
+    <option id="colorUser" value="user" style="text-align:left;">User</option>
   </select>
   <select name="languageSelect" id="languageSelect" style="text-align:left;">
     <option id="langDE" value="de" style="text-align:left;">Deutsch</option>
@@ -205,7 +206,14 @@
       <input type="radio" id="locoCatRoadname" name="radio-choice-1" value="roadname" onclick="onCatRoadname()"/>
       <label id="labLocoCatRoadname" title="Sort the Loco selection list by Roadname" for="locoCatRoadname">Roadname</label>
     </fieldset>
-    </div>    
+    </div> 
+    <table width="100%"><tr>
+    <td nowrap="nowrap"><label id="labUserColor">User color</label>
+    <td><input size="3" type="text" name="userColorRed" id="userColorRed" value="" placeholder="R" data-theme="a">
+    <td><input size="3" type="text" name="userColorGreen" id="userColorGreen" value="" placeholder="G" data-theme="a">
+    <td><input size="3" type="text" name="userColorBlue" id="userColorBlue" value="" placeholder="B" data-theme="a">
+    <td><a href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-check ui-btn-icon-notext" onclick="onUserColor()">Set</a>
+    </table>
   </div>
   </div>
 

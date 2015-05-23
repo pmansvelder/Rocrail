@@ -140,6 +140,8 @@ function langDE() {
   document.getElementById("colorGrey").innerHTML = "Grau";
   document.getElementById("colorDarkGrey").innerHTML = "Dunkel Grau";
   document.getElementById("colorBlue").innerHTML = "Blau";
+  document.getElementById("colorUser").innerHTML = "Benutzer definiert";
+  document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -199,6 +201,8 @@ function langEN() {
   document.getElementById("colorGrey").innerHTML = "Grey";
   document.getElementById("colorDarkGrey").innerHTML = "Dark grey";
   document.getElementById("colorBlue").innerHTML = "Blue";
+  document.getElementById("colorUser").innerHTML = "User defined";
+  document.getElementById("labUserColor").innerHTML = "Background color";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -258,6 +262,8 @@ function langNL() {
   document.getElementById("colorGrey").innerHTML = "Grijs";
   document.getElementById("colorDarkGrey").innerHTML = "Donker grijs";
   document.getElementById("colorBlue").innerHTML = "Blauw";
+  document.getElementById("colorUser").innerHTML = "Gebruikers definitie";
+  document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -582,6 +588,13 @@ function openOptions() {
     $("#locoCatEngine").prop("checked", true).checkboxradio('refresh');
   
   var select = document.getElementById("languageSelect");
+
+  var red   = localStorage.getItem("red");
+  var green = localStorage.getItem("green");
+  var blue  = localStorage.getItem("blue");
+  document.getElementById("userColorRed").placeholder = red;
+  document.getElementById("userColorGreen").placeholder = green;
+  document.getElementById("userColorBlue").placeholder = blue;
 
 
   //$('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
@@ -1314,6 +1327,15 @@ function onAddGuest() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function onUserColor() {
+  var red   = document.getElementById("userColorRed").value;
+  var green = document.getElementById("userColorGreen").value;
+  var blue  = document.getElementById("userColorBlue").value;
+  localStorage.setItem("red", red);
+  localStorage.setItem("green", green);
+  localStorage.setItem("blue", blue);
+}
+
 function onLocoResetInBlock() {
   $( "#popupBlock" ).popup( "close" );
   onLocoInBlock("");
@@ -1636,6 +1658,17 @@ $(document).delegate(".ui-page", "pagebeforeshow", function () {
     $(this).css('background', '#666');
   else if( color == "blue" )
     $(this).css('background', '#CCCCEE');
+  else if( color == "user" ) {
+    var red   = localStorage.getItem("red");
+    var green = localStorage.getItem("green");
+    var blue  = localStorage.getItem("blue");
+    if( red == undefined || green == undefined || blue == undefined ) {
+      red = 0;
+      green = 0;
+      blue = 0;
+    }
+    $(this).css('background', "rgb("+red+","+green+","+blue+")");
+  }
 });
 
 $(document).on("pagecreate",function(){
@@ -1749,6 +1782,9 @@ $(document).ready(function(){
   }
   else if( color == "blue" ) {
     sel.selectedIndex = 4;
+  }
+  else if( color == "user" ) {
+    sel.selectedIndex = 5;
   }
   $('#colorSelect').selectmenu("refresh");
   
