@@ -140,7 +140,7 @@ function langDE() {
   document.getElementById("colorGrey").innerHTML = "Grau";
   document.getElementById("colorDarkGrey").innerHTML = "Dunkel Grau";
   document.getElementById("colorBlue").innerHTML = "Blau";
-  document.getElementById("colorUser").innerHTML = "Benutzer definiert";
+  document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
   $('#colorSelect').selectmenu("refresh");
 }
@@ -201,7 +201,7 @@ function langEN() {
   document.getElementById("colorGrey").innerHTML = "Grey";
   document.getElementById("colorDarkGrey").innerHTML = "Dark grey";
   document.getElementById("colorBlue").innerHTML = "Blue";
-  document.getElementById("colorUser").innerHTML = "User defined";
+  document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
   $('#colorSelect').selectmenu("refresh");
 }
@@ -262,7 +262,7 @@ function langNL() {
   document.getElementById("colorGrey").innerHTML = "Grijs";
   document.getElementById("colorDarkGrey").innerHTML = "Donker grijs";
   document.getElementById("colorBlue").innerHTML = "Blauw";
-  document.getElementById("colorUser").innerHTML = "Gebruikers definitie";
+  document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
   $('#colorSelect').selectmenu("refresh");
 }
@@ -592,9 +592,9 @@ function openOptions() {
   var red   = localStorage.getItem("red");
   var green = localStorage.getItem("green");
   var blue  = localStorage.getItem("blue");
-  document.getElementById("userColorRed").placeholder = red;
-  document.getElementById("userColorGreen").placeholder = green;
-  document.getElementById("userColorBlue").placeholder = blue;
+  document.getElementById("userColorRed").value = red;
+  document.getElementById("userColorGreen").value = green;
+  document.getElementById("userColorBlue").value = blue;
 
 
   //$('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
