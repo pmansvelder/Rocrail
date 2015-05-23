@@ -3160,7 +3160,8 @@ function getSwitchImage(sw, div, checkSet) {
           rasterStr += "-";
       }
       state = "straight";
-      suffix = "";
+      if( localStorage.getItem("showroutesonswitches") != "true" )
+        suffix = "";
     }
     
     if( rectc == "true") {
