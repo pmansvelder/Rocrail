@@ -195,12 +195,13 @@ static void __pportserver( void* threadinst ) {
   iOHttp     http = (iOHttp)ThreadOp.getParm(th);
   iOHttpData data = Data( http );
   iONode    event = NULL;
+  Boolean demoEnd = False;
 
-  char* desc = StrOp.fmt( "WebClient Service on port %d", data->pport  );
+  char* desc = StrOp.fmt( "Rocweb service on port %d", data->pport  );
   ThreadOp.setDescription( th, desc );
   StrOp.free( desc );
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "WebClient Service started on %d.", data->pport );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Rocweb service started on %d.", data->pport );
 
   do {
     iOPClient client = NULL;
@@ -214,8 +215,25 @@ static void __pportserver( void* threadinst ) {
       event = (iONode)post;
     }
 
+    if( data->demoTime > 0 ) {
+      long l_Time = time(NULL);
+      if( (l_Time - data->demoTime) >= (30) ) {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Rocweb demo time expired: goodbye" );
+        data->demoEnd = True;
+        SocketOp.disConnect( data->psrvrsocket );
+        while( client != NULL ) {
+          if( MutexOp.wait( data->pclientmux ) ) {
+            MapOp.remove( data->pclientMap, PClientOp.getId( client ) );
+            MutexOp.post( data->pclientmux );
+          }
+          PClientOp.base.del( client );
+          client = (iOPClient)MapOp.first( data->pclientMap );
+        }
+      }
+    }
+
     /* Iterate the list of connected clients. */
-    while( client != NULL ) {
+    while( !data->demoEnd && client != NULL ) {
       char* cmd = NULL;
 
       /* Let the client do the work... */
@@ -225,7 +243,7 @@ static void __pportserver( void* threadinst ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "command received: %.120s", cmd );
         TraceOp.dump( name, TRCLEVEL_BYTE, (const char*)cmd, StrOp.len(cmd) );
         if( (byte)(cmd[0]) == 0x03 && ((byte)(cmd[1]) == 0xE8 || (byte)(cmd[1]) == 0xE9) ) {
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutdown webclient [%s]", PClientOp.getId( client ) );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutdown Rocweb [%s]", PClientOp.getId( client ) );
           remove = True;
         }
         else {
@@ -243,7 +261,7 @@ static void __pportserver( void* threadinst ) {
       }
 
       if( remove ) {
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Removing WebClient [%s].", PClientOp.getId( client ) );
+        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Removing Rocweb [%s].", PClientOp.getId( client ) );
         if( MutexOp.wait( data->pclientmux ) ) {
           MapOp.remove( data->pclientMap, PClientOp.getId( client ) );
           MutexOp.post( data->pclientmux );
@@ -267,10 +285,10 @@ static void __pportserver( void* threadinst ) {
       event = NULL;
     }
 
-    ThreadOp.sleep( 5 );
+    ThreadOp.sleep( demoEnd ? 100:5 );
   } while( !ThreadOp.isQuit( th ) );
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "WebClient Service ended on %d.", data->pport );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Rocweb service ended on %d.", data->pport );
   ThreadOp.base.del( th );
   data->pportserver = NULL;
 }
@@ -286,11 +304,11 @@ static void __pportmanager( void* threadinst ) {
   iOHttp           http = (iOHttp)ThreadOp.getParm(th);
   iOHttpData       data = Data( http );
 
-  char* desc = StrOp.fmt( "WebClient Manager on port %d", data->port  );
+  char* desc = StrOp.fmt( "Rocweb manager on port %d", data->port  );
   ThreadOp.setDescription( th, desc );
   StrOp.free( desc );
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "WebClient Manager started on %d.", data->pport );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Rocweb manager started on %d.", data->pport );
   do {
     /* Wait for a connection. */
     iOSocket clientSocket = SocketOp.accept( data->psrvrsocket );
@@ -298,7 +316,7 @@ static void __pportmanager( void* threadinst ) {
     if( clientSocket ) {
       iOPClient client = PClientOp.inst( clientSocket, data->webclient  );
 
-      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "WebClient Manager accept for %s:%d. (id=%s)",
+      TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "Rocweb manager accept for %s:%d. (id=%s)",
                      SocketOp.getPeername( clientSocket ), data->pport, PClientOp.getId( client ) );
 
       if( MutexOp.wait( data->pclientmux ) ) {
@@ -315,9 +333,9 @@ static void __pportmanager( void* threadinst ) {
     }
 
     ThreadOp.sleep( 10 );
-  } while( !ThreadOp.isQuit( th ) );
+  } while( !data->demoEnd && !ThreadOp.isQuit( th ) );
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "WebClient Manager ended for %d.", data->pport );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Rocweb manager ended for %d.", data->pport );
   ThreadOp.base.del( th );
   data->pportmanager = NULL;
 }
@@ -370,8 +388,8 @@ static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, 
       char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
 
       if( SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid donation key found: sorry, no Rocweb" );
-        return NULL;
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid donation key found: 5 minutes demo time for Rocweb..." );
+        data->demoTime = time(NULL);
       }
 
       phtmName = StrOp.fmt( "phtm%08X", __Http );

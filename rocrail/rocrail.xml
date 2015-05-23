@@ -1987,6 +1987,8 @@
       <var name="webclient" vt="iONode" remark=""/>
       <var name="callback" vt="httpcon_callback"/>
       <var name="callbackObj" vt="obj"/>
+      <var name="demoTime" vt="long"/>
+      <var name="demoEnd" vt="Boolean" remark=""/>
       </data>
   </object>
 
