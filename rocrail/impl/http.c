@@ -217,7 +217,7 @@ static void __pportserver( void* threadinst ) {
 
     if( data->demoTime > 0 ) {
       long l_Time = time(NULL);
-      if( (l_Time - data->demoTime) >= (30) ) {
+      if( (l_Time - data->demoTime) >= (5 * 60) ) {
         TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Rocweb demo time expired: goodbye" );
         data->demoEnd = True;
         SocketOp.disConnect( data->psrvrsocket );
