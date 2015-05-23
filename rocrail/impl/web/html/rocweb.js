@@ -1215,8 +1215,8 @@ function actionBlock(id) {
   }
 
   scoption = document.createElement( 'option' );
-  scoption.value = "";
-  scoption.innerHTML = "";
+  scoption.value = "none";
+  scoption.innerHTML = getString("schedule");
   scoption.selected = 'selected';
   scheduleSelect.add( scoption );
 
@@ -1835,6 +1835,7 @@ function getString(s) {
     if( s == "fiddleyard" ) return "Fiddle Yard";
     if( s == "turntable" ) return "Drehscheibe";
     if( s == "text" ) return "Text";
+    if( s == "schedule" ) return "Fahrplan";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -1849,6 +1850,7 @@ function getString(s) {
     if( s == "fiddleyard" ) return "Fiddle Yard";
     if( s == "turntable" ) return "Turntable";
     if( s == "text" ) return "Text";
+    if( s == "schedule" ) return "Schedule";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -1863,6 +1865,7 @@ function getString(s) {
     if( s == "fiddleyard" ) return "Fiddle Yard";
     if( s == "turntable" ) return "Draaischijf";
     if( s == "text" ) return "Tekst";
+    if( s == "schedule" ) return "Dienstrooster";
   }
 
   return s;
