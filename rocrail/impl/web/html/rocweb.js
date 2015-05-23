@@ -1253,7 +1253,7 @@ function actionBlock(id) {
       }
     }
     scheduleSelect.selectedIndex = 0;
-    scheduleSelect.value = ""; 
+    //scheduleSelect.value = ""; 
   }
   
   sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
