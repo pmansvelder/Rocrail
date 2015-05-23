@@ -1989,7 +1989,7 @@ function handleOutput(co) {
 
 
 function handleSwitch(sw) {
-  trace("switch event: " + sw.getAttribute('id') + " " + sw.getAttribute('state'));
+  trace("switch event: " + sw.getAttribute('id') + " state=" + sw.getAttribute('state') + " set=" + sw.getAttribute('set'));
   var div = document.getElementById("sw_"+sw.getAttribute('id'));
   if( div != null ) {
     swNode = swMap[sw.getAttribute('id')];
@@ -3116,8 +3116,8 @@ function getSwitchImage(sw, div, checkSet) {
   if( ( (addr1 == undefined) || (addr1 == "0") ) && ( (port1 == undefined) || (port1 == "0") ) )
     nomotor = true;
 
-  if( checkSet && set != undefined && set == "false" ) {
-    trace("set="+set);
+  if( checkSet && set != undefined && set != null && set == "false" ) {
+    trace("set="+set+" checkSet="+checkSet);
     div.style.backgroundColor = "red";
   }
   else 
