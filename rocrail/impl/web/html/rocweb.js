@@ -882,6 +882,24 @@ function onFunction(id, nr) {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function onLights() {
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
+    return;
+  }
+  lc = lcMap[locoSelected];
+  if(lc == undefined)
+    lc = carMap[locoSelected];
+  if( lc == undefined ) return;
+  var fn = lc.getAttribute('fn');
+  var on = "true";
+  if( fn != undefined && fn == "true" )
+    on = "false";
+  trace("lights was "+fn+" will be "+on);
+  var cmd = "<fn id=\""+locoSelected+"\" fnchanged=\""+0+"\" f"+0+"=\""+on+"\"/>"
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
+
 function speedUpdate(value) {
   lc = lcMap[locoSelected];
   if( lc == undefined )
@@ -2052,11 +2070,12 @@ function handleFunction(fn) {
     return;
   
   var fnchanged = parseInt(fn.getAttribute('fnchanged'));
+  var on = "false";
   
   if( fnchanged > 0 ) {
     var fx = parseInt(lc.getAttribute('fx'));
     var mask = 1 << (fnchanged-1); 
-    var on = fn.getAttribute("f"+fnchanged);
+    on = fn.getAttribute("f"+fnchanged);
     
     if( on == "true")
       fx = fx | mask;
@@ -2064,6 +2083,10 @@ function handleFunction(fn) {
       fx = fx & ~mask;
     lc.setAttribute('fx', ""+fx)
     trace("mask="+mask.toString(16)+" fnchanged="+fnchanged+" fx="+fx.toString(16));
+  }
+  else if( fnchanged == 0 ) {
+    on = fn.getAttribute("f0");
+    lc.setAttribute("fn", fn.getAttribute("f0"));
   }
 
   if( fn.getAttribute('id') == locoSelected ) {
