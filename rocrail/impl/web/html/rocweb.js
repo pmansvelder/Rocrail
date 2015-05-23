@@ -143,7 +143,6 @@ function langDE() {
   document.getElementById("colorBlue").innerHTML = "Blau";
   document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
-  $('#colorSelect').selectmenu("refresh");
 }
 
 function langEN() {
@@ -205,7 +204,6 @@ function langEN() {
   document.getElementById("colorBlue").innerHTML = "Blue";
   document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
-  $('#colorSelect').selectmenu("refresh");
 }
 
 function langNL() {
@@ -267,7 +265,6 @@ function langNL() {
   document.getElementById("colorBlue").innerHTML = "Blauw";
   document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
-  $('#colorSelect').selectmenu("refresh");
 }
 
 
@@ -510,6 +507,44 @@ function initMenu()
       levelSelect.selectedIndex = i;
   }
   $('#levelSelect').selectmenu("refresh");
+
+  
+  var lang = localStorage.lang;
+  var sel = document.getElementById('languageSelect');
+  
+  if( lang == "de" ) {
+    sel.selectedIndex = 0;
+  }
+  else if( lang == "en" ) {
+    sel.selectedIndex = 1;
+  }
+  else if( lang == "nl" ) {
+    sel.selectedIndex = 2;
+  }
+  $('#languageSelect').selectmenu("refresh");
+  
+  var color = localStorage.color;
+  sel = document.getElementById('colorSelect');
+  console.log("colorSelect = "+color);
+  if( color == "none" ) {
+    sel.selectedIndex = 0;
+  }
+  else if( color == "green" ) {
+    sel.selectedIndex = 1;
+  }
+  else if( color == "grey" ) {
+    sel.selectedIndex = 2;
+  }
+  else if( color == "white" ) {
+    sel.selectedIndex = 3;
+  }
+  else if( color == "blue" ) {
+    sel.selectedIndex = 4;
+  }
+  else if( color == "user" ) {
+    sel.selectedIndex = 5;
+  }
+  $('#colorSelect').selectmenu("refresh");
 
   //$('#popupMenu').unbind("popupafterclose");
   //$( "#popupMenu" ).popup( "open" );
@@ -1783,39 +1818,13 @@ $(document).ready(function(){
   
   if( lang == "de" ) {
     langDE();
-    sel.selectedIndex = 0;
   }
   else if( lang == "en" ) {
     langEN();
-    sel.selectedIndex = 1;
   }
   else if( lang == "nl" ) {
     langNL();
-    sel.selectedIndex = 2;
   }
-  $('#languageSelect').selectmenu("refresh");
-  
-  var color = localStorage.color;
-  sel = document.getElementById('colorSelect');
-  if( color == "none" ) {
-    sel.selectedIndex = 0;
-  }
-  else if( color == "green" ) {
-    sel.selectedIndex = 1;
-  }
-  else if( color == "grey" ) {
-    sel.selectedIndex = 2;
-  }
-  else if( color == "white" ) {
-    sel.selectedIndex = 3;
-  }
-  else if( color == "blue" ) {
-    sel.selectedIndex = 4;
-  }
-  else if( color == "user" ) {
-    sel.selectedIndex = 5;
-  }
-  $('#colorSelect').selectmenu("refresh");
   
 })
 
