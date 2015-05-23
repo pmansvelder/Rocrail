@@ -139,6 +139,7 @@ function langDE() {
   document.getElementById("colorGreen").innerHTML = "Grün";
   document.getElementById("colorGrey").innerHTML = "Grau";
   document.getElementById("colorBlue").innerHTML = "Blau";
+  $('#colorSelect').selectmenu("refresh");
 }
 
 function langEN() {
@@ -196,6 +197,7 @@ function langEN() {
   document.getElementById("colorGreen").innerHTML = "Green";
   document.getElementById("colorGrey").innerHTML = "Grey";
   document.getElementById("colorBlue").innerHTML = "Blue";
+  $('#colorSelect').selectmenu("refresh");
 }
 
 function langNL() {
@@ -253,6 +255,7 @@ function langNL() {
   document.getElementById("colorGreen").innerHTML = "Groen";
   document.getElementById("colorGrey").innerHTML = "Grijs";
   document.getElementById("colorBlue").innerHTML = "Blauw";
+  $('#colorSelect').selectmenu("refresh");
 }
 
 
@@ -275,6 +278,8 @@ function onLocoImage() {
     tapholdFkey = 0;
     return;
   }
+  initLocoList();
+
   trace("close throttle");
   prevPopup = "popupThrottle;"
   $( "#popupThrottle" ).popup( "close" );
@@ -286,6 +291,7 @@ function onLocoImage() {
 }
 
 function onBlockLocoImage() {
+  initLocoList();
   trace("close block popup");
   prevPopup = "popupBlock";
   $( "#popupBlock" ).popup( "close" );
@@ -301,7 +307,7 @@ function onLocoSelected(sel) {
   
   trace("close loco select");
   $( "#popupLocoSelect" ).popup( "close" );
-
+  
   if( prevPopup == "popupBlock") {
     locoBlockSelect = sel;
     sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
@@ -3317,6 +3323,22 @@ function getMobileCategory(lc) {
     }
   }
   return lcCat;
+}
+
+function initLocoList() {
+  console.log("initLocoList...");
+  var locoSelectList = document.getElementById("locoSelectList");
+  locoSelectList.innerHTML = "";
+  for (var key in lcCatMap) delete lcCatMap[key];
+  lcCatMap.length = 0;
+  for (var key in lcMap) {
+    var lc = lcMap[key];
+    addLocoToList(lc);
+  }
+  for (var key in carMap) {
+    var car = carMap[key];
+    addLocoToList(car);
+  }
 }
 
 function addLocoToList(lc) {
