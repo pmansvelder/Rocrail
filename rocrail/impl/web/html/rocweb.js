@@ -135,6 +135,10 @@ function langDE() {
   document.getElementById("guestAddress").placeholder = "Adresse";
   document.getElementById("guestShortID").placeholder = "Kennung";
   document.getElementById("guestAdd").innerHTML = "Hinzufügen";
+  document.getElementById("colorNone").innerHTML = "Durchsichtig";
+  document.getElementById("colorGreen").innerHTML = "Grün";
+  document.getElementById("colorGrey").innerHTML = "Grau";
+  document.getElementById("colorBlue").innerHTML = "Blau";
 }
 
 function langEN() {
@@ -188,6 +192,10 @@ function langEN() {
   document.getElementById("guestAddress").placeholder = "Address";
   document.getElementById("guestShortID").placeholder = "Short ID";
   document.getElementById("guestAdd").innerHTML = "Add";
+  document.getElementById("colorNone").innerHTML = "Transparent";
+  document.getElementById("colorGreen").innerHTML = "Green";
+  document.getElementById("colorGrey").innerHTML = "Grey";
+  document.getElementById("colorBlue").innerHTML = "Blue";
 }
 
 function langNL() {
@@ -241,6 +249,10 @@ function langNL() {
   document.getElementById("guestAddress").placeholder = "Adres";
   document.getElementById("guestShortID").placeholder = "Korte ID";
   document.getElementById("guestAdd").innerHTML = "Toevoegen";
+  document.getElementById("colorNone").innerHTML = "Transparant";
+  document.getElementById("colorGreen").innerHTML = "Groen";
+  document.getElementById("colorGrey").innerHTML = "Grijs";
+  document.getElementById("colorBlue").innerHTML = "Blauw";
 }
 
 
