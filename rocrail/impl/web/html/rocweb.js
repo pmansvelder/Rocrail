@@ -146,6 +146,7 @@ function langDE() {
   document.getElementById("colorBlue").innerHTML = "Blau";
   document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
+  $('#colorSelect').selectmenu("refresh");
 }
 
 function langEN() {
@@ -207,6 +208,7 @@ function langEN() {
   document.getElementById("colorBlue").innerHTML = "Blue";
   document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
+  $('#colorSelect').selectmenu("refresh");
 }
 
 function langNL() {
@@ -268,6 +270,7 @@ function langNL() {
   document.getElementById("colorBlue").innerHTML = "Blauw";
   document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
+  $('#colorSelect').selectmenu("refresh");
 }
 
 
