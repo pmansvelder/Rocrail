@@ -1931,11 +1931,12 @@ $(document).ready(function(){
   if( lang == "de" ) {
     langDE();
   }
-  else if( lang == "en" ) {
-    langEN();
-  }
   else if( lang == "nl" ) {
     langNL();
+  }
+  else {
+    // default english
+    langEN();
   }
   
 })
