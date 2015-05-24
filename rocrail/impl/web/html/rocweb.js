@@ -39,6 +39,7 @@ var locoConsistSelect = 'none';
 var locoConsistAction = 'show';
 var locoConsistMembers = "";
 var scheduleBlockSelect = 'none';
+var blockBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
@@ -525,7 +526,7 @@ function initMenu()
   
   var color = localStorage.color;
   sel = document.getElementById('colorSelect');
-  console.log("colorSelect = "+color);
+  trace("colorSelect = "+color);
   if( color == "none" ) {
     sel.selectedIndex = 0;
   }
@@ -1243,6 +1244,9 @@ function actionBlock(id) {
   document.getElementById("labBlockLocoID").innerHTML = "";
 
   bkNode = bkMap[bkid];
+  
+  scheduleBlockSelect = 'none';
+  blockBlockSelect    = 'none';
 
   var scheduleSelect = document.getElementById("scheduleBlockSelect");
   while(scheduleSelect.options.length > 0) {
@@ -1255,7 +1259,30 @@ function actionBlock(id) {
   scoption.selected = 'selected';
   scheduleSelect.add( scoption );
 
+  // Add all blocks as destination:
+  var blockSelect = document.getElementById("blockBlockSelect");
+  while(blockSelect.options.length > 0) {
+    blockSelect.remove(0);
+  }
 
+  bkoption = document.createElement( 'option' );
+  bkoption.value = "none";
+  bkoption.innerHTML = getString("block");
+  bkoption.selected = 'selected';
+  blockSelect.add( bkoption );
+
+  for (var i in bkMap){
+    var bk = bkMap[i];
+    if( bk.getAttribute('id') != bkid ) {
+      bkoption = document.createElement( 'option' );
+      bkoption.value = bk.getAttribute('id');
+      bkoption.innerHTML = bk.getAttribute('id');
+      blockSelect.add( bkoption );
+    }
+  }
+  $('#blockBlockSelect').selectmenu("refresh");
+
+  
   var selected = false;
 
   var img = document.getElementById("locoImageBlock");
@@ -1310,7 +1337,11 @@ function onBlockStart(gomanual) {
     if( scheduleBlockSelect != "none" && scheduleBlockSelect.length > 0 ) {
       var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"useschedule\" scheduleid=\""+scheduleBlockSelect+"\"/>";
       worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
-    }    
+    }  
+    else if( blockBlockSelect != "none" && blockBlockSelect.length > 0 ) {
+      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"gotoblock\" blockid=\""+blockBlockSelect+"\"/>";
+      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    }  
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(gomanual?"gomanual":"go")+"\"/>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
@@ -1766,6 +1797,12 @@ $(document).on("pagecreate",function(){
     scheduleBlockSelect = this.value;
     trace("scheduleBlockSelect: " + scheduleBlockSelect);
     sessionStorage.setItem("scheduleBlockSelect", scheduleBlockSelect);
+  } );
+  
+  $('#blockBlockSelect').change(function() {
+    blockBlockSelect = this.value;
+    trace("blockBlockSelect: " + blockBlockSelect);
+    sessionStorage.setItem("blockBlockSelect", blockBlockSelect);
   } );
   
   $('#trackTTSelect').change(function() {
