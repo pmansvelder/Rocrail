@@ -5686,7 +5686,7 @@ static void _loadBlockOccupancy( iOModel inst ) {
 
           if( enterside > 0 ) {
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set enterside to [%s] for [%s]",
-                placing == 1 ?"plus":"min", LocOp.getId(loco) );
+                enterside == 1 ?"plus":"min", LocOp.getId(loco) );
             wLoc.setblockenterside( props, enterside == 1 ? True:False );
           }
           if( placing > 0 ) {
