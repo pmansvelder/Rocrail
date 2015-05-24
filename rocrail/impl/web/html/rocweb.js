@@ -27,6 +27,7 @@ var stMap = {};
 var scMap = {};
 var tourMap = {};
 var locationMap = {};
+var operatorMap = {};
 var carMap = {};
 var lcCatMap = {};
 var ModPlan = false;
@@ -40,6 +41,7 @@ var locoConsistAction = 'show';
 var locoConsistMembers = "";
 var scheduleBlockSelect = 'none';
 var blockBlockSelect = 'none';
+var trainBlockSelect = 'none';
 var zlevelSelected = 'none';
 var zlevelIdx = 0;
 var power = 'false';
@@ -1247,7 +1249,9 @@ function actionBlock(id) {
   
   scheduleBlockSelect = 'none';
   blockBlockSelect    = 'none';
+  trainBlockSelect    = 'none';
 
+  // Schedules and tours
   var scheduleSelect = document.getElementById("scheduleBlockSelect");
   while(scheduleSelect.options.length > 0) {
     scheduleSelect.remove(0);
@@ -1258,7 +1262,18 @@ function actionBlock(id) {
   scoption.innerHTML = getString("schedule");
   scoption.selected = 'selected';
   scheduleSelect.add( scoption );
+  
+  // Train list
+  var trainSelect = document.getElementById("trainBlockSelect");
+  while(trainSelect.options.length > 0) {
+    trainSelect.remove(0);
+  }
 
+  trainoption = document.createElement( 'option' );
+  trainoption.value = "none";
+  trainoption.innerHTML = getString("train");
+  trainSelect.add( trainoption );
+  
   // Add all blocks as destination:
   var blockSelect = document.getElementById("blockBlockSelect");
   while(blockSelect.options.length > 0) {
@@ -1316,11 +1331,28 @@ function actionBlock(id) {
     }
     scheduleSelect.selectedIndex = 0;
     //scheduleSelect.value = ""; 
+    
+    var idx = 0;
+    for (var i in operatorMap){
+      var operator = operatorMap[i];
+      opoption = document.createElement( 'option' );
+      opoption.value = operator.getAttribute('id');
+      opoption.innerHTML = operator.getAttribute('id');
+      trainSelect.add( opoption );
+      idx++;
+      if( lc.getAttribute('train') != undefined && lc.getAttribute('train') == operator.getAttribute('id') ) {
+        trace("lc train=" + lc.getAttribute('train') + " idx="+idx);
+        opoption.selected = 'selected';
+        trainSelect.selectedIndex = idx;
+      }
+    }
+
   }
   
   sessionStorage.setItem("locoBlockSelect", locoBlockSelect);
 
   $('#scheduleBlockSelect').selectmenu("refresh");
+  $('#trainBlockSelect').selectmenu("refresh");
 
   var xPos = parseInt(bkNode.getAttribute('x')) * 32;
   var yPos = parseInt(bkNode.getAttribute('y')) * 32;
@@ -1328,6 +1360,23 @@ function actionBlock(id) {
   //$( "#popupBlock" ).popup( "open" ).position({x: xPos, y: yPos, positionTo: window});
   $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
 
+}
+
+function onBlockTrain() {
+  $( "#popupBlock" ).popup( "close" );
+  locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
+  if( locoBlockSelect != "none" ) {
+    if( trainBlockSelect == "none" ) {
+      // release train
+      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"releasetrain\"/>";
+      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    }
+    else {
+      // assign train
+      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"assigntrain\" train=\""+trainBlockSelect+"\"/>";
+      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    }
+  }  
 }
 
 function onBlockStart(gomanual) {
@@ -1805,6 +1854,12 @@ $(document).on("pagecreate",function(){
     sessionStorage.setItem("blockBlockSelect", blockBlockSelect);
   } );
   
+  $('#trainBlockSelect').change(function() {
+    trainBlockSelect = this.value;
+    trace("trainBlockSelect: " + trainBlockSelect);
+    sessionStorage.setItem("trainBlockSelect", trainBlockSelect);
+  } );
+  
   $('#trackTTSelect').change(function() {
     trackTTSelect = this.value;
     trace("trackTTSelect: " + trackTTSelect);
@@ -1882,6 +1937,7 @@ function getString(s) {
     if( s == "turntable" ) return "Drehscheibe";
     if( s == "text" ) return "Text";
     if( s == "schedule" ) return "Fahrplan";
+    if( s == "train" ) return "Zug";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -1897,6 +1953,7 @@ function getString(s) {
     if( s == "turntable" ) return "Turntable";
     if( s == "text" ) return "Text";
     if( s == "schedule" ) return "Schedule";
+    if( s == "train" ) return "Train";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -1912,6 +1969,7 @@ function getString(s) {
     if( s == "turntable" ) return "Draaischijf";
     if( s == "text" ) return "Tekst";
     if( s == "schedule" ) return "Dienstrooster";
+    if( s == "train" ) return "Treinstel";
   }
 
   return s;
@@ -2100,6 +2158,7 @@ function handleLoco(lc) {
   lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
   lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
   lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
+  lcNode.setAttribute('train', lc.getAttribute('train'));
 
   var bk = findBlock4Loco(lc.getAttribute('id'));
   if( bk != undefined ) {
@@ -3945,6 +4004,14 @@ function processPlan() {
        trace("processing " + locationlist.length + " locations");
      for (var i = 0; i < locationlist.length; i++) {
        locationMap[locationlist[i].getAttribute('id')] = locationlist[i];
+     }
+     
+     
+     operatorlist = xmlDoc.getElementsByTagName("operator");
+     if( operatorlist.length > 0 )
+       trace("processing " + operatorlist.length + " operators");
+     for (var i = 0; i < operatorlist.length; i++) {
+       operatorMap[operatorlist[i].getAttribute('id')] = operatorlist[i];
      }
      
      

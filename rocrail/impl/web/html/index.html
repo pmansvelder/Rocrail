@@ -49,11 +49,14 @@
   -->
   <div><a id="blockResetLoco" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onLocoResetInBlock()">Reset loco assignment</a></div>
 
-  <select name="scheduleBlockSelect" id="scheduleBlockSelect">
-  </select>
-  <select name="blockBlockSelect" id="blockBlockSelect">
-  </select>
   <div class="ui-grid-a">
+    <div class="ui-block-a"><select name="scheduleBlockSelect" id="scheduleBlockSelect">
+    </select></div>
+    <div class="ui-block-b"><select name="blockBlockSelect" id="blockBlockSelect">
+    </select></div>
+    <div class="ui-block-a"><select name="trainBlockSelect" id="trainBlockSelect">
+    </select></div>
+    <div class="ui-block-b"><a id="labBlockTrain" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockTrain()">Assign train</a></div>
     <div class="ui-block-a"><a id="labBlockStart" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart(false)">Start</a></div>
     <div class="ui-block-b"><a id="labBlockStop" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStop()">Stop</a></div>
     <div class="ui-block-a"><a id="labBlockManual" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onBlockStart(true)">Manual</a></div>
