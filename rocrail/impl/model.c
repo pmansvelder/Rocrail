@@ -5674,26 +5674,35 @@ static void _loadBlockOccupancy( iOModel inst ) {
         wLoc.setresumeauto( props, automode );
 
         if( wLoc.isshow(props) ) {
+          iIBlockBase block = ModelOp.getBlock( inst, BlockID );
           Boolean restoreSc = wCtrl.isrestoreschedule( wRocRail.getctrl( AppOp.getIni(  ) ) );
 
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "restore loco placing for [%s]", LocOp.getId(loco));
+          if( block != NULL ) {
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
+                "restore loco placing for [%s] bkid=[%s] section=[%s] enterside=%d placing=%d",
+                LocOp.getId(loco), BlockID, Section, enterside, placing);
 
-          if( restoreSc && ScID != NULL && StrOp.len(ScID) > 0) {
-            LocOp.useSchedule(loco, ScID);
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "restore scheduleID [%s] for [%s]",
-                ScID, LocOp.getId(loco));
+            if( restoreSc && ScID != NULL && StrOp.len(ScID) > 0) {
+              LocOp.useSchedule(loco, ScID);
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "restore scheduleID [%s] for [%s]",
+                  ScID, LocOp.getId(loco));
+            }
+
+            if( enterside > 0 ) {
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set enterside to [%s] for [%s]",
+                  enterside == 1 ?"plus":"min", LocOp.getId(loco) );
+              wLoc.setblockenterside( props, enterside == 1 ? True:False );
+            }
+            if( placing > 0 ) {
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set placing to [%s] for [%s]",
+                  placing == 1 ?"default":"reverse", LocOp.getId(loco) );
+              wLoc.setplacing( props, placing == 1 ? True:False );
+            }
+          }
+          else {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "unknown block ID found in the occ.xml: [%s]", BlockID );
           }
 
-          if( enterside > 0 ) {
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set enterside to [%s] for [%s]",
-                enterside == 1 ?"plus":"min", LocOp.getId(loco) );
-            wLoc.setblockenterside( props, enterside == 1 ? True:False );
-          }
-          if( placing > 0 ) {
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set placing to [%s] for [%s]",
-                placing == 1 ?"default":"reverse", LocOp.getId(loco) );
-            wLoc.setplacing( props, placing == 1 ? True:False );
-          }
         }
       }
       else if( StrOp.len(LocoID) > 0 ) {
