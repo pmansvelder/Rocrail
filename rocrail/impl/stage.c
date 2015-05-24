@@ -2116,6 +2116,7 @@ static struct OStage* _inst( iONode props ) {
 
   wStage.setlocid(data->props, NULL);
   wStage.setentering(data->props, False );
+  wBlock.setallowchgdir(data->props, False );
 
 
   __initSensors(__Stage);
