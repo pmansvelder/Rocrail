@@ -522,10 +522,10 @@ function initMenu()
   var lang = localStorage.lang;
   var sel = document.getElementById('languageSelect');
   
-  if( lang == "de" ) {
+  if( lang == "en" ) {
     sel.selectedIndex = 0;
   }
-  else if( lang == "en" ) {
+  else if( lang == "de" ) {
     sel.selectedIndex = 1;
   }
   else if( lang == "nl" ) {
