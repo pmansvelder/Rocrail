@@ -96,6 +96,7 @@ function langDE() {
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
+  //document.getElementById("menuTrains").innerHTML = "Züge";
   document.getElementById("menuDisconnect").innerHTML = "Server trennen";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
@@ -121,7 +122,6 @@ function langDE() {
   document.getElementById("labBlockSwapEnter").innerHTML = "Einfahrtseite drehen";
   document.getElementById("labBlockClose").innerHTML = "Schliessen";
   document.getElementById("labBlockOpen").innerHTML = "Öffnen";
-  document.getElementById("blockResetLoco").innerHTML = "Lokbelegung zurücknehmen";
   document.getElementById("labTTNext").innerHTML = "Nächstes Gleis";
   document.getElementById("labTTPrev").innerHTML = "Vorheriges Gleis";
   document.getElementById("labTTGoto").innerHTML = "Gehe zum Gleis";
@@ -157,6 +157,7 @@ function langEN() {
   document.getElementById("menuSystem").innerHTML = "System";
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("menuGuest").innerHTML = "Guest loco";
+  //document.getElementById("menuTrains").innerHTML = "Trains";
   document.getElementById("menuDisconnect").innerHTML = "Disconnect server";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Init field";
@@ -182,7 +183,6 @@ function langEN() {
   document.getElementById("labBlockSwapEnter").innerHTML = "Swap enter side";
   document.getElementById("labBlockClose").innerHTML = "Close";
   document.getElementById("labBlockOpen").innerHTML = "Open";
-  document.getElementById("blockResetLoco").innerHTML = "Reset Locomotive assignment";
   document.getElementById("labTTNext").innerHTML = "Next track";
   document.getElementById("labTTPrev").innerHTML = "Previous track";
   document.getElementById("labTTGoto").innerHTML = "Goto track";
@@ -218,6 +218,7 @@ function langNL() {
   document.getElementById("menuSystem").innerHTML = "Systeem";
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
+  //document.getElementById("menuTrains").innerHTML = "Treinstellen";
   document.getElementById("menuDisconnect").innerHTML = "Server loskoppelen";
   document.getElementById("systemTitle").innerHTML = "<b>Systeem</b>";
   document.getElementById("systemInitField").innerHTML = "Init veld";
@@ -243,7 +244,6 @@ function langNL() {
   document.getElementById("labBlockSwapEnter").innerHTML = "Aankomst omkeren";
   document.getElementById("labBlockClose").innerHTML = "Sluiten";
   document.getElementById("labBlockOpen").innerHTML = "Openen";
-  document.getElementById("blockResetLoco").innerHTML = "Loc bezetting opheffen";
   document.getElementById("labTTNext").innerHTML = "Volgende spoor";
   document.getElementById("labTTPrev").innerHTML = "Vorige spoor";
   document.getElementById("labTTGoto").innerHTML = "Ga naar spoor";
@@ -303,6 +303,10 @@ function onLocoImage() {
 }
 
 function onBlockLocoImage() {
+  if( tapholdFkey == 1 ) {
+    tapholdFkey = 0;
+    return;
+  }
   initLocoList();
   trace("close block popup");
   prevPopup = "popupBlock";
@@ -598,6 +602,10 @@ function openGuest() {
 
 }
 
+function openTrains() {
+  // ToDo: Popup.
+}
+
 /* Options Dialog */
 function openOptions() {
   //trace("close menu");
@@ -741,6 +749,7 @@ $(function(){
   $("#F14").bind("taphold", tapholdF14Handler);
   $("#direction").bind("taphold", tapholdDirectionHandler);
   //$("#locoImage").bind("taphold", tapholdLocoImageHandler);
+  $("#locoImageBlock").bind("taphold", tapholdLocoImageBlockHandler);
  
   function tapholdF1Handler(e) {
     e.preventDefault();
@@ -849,6 +858,14 @@ $(function(){
     trace("taphold locoImage: loco management");
     openLocoControl();
   }
+
+  function tapholdLocoImageBlockHandler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold locoImageBlock: free block");
+    onLocoResetInBlock();
+  }
+
 });
 
 function onDirection() {
@@ -3546,7 +3563,7 @@ function getMobileCategory(lc) {
 }
 
 function initLocoList() {
-  console.log("initLocoList...");
+  trace("initLocoList...");
   var locoSelectList = document.getElementById("locoSelectList");
   locoSelectList.innerHTML = "";
   for (var key in lcCatMap) delete lcCatMap[key];
