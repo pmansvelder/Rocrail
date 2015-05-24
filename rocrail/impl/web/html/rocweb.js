@@ -57,6 +57,7 @@ var guestProt = "P";
 var guestSteps = "28";
 var trackTTSelect = 'none';
 var speedStepDelta = 3;
+var redBackground = "#FFC8C8";
 
 
 function forceRedraw(div){
@@ -426,7 +427,7 @@ function updateFunctionLabels() {
     var fn = lc.getAttribute('fn');
     
     if( fn != undefined && fn == "true")
-      lights.style.backgroundColor = "#FF8888";
+      lights.style.backgroundColor = redBackground;
       
     for(i = 1; i < 15; i++) {
       var F = document.getElementById("F"+i);
@@ -436,7 +437,7 @@ function updateFunctionLabels() {
       var mask = 1 << (iFnShift-1); 
       trace("i="+i+" iFnShift="+(iFnShift-1)+" mask="+mask.toString(16)+" fx="+fx.toString(16));
       if( fx & mask )
-        F.style.backgroundColor = "#FF8888";
+        F.style.backgroundColor = redBackground;
     }
 
     //var fundeflist = lc.childNodes;
@@ -467,7 +468,7 @@ function updateFunctionLabels() {
         }
         var mask = 1 << (iFnShift-1); 
         if( fx & mask )
-          F.style.backgroundColor = "#FF8888";
+          F.style.backgroundColor = redBackground;
 
       }
     }
@@ -1656,7 +1657,7 @@ function initThrottleStatus() {
     var locoConsist = document.getElementById("locoConsist");
 
     var modeLabel = "";
-    var modeColor = "#FFAAAA";
+    var modeColor = redBackground;
     var mode = lc.getAttribute('mode');
     if( mode == "auto" ) {
       modeLabel = "A";
@@ -2234,7 +2235,7 @@ function handleFunction(fn) {
       fnchanged -= 14;
     var div = document.getElementById("F"+fnchanged);
     if( on == "true")
-      div.style.backgroundColor = "#FF8888";
+      div.style.backgroundColor = redBackground;
     else
       div.style.backgroundColor = ''
   }
@@ -2623,7 +2624,7 @@ function handleState(state) {
   power = state.getAttribute('power');
   trace("power: " + power );
   if( power == "true" )
-    document.getElementById("headerPower").style.backgroundColor= "#FF8888";
+    document.getElementById("headerPower").style.backgroundColor= redBackground;
   else 
     document.getElementById("headerPower").style.backgroundColor= '';
 }
@@ -2632,7 +2633,7 @@ function handleAuto(auto) {
   autoMode = auto.getAttribute('cmd');
   trace("auto: " + autoMode );
   if( autoMode == "on" )
-    document.getElementById("headerAuto").style.backgroundColor= "#FF8888";
+    document.getElementById("headerAuto").style.backgroundColor= redBackground;
   else 
     document.getElementById("headerAuto").style.backgroundColor= '';
 }
