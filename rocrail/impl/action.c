@@ -139,7 +139,7 @@ static void* __event( void* inst, const void* evt ) {
 
 /** ----- OAction ----- */
 
-static Boolean __checkLocoState(const char* locoid, const char* id, const char* state, iONode actionctrl, iONode actionCond) {
+static Boolean __checkLocoState(const char* locoid, const char* id, const char* state, iONode actionctrl, iONode actionCond, const char* trainID) {
   iOModel model = AppOp.getModel();
   Boolean automode = ModelOp.isAuto(model);
   iOLoc lc = ModelOp.getLoc(model, locoid, NULL, False);
@@ -309,7 +309,20 @@ static Boolean __checkLocoState(const char* locoid, const char* id, const char* 
         else if( StrOp.startsWith( wActionCond.getstate(actionCond), "class" ) && StrOp.len(wActionCond.getstate(actionCond)) > 6) {
           const char* statusStr = wActionCond.getstate(actionCond);
           const char* statusClass = statusStr + 6;
-          if( !StrOp.equals(statusClass, LocOp.getClass(lc)) ) {
+          iOOperator opr = NULL;
+
+          if( trainID != NULL && ModelOp.getOperator( model, trainID) != NULL) {
+            opr = ModelOp.getOperator( model, trainID);
+          }
+
+          /* Check train first. */
+          if( opr != NULL && !StrOp.equals(statusClass, OperatorOp.getClass(opr)) ) {
+            rc = False;
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+                "train %s class %s does not matches [%s]", trainID,
+                OperatorOp.getClass(opr), statusClass );
+          }
+          else if( !StrOp.equals(statusClass, LocOp.getClass(lc)) ) {
             rc = False;
             TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
                 "loco %s class %s does not matches [%s]", LocOp.getId(lc),
@@ -611,7 +624,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
               TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "train ID [%s] match with loco [%s]", id, LocOp.getId(lc));
               rc = True;
               if( state != NULL && StrOp.len(state) > 0 ) {
-                rc = __checkLocoState(LocOp.getId(lc), LocOp.getId(lc), state, actionctrl, actionCond);
+                rc = __checkLocoState(LocOp.getId(lc), LocOp.getId(lc), state, actionctrl, actionCond, train);
               }
             }
             else {
@@ -624,7 +637,7 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
         else if( StrOp.equals( wLoc.name(), wActionCond.gettype(actionCond) ) ) {
           const char* id = wActionCond.getid( actionCond );
           const char* state = wActionCond.getstate(actionCond);
-          rc = __checkLocoState(wActionCtrl.getlcid(actionctrl), id, state, actionctrl, actionCond);
+          rc = __checkLocoState(wActionCtrl.getlcid(actionctrl), id, state, actionctrl, actionCond, NULL);
         }
 
         /* */
