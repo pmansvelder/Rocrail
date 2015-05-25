@@ -109,6 +109,7 @@ function langDE() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Zeige alle Fahrpläne";
   document.getElementById("labOptionModuleView").innerHTML = "Modul-Ansicht";
   document.getElementById("labOptionShowOcc").innerHTML = "Blockbelegung";
+  document.getElementById("labOptionShowRoutes").innerHTML = "Zeige Fahrstraßen";
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Zeige Fahrstraßen bei Weichen";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
@@ -171,6 +172,7 @@ function langEN() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Show all schedules";
   document.getElementById("labOptionModuleView").innerHTML = "Module view";
   document.getElementById("labOptionShowOcc").innerHTML = "Block occupancy";
+  document.getElementById("labOptionShowRoutes").innerHTML = "Show routes";
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Show routes on switches";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
@@ -233,6 +235,7 @@ function langNL() {
   document.getElementById("labOptionShowAllSchedules").innerHTML = "Laat alle dienstroosters zien";
   document.getElementById("labOptionModuleView").innerHTML = "Module weergave";
   document.getElementById("labOptionShowOcc").innerHTML = "Blok bezetting";
+  document.getElementById("labOptionShowRoutes").innerHTML = "Toon rijwegen";
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Toon rijwegen over wissels";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
@@ -626,6 +629,8 @@ function openOptions() {
   $('#optionModuleView').prop('checked', moduleview=="true"?true:false).checkboxradio('refresh');
   var showocc = localStorage.getItem("showocc");
   $('#optionShowOcc').prop('checked', showocc=="true"?true:false).checkboxradio('refresh');
+  var showroutes = localStorage.getItem("showroutes");
+  $('#optionShowRoutes').prop('checked', showroutes=="true"?true:false).checkboxradio('refresh');
   var showroutesonswitches = localStorage.getItem("showroutesonswitches");
   $('#optionShowRoutesOnSwitches').prop('checked', showroutesonswitches=="true"?true:false).checkboxradio('refresh');
   var allspeedsteps = localStorage.getItem("allspeedsteps");
@@ -1626,6 +1631,12 @@ function onOptionShowOcc() {
   trace("option showocc = "+ optionShowOcc.checked );
 }
 
+function onOptionShowRoutes() {
+  var optionShowRoutes = document.getElementById("optionShowRoutes");
+  localStorage.setItem("showroutes", optionShowRoutes.checked ? "true":"false");
+  trace("option showroutes = "+ optionShowRoutes.checked );
+}
+
 function onOptionShowRoutesOnSwitches() {
   var optionShowRoutesOnSwitches = document.getElementById("optionShowRoutesOnSwitches");
   localStorage.setItem("showroutesonswitches", optionShowRoutesOnSwitches.checked ? "true":"false");
@@ -2557,36 +2568,39 @@ function handleRoute(st) {
     if( locked != undefined ) {
       stNode.setAttribute('status', locked);
   
-      for (var key in tkMap) {
-        var tk = tkMap[key];
-        var routeids = tk.getAttribute('routeids');
-        if( routeids == undefined )
-          continue;
-        if( routeids.indexOf(stid) != -1 ) {
-          tk.setAttribute('route', locked)
-          handleTrack(tk);
+      if( localStorage.getItem("showroutes") == "true" ) {
+        for (var key in tkMap) {
+          var tk = tkMap[key];
+          var routeids = tk.getAttribute('routeids');
+          if( routeids == undefined )
+            continue;
+          if( routeids.indexOf(stid) != -1 ) {
+            tk.setAttribute('route', locked)
+            handleTrack(tk);
+          }
+        }
+        for (var key in fbMap) {
+          var fb = fbMap[key];
+          var routeids = fb.getAttribute('routeids');
+          if( routeids == undefined )
+            continue;
+          if( routeids.indexOf(stid) != -1 ) {
+            fb.setAttribute('route', locked)
+            handleSensor(fb);
+          }
+        }
+        for (var key in sgMap) {
+          var sg = sgMap[key];
+          var routeids = sg.getAttribute('routeids');
+          if( routeids == undefined )
+            continue;
+          if( routeids.indexOf(stid) != -1 ) {
+            sg.setAttribute('route', locked)
+            handleSignal(sg);
+          }
         }
       }
-      for (var key in fbMap) {
-        var fb = fbMap[key];
-        var routeids = fb.getAttribute('routeids');
-        if( routeids == undefined )
-          continue;
-        if( routeids.indexOf(stid) != -1 ) {
-          fb.setAttribute('route', locked)
-          handleSensor(fb);
-        }
-      }
-      for (var key in sgMap) {
-        var sg = sgMap[key];
-        var routeids = sg.getAttribute('routeids');
-        if( routeids == undefined )
-          continue;
-        if( routeids.indexOf(stid) != -1 ) {
-          sg.setAttribute('route', locked)
-          handleSignal(sg);
-        }
-      }
+      
       if( localStorage.getItem("showroutesonswitches") == "true" ) {
         for (var key in swMap) {
           var sw = swMap[key];
