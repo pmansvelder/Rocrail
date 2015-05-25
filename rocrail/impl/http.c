@@ -195,7 +195,6 @@ static void __pportserver( void* threadinst ) {
   iOHttp     http = (iOHttp)ThreadOp.getParm(th);
   iOHttpData data = Data( http );
   iONode    event = NULL;
-  Boolean demoEnd = False;
 
   char* desc = StrOp.fmt( "Rocweb service on port %d", data->pport  );
   ThreadOp.setDescription( th, desc );
@@ -285,7 +284,7 @@ static void __pportserver( void* threadinst ) {
       event = NULL;
     }
 
-    ThreadOp.sleep( demoEnd ? 100:5 );
+    ThreadOp.sleep( data->demoEnd ? 100:5 );
   } while( !ThreadOp.isQuit( th ) );
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Rocweb service ended on %d.", data->pport );

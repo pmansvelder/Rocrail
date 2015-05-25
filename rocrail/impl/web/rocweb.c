@@ -478,7 +478,8 @@ static void rocWebSocketReader( void* threadinst ) {
       }
       else {
         data->websocketerror = True;
-        data->websocketrun = False;
+        data->websocketrun   = False;
+        data->websocketavail = False;
         break;
       }
     }
@@ -555,10 +556,10 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
     return False;
   }
 
-  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebSocketME" );
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb" );
 
   b[0] = data->firstbyte;
-  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for rocWebSocketME: 0x%02X", b );
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb: 0x%02X", b );
   if(ok) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: fin=%s opcode=%d", b[0]&0x80?"true":"false", b[0]&0x0F );
     ok = SocketOp.read( data->socket, b, 1 );
