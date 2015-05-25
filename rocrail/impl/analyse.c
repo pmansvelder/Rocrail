@@ -1295,26 +1295,27 @@ static Boolean checkActionCondLoco( iOAnalyse inst, const char* acLcid, const ch
   iOStrTok tok = StrTokOp.inst( state, ',');
   while( StrTokOp.hasMoreTokens(tok) ) {
     const char* token = StrTokOp.nextToken( tok );
-    if( ! StrOp.equals( token, "forwards"            ) &&
-        ! StrOp.equals( token, "reverse"             ) &&
-        ! StrOp.equals( token, wLoc.engine_diesel    ) &&
-        ! StrOp.equals( token, wLoc.engine_steam     ) &&
-        ! StrOp.equals( token, wLoc.engine_electric  ) &&
-        ! StrOp.equals( token, wLoc.min              ) &&
-        ! StrOp.equals( token, wLoc.mid              ) &&
-        ! StrOp.equals( token, wLoc.cruise           ) &&
-        ! StrOp.equals( token, wLoc.max              ) &&
-        ! StrOp.equals( token, "+"                   ) &&
-        ! StrOp.equals( token, "-"                   ) &&
-        ! StrOp.equals( token, wLoc.cargo_light      ) &&
-        ! StrOp.equals( token, wLoc.cargo_lightgoods ) &&
-        ! StrOp.equals( token, wLoc.cargo_person     ) &&
-        ! StrOp.equals( token, wLoc.cargo_goods      ) &&
-        ! StrOp.equals( token, wLoc.cargo_post       ) &&
-        ! StrOp.equals( token, wLoc.cargo_ice        ) &&
-        ! StrOp.equals( token, wLoc.cargo_mixed      ) &&
-        ! StrOp.equals( token, wLoc.cargo_regional   ) &&
-        ! ( StrOp.startsWith( token, "schedule:" ) && isValidLocoActionScheduleId( inst, (lcid!=NULL)?lcid:acLcid, token ) )
+    if(  ! StrOp.equals( token, "forwards"            )
+      && ! StrOp.equals( token, "reverse"             )
+      && ! StrOp.equals( token, wLoc.engine_diesel    )
+      && ! StrOp.equals( token, wLoc.engine_steam     )
+      && ! StrOp.equals( token, wLoc.engine_electric  )
+      && ! StrOp.equals( token, wLoc.min              )
+      && ! StrOp.equals( token, wLoc.mid              )
+      && ! StrOp.equals( token, wLoc.cruise           )
+      && ! StrOp.equals( token, wLoc.max              )
+      && ! StrOp.equals( token, "+"                   )
+      && ! StrOp.equals( token, "-"                   )
+      && ! StrOp.equals( token, wLoc.cargo_light      )
+      && ! StrOp.equals( token, wLoc.cargo_lightgoods )
+      && ! StrOp.equals( token, wLoc.cargo_person     )
+      && ! StrOp.equals( token, wLoc.cargo_goods      )
+      && ! StrOp.equals( token, wLoc.cargo_post       )
+      && ! StrOp.equals( token, wLoc.cargo_ice        )
+      && ! StrOp.equals( token, wLoc.cargo_mixed      )
+      && ! StrOp.equals( token, wLoc.cargo_regional   )
+      && ! ( StrOp.startsWith( token, "schedule:" ) && isValidLocoActionScheduleId( inst, (lcid!=NULL)?lcid:acLcid, token ) )
+      && ! StrOp.startsWith( token, "class:"          )
       ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "checkActionCondLoco for lc[%s]: lc[%s] invalid state[%s]",
           acLcid, (lcid!=NULL)?lcid:acLcid, token );
@@ -1461,8 +1462,15 @@ static int checkAction( iOAnalyse inst, int acIdx, iONode action, Boolean repair
         condOK = True;
     }else if ( StrOp.equals( condType, wOperator.name() ) ) {
       ptr = (char *) ModelOp.getOperator( data->model, condId );
-      if( ptr && checkActionCondOperator( inst, condId, condState ) )
+      if( ptr && checkActionCondOperator( inst, condId, condState ) ) {
         condOK = True;
+      }else if( StrOp.equals( condId, "*" ) ) {
+        /* "*" is always a valid train -> check loco "*" */
+        ptr = (char *) ~0 ;
+        if( checkActionCondLoco( inst, condId, NULL, condState ) ) {
+          condOK = True;
+        }
+      }
     }else if ( StrOp.equals( condType, wLoc.name() ) ) {
       ptr = (char *) ModelOp.getLoc( data->model, condId, NULL, False );
       if( ptr && checkActionCondLoco( inst, acLcid, condId, condState ) ) {
