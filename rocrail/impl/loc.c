@@ -2655,7 +2655,8 @@ static void _setCurBlock( iOLoc inst, const char* id ) {
   }
 
   if( (data->curBlock != NULL && StrOp.len(data->curBlock) > 0 && !StrOp.equals(id, data->curBlock)) || data->prevBlock == NULL ) {
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "set previous block to [%s], new to [%s]", data->curBlock == NULL ? "":data->curBlock, id );
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+        "set previous block to [%s], new to [%s]", data->curBlock == NULL ? "-":data->curBlock, id==NULL ? "-":id );
     data->prevBlock = data->curBlock;
   }
   data->curBlock = id;

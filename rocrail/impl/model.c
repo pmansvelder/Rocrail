@@ -5504,10 +5504,17 @@ static void _stop( iOModel inst ) {
 static void _setBlockOccupancy( iOModel inst, const char* BlockId, const char* LocId, Boolean closed, int placing, int enterside, const char* SectionId ) {
   iOModelData data = Data(inst);
   iONode occ = NULL;
+  iIBlockBase block = NULL;
   char key[256] = {'\0'};
 
   /* Lock the semaphore: */
   MutexOp.wait( data->occMux );
+
+  block = ModelOp.getBlock( inst, BlockId );
+  if( block == NULL ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "occ: ignore unknown block [%s] for loco [%s]", BlockId, LocId );
+    return;
+  }
 
   StrOp.fmtb( key, "%s%s", BlockId, SectionId!=NULL ? SectionId:"");
 
