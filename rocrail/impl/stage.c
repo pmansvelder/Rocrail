@@ -87,6 +87,7 @@ If a train reaches the exit section it will be put back into auto mode.
 #include "rocrail/public/model.h"
 #include "rocrail/public/loc.h"
 #include "rocrail/public/signal.h"
+#include "rocrail/public/location.h"
 
 #include "rocs/public/doc.h"
 #include "rocs/public/trace.h"
@@ -944,7 +945,10 @@ static Boolean _hasPre2In( iIBlockBase inst ,const char* fromBlockId ) {
 /**  */
 static void _inBlock( iIBlockBase inst ,const char* locid ) {
   iOStageData data = Data(inst);
+  iOLocation location = ModelOp.getBlockLocation(AppOp.getModel(), data->id );
+
   TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "loco [%s] is in", locid );
+
   if( locid != NULL ) {
     iONode nodeD = (iONode)NodeOp.base.clone(data->props);
     wStage.setid( nodeD, data->id );
@@ -952,6 +956,10 @@ static void _inBlock( iIBlockBase inst ,const char* locid ) {
     wStage.setlocid( nodeD, "" );
     AppOp.broadcastEvent( nodeD );
     __checkAction((iOStage)inst, "occupied", NULL, NULL);
+
+    if( location != NULL ) {
+      LocationOp.locoDidArrive(location, locid);
+    }
   }
   return;
 }
@@ -1667,8 +1675,12 @@ static Boolean __freeSection(iIBlockBase inst, const char* secid) {
   for( i = 0; i < sections; i++ ) {
     iONode section = (iONode)ListOp.get( data->sectionList, i);
     if( StrOp.equals(wStageSection.getid(section), secid) ) {
+      iOLocation location = ModelOp.getBlockLocation( AppOp.getModel(), data->id);
       /* free section */
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "unlock section[%d] from %s", i, wStageSection.getlcid(section) );
+      if( location != NULL ) {
+        LocationOp.locoDidDepart(location, wStageSection.getlcid(section));
+      }
       wStageSection.setlcid(section, NULL);
       __checkAction((iOStage)inst, "section", wStageSection.getid(section), NULL);
       ModelOp.setBlockOccupancy( AppOp.getModel(), data->id, "", False, 0, 0, secid );
@@ -1689,9 +1701,13 @@ static Boolean __occSection(iIBlockBase inst, const char* secid, const char* lci
   for( i = 0; i < sections; i++ ) {
     iONode section = (iONode)ListOp.get( data->sectionList, i);
     if( StrOp.equals(wStageSection.getid(section), secid) ) {
+      iOLocation location = ModelOp.getBlockLocation( AppOp.getModel(), data->id);
       /* occ section */
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "lock section[%d] by %s", i, lcid );
       wStageSection.setlcid(section, lcid);
+      if( location != NULL ) {
+        LocationOp.locoDidArrive(location, wStageSection.getlcid(section));
+      }
       __checkAction((iOStage)inst, "section", wStageSection.getid(section), lcid);
       ModelOp.setBlockOccupancy( AppOp.getModel(), data->id, lcid, False, 0, 0, secid );
       locked = True;
@@ -1705,11 +1721,18 @@ static Boolean __occSection(iIBlockBase inst, const char* secid, const char* lci
 /**  */
 static Boolean _unLock( iIBlockBase inst ,const char* locid, const char* routeid ) {
   iOStageData data = Data(inst);
+  iOLocation location = ModelOp.getBlockLocation(AppOp.getModel(), data->id );
+
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "unlock for loco %s", locid!=NULL?locid:"?" );
   if( locid != NULL ) {
     if(__freeSections(inst, locid)) {
       __checkAction((iOStage)inst, "free", NULL, NULL);
       ModelOp.setBlockOccupancy( AppOp.getModel(), data->id, "", False, 0, 0, NULL );
+
+      if( location != NULL && locid != NULL ) {
+        LocationOp.locoDidDepart(location, locid);
+      }
+
       return True;
     }
   }
@@ -1971,6 +1994,24 @@ static void _acceptIdent( iIBlockBase inst, Boolean accept ) {
 }
 
 static void _didNotDepart( iIBlockBase inst, const char* id ) {
+  iOStageData data = Data(inst);
+  iOLocation location = ModelOp.getBlockLocation(AppOp.getModel(), data->id );
+
+  if( location != NULL ) {
+    LocationOp.didNotDepart( location, id );
+  }
+}
+
+
+static Boolean __checkLocation( iIBlockBase inst, const char* id) {
+  iOStageData data = Data(inst);
+  iOLocation location = ModelOp.getBlockLocation(AppOp.getModel(), data->id );
+
+  if( location != NULL ) {
+    return LocationOp.isDepartureAllowed( location, id );
+  }
+
+  return True;
 }
 
 static Boolean _isDepartureAllowed( iIBlockBase inst, const char* id, Boolean force ) {
@@ -1991,7 +2032,7 @@ static Boolean _isDepartureAllowed( iIBlockBase inst, const char* id, Boolean fo
         int lcCount = 0;
         __dumpSections((iOStage)inst, &lcCount);
         if( lcCount >= wStage.getminocc(data->props) ) {
-          return True;
+          return __checkLocation(inst, id);
         }
         else {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "depart of loco %s is not allowed; minocc=%d occ=%d.",
