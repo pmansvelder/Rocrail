@@ -313,15 +313,20 @@ static Boolean __checkLocoState(const char* locoid, const char* id, const char* 
 
           if( trainID != NULL && ModelOp.getOperator( model, trainID) != NULL) {
             opr = ModelOp.getOperator( model, trainID);
+            /* Check train first. */
+            if( !StrOp.equals(statusClass, OperatorOp.getClass(opr)) ) {
+              rc = False;
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+                  "train %s class %s does not matches [%s]", trainID,
+                  OperatorOp.getClass(opr), statusClass );
+            }
+            else {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+                  "train %s class %s matches [%s]", trainID,
+                  OperatorOp.getClass(opr), statusClass );
+            }
           }
 
-          /* Check train first. */
-          if( opr != NULL && !StrOp.equals(statusClass, OperatorOp.getClass(opr)) ) {
-            rc = False;
-            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
-                "train %s class %s does not matches [%s]", trainID,
-                OperatorOp.getClass(opr), statusClass );
-          }
           else if( !StrOp.equals(statusClass, LocOp.getClass(lc)) ) {
             rc = False;
             TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
@@ -617,10 +622,19 @@ static Boolean __checkConditions(struct OAction* inst, iONode actionctrl) {
           const char* state = wActionCond.getstate(actionCond);
           iOLoc lc = ModelOp.getLoc(model, wActionCtrl.getlcid(actionctrl), NULL, False);
           iOOperator opr = ModelOp.getOperator( model, id);
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "train ID [%s] match with loco [%s]", id, wActionCtrl.getlcid(actionctrl));
+
+          if( lc != NULL && opr == NULL && StrOp.equals(id, "*") ) {
+            const char* train = wLoc.gettrain(LocOp.base.properties(lc));
+            if( train != NULL && StrOp.len(train) > 0 ) {
+              opr = ModelOp.getOperator( model, train);
+            }
+          }
+
           rc = False;
           if( lc != NULL && opr != NULL ) {
             const char* train = wLoc.gettrain(LocOp.base.properties(lc));
-            if( train != NULL && StrOp.equals(train, id) ) {
+            if( train != NULL && (StrOp.equals(train, id) || StrOp.equals(id, "*")) ) {
               TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "train ID [%s] match with loco [%s]", id, LocOp.getId(lc));
               rc = True;
               if( state != NULL && StrOp.len(state) > 0 ) {
