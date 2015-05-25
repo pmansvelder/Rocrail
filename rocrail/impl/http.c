@@ -455,8 +455,10 @@ static void _broadcastEvent( struct OHttp* inst ,iONode evt ) {
     return;
   }
   if( !ThreadOp.post( data->pportserver, (obj)evt ) ) {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Unable to broadcast event!" );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Unable to broadcast event: Shutdown service." );
     NodeOp.base.del(evt);
+    HttpOp.shutdown(inst);
+    data->pportserver = NULL;
   }
   return;
 }
