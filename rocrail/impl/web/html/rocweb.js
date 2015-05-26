@@ -124,6 +124,7 @@ function langDE() {
   document.getElementById("labBlockSwapEnter").innerHTML = "Einfahrtseite drehen";
   document.getElementById("labBlockClose").innerHTML = "Schliessen";
   document.getElementById("labBlockOpen").innerHTML = "Öffnen";
+  document.getElementById("labBlockTrain").innerHTML = "Zug zuordnen";
   document.getElementById("labTTNext").innerHTML = "Nächstes Gleis";
   document.getElementById("labTTPrev").innerHTML = "Vorheriges Gleis";
   document.getElementById("labTTGoto").innerHTML = "Gehe zum Gleis";
@@ -188,6 +189,7 @@ function langEN() {
   document.getElementById("labBlockSwapEnter").innerHTML = "Swap enter side";
   document.getElementById("labBlockClose").innerHTML = "Close";
   document.getElementById("labBlockOpen").innerHTML = "Open";
+  document.getElementById("labBlockTrain").innerHTML = "Assign train";
   document.getElementById("labTTNext").innerHTML = "Next track";
   document.getElementById("labTTPrev").innerHTML = "Previous track";
   document.getElementById("labTTGoto").innerHTML = "Goto track";
@@ -252,6 +254,7 @@ function langNL() {
   document.getElementById("labBlockSwapEnter").innerHTML = "Aankomst omkeren";
   document.getElementById("labBlockClose").innerHTML = "Sluiten";
   document.getElementById("labBlockOpen").innerHTML = "Openen";
+  document.getElementById("labBlockTrain").innerHTML = "Treinstel toewijzen";
   document.getElementById("labTTNext").innerHTML = "Volgende spoor";
   document.getElementById("labTTPrev").innerHTML = "Vorige spoor";
   document.getElementById("labTTGoto").innerHTML = "Ga naar spoor";
