@@ -737,20 +737,6 @@ function openConsist() {
   
 }
 
-function openLocoControl() {
-  trace("close throttle");
-  $( "#popupThrottle" ).popup( "close" );
-  trace("open loco control");
-  $('#popupThrottle').on("popupafterclose", function(){
-    $('#popupThrottle').unbind( "popupafterclose" );
-    $( "#popupLocoControl" ).popup( "open" );
-    });
-  $('#popupLocoControl').on("popupafterclose", function(){
-    $('#popupLocoControl').unbind( "popupafterclose" );
-    $( "#popupThrottle" ).popup( "open" );
-    });
-}
-
 /* Throttle commands */
 window.oncontextmenu = function(event) {
   event.preventDefault();
@@ -875,8 +861,7 @@ $(function(){
   function tapholdLocoImageHandler(e) {
     e.preventDefault();
     tapholdFkey = 1;
-    trace("taphold locoImage: loco management");
-    openLocoControl();
+    trace("taphold locoImage: ...");
   }
 
   function tapholdLocoImageBlockHandler(e) {
