@@ -369,7 +369,10 @@ function onLocoSelected(sel) {
     var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
-
+  else if( locoSelectAction == "consistshow" ) {
+    // Nothing todo.
+  }
+  
   initThrottle();
   updateDir();
   updateFunctionLabels();
@@ -746,6 +749,7 @@ $(function(){
   $("#locoImageBlock").bind("taphold", tapholdLocoImageBlockHandler);
   $("#F9").bind("taphold", tapholdF9Handler);
   $("#F10").bind("taphold", tapholdF10Handler);
+  $("#F11").bind("taphold", tapholdF11Handler);
  
   function tapholdF1Handler(e) {
     e.preventDefault();
@@ -854,6 +858,13 @@ $(function(){
     tapholdFkey = 1;
     trace("taphold F10: consist delete");
     onConsistDel();
+  }
+  
+  function tapholdF11Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F11: consist show");
+    onConsistShow();
   }
   
   function tapholdDirectionHandler(e) {
@@ -1768,6 +1779,21 @@ function onConsistAdd() {
 function onConsistDel() {
   trace("consist delete");
   initLocoList("consistdel");
+
+  trace("close throttle");
+  prevPopup = "popupThrottle;"
+  $( "#popupThrottle" ).popup( "close" );
+  trace("open loco select");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupLocoSelect" ).popup( "open" );
+    });
+}
+
+
+function onConsistShow() {
+  trace("consist show");
+  initLocoList("consistshow");
 
   trace("close throttle");
   prevPopup = "popupThrottle;"
@@ -3660,7 +3686,7 @@ function initLocoList(action) {
       addLocoToList(car);
     }
   }
-  else if( action == "consistadd" || action == "consistdel" ) {
+  else if( action == "consistadd" || action == "consistdel" || action == "consistshow" ) {
     var master = lcMap[locoSelected];
     var masterid = master.getAttribute('id');
     if(master != undefined) {
@@ -3670,7 +3696,9 @@ function initLocoList(action) {
         var slaveid = lc.getAttribute('id');
         if( action == "consistadd" && slaveid != masterid && slaves.indexOf(slaveid) == -1 )
           addLocoToList(lc);
-        if( action == "consistdel" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
+        else if( action == "consistdel" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
+          addLocoToList(lc);
+        else if( action == "consistshow" && (slaveid == masterid || slaves.indexOf(slaveid) != -1) )
           addLocoToList(lc);
       }
     }
