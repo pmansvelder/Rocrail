@@ -545,6 +545,24 @@ iONode findLcById( iONode model, const char* lcid ) {
 }
 
 
+iONode findOpById( iONode model, const char* opid ) {
+  iONode oplist = wPlan.getoperatorlist( model );
+  if( oplist != NULL ) {
+    int cnt = NodeOp.getChildCnt( oplist );
+    int i;
+    for( i=0 ; i<cnt ; i++ ) {
+      iONode op = NodeOp.getChild( oplist, i );
+      const char* id = wLoc.getid( op );
+
+      if( id != NULL && StrOp.equals( opid, id ) ) {
+        return op;
+      }
+    }
+  }
+  return NULL;
+}
+
+
 iONode findScById( iONode model, const char* scid ) {
   iONode sclist = wPlan.getsclist( model );
   if( sclist != NULL ) {
@@ -3177,11 +3195,12 @@ static Boolean blockCheck( iOAnalyse inst, Boolean repair ) {
         }
         else {
           iONode lc = findLcById( data->plan, lcid );
-          if( lc == NULL ) {
-            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] include permission for non existent loco [%s]",
+          iONode op = findOpById( data->plan, lcid );
+          if( (lc == NULL) && (op == NULL) ) {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] include permission for non existent loco/train[%s]",
                 NodeOp.getName(bkNode), wItem.getid(bkNode), lcid );
             if( repair ) {
-              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add include permission for loco[%s] to delList", lcid );
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add include permission for loco/train[%s] to delList", lcid );
               ListOp.add( delList, (obj)incl );
             }
             numProblems++;
@@ -3203,11 +3222,12 @@ static Boolean blockCheck( iOAnalyse inst, Boolean repair ) {
         }
         else {
           iONode lc = findLcById( data->plan, lcid );
-          if( lc == NULL ) {
-            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] exclude permission for non existent loco [%s]",
+          iONode op = findOpById( data->plan, lcid );
+          if( (lc == NULL) && (op == NULL) ) {
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: block %s[%s] exclude permission for non existent loco/train[%s]",
                 NodeOp.getName(bkNode), wItem.getid(bkNode), lcid );
             if( repair ) {
-              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add exclude permission for loco[%s] to delList", lcid );
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "block check: add exclude permission for loco/train[%s] to delList", lcid );
               ListOp.add( delList, (obj)excl );
             }
             numProblems++;
@@ -9118,11 +9138,12 @@ static Boolean routeCheck( iOAnalyse inst, Boolean repair ) {
             }
             else {
               iONode lc = findLcById( data->plan, lcid );
-              if( lc == NULL ) {
-                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] include permission for non existent loco [%s]",
+              iONode op = findOpById( data->plan, lcid );
+              if( (lc == NULL) && (op == NULL) ) {
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] include permission for non existent loco/train[%s]",
                     NodeOp.getName(stNode), wItem.getid(stNode), lcid );
                 if( repair ) {
-                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add include permission for loco[%s] to delList", lcid );
+                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add include permission for loco/train[%s] to delList", lcid );
                   ListOp.add( delList, (obj)incl );
                 }
                 numProblems++;
@@ -9144,11 +9165,12 @@ static Boolean routeCheck( iOAnalyse inst, Boolean repair ) {
             }
             else {
               iONode lc = findLcById( data->plan, lcid );
-             if( lc == NULL ) {
-                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] exclude permission for non existent loco [%s]",
+              iONode op = findOpById( data->plan, lcid );
+              if( (lc == NULL) && (op == NULL) ) {
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "WARNING: route %s[%s] exclude permission for non existent loco/train[%s]",
                     NodeOp.getName(stNode), wItem.getid(stNode), lcid );
                 if( repair ) {
-                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add exclude permission for loco[%s] to delList", lcid );
+                  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route check: add exclude permission for loco/train[%s] to delList", lcid );
                   ListOp.add( delList, (obj)excl );
                 }
                 numProblems++;
