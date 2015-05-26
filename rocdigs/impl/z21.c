@@ -770,7 +770,7 @@ static iONode __translate(iOZ21 inst, iONode node) {
         packet[4] = 0xE6;
         if( accessory ) {
           packet[5] = 0x31;
-          packet[6] = (addr << 5);
+          packet[6] = (addr >> 4);
           packet[7] = (addr & 0x0F) << 4;
           packet[8] = 0xE4 + ((cv / 256) & 0x03);
           packet[9] = cv % 256;
@@ -818,7 +818,7 @@ static iONode __translate(iOZ21 inst, iONode node) {
         packet[4] = 0xE6;
         if( accessory ) {
           packet[5] = 0x31;
-          packet[6] = (addr << 5);
+          packet[6] = (addr >> 4);
           packet[7] = (addr & 0x0F) << 4;
           packet[8] = 0xEC + ((cv / 256) & 0x03);
           packet[9] = cv % 256;
@@ -828,7 +828,7 @@ static iONode __translate(iOZ21 inst, iONode node) {
           packet[5] = 0x30;
           packet[6] = 0xC0 + (addr / 256);
           packet[7] = addr % 256;
-          packet[8] = 0xEC + cv / 256;
+          packet[8] = 0xEC + ((cv / 256) & 0x03);
           packet[9] = cv % 256;
           packet[10] = value;
         }
