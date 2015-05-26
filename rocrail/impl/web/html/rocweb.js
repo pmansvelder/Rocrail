@@ -32,6 +32,7 @@ var carMap = {};
 var lcCatMap = {};
 var ModPlan = false;
 var locoSelected = 'none';
+var locoSelectAction = 'none';
 var masterSelected = "";
 var locoSelectedList = [];
 var locoSelectedIdx = 0;
@@ -135,9 +136,6 @@ function langDE() {
   document.getElementById("labStageCloseExit").innerHTML = "Ausfahrt schliessen";
   document.getElementById("labStageOpenExit").innerHTML = "Ausfahrt öffnen";
   document.getElementById("labStageCompress").innerHTML = "Komprimieren";
-  document.getElementById("labConsistView").innerHTML = "Anzeigen";
-  document.getElementById("labConsistAdd").innerHTML = "Hinzufügen";
-  document.getElementById("labConsistDel").innerHTML = "Löschen";
   document.getElementById("titleGuestLoco").innerHTML = "<b>Gast-Lok</b>";
   document.getElementById("guestAddress").placeholder = "Adresse";
   document.getElementById("guestShortID").placeholder = "Kennung";
@@ -200,9 +198,6 @@ function langEN() {
   document.getElementById("labStageCloseExit").innerHTML = "Close exit";
   document.getElementById("labStageOpenExit").innerHTML = "Open exit";
   document.getElementById("labStageCompress").innerHTML = "Compress";
-  document.getElementById("labConsistView").innerHTML = "Show";
-  document.getElementById("labConsistAdd").innerHTML = "Add";
-  document.getElementById("labConsistDel").innerHTML = "Delete";
   document.getElementById("titleGuestLoco").innerHTML = "<b>Guest loco</b>";
   document.getElementById("guestAddress").placeholder = "Address";
   document.getElementById("guestShortID").placeholder = "Short ID";
@@ -265,9 +260,6 @@ function langNL() {
   document.getElementById("labStageCloseExit").innerHTML = "Sluit uitgang";
   document.getElementById("labStageOpenExit").innerHTML = "Open uitgang";
   document.getElementById("labStageCompress").innerHTML = "Comprimeer";
-  document.getElementById("labConsistView").innerHTML = "Tonen";
-  document.getElementById("labConsistAdd").innerHTML = "Toevoegen";
-  document.getElementById("labConsistDel").innerHTML = "Verwijderen";
   document.getElementById("titleGuestLoco").innerHTML = "<b>Gast locomotief</b>";
   document.getElementById("guestAddress").placeholder = "Adres";
   document.getElementById("guestShortID").placeholder = "Korte ID";
@@ -303,7 +295,7 @@ function onLocoImage() {
     tapholdFkey = 0;
     return;
   }
-  initLocoList();
+  initLocoList("select");
 
   trace("close throttle");
   prevPopup = "popupThrottle;"
@@ -320,7 +312,7 @@ function onBlockLocoImage() {
     tapholdFkey = 0;
     return;
   }
-  initLocoList();
+  initLocoList("select");
   trace("close block popup");
   prevPopup = "popupBlock";
   $( "#popupBlock" ).popup( "close" );
@@ -345,25 +337,42 @@ function onLocoSelected(sel) {
     onLocoInBlock(locoBlockSelect);
     return;
   }
-  else if( prevPopup == "popupConsist") {
-    locoConsistSelect = sel;
-    trace("locoConsistSelect: " + locoConsistSelect);
-    $('#popupLocoSelect').on("popupafterclose", function(){
-      $('#popupLocoSelect').unbind( "popupafterclose" );
-      $( "#popupConsist" ).popup( "open" );
-      });
-    return;
-  }
-  else {
+  else if( locoSelectAction == "select" ) {
     locoSelected = sel;
     localStorage.setItem("locoSelected", locoSelected);
     locoSelectedList[locoSelectedIdx] = locoSelected;
     localStorage.setItem("locoSelected"+locoSelectedIdx, locoSelected);
-    initThrottle();
-    updateDir();
-    updateFunctionLabels();
+  }
+  else if( locoSelectAction == "consistadd" ) {
+    var master = lcMap[locoSelected];
+    var slaves = master.getAttribute('consist');
+    var newslaves = "";
+    if( newslaves.length > 0 )
+      newslaves += ",";
+    newslaves += sel;
+    master.setAttribute('consist', newslaves);
+    var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  }
+  else if( locoSelectAction == "consistdel" ) {
+    var master = lcMap[locoSelected];
+    var slaves = master.getAttribute('consist').split(",");
+    var newslaves = "";
+    for( var i = 0; i < slaves.length; i++ ) {
+      if( sel == slaves[i] )
+        continue;
+      if( newslaves.length > 0 )
+        newslaves += ",";
+      newslaves += sel;
+    }
+    master.setAttribute('consist', newslaves);
+    var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
+    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
 
+  initThrottle();
+  updateDir();
+  updateFunctionLabels();
   
   trace("open " + popupThrottle);
   $('#popupLocoSelect').on("popupafterclose", function(){
@@ -716,27 +725,6 @@ function sendCommand(cmd) {
 }
 
 
-function openConsist() {
-  if( true ) {
-    trace("consist is disabled");
-    return;
-  }
-  trace("close throttle");
-  $( "#popupThrottle" ).popup( "close" );
-  
-  initConsist();
-  trace("open loco consist");
-  $('#popupThrottle').on("popupafterclose", function(){
-    $('#popupThrottle').unbind( "popupafterclose" );
-    $( "#popupConsist" ).popup( "open" );
-    });
-  $('#popupConsist').on("popupafterclose", function(){
-    $('#popupConsist').unbind( "popupafterclose" );
-    $( "#popupThrottle" ).popup( "open" );
-    });
-  
-}
-
 /* Throttle commands */
 window.oncontextmenu = function(event) {
   event.preventDefault();
@@ -756,6 +744,8 @@ $(function(){
   $("#direction").bind("taphold", tapholdDirectionHandler);
   //$("#locoImage").bind("taphold", tapholdLocoImageHandler);
   $("#locoImageBlock").bind("taphold", tapholdLocoImageBlockHandler);
+  $("#F9").bind("taphold", tapholdF9Handler);
+  $("#F10").bind("taphold", tapholdF10Handler);
  
   function tapholdF1Handler(e) {
     e.preventDefault();
@@ -851,11 +841,25 @@ $(function(){
     }
     worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
   }
+
+  function tapholdF9Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F9: consist add");
+    onConsistAdd();
+  }
+  
+  function tapholdF10Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F10: consist delete");
+    onConsistDel();
+  }
+  
   function tapholdDirectionHandler(e) {
     e.preventDefault();
     tapholdFkey = 1;
-    trace("taphold direction: consist management");
-    openConsist();
+    trace("taphold direction: ...");
   }
   
   function tapholdLocoImageHandler(e) {
@@ -1747,12 +1751,32 @@ function onConsistView() {
 
 
 function onConsistAdd() {
-  
+  trace("consist add");
+  initLocoList("consistadd");
+
+  trace("close throttle");
+  prevPopup = "popupThrottle;"
+  $( "#popupThrottle" ).popup( "close" );
+  trace("open loco select");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupLocoSelect" ).popup( "open" );
+    });
 }
 
 
 function onConsistDel() {
-  
+  trace("consist delete");
+  initLocoList("consistdel");
+
+  trace("close throttle");
+  prevPopup = "popupThrottle;"
+  $( "#popupThrottle" ).popup( "close" );
+  trace("open loco select");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupLocoSelect" ).popup( "open" );
+    });
 }
 
 
@@ -2197,6 +2221,7 @@ function handleLoco(lc) {
   lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
   lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
   lcNode.setAttribute('train', lc.getAttribute('train'));
+  lcNode.setAttribute('consist', lc.getAttribute('consist'));
 
   var bk = findBlock4Loco(lc.getAttribute('id'));
   if( bk != undefined ) {
@@ -3607,20 +3632,40 @@ function getMobileCategory(lc) {
   return lcCat;
 }
 
-function initLocoList() {
-  trace("initLocoList...");
+function initLocoList(action) {
+  trace("initLocoList: "+action);
+  locoSelectAction = action;
   var locoSelectList = document.getElementById("locoSelectList");
   locoSelectList.innerHTML = "";
   for (var key in lcCatMap) delete lcCatMap[key];
   lcCatMap.length = 0;
-  for (var key in lcMap) {
-    var lc = lcMap[key];
-    addLocoToList(lc);
+  
+  if( action == "select" ) {
+    for (var key in lcMap) {
+      var lc = lcMap[key];
+      addLocoToList(lc);
+    }
+    for (var key in carMap) {
+      var car = carMap[key];
+      addLocoToList(car);
+    }
   }
-  for (var key in carMap) {
-    var car = carMap[key];
-    addLocoToList(car);
+  else if( action == "consistadd" || action == "consistdel" ) {
+    var master = lcMap[locoSelected];
+    var masterid = master.getAttribute('id');
+    if(master != undefined) {
+      var slaves = master.getAttribute('consist');
+      for (var key in lcMap) {
+        var lc = lcMap[key];
+        var slaveid = lc.getAttribute('id');
+        if( action == "consistadd" && slaveid != masterid && slaves.indexOf(slaveid) == -1 )
+          addLocoToList(lc);
+        if( action == "consistdel" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
+          addLocoToList(lc);
+      }
+    }
   }
+  
 }
 
 function addLocoToList(lc) {

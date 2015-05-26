@@ -67,21 +67,6 @@
   </div>
   </div>
 
-  <div data-role="popup" id="popupConsist" class="ui-popup" data-theme="a" data-position-to="origin">
-  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-  <div style="padding:10px 10px;">
-  <label id="consistTitle">Consist</label>
-  <center><img id="locoImageConsist" src="noimg.png""/></center>
-  <div><a id="labConsistView" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onConsistView()">View</a></div>
-  <div class="ui-grid-a">
-    <div class="ui-block-a"><a id="labConsistAdd" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onConsistAdd()">Add</a></div>
-    <div class="ui-block-b"><a id="labConsistDel" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onConsistDel()">Delete</a></div>
-  </div>
-  </div>
-  </div>
-
-  
-  
   <div data-role="popup" id="popupTurntable" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
@@ -234,8 +219,8 @@
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
     <div style="padding:10px 10px;">
     <center><img id="locoImage" src="noimg.png" onclick="onLocoImage()"/></center>
-    <div id="locoStatus" onclick="openConsist()"></div>
-    <div id="locoDescription" onclick="openConsist()"></div>
+    <div id="locoStatus"></div>
+    <div id="locoDescription"></div>
     <div id="locoConsist" onclick="onMaster()"></div>
 
     <div class="ui-grid-d">
