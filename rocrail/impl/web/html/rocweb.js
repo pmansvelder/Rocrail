@@ -2212,16 +2212,26 @@ function handleLoco(lc) {
     lc = carMap[fn.getAttribute('id')];
 
   
-  lcNode.setAttribute('mode', lc.getAttribute('mode'));
-  lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
-  lcNode.setAttribute('V', lc.getAttribute('V'));
-  lcNode.setAttribute('dir', lc.getAttribute('dir'));
-  lcNode.setAttribute('fn', lc.getAttribute('fn'));
-  lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
-  lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
-  lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
-  lcNode.setAttribute('train', lc.getAttribute('train'));
-  lcNode.setAttribute('consist', lc.getAttribute('consist'));
+  if( lc.getAttribute('mode') != undefined )
+    lcNode.setAttribute('mode', lc.getAttribute('mode'));
+  if( lc.getAttribute('modereason') != undefined )
+    lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
+  if( lc.getAttribute('V') != undefined )
+    lcNode.setAttribute('V', lc.getAttribute('V'));
+  if( lc.getAttribute('dir') != undefined )
+    lcNode.setAttribute('dir', lc.getAttribute('dir'));
+  if( lc.getAttribute('fn') != undefined )
+    lcNode.setAttribute('fn', lc.getAttribute('fn'));
+  if( lc.getAttribute('destblockid') != undefined )
+    lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
+  if( lc.getAttribute('blockid') != undefined )
+    lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
+  if( lc.getAttribute('blockenterside') != undefined )
+    lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
+  if( lc.getAttribute('train') != undefined )
+    lcNode.setAttribute('train', lc.getAttribute('train'));
+  if( lc.getAttribute('consist') != undefined )
+    lcNode.setAttribute('consist', lc.getAttribute('consist'));
 
   var bk = findBlock4Loco(lc.getAttribute('id'));
   if( bk != undefined ) {
