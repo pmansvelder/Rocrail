@@ -314,7 +314,7 @@ static Boolean __checkLocoState(const char* locoid, const char* id, const char* 
           if( trainID != NULL && ModelOp.getOperator( model, trainID) != NULL) {
             opr = ModelOp.getOperator( model, trainID);
             /* Check train first. */
-            if( !StrOp.equals(statusClass, OperatorOp.getClass(opr)) ) {
+            if( !StrOp.equals(statusClass, OperatorOp.getClass(opr)) && !OperatorOp.hasClass(opr, statusClass) ) {
               rc = False;
               TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
                   "train %s class %s does not matches [%s]", trainID,
@@ -327,7 +327,7 @@ static Boolean __checkLocoState(const char* locoid, const char* id, const char* 
             }
           }
 
-          else if( !StrOp.equals(statusClass, LocOp.getClass(lc)) ) {
+          else if( !StrOp.equals(statusClass, LocOp.getClass(lc)) && !LocOp.hasClass(lc, statusClass) ) {
             rc = False;
             TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
                 "loco %s class %s does not matches [%s]", LocOp.getId(lc),

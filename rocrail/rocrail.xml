@@ -728,6 +728,10 @@
     <fun name="getClass" vt="const char*">
       <param name="inst" vt="this" remark="Loco instance"/>
     </fun>
+    <fun name="hasClass" vt="Boolean">
+      <param name="inst" vt="this" remark="Loco instance"/>
+      <param name="class" vt="const char*"/>
+    </fun>
     <fun name="isGoManual" vt="Boolean">
       <param name="inst" vt="this" remark="Loc instance"/>
     </fun>
@@ -2398,6 +2402,10 @@
     </fun>
     <fun name="getClass" vt="const char*">
       <param name="inst" vt="this" remark="Operator instance"/>
+    </fun>
+    <fun name="hasClass" vt="Boolean">
+      <param name="inst" vt="this" remark="Operator instance"/>
+      <param name="class" vt="const char*"/>
     </fun>
     <fun name="setClass" vt="void">
       <param name="inst" vt="this" remark="Operator instance"/>

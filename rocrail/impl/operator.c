@@ -468,6 +468,13 @@ static const char* _getClass( struct OOperator* inst ) {
 }
 
 
+static Boolean _hasClass( iOOperator inst, const char* class ) {
+  iOOperatorData data = Data(inst);
+  const char* l_class = wOperator.getclass(data->props);
+  return StrOp.find(l_class, class) != NULL ? True:False;
+}
+
+
 static void _setClass( struct OOperator* inst, const char* newclass ) {
   iOOperatorData data = Data(inst);
   iONode clone = NULL;

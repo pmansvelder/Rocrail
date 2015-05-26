@@ -2604,6 +2604,19 @@ static const char* _getClass( iOLoc inst ) {
 }
 
 
+static Boolean _hasClass( iOLoc inst, const char* class ) {
+  iOLocData data = Data(inst);
+  const char* l_class = wLoc.getclass(data->props);
+  if( wLoc.gettrain( data->props) != NULL && StrOp.len(wLoc.gettrain( data->props)) > 0 ) {
+    iOOperator train = ModelOp.getOperator(AppOp.getModel(), wLoc.gettrain( data->props) );
+    if( train != NULL ) {
+      l_class = OperatorOp.getClass(train);
+    }
+  }
+  return StrOp.find(l_class, class) != NULL ? True:False;
+}
+
+
 static void* _getProperties( void* inst ) {
   iOLocData data = Data((iOLoc)inst);
   return data->props;
