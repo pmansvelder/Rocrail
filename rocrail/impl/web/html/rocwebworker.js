@@ -28,7 +28,7 @@ function doWebSocket() {
       debug('WebSocket retry='+retryWebSocket);
     }
     else
-      alert('RocWeb:\nWebSocket fatal error; Give up.');
+      alert('Rocweb:\nWebSocket fatal error; Give up.');
   };
   ws.onmessage = function (evt) 
   {
@@ -44,8 +44,12 @@ function doWebSocket() {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
+    else if( event.code == 1001 ) {
+      retryWebSocket = 10; // Stop.
+      alert("Rocweb:\nWebSocket is closed: " + event.code + "\nEnd of Demo.");
+    }
     else {
-      alert("RocWeb:\nWebSocket is closed: " + event.code);
+      alert("Rocweb:\nWebSocket is closed: " + event.code);
     }
   };
   
@@ -66,8 +70,6 @@ onmessage = function(e) {
     return;
   }
   
-  debug('Posting message back to main script');
-  postMessage(e.data);
 }
 
 doWebSocket();
