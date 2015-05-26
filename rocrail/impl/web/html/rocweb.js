@@ -2693,22 +2693,28 @@ function onZoom(zoomin) {
     if( scale > 2.0 )
       scale = 1.0 + 0.1;
     localStorage.setItem("scale", scale);
-    for( var i = 0; i < zlevelDivList.length; i++ )
+    for( var i = 0; i < zlevelDivList.length; i++ ) {
       $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
+      $(zlevelDivList[i]).css({'-moz-transform': 'scale(' + scale + ')'});
+    }
   }
   else if( !zoomin && scale > 0.5 ) {
     scale -= 0.1;
     localStorage.setItem("scale", scale);
-    for( var i = 0; i < zlevelDivList.length; i++ )
+    for( var i = 0; i < zlevelDivList.length; i++ ) {
       $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
+      $(zlevelDivList[i]).css({'-moz-transform': 'scale(' + scale + ')'});
+    }
   }
 }
 
 function onZoom100() {
   scale = 1.0;
   localStorage.setItem("scale", scale);
-  for( var i = 0; i < zlevelDivList.length; i++ )
+  for( var i = 0; i < zlevelDivList.length; i++ ) {
     $(zlevelDivList[i]).css({'-webkit-transform': 'scale(' + scale + ')'});
+    $(zlevelDivList[i]).css({'-moz-transform': 'scale(' + scale + ')'});
+  }
 }
 
 /* Processing events from server */
@@ -3687,6 +3693,7 @@ function processPlan() {
          //newdiv.style.transform = 'scale(.5)';
          //$('#level_0').css({ transform: 'scale(.5)' });
          $(newdiv).css({'-webkit-transform': 'scale(' + scale + ')'});
+         $(newdiv).css({'-moz-transform': 'scale(' + scale + ')'});
          
          zlevelDivMap[z] = newdiv;
          zlevelDivList[i] = newdiv;

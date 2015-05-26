@@ -1,17 +1,52 @@
-.item {position:absolute;text-align:center;border:0px}
-.itemV {position:absolute;text-align:center;border:0px; -webkit-transform: rotate(90deg);}
-.itemtext{vertical-align:middle;}
-.itemtextV{vertical-align:middle; horizontal-align:middle; -webkit-transform: rotate(90deg); -webkit-transform-origin: 50% 50%;}
-.imageV{-webkit-transform: rotate(90deg);}
-.divborder{border: 1px solid #000; text-align: left; padding: 10px;}
+.item {
+ position:absolute;
+ text-align:center;
+ border:0px
+}
+
+.itemV {
+ position:absolute;
+ text-align:center;
+ border:0px; 
+ -webkit-transform: rotate(90deg); 
+ -moz-transform: rotate(90deg);
+}
+
+.itemtext {
+ vertical-align:middle;
+}
+
+.itemtextV {
+ vertical-align:middle; 
+ horizontal-align:middle; 
+ -webkit-transform: rotate(90deg); 
+ -webkit-transform-origin: 50% 50%; 
+ -moz-transform: rotate(90deg); 
+ -moz-transform-origin: 50% 50%;
+}
+
+.imageV {
+ -webkit-transform: rotate(90deg); 
+ -moz-transform: rotate(90deg);
+}
+.
+divborder {
+ border: 1px solid #000; 
+ text-align: left; 
+ padding: 10px;
+}
+
 .full-width-slider .ui-slider-input {display: none; width: 0px;}
 .full-width-slider .ui-slider-track {margin-left: 15px;}
+/* the thumb will not listen... .full-width-slider .ui-slider-handle {height: 50px;}*/
 
 *:not(textarea):not(text):not(input) {
  -webkit-user-select: none; /* disable selection/Copy of UIWebView */
  -webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
+ -moz-user-select: none;
+ -moz-touch-callout: none;
 }
-/* the thumb will not listen... .full-width-slider .ui-slider-handle {height: 50px;}*/
+
 
 .led-green {
     width: 8px;
@@ -19,8 +54,3 @@
     background-color: #690;
     border-radius: 50%;
 }
-/*
-.ui-page { 
-background:#99AA99;
-}
-*/
