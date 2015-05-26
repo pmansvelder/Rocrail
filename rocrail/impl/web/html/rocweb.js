@@ -56,7 +56,7 @@ var prevPopup = "";
 var guestProt = "P";
 var guestSteps = "28";
 var trackTTSelect = 'none';
-var speedStepDelta = 3;
+var sliderDelta = 3;
 var redBackground = "#FFC8C8";
 
 
@@ -148,6 +148,7 @@ function langDE() {
   document.getElementById("colorBlue").innerHTML = "Blau";
   document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
+  document.getElementById("labSliderDelta").innerHTML = "Regler-Delta";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -211,6 +212,7 @@ function langEN() {
   document.getElementById("colorBlue").innerHTML = "Blue";
   document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
+  document.getElementById("labSliderDelta").innerHTML = "Slider delta";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -274,6 +276,7 @@ function langNL() {
   document.getElementById("colorBlue").innerHTML = "Blauw";
   document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
+  document.getElementById("labSliderDelta").innerHTML = "Regelaar delta";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -655,6 +658,11 @@ function openOptions() {
   document.getElementById("userColorRed").value = red;
   document.getElementById("userColorGreen").value = green;
   document.getElementById("userColorBlue").value = blue;
+
+  var sliderdelta = parseInt(localStorage.getItem("sliderdelta"));
+  if( sliderdelta == undefined )
+    sliderdelta = 3;
+  document.getElementById("sliderDelta").value = sliderdelta;
 
 
   //$('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
@@ -1860,7 +1868,7 @@ $(document).on("pagecreate",function(){
       return;
     }
     var value = parseInt($(this).val());
-    if( value < speedUpdateVal - speedStepDelta || value > speedUpdateVal + speedStepDelta) {
+    if( value < speedUpdateVal - sliderDelta || value > speedUpdateVal + sliderDelta) {
       speedUpdateVal = value;
       speedUpdate(value);
     }
@@ -1929,6 +1937,13 @@ $(document).on("pagecreate",function(){
     trace("colorSelect: " + this.value );
     localStorage.color = this.value;
   } );
+  
+  $('#sliderDelta').change(function() {
+    var delta = document.getElementById("sliderDelta").value;
+    trace("sliderDelta="+delta);
+    localStorage.setItem("sliderdelta", delta);
+    sliderDelta = parseInt(delta);
+  });
 });
 
 $(document).ready(function(){
@@ -2757,7 +2772,13 @@ function processResponse() {
         if(showocc == undefined || showocc.length == 0) {
           localStorage.setItem("showocc", "true");
         }
-
+        var sliderdelta = localStorage.getItem("sliderdelta");
+        if(sliderdelta == undefined || sliderdelta.length == 0) {
+          localStorage.setItem("sliderdelta", "3");
+        }
+        else {
+          sliderDelta = parseInt(sliderdelta); 
+        }
 
         planlist = xmlDoc.getElementsByTagName("plan")
         if(planlist.length == 0)
