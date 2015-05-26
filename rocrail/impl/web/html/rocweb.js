@@ -2115,7 +2115,9 @@ function handleText(tx) {
       if( text == undefined )
         text = "";
       
-      if( ori == "north" || ori == "south" )
+      if( ori == "north" )
+        div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(tx)+"</div>";
+      else if( ori == "south" )
         div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(tx)+"</div>";
       else
         div.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(tx)+ "</div>";
@@ -2336,7 +2338,17 @@ function getBlockLabel(bk, div) {
     label = label.split('-').join('.');
     
     var labdiv = document.createElement('div');
-    labdiv.setAttribute('class', "itemtextV");
+    if( ori == "north" ) {
+      labdiv.setAttribute('class', "itemtextVnorth");
+      if( bkNode.getAttribute('smallsymbol') == "true" )
+        labdiv.style.left = "-32px";
+      else
+        labdiv.style.left = "-96px";
+    }
+    else {
+      labdiv.setAttribute('class', "itemtextVsouth");
+      labdiv.style.left = "0px";
+    }
     if( bkNode.getAttribute('smallsymbol') == "true" ) {
       labdiv.style.width    = "64px";
       labdiv.style.top      = "16px";
@@ -2348,7 +2360,6 @@ function getBlockLabel(bk, div) {
     labdiv.style.height   = "32px";
     labdiv.style.fontSize = ""+blockPointsize+"px";
     labdiv.style.position = "absolute";
-    labdiv.style.left     = "0px";
     labdiv.innerHTML      = label;
     div.innerHTML      = "";
     div.appendChild(labdiv);
