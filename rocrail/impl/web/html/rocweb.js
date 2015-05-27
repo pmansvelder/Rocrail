@@ -226,7 +226,7 @@ function langEN() {
   document.getElementById("labSliderDelta").innerHTML = "Slider delta";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
   document.getElementById("helpTitle").innerHTML = "Help";
-  var help  = "<tr><th>Buttons<th>Long click function";
+  var help  = "<tr><th>Button<th>Long click function";
   help += "<tr><td>F1-F4<td>Throttle selection";
   help += "<tr><td>RE<td>Power OFF";
   help += "<tr><td>FG<td>Emergency Break";
@@ -301,7 +301,7 @@ function langNL() {
   document.getElementById("labSliderDelta").innerHTML = "Regelaar delta";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotieven";
   document.getElementById("helpTitle").innerHTML = "Help";
-  var help  = "<tr><th>Knoppen<th>Lange click functie";
+  var help  = "<tr><th>Knop<th>Lange click functie";
   help += "<tr><td>F1-F4<td>Loc besturing keuze";
   help += "<tr><td>RE<td>Rail spanning UIT";
   help += "<tr><td>FG<td>Noodstop";
