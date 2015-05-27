@@ -234,7 +234,7 @@ function langEN() {
   help += "<tr><td>F11<td>Show the complete consist including the master loco";
   help += "<tr><td>F13<td>Manual mode ON/OFF";
   help += "<tr><td>F14<td>Shunting ON/OFF";
-  help += "<tr><td>Licht<td>Dispatch"; 
+  help += "<tr><td>Lights<td>Dispatch"; 
   document.getElementById("helpTable").innerHTML = help;
   $('#colorSelect').selectmenu("refresh");
 }
