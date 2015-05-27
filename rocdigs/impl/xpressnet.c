@@ -382,6 +382,8 @@ static iONode __translate( iOXpressNet xpressnet, iONode node ) {
     int port   = wOutput.getport( node );
     int gate   = wOutput.getgate( node );
 
+    int state = StrOp.equals( wSwitch.getcmd( node ), wSwitch.turnout ) ? 0x01:0x00;
+
     if( port == 0 )
       AddrOp.fromFADA( addr, &addr, &port, &gate );
     else if( addr == 0 && port > 0 )
@@ -390,24 +392,26 @@ static iONode __translate( iOXpressNet xpressnet, iONode node ) {
     if( port > 0 ) port--;
     if( addr > 0 ) addr--;
 
-    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output %d %d %d %s",
-        addr, port, gate, wOutput.getcmd( node ) );
-
     if (StrOp.equals( wOutput.getcmd( node ), wOutput.on )){
-      byte* outa = allocMem(32);
-      outa[0] = 0x52;
-      outa[1] = addr;
-      outa[2] = 0x80 | 0x00 | (port << 1) | gate;
-      ThreadOp.post( data->transactor, (obj)outa );
-    }
-    else {
+
       byte* outa = allocMem(32);
       outa[0] = 0x52;
       outa[1] = addr;
       outa[2] = 0x80 | 0x08 | (port << 1) | gate;
       ThreadOp.post( data->transactor, (obj)outa );
+
+      /* deactivate the gate to be used */
+      iQCmd cmd = allocMem(sizeof(struct QCmd));
+      cmd->time   = SystemOp.getTick();
+      cmd->delay  = 10;
+      cmd->out[0] = 0x52;
+      cmd->out[1] = addr;
+      cmd->out[2] = 0x80 | 0x00 | (port << 1) | gate;
+      ThreadOp.post( data->timedQueue, (obj)cmd );
     }
 
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "output %d %d %d %s",
+        addr, port, gate, wOutput.getcmd( node ) );
   }
   /* Signal command. */
   else if( StrOp.equals( NodeOp.getName( node ), wSignal.name() ) ) {
