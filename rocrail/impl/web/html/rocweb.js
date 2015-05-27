@@ -60,6 +60,7 @@ var trackTTSelect = 'none';
 var sliderDelta = 3;
 var redBackground = "#FFC8C8";
 var throttleid = "rocweb";
+var speedUpdateVal = 0;
 
 
 function forceRedraw(div){
@@ -955,6 +956,7 @@ function onDirection() {
     lc.setAttribute('dir', 'true');
   updateDir();
   V = "0";
+  speedUpdateVal = 0;
   speedUpdate(parseInt(V));
 }
 
@@ -1778,6 +1780,7 @@ function updateSpeed(lc) {
   var vVal = V * (100/parseInt(lc.getAttribute('V_max')));
   trace("V="+V+" vVal="+vVal+" V_max="+lc.getAttribute('V_max'));
   slider.value = vVal;
+  speedUpdateVal = vVal;
   $("#speedSlider").slider("refresh");
 
 }
@@ -1899,7 +1902,6 @@ function initThrottle() {
 }
 
 
-var speedUpdateVal = 0;
 function onVUp() {
   speedUpdateVal++;
   if(speedUpdateVal > 100)
