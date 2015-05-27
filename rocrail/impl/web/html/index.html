@@ -115,6 +115,25 @@
   </div>
   </div>
 
+  <div data-role="popup" id="popupHelp" class="ui-popup" data-theme="a" data-position-to="origin">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <label id="helpTitle">Help</label>
+  <table>
+  <tr><th>Key<th>Long click function
+  <tr><td>F1-F4  <td>Throttle selection
+  <tr><td>RE     <td>Power OFF
+  <tr><td>FG     <td>Emergency Break
+  <tr><td>F9     <td>Add a consist loco
+  <tr><td>F10    <td>Delete a consist loco
+  <tr><td>F11    <td>Show the complete consist including the master loco
+  <tr><td>F13    <td>Manual mode ON/OFF
+  <tr><td>F14    <td>Shunting ON/OFF
+  <tr><td>Lights <td>Dispatch 
+  </table>
+  </div>
+  </div>
+
   <div data-role="panel" id="popupMenu" data-position="right"  data-display="overlay"> 
  <!--div data-role="popup" id="popupMenu" class="ui-popup" data-theme="a" data-position-to="origin"-->
   <!--a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a-->
@@ -126,6 +145,7 @@
   <!--<button id="menuTrains" data-rel="close" class="ui-btn ui-icon-shop ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openTrains()">Trains</button>-->
   <button id="menuDisconnect" data-rel="close" class="ui-btn ui-icon-action ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="Disconnect(true)">Disconnect</button>
   <button id="menuZoom" data-rel="close" class="ui-btn ui-icon-eye ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openZoom(true)">Zoom</button>
+  <button id="Help" data-rel="close" class="ui-btn ui-icon-heart ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openHelp()">Help</button>
   <select name="levelSelect" id="levelSelect" style="text-align:left;">
   </select>
   <select name="colorSelect" id="colorSelect" style="text-align:left;">

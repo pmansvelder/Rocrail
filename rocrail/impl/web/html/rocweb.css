@@ -72,3 +72,7 @@ divborder {
     background-color: #690;
     border-radius: 50%;
 }
+
+th, td {
+  padding: 10px;
+}

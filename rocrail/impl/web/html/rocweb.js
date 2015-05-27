@@ -595,6 +595,15 @@ function openSystem() {
     });
 }
 
+function openHelp() {
+  trace("close menu");
+  //$( "#popupMenu" ).popup( "close" );
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupHelp" ).popup( "open" );
+    });
+}
+
 function openZoom(fromMenu) {
   if( fromMenu ) {
     //trace("close menu");
