@@ -148,6 +148,7 @@ function langDE() {
   document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
   document.getElementById("labSliderDelta").innerHTML = "Regler-Delta";
+  document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -210,6 +211,7 @@ function langEN() {
   document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
   document.getElementById("labSliderDelta").innerHTML = "Slider delta";
+  document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -272,6 +274,7 @@ function langNL() {
   document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
   document.getElementById("labSliderDelta").innerHTML = "Regelaar delta";
+  document.getElementById("locoSelectTitle").innerHTML = "Locomotieven";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -2024,6 +2027,9 @@ function getString(s) {
     if( s == "text" ) return "Text";
     if( s == "schedule" ) return "Fahrplan";
     if( s == "train" ) return "Zug";
+    if( s == "master" ) return "Hauptlok";
+    if( s == "slaves" ) return "Mehrfachtraktion";
+    if( s == "guests" ) return "Gäste";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -2040,6 +2046,9 @@ function getString(s) {
     if( s == "text" ) return "Text";
     if( s == "schedule" ) return "Schedule";
     if( s == "train" ) return "Train";
+    if( s == "master" ) return "Master loco";
+    if( s == "slaves" ) return "Slave locos";
+    if( s == "guests" ) return "Guests";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -2056,6 +2065,9 @@ function getString(s) {
     if( s == "text" ) return "Tekst";
     if( s == "schedule" ) return "Dienstrooster";
     if( s == "train" ) return "Treinstel";
+    if( s == "master" ) return "Tractie hoofd loc";
+    if( s == "slaves" ) return "Tractie locs";
+    if( s == "guests" ) return "Gasten";
   }
 
   return s;
@@ -2630,7 +2642,10 @@ function handleModel(model) {
       }
       trace('add loco: ' + lclist[i].getAttribute('id') );
       lcMap[lclist[i].getAttribute('id')] = lclist[i];
-      addLocoToList(lclist[i]);
+      if( lclist[i].getAttribute('generated') == "true" )
+        addLocoToList(lclist[i], getString("guests"));
+      else
+        addLocoToList(lclist[i], null);
     }
   }
 }
@@ -3679,16 +3694,22 @@ function initLocoList(action) {
   if( action == "select" ) {
     for (var key in lcMap) {
       var lc = lcMap[key];
-      addLocoToList(lc);
+      if( lc.getAttribute('generated') == "true" )
+        addLocoToList(lc, getString("guests"));
+      else
+        addLocoToList(lc, null);
     }
     for (var key in carMap) {
       var car = carMap[key];
-      addLocoToList(car);
+      addLocoToList(car, null);
     }
   }
   else if( action == "consistadd" || action == "consistdel" || action == "consistshow" ) {
     var master = lcMap[locoSelected];
     var masterid = master.getAttribute('id');
+    if( action == "consistshow" ) {
+      addLocoToList(master, getString("master"));
+    }
     if(master != undefined) {
       var slaves = master.getAttribute('consist');
       for (var key in lcMap) {
@@ -3697,21 +3718,25 @@ function initLocoList(action) {
         if( action == "consistadd" && slaveid != masterid && slaves.indexOf(slaveid) == -1 )
           addLocoToList(lc);
         else if( action == "consistdel" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
-          addLocoToList(lc);
-        else if( action == "consistshow" && (slaveid == masterid || slaves.indexOf(slaveid) != -1) )
-          addLocoToList(lc);
+          addLocoToList(lc, getString("slaves"));
+        else if( action == "consistshow" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
+          addLocoToList(lc, getString("slaves"));
       }
     }
   }
   
 }
 
-function addLocoToList(lc) {
+function addLocoToList(lc, catname) {
   var category = localStorage.getItem("category");
 
   var div = document.getElementById("locoSelectList");
   var lcCat = "diesel";
-  if( category == "engine" ) {
+  if( catname != null && catname.length > 0) {
+    trace("catname="+catname);
+    lcCat = catname;
+  }
+  else if( category == "engine" ) {
     lcCat = lc.getAttribute('engine');
     if( lcCat == undefined || lcCat.length == 0 )
       lcCat = "diesel";
@@ -3809,7 +3834,7 @@ function processPlan() {
 
        trace('loco: ' + lclist[i].getAttribute('id') );
        lcMap[lclist[i].getAttribute('id')] = lclist[i];
-       addLocoToList(lclist[i]);
+       addLocoToList(lclist[i], null);
      }
      
      carlist = xmlDoc.getElementsByTagName("car");
