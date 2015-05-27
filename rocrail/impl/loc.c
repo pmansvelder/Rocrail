@@ -3171,8 +3171,8 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "redirecting command %s:%s from %s to master %s",
             nodename, (cmd==NULL?"-":cmd), wLoc.getid( data->props ), LocOp.getId(master) );
         wLoc.setignorefn(nodeA, True);
-        LocOp.cmd(master, nodeA);
         MutexOp.post( data->muxCmd );
+        LocOp.cmd(master, nodeA);
         return True;
       }
       else {

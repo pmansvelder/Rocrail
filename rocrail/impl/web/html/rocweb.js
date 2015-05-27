@@ -59,6 +59,7 @@ var guestSteps = "28";
 var trackTTSelect = 'none';
 var sliderDelta = 3;
 var redBackground = "#FFC8C8";
+var throttleid = "rocweb";
 
 
 function forceRedraw(div){
@@ -150,7 +151,7 @@ function langDE() {
   document.getElementById("labSliderDelta").innerHTML = "Regler-Delta";
   document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
   document.getElementById("helpTitle").innerHTML = "Hilfe";
-  var help  = "<tr><th>Tasten<th>Lange klick Function";
+  var help  = "<tr><th>Taste<th>Lange klick Funktion";
   help += "<tr><td>F1-F4<td>Fahrregler-Auswahl";
   help += "<tr><td>RE<td>Gleisspannung AUS";
   help += "<tr><td>FG<td>Nothalt";
@@ -974,7 +975,7 @@ function onRE() {
     return;
   }
   trace("release loco " + locoSelected);
-  var cmd = "<lc throttleid=\"rocweb\" cmd=\"release\" id=\""+locoSelected+"\"/>";
+  var cmd = "<lc throttleid=\""+throttleid+"\" cmd=\"release\" id=\""+locoSelected+"\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -984,9 +985,9 @@ function onST() {
   var mode = lc.getAttribute('mode');
   var cmd = "";
   if( mode != undefined && (mode == "auto" || mode == "halfauto") )
-    cmd = "<lc id=\""+locoSelected+"\" cmd=\"stop\"/>";
+    cmd = "<lc id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"stop\"/>";
   else
-    cmd = "<lc id=\""+locoSelected+"\" cmd=\"go\"/>";
+    cmd = "<lc id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"go\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -1006,7 +1007,7 @@ function onFunction(id, nr) {
   var fx = parseInt(lc.getAttribute('fx'));
   var mask = 1 << (nr-1);
   var on = fx&mask?"false":"true";
-  var cmd = "<fn id=\""+locoSelected+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
+  var cmd = "<fn id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -1024,7 +1025,7 @@ function onLights() {
   if( fn != undefined && fn == "true" )
     on = "false";
   trace("lights was "+fn+" will be "+on);
-  var cmd = "<fn id=\""+locoSelected+"\" fnchanged=\""+0+"\" f"+0+"=\""+on+"\"/>"
+  var cmd = "<fn id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+0+"\" f"+0+"=\""+on+"\"/>"
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
@@ -1038,7 +1039,7 @@ function speedUpdate(value) {
   var iVal = Math.floor(vVal);
   lc.setAttribute('V', iVal);
   trace("value="+value+" vVal="+vVal+" V_max="+parseInt(lc.getAttribute('V_max')));
-  var cmd = "<lc throttleid=\"rocweb\" id=\""+locoSelected+"\" V=\""+iVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
+  var cmd = "<lc throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+iVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -2905,7 +2906,7 @@ function processResponse() {
         else {
           sliderDelta = parseInt(sliderdelta); 
         }
-
+        
         planlist = xmlDoc.getElementsByTagName("plan")
         if(planlist.length == 0)
           planlist = xmlDoc.getElementsByTagName("modplan")
