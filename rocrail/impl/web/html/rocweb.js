@@ -2403,11 +2403,18 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
 function getBlockLabel(bk, div) {
   bkNode = bkMap[bk.getAttribute('id')];
   var ori   = getOri(bkNode);
+  var small = bk.getAttribute('smallsymbol');
+  var locid = bk.getAttribute('locid');
   var label = bk.getAttribute('locid');
-  if( label == undefined || label.length == 0 )
+  
+  if( locid != undefined && locid.length > 0 && "true" != small ) 
+    label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
+      
+  if( label == undefined || label.length == 0 ) {
     label = bk.getAttribute('id');
+  }
   else {
-    var lc = lcMap[label];
+    var lc = lcMap[locid];
     if( lc != undefined ) {
       var rotate = lc.getAttribute('blockenterside');
       var train  = lc.getAttribute('train');
