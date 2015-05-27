@@ -2023,6 +2023,7 @@ $(document).on("pagecreate",function(){
   $('#colorSelect').change(function() {
     trace("colorSelect: " + this.value );
     localStorage.color = this.value;
+    location.reload();
   } );
   
   $('#sliderDelta').change(function() {
