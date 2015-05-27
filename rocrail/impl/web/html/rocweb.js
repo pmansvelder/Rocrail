@@ -149,6 +149,18 @@ function langDE() {
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
   document.getElementById("labSliderDelta").innerHTML = "Regler-Delta";
   document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
+  document.getElementById("helpTitle").innerHTML = "Hilfe";
+  var help  = "<tr><th>Tasten<th>Lange klick Function";
+  help += "<tr><td>F1-F4<td>Fahrregler-Auswahl";
+  help += "<tr><td>RE<td>Gleisspannung AUS";
+  help += "<tr><td>FG<td>Nothalt";
+  help += "<tr><td>F9<td>Mehrfachtraktions-Lok hinzufügen";
+  help += "<tr><td>F10<td>Mehrfachtraktions-Lok entfernen";
+  help += "<tr><td>F11<td>Zeige komplette Mehrfachtraktion inkl. Haupt-Lok";
+  help += "<tr><td>F13<td>Manueller Modus EIN/AUS";
+  help += "<tr><td>F14<td>Rangieren EIN/AUS";
+  help += "<tr><td>Licht<td>Bereitstellen für Regler"; 
+  document.getElementById("helpTable").innerHTML = help;
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -212,6 +224,18 @@ function langEN() {
   document.getElementById("labUserColor").innerHTML = "Background color";
   document.getElementById("labSliderDelta").innerHTML = "Slider delta";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
+  document.getElementById("helpTitle").innerHTML = "Help";
+  var help  = "<tr><th>Buttons<th>Long click function";
+  help += "<tr><td>F1-F4<td>Throttle selection";
+  help += "<tr><td>RE<td>Power OFF";
+  help += "<tr><td>FG<td>Emergency Break";
+  help += "<tr><td>F9<td>Add a consist loco";
+  help += "<tr><td>F10<td>Remove a consist loco";
+  help += "<tr><td>F11<td>Show the complete consist including the master loco";
+  help += "<tr><td>F13<td>Manual mode ON/OFF";
+  help += "<tr><td>F14<td>Shunting ON/OFF";
+  help += "<tr><td>Licht<td>Dispatch"; 
+  document.getElementById("helpTable").innerHTML = help;
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -275,6 +299,18 @@ function langNL() {
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
   document.getElementById("labSliderDelta").innerHTML = "Regelaar delta";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotieven";
+  document.getElementById("helpTitle").innerHTML = "Help";
+  var help  = "<tr><th>Knoppen<th>Lange click functie";
+  help += "<tr><td>F1-F4<td>Loc besturing keuze";
+  help += "<tr><td>RE<td>Rail spanning UIT";
+  help += "<tr><td>FG<td>Noodstop";
+  help += "<tr><td>F9<td>Multitractie loc toevoegen";
+  help += "<tr><td>F10<td>Multitractie loc verwijderen";
+  help += "<tr><td>F11<td>Toon de complete multitractie incl. hoofd loc";
+  help += "<tr><td>F13<td>Handbedien modus AAN/UIT";
+  help += "<tr><td>F14<td>Rangeren AAN/UIT";
+  help += "<tr><td>Licht<td>Klaarzetten voor handregelaar"; 
+  document.getElementById("helpTable").innerHTML = help;
   $('#colorSelect').selectmenu("refresh");
 }
 
