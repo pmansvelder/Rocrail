@@ -2696,9 +2696,9 @@ function handleModel(model) {
       trace('add loco: ' + lclist[i].getAttribute('id') );
       lcMap[lclist[i].getAttribute('id')] = lclist[i];
       if( lclist[i].getAttribute('generated') == "true" )
-        addLocoToList(lclist[i], getString("guests"));
+        addLocoToList(lclist[i], getString("guests"), false);
       else
-        addLocoToList(lclist[i], null);
+        addLocoToList(lclist[i], null, false);
     }
   }
 }
@@ -3654,10 +3654,15 @@ function getStageBlockImage(sb, div) {
   
 }
 
-function addCatToList(div, lcCat) {
+function addCatToList(div, lcCat, opencat) {
   var newdiv = document.createElement('div');
   newdiv.setAttribute('data-role', "collapsible");
   newdiv.setAttribute('class', "ui-collapsible ui-collapsible-inset ui-corner-all ui-collapsible-themed-content ui-collapsible-collapsed ui-first-child");
+  if( opencat ) {
+    trace("first: "+lcCat);
+    newdiv.setAttribute('data-collapsed', 'false' );
+  }
+  
   var h2 = document.createElement('h2');
   h2.innerHTML = getString(lcCat);
   newdiv.appendChild(h2);
@@ -3665,7 +3670,7 @@ function addCatToList(div, lcCat) {
   ul.setAttribute('id', lcCat);
   ul.setAttribute('data-role', "listview");
   ul.setAttribute('class', "ui-listview");
-  ul.setAttribute('style', "max-height: 200px; overflow: auto;");
+  ul.setAttribute('style', "max-height: 300px; overflow: auto;");
   newdiv.appendChild(ul);
   div.appendChild(newdiv);
   cat = ul;
@@ -3691,7 +3696,7 @@ function addMobileToList(cat, id, image, dir, addr) {
   $('div[data-role=collapsible]').collapsible({refresh:true});  
 }
 
-function addCarToList(car) {
+function addCarToList(car, opencat) {
   var addr = car.getAttribute('addr');
   if( addr == "0" )
     return;
@@ -3705,7 +3710,7 @@ function addCarToList(car) {
 
   var cat = lcCatMap[lcCat];
   if( cat == undefined ) {
-    cat = addCatToList(div, lcCat);
+    cat = addCatToList(div, lcCat, false);
   }
   addMobileToList(cat, car.getAttribute('id'), car.getAttribute('image'), car.getAttribute('dir'), car.getAttribute('addr'));
 }
@@ -3744,43 +3749,50 @@ function initLocoList(action) {
   for (var key in lcCatMap) delete lcCatMap[key];
   lcCatMap.length = 0;
   
+  var firstCat = true;
   if( action == "select" ) {
     for (var key in lcMap) {
       var lc = lcMap[key];
       if( lc.getAttribute('generated') == "true" )
-        addLocoToList(lc, getString("guests"));
-      else
-        addLocoToList(lc, null);
+        addLocoToList(lc, getString("guests"), false);
+      else {
+        addLocoToList(lc, null, firstCat);
+        firstCat = false;
+      }
     }
     for (var key in carMap) {
       var car = carMap[key];
-      addLocoToList(car, null);
+      addLocoToList(car, null, false);
     }
   }
   else if( action == "consistadd" || action == "consistdel" || action == "consistshow" ) {
     var master = lcMap[locoSelected];
     var masterid = master.getAttribute('id');
     if( action == "consistshow" ) {
-      addLocoToList(master, getString("master"));
+      addLocoToList(master, getString("master"), true);
     }
     if(master != undefined) {
       var slaves = master.getAttribute('consist');
       for (var key in lcMap) {
         var lc = lcMap[key];
         var slaveid = lc.getAttribute('id');
-        if( action == "consistadd" && slaveid != masterid && slaves.indexOf(slaveid) == -1 )
-          addLocoToList(lc);
-        else if( action == "consistdel" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
-          addLocoToList(lc, getString("slaves"));
+        if( action == "consistadd" && slaveid != masterid && slaves.indexOf(slaveid) == -1 ) {
+          addLocoToList(lc, null, firstCat);
+          firstCat = false;
+        }
+        else if( action == "consistdel" && slaveid != masterid && slaves.indexOf(slaveid) != -1 ) {
+          addLocoToList(lc, getString("slaves"), firstCat);
+          firstCat = false;
+        }
         else if( action == "consistshow" && slaveid != masterid && slaves.indexOf(slaveid) != -1 )
-          addLocoToList(lc, getString("slaves"));
+          addLocoToList(lc, getString("slaves"), false);
       }
     }
   }
   
 }
 
-function addLocoToList(lc, catname) {
+function addLocoToList(lc, catname, opencat) {
   var category = localStorage.getItem("category");
 
   var div = document.getElementById("locoSelectList");
@@ -3799,7 +3811,7 @@ function addLocoToList(lc, catname) {
   }
   var cat = lcCatMap[lcCat];
   if( cat == undefined ) {
-    cat = addCatToList(div, lcCat);
+    cat = addCatToList(div, lcCat, opencat);
   }
   addMobileToList(cat, lc.getAttribute('id'), lc.getAttribute('image'), lc.getAttribute('dir'), lc.getAttribute('addr'));
 }
@@ -3887,7 +3899,7 @@ function processPlan() {
 
        trace('loco: ' + lclist[i].getAttribute('id') );
        lcMap[lclist[i].getAttribute('id')] = lclist[i];
-       addLocoToList(lclist[i], null);
+       addLocoToList(lclist[i], null, false);
      }
      
      carlist = xmlDoc.getElementsByTagName("car");
