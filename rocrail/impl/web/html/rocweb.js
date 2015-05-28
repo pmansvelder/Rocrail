@@ -106,6 +106,7 @@ function langDE() {
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
   document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
+  document.getElementById("systemStartAll").innerHTML = "Alle Loks starten";
   document.getElementById("optionsTitle").innerHTML = "<b>Optionen</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
@@ -185,6 +186,7 @@ function langEN() {
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
   document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
+  document.getElementById("systemStartAll").innerHTML = "Start all locs";
   document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
@@ -264,6 +266,7 @@ function langNL() {
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
   document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
+  document.getElementById("systemStartAll").innerHTML = "Start alle loc's";
   document.getElementById("optionsTitle").innerHTML = "<b>Opties</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
@@ -1086,6 +1089,11 @@ function actionPower() {
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
 
+function actionStartAll() {
+  $( "#popupSystem" ).popup( "close" );
+  var cmd = "<auto cmd=\"start\"/>";
+  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+}
 
 function actionLevelSelect(z) {
   if( ModPlan )
@@ -1151,6 +1159,7 @@ function actionAuto(auto) {
 
 function actionEBreak() {
   trace("emergancy break");
+  $( "#popupSystem" ).popup( "close" );
   var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
