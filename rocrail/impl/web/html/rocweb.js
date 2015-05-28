@@ -151,7 +151,7 @@ function langDE() {
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
   document.getElementById("labSliderDelta").innerHTML = "Regler-Delta";
   document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
-  document.getElementById("helpTitle").innerHTML = "Hilfe";
+  document.getElementById("helpTitle").innerHTML = "<b>Hilfe</b>";
   var help  = "<tr><th>Taste<th>Lange klick Funktion";
   help += "<tr><td>F1-F4<td>Fahrregler-Auswahl";
   help += "<tr><td>RE<td>Gleisspannung AUS";
@@ -226,7 +226,7 @@ function langEN() {
   document.getElementById("labUserColor").innerHTML = "Background color";
   document.getElementById("labSliderDelta").innerHTML = "Slider delta";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
-  document.getElementById("helpTitle").innerHTML = "Help";
+  document.getElementById("helpTitle").innerHTML = "<b>Help</b>";
   var help  = "<tr><th>Button<th>Long click function";
   help += "<tr><td>F1-F4<td>Throttle selection";
   help += "<tr><td>RE<td>Power OFF";
@@ -301,7 +301,7 @@ function langNL() {
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
   document.getElementById("labSliderDelta").innerHTML = "Regelaar delta";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotieven";
-  document.getElementById("helpTitle").innerHTML = "Help";
+  document.getElementById("helpTitle").innerHTML = "<b>Help</b>";
   var help  = "<tr><th>Knop<th>Lange click functie";
   help += "<tr><td>F1-F4<td>Loc besturing keuze";
   help += "<tr><td>RE<td>Rail spanning UIT";
