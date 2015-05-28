@@ -5170,6 +5170,7 @@ static iIBlockBase _findDest( iOModel inst, const char* fromBlockId, const char*
             if( block->isFree( block, LocOp.getId( loc ) ) && __isFree4BlockGroup(inst, blockId, LocOp.getId(loc) ) ) {
               block_suits suits;
               int restlen = 0;
+              iOLocation location = ModelOp.getBlockLocation(inst, blockId);
 
               suits = block->isSuited( block, loc, &restlen, !selectShortest );
               if( !route->hasPermission( route, loc, fromBlockId, !samedir ) ) {
@@ -5177,7 +5178,11 @@ static iIBlockBase _findDest( iOModel inst, const char* fromBlockId, const char*
               }
 
               /* Check for wanted block: */
-              if( gotoBlockId != NULL && StrOp.equals( gotoBlockId, blockId ) ) {
+              if( gotoBlockId != NULL )
+                TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "gotoblock [%s] destination [%s][%s]", gotoBlockId, blockId, location != NULL ? location->base.id(location):"-" );
+              if( ( gotoBlockId != NULL && StrOp.equals( gotoBlockId, blockId ) ) ||
+                  (location != NULL && StrOp.equals(gotoBlockId, location->base.id(location) ) ) )
+              {
                 if( suits == suits_not && schedule ) {
                   TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "ignore gotoblock [%s] for schedule", gotoBlockId );
                 }

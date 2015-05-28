@@ -2697,14 +2697,22 @@ static void _informBlock( iOLoc inst, const char* destid, const char* curid ) {
 static void _gotoBlock( iOLoc inst, const char* id ) {
   iOLocData data = Data(inst);
   iIBlockBase block = ModelOp.getBlock( AppOp.getModel(), id );
+  iOLocation location = ModelOp.getLocation( AppOp.getModel(), id );
+
   if( block != NULL ) {
     data->gotoBlock = block->base.id(block);
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco [%s] goto block [%s]", LocOp.getId(inst), data->gotoBlock );
     if( data->driver != NULL )
       data->driver->gotoblock( data->driver, data->gotoBlock );
   }
+  else if( location != NULL ) {
+    data->gotoBlock = location->base.id(location);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco [%s] goto location [%s]", LocOp.getId(inst), data->gotoBlock );
+    if( data->driver != NULL )
+      data->driver->gotoblock( data->driver, data->gotoBlock );
+  }
   else {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "loco [%s] goto block [%s] not found", LocOp.getId(inst), id );
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "loco [%s] goto block/location [%s] not found", LocOp.getId(inst), id );
   }
 }
 
