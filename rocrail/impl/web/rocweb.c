@@ -51,6 +51,8 @@ static const char* ROCWEBWORKER_JS = "rocwebworker.js";
 static const char* ROCWEB_CSS      = "rocweb.css";
 static const char* ROCWEB_LOGO     = "logo.png";
 static const char* ROCWEB_NOIMG    = "noimg.png";
+static const char* ROCWEB_UPIMG    = "up.png";
+static const char* ROCWEB_DOWNIMG  = "down.png";
 
 Boolean webSocketHeader( iOSocket s, const char* key, const char* protocol ) {
   Boolean ok = True;
@@ -749,6 +751,12 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
         if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 200 OK\r\n" );
         if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
         if(ok) ok=SocketOp.write( data->socket, "<fb id=\"kees\"/>", StrOp.len("<fb id=\"kees\"/>") );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/up.png" )  ) {
+        __getImage( inst, ROCWEB_UPIMG, True );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/down.png" )  ) {
+        __getImage( inst, ROCWEB_DOWNIMG, True );
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/noimg.png" )  ) {
         __getImage( inst, ROCWEB_NOIMG, True );

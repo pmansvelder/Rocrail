@@ -1036,12 +1036,13 @@ function speedUpdate(value) {
   if( lc == undefined )
     lc = carMap[locoSelected];
   if( lc == undefined ) return;
+
+  var V_max = parseInt(lc.getAttribute('V_max'));
+
   trace("Speed: " + value + " for loco " + locoSelected);
-  var vVal = value * (parseFloat(lc.getAttribute('V_max')/100.0));
-  var iVal = Math.floor(vVal);
-  lc.setAttribute('V', iVal);
-  trace("value="+value+" vVal="+vVal+" V_max="+parseInt(lc.getAttribute('V_max')));
-  var cmd = "<lc throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+iVal+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
+  lc.setAttribute('V', value);
+  trace("value="+value+" V_max="+V_max);
+  var cmd = "<lc throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+value+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
 }
@@ -1777,10 +1778,10 @@ function initThrottleStatus() {
 function updateSpeed(lc) {
   var slider = document.getElementById("speedSlider");
   var V = parseInt(lc.getAttribute('V'));
-  var vVal = V * (100/parseInt(lc.getAttribute('V_max')));
-  trace("V="+V+" vVal="+vVal+" V_max="+lc.getAttribute('V_max'));
-  slider.value = vVal;
-  speedUpdateVal = vVal;
+  var V_max = parseInt(lc.getAttribute('V_max'));
+  $("#speedSlider").prop("max", V_max).slider("refresh");
+  slider.value = V;
+  speedUpdateVal = V;
   $("#speedSlider").slider("refresh");
 
 }
@@ -1903,14 +1904,20 @@ function initThrottle() {
 
 
 function onVUp() {
-  speedUpdateVal++;
-  if(speedUpdateVal > 100)
-    speedUpdateVal = 100;
+  var lc = lcMap[locoSelected];
+  if( lc == undefined )
+    lc = carMap[locoSelected];
+  if( lc == undefined ) 
+    return;
+  var V_max = parseInt(lc.getAttribute('V_max'));
+  speedUpdateVal += sliderDelta;
+  if(speedUpdateVal > V_max)
+    speedUpdateVal = V_max;
   speedUpdate(speedUpdateVal);
 }
 
 function onVDown() {
-  speedUpdateVal--;
+  speedUpdateVal -= sliderDelta;
   if(speedUpdateVal < 0)
     speedUpdateVal = 0;
   speedUpdate(speedUpdateVal);
