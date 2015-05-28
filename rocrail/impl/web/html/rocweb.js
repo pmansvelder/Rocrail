@@ -3725,10 +3725,6 @@ function addCarToList(car, opencat) {
   var div = document.getElementById("locoSelectList");
   
   var lcCat = "car";
-  if( category != "engine" ) {
-    lcCat = getMobileCategory(car);
-  }
-
   var cat = lcCatMap[lcCat];
   if( cat == undefined ) {
     cat = addCatToList(div, lcCat, false);
@@ -3783,7 +3779,7 @@ function initLocoList(action) {
     }
     for (var key in carMap) {
       var car = carMap[key];
-      addLocoToList(car, null, false);
+      addCarToList(car);
     }
   }
   else if( action == "consistadd" || action == "consistdel" || action == "consistshow" ) {
@@ -3909,8 +3905,20 @@ function processPlan() {
      }
      
      
-     lclist = xmlDoc.getElementsByTagName("lc");
-     if( lclist.length > 0 )
+     lclistRaw = xmlDoc.getElementsByTagName("lc");
+     if( lclistRaw.length > 0 )
+       var lclist = Array.prototype.slice.call(lclistRaw, 0);
+       lclist.sort( function (a, b) {
+         if (a.getAttribute('id') > b.getAttribute('id')) {
+           return 1;
+         }
+         if (a.getAttribute('id') < b.getAttribute('id')) {
+           return -1;
+         }
+         // a must be equal to b
+         return 0;
+       });
+     
        trace("processing " + lclist.length + " locos");
 
      for (var i = 0; i < lclist.length; i++) {
@@ -3923,8 +3931,19 @@ function processPlan() {
        addLocoToList(lclist[i], null, false);
      }
      
-     carlist = xmlDoc.getElementsByTagName("car");
-     if( carlist.length > 0 )
+     carlistRaw = xmlDoc.getElementsByTagName("car");
+     if( carlistRaw.length > 0 )
+       var carlist = Array.prototype.slice.call(carlistRaw, 0);
+       lclist.sort( function (a, b) {
+         if (a.getAttribute('id') > b.getAttribute('id')) {
+           return 1;
+         }
+         if (a.getAttribute('id') < b.getAttribute('id')) {
+           return -1;
+         }
+         // a must be equal to b
+         return 0;
+       });
        trace("processing " + carlist.length + " cars");
 
      for (var i = 0; i < carlist.length; i++) {
