@@ -121,6 +121,8 @@ function langDE() {
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
+  document.getElementById("labLocoSortID").innerHTML = "Kennung";
+  document.getElementById("labLocoSortAddress").innerHTML = "Adresse";
   document.getElementById("labBlockStart").innerHTML = "Zug starten";
   document.getElementById("labBlockStop").innerHTML = "Zug anhalten";
   document.getElementById("labBlockManual").innerHTML = "Halbautomatisch";
@@ -198,6 +200,8 @@ function langEN() {
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
+  document.getElementById("labLocoSortID").innerHTML = "ID";
+  document.getElementById("labLocoSortAddress").innerHTML = "Address";
   document.getElementById("labBlockStart").innerHTML = "Start train";
   document.getElementById("labBlockStop").innerHTML = "Stop train";
   document.getElementById("labBlockManual").innerHTML = "Half automatic";
@@ -275,6 +279,8 @@ function langNL() {
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
+  document.getElementById("labLocoSortID").innerHTML = "ID";
+  document.getElementById("labLocoSortAddress").innerHTML = "Adres";
   document.getElementById("labBlockStart").innerHTML = "Start trein";
   document.getElementById("labBlockStop").innerHTML = "Stop trein";
   document.getElementById("labBlockManual").innerHTML = "Half automaat";
@@ -725,6 +731,13 @@ function openOptions() {
   else
     $("#locoCatEngine").prop("checked", true).checkboxradio('refresh');
   
+  var locosort = localStorage.getItem("locosort");
+  
+  if( locosort == "address" )
+    $("#locoSortAddress").prop("checked", true).checkboxradio('refresh');
+  else
+    $("#locoSortID").prop("checked", true).checkboxradio('refresh');
+  
   var select = document.getElementById("languageSelect");
 
   var red   = localStorage.getItem("red");
@@ -748,6 +761,12 @@ function openOptions() {
     $( "#popupOptions" ).popup( "open" );
     });
 
+}
+
+function onLocoSort(sort) {
+  trace("locosort="+sort);
+  localStorage.setItem("locosort", sort);
+  location.reload();
 }
 
 function onCatEngine() {
@@ -2936,6 +2955,10 @@ function processResponse() {
         if(category == undefined || category.length == 0) {
           localStorage.setItem("category", "engine");
         }
+        var locosort = localStorage.getItem("locosort");
+        if(locosort == undefined || locosort.length == 0) {
+          localStorage.setItem("locosort", "id");
+        }
         var showocc = localStorage.getItem("showocc");
         if(showocc == undefined || showocc.length == 0) {
           localStorage.setItem("showocc", "true");
@@ -3922,11 +3945,20 @@ function processPlan() {
      if( lclistRaw.length > 0 )
        var lclist = Array.prototype.slice.call(lclistRaw, 0);
        lclist.sort( function (a, b) {
-         if (a.getAttribute('id') > b.getAttribute('id')) {
-           return 1;
+         var locosort = localStorage.getItem("locosort");
+         var attrname = "id";
+         if( locosort == "address" ) {
+           attrname = "addr";
+           if(parseInt(a.getAttribute(attrname)) > parseInt(b.getAttribute(attrname)))
+             return 1;
+           if(parseInt(a.getAttribute(attrname)) < parseInt(b.getAttribute(attrname)))
+             return -1;
          }
-         if (a.getAttribute('id') < b.getAttribute('id')) {
-           return -1;
+         else {
+           if (a.getAttribute(attrname) > b.getAttribute(attrname))
+             return 1;
+           if (a.getAttribute(attrname) < b.getAttribute(attrname))
+             return -1;
          }
          // a must be equal to b
          return 0;

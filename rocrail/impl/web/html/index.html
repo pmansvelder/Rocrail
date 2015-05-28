@@ -226,6 +226,14 @@
       <label id="labLocoCatRoadname" title="Sort the Loco selection list by Roadname" for="locoCatRoadname">Roadname</label>
     </fieldset>
     </div> 
+    <div data-role="fieldcontain">
+    <fieldset data-role="controlgroup" data-type="horizontal" >
+      <input type="radio" id="locoSortID" name="radio-choice-2" value="id" onclick="onLocoSort('id')"/>
+      <label id="labLocoSortID" for="locoSortID">ID</label>
+      <input type="radio" id="locoSortAddress" name="radio-choice-2" value="address" onclick="onLocoSort('address')"/>
+      <label id="labLocoSortAddress" for="locoSortAddress">Address</label>
+    </fieldset>
+    </div> 
     <table width="100%"><tr>
     <td nowrap="nowrap"><label id="labUserColor">User color:</label>
     <td><input size="3" type="text" name="userColorRed" id="userColorRed" value="" placeholder="R" data-theme="a">
