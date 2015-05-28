@@ -188,7 +188,7 @@
 
   <div data-role="popup" id="popupOptions" class="ui-popup" data-theme="a">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-  <div style="padding:10px 10px;">
+  <div id="divOptions" style="padding:10px 10px;">
     <label id="optionsTitle">Options</label>
     <div data-role="fieldcontain">
     <fieldset data-role="controlgroup">
@@ -212,6 +212,8 @@
       <label id="labOptionSpeedButtons" for="optionSpeedButtons">Speed buttons</label>
       <input type="checkbox" name="optionShowBlockID" id="optionShowBlockID" class="custom" onclick="onOptionShowBlockID()" />
       <label id="labOptionShowBlockID" for="optionShowBlockID">Show block ID</label>
+      <input type="checkbox" name="optionShowTrainID" id="optionShowTrainID" class="custom" onclick="onOptionShowTrainID()" />
+      <label id="labOptionShowTrainID" for="optionShowTrainID">Show train ID</label>
     </fieldset>
     </div>
     <div data-role="fieldcontain">

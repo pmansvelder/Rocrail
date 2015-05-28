@@ -117,6 +117,7 @@ function langDE() {
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
   document.getElementById("labOptionShowBlockID").innerHTML = "Zeige Block Kennungen";
+  document.getElementById("labOptionShowTrainID").innerHTML = "Zeige Zug Kennungen";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -193,6 +194,7 @@ function langEN() {
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
   document.getElementById("labOptionShowBlockID").innerHTML = "Show block IDs";
+  document.getElementById("labOptionShowTrainID").innerHTML = "Show train ID";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -269,6 +271,7 @@ function langNL() {
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
   document.getElementById("labOptionShowBlockID").innerHTML = "Toon blok ID's";
+  document.getElementById("labOptionShowTrainID").innerHTML = "Toon treinstel ID";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -710,6 +713,8 @@ function openOptions() {
   $('#optionSpeedButtons').prop('checked', speedbuttons=="true"?true:false).checkboxradio('refresh');
   var showblockid = localStorage.getItem("showblockid");
   $('#optionShowBlockID').prop('checked', showblockid=="true"?true:false).checkboxradio('refresh');
+  var showtrainid = localStorage.getItem("showtrainid");
+  $('#optionShowTrainID').prop('checked', showtrainid=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -735,9 +740,11 @@ function openOptions() {
   document.getElementById("sliderDelta").value = sliderdelta;
 
 
-  //$('#popupMenu').on("popupafterclose", function(){$( "#popupOptions" ).popup( "open" )});
   $('#popupMenu').on("panelclose", function(){
     $('#popupMenu').unbind( "panelclose" );
+    var maxHeight = $(window).height() - 75;
+    $('#divOptions').css('max-height', maxHeight + 'px');
+    $('#divOptions').css('overflow-y', 'scroll'); 
     $( "#popupOptions" ).popup( "open" );
     });
 
@@ -1731,6 +1738,12 @@ function onOptionShowBlockID() {
   trace("option showblockid = "+ optionShowBlockID.checked );
 }
 
+function onOptionShowTrainID() {
+  var optionShowTrainID = document.getElementById("optionShowTrainID");
+  localStorage.setItem("showtrainid", optionShowTrainID.checked ? "true":"false");
+  trace("option showtrainid = "+ optionShowTrainID.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -2440,7 +2453,7 @@ function getBlockLabel(bk, div) {
       var rotate = lc.getAttribute('blockenterside');
       var train  = lc.getAttribute('train');
       
-      if( train != undefined && train.length > 0 )
+      if( localStorage.getItem("showtrainid") == "true" && train != undefined && train.length > 0 )
         label = label + "_" + train;
       
       if( rotate == undefined )
