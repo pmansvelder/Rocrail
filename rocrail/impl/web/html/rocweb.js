@@ -116,6 +116,7 @@ function langDE() {
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Zeige Fahrstraßen bei Weichen";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
+  document.getElementById("labOptionShowBlockID").innerHTML = "Zeige Block Kennungen";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -191,6 +192,7 @@ function langEN() {
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Show routes on switches";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
+  document.getElementById("labOptionShowBlockID").innerHTML = "Show block IDs";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -266,6 +268,7 @@ function langNL() {
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Toon rijwegen over wissels";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
+  document.getElementById("labOptionShowBlockID").innerHTML = "Toon blok ID's";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -705,6 +708,8 @@ function openOptions() {
   $('#optionAllSpeedSteps').prop('checked', allspeedsteps=="true"?true:false).checkboxradio('refresh');
   var speedbuttons = localStorage.getItem("speedbuttons");
   $('#optionSpeedButtons').prop('checked', speedbuttons=="true"?true:false).checkboxradio('refresh');
+  var showblockid = localStorage.getItem("showblockid");
+  $('#optionShowBlockID').prop('checked', showblockid=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -1720,6 +1725,12 @@ function onOptionSpeedButtons() {
   document.getElementById("speedButtonsDiv").style.display = optionSpeedButtons.checked ? 'block':'none';
 }
 
+function onOptionShowBlockID() {
+  var optionShowBlockID = document.getElementById("optionShowBlockID");
+  localStorage.setItem("showblockid", optionShowBlockID.checked ? "true":"false");
+  trace("option showblockid = "+ optionShowBlockID.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -2413,11 +2424,11 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
 function getBlockLabel(bk, div) {
   bkNode = bkMap[bk.getAttribute('id')];
   var ori   = getOri(bkNode);
-  var small = bk.getAttribute('smallsymbol');
+  var small = bkNode.getAttribute('smallsymbol');
   var locid = bk.getAttribute('locid');
   var label = bk.getAttribute('locid');
   
-  if( locid != undefined && locid.length > 0 && "true" != small ) 
+  if( localStorage.getItem("showblockid") == "true" && locid != undefined && locid.length > 0 && "true" != small ) 
     label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
       
   if( label == undefined || label.length == 0 ) {

@@ -13,10 +13,13 @@
 }
 
 .itemtext {
+ white-space: nowrap;
  vertical-align:middle;
+ overflow:auto;
 }
 
 .itemtextV {
+ white-space: nowrap;
  vertical-align:middle; 
  horizontal-align:middle; 
  -webkit-transform: rotate(90deg); 
@@ -26,6 +29,7 @@
 }
 
 .itemtextVnorth {
+ white-space: nowrap;
  vertical-align:middle; 
  horizontal-align:middle; 
  -webkit-transform: rotate(270deg); 
@@ -35,6 +39,7 @@
 }
 
 .itemtextVsouth {
+ white-space: nowrap;
  vertical-align:middle; 
  horizontal-align:middle; 
  -webkit-transform: rotate(90deg); 
