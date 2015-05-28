@@ -1461,6 +1461,8 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
             iONode schedule = ModelOp.getSchedule(model, wAction.getparam(data->action));
             iIBlockBase block = ModelOp.getBlock(model, wAction.getparam(data->action));
             iOLocation location = ModelOp.getLocation(model, wAction.getparam(data->action));
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco [%s] goto [%s] tour=%X schedule=%X block=%X location=%X",
+                LocOp.getId(lc), wAction.getparam(data->action), tour, schedule, block, location );
             if( tour != NULL ) {
               LocOp.useTour( lc, wAction.getparam(data->action));
             }

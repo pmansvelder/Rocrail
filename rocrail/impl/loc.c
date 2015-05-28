@@ -2699,8 +2699,12 @@ static void _gotoBlock( iOLoc inst, const char* id ) {
   iIBlockBase block = ModelOp.getBlock( AppOp.getModel(), id );
   if( block != NULL ) {
     data->gotoBlock = block->base.id(block);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco [%s] goto block [%s]", LocOp.getId(inst), data->gotoBlock );
     if( data->driver != NULL )
       data->driver->gotoblock( data->driver, data->gotoBlock );
+  }
+  else {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "loco [%s] goto block [%s] not found", LocOp.getId(inst), id );
   }
 }
 
