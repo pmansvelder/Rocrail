@@ -3951,7 +3951,7 @@ function processPlan() {
      
      
      lclistRaw = xmlDoc.getElementsByTagName("lc");
-     if( lclistRaw.length > 0 )
+     if( lclistRaw.length > 0 ) {
        var lclist = Array.prototype.slice.call(lclistRaw, 0);
        lclist.sort( function (a, b) {
          var locosort = localStorage.getItem("locosort");
@@ -3974,19 +3974,21 @@ function processPlan() {
        });
      
        trace("processing " + lclist.length + " locos");
-
-     for (var i = 0; i < lclist.length; i++) {
-       var show  = lclist[i].getAttribute('show');
-       if( show != undefined && show == "false" )
-         continue;
-
-       trace('loco: ' + lclist[i].getAttribute('id') );
-       lcMap[lclist[i].getAttribute('id')] = lclist[i];
-       addLocoToList(lclist[i], null, false);
+     
+       for (var i = 0; i < lclist.length; i++) {
+         var show  = lclist[i].getAttribute('show');
+         if( show != undefined && show == "false" )
+           continue;
+  
+         trace('loco: ' + lclist[i].getAttribute('id') );
+         lcMap[lclist[i].getAttribute('id')] = lclist[i];
+         addLocoToList(lclist[i], null, false);
+       }
      }
+
      
      carlistRaw = xmlDoc.getElementsByTagName("car");
-     if( carlistRaw.length > 0 )
+     if( carlistRaw.length > 0 ) {
        var carlist = Array.prototype.slice.call(carlistRaw, 0);
        lclist.sort( function (a, b) {
          if (a.getAttribute('id') > b.getAttribute('id')) {
@@ -3999,11 +4001,12 @@ function processPlan() {
          return 0;
        });
        trace("processing " + carlist.length + " cars");
-
-     for (var i = 0; i < carlist.length; i++) {
-       trace('car: ' + carlist[i].getAttribute('id') );
-       carMap[carlist[i].getAttribute('id')] = carlist[i];
-       addCarToList(carlist[i]);
+     
+       for (var i = 0; i < carlist.length; i++) {
+         trace('car: ' + carlist[i].getAttribute('id') );
+         carMap[carlist[i].getAttribute('id')] = carlist[i];
+         addCarToList(carlist[i]);
+       }
      }
      
      
