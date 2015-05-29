@@ -102,6 +102,7 @@ function langDE() {
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
   //document.getElementById("menuTrains").innerHTML = "Züge";
   document.getElementById("menuDisconnect").innerHTML = "Server trennen";
+  document.getElementById("menuHelp").innerHTML = "Hilfe";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
@@ -168,6 +169,8 @@ function langDE() {
   help += "<tr><td>F14<td>Rangieren EIN/AUS";
   help += "<tr><td>Licht<td>Bereitstellen für Regler"; 
   document.getElementById("helpTable").innerHTML = help;
+  document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-de";
+  
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -182,6 +185,7 @@ function langEN() {
   document.getElementById("menuGuest").innerHTML = "Guest loco";
   //document.getElementById("menuTrains").innerHTML = "Trains";
   document.getElementById("menuDisconnect").innerHTML = "Disconnect server";
+  document.getElementById("menuHelp").innerHTML = "Help";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
@@ -248,6 +252,7 @@ function langEN() {
   help += "<tr><td>F14<td>Shunting ON/OFF";
   help += "<tr><td>Lights<td>Dispatch"; 
   document.getElementById("helpTable").innerHTML = help;
+  document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -262,6 +267,7 @@ function langNL() {
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
   //document.getElementById("menuTrains").innerHTML = "Treinstellen";
   document.getElementById("menuDisconnect").innerHTML = "Server loskoppelen";
+  document.getElementById("menuHelp").innerHTML = "Hulp";
   document.getElementById("systemTitle").innerHTML = "<b>Systeem</b>";
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
@@ -328,6 +334,7 @@ function langNL() {
   help += "<tr><td>F14<td>Rangeren AAN/UIT";
   help += "<tr><td>Licht<td>Klaarzetten voor handregelaar"; 
   document.getElementById("helpTable").innerHTML = help;
+  document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
 }
 
