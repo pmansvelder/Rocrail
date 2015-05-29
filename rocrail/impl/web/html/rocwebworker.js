@@ -32,7 +32,7 @@ function doWebSocket() {
   };
   ws.onmessage = function (evt) 
   {
-    debug("onmessage: "+evt.data);
+    //debug("onmessage: "+evt.data);
     postMessage(evt.data);
   };
   ws.onclose = function(event)
@@ -54,7 +54,7 @@ function doWebSocket() {
 }
 
 onmessage = function(e) {
-  debug('command received:' + e.data);
+  //debug('command received:' + e.data);
   ws.send(e.data);
 }
 
