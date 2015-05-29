@@ -1,11 +1,11 @@
 var retryWebSocket = 0;
 
 function debug(msg) {                                                           
-  postMessage(JSON.stringify({type:'debug',msg:msg}));                          
+  postMessage("<debug>"+msg+"</debug>");                          
 }
 
 function alert(msg) {                                                           
-  postMessage(JSON.stringify({type:'alert',msg:msg}));                          
+  postMessage("<alert>"+msg+"</alert>");                          
 }
 
 function doWebSocket() {
@@ -32,10 +32,8 @@ function doWebSocket() {
   };
   ws.onmessage = function (evt) 
   {
-    debug("websocket message receiving...");
-    var received_msg = evt.data;
-    debug("websocket message received: " + received_msg);
-    postMessage(JSON.stringify({type:'response', answer:received_msg}));
+    debug("onmessage: "+evt.data);
+    postMessage(evt.data);
   };
   ws.onclose = function(event)
   { 
@@ -56,20 +54,8 @@ function doWebSocket() {
 }
 
 onmessage = function(e) {
-  debug('Message received from main script');
-  var result = JSON.parse(e.data);
-  if(result.type == 'command') {
-    debug("worker command: "+result.msg);
-    ws.send(result.msg);
-    /* ToDo: Send to server. */
-  }
-  if(result.type == 'shutdown') {
-    debug("closing websocket...");
-    ws.close(1000, "<shutdown/>");
-    retryWebSocket = 10; // Stop.
-    return;
-  }
-  
+  debug('command received:' + e.data);
+  ws.send(e.data);
 }
 
 doWebSocket();

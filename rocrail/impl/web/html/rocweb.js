@@ -61,6 +61,7 @@ var sliderDelta = 3;
 var redBackground = "#FFC8C8";
 var throttleid = "rocweb";
 var speedUpdateVal = 0;
+var parser = new window.DOMParser();
 
 
 function forceRedraw(div){
@@ -78,17 +79,9 @@ function trace(msg) {
     console.log(msg);
 }
 
-/* JSon test */
-function jsonStorageTest() {
-  // Test to save a session structure.
-  var E03 = {color: "grey", name: "Spot", size: 46};
-  E03.test = "Hallo";
-  sessionStorage.setItem("E03", JSON.stringify(E03));
-  
-  var cat = JSON.parse(sessionStorage.getItem("E03"));
-  trace(cat.size + " " + cat.color + " " + cat.test );
+function sendCommand(cmd) {
+  worker.postMessage(cmd);
 }
-
 
 /* Configuration */
 function langDE() {
@@ -415,7 +408,7 @@ function onLocoSelected(sel) {
     newslaves += sel;
     master.setAttribute('consist', newslaves);
     var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
   else if( locoSelectAction == "consistdel" ) {
     var master = lcMap[locoSelected];
@@ -430,7 +423,7 @@ function onLocoSelected(sel) {
     }
     master.setAttribute('consist', newslaves);
     var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
   else if( locoSelectAction == "consistshow" ) {
     // Nothing todo.
@@ -796,29 +789,6 @@ function closeOptions()
 }
 
 
-/* Send a XML Http request */
-function sendCommand(cmd) {
-  // send an XMLHttpRequest
-  trace("send command: " + cmd);
-  try {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function()
-    {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-      {
-        processUpdate(xmlhttp);
-      }
-    };
-    
-    xmlhttp.open("GET", "rocweb.xml?"+cmd, true);
-    xmlhttp.send("");
-  } 
-    catch(e) {
-      console.log("exception: " + e.stack);
-  }
-}
-
-
 /* Throttle commands */
 window.oncontextmenu = function(event) {
   event.preventDefault();
@@ -887,21 +857,21 @@ $(function(){
     tapholdFkey = 1;
     trace("taphold RE: power off");
     var cmd = "<sys informall=\"true\" cmd=\"stop\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
   function tapholdFGHandler(e) {
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold FG: emergancy break");
     var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
   function tapholdF0Handler(e) {
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F0: dispatch");
     var cmd = "<lc id=\""+locoSelected+"\" cmd=\"dispatch\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
   function tapholdF13Handler(e) {
     e.preventDefault();
@@ -918,7 +888,7 @@ $(function(){
       cmd = "<lc id=\""+locoSelected+"\" cmd=\"manualoff\"/>";
       lc.setAttribute('manualon', "false");
     }
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
   function tapholdF14Handler(e) {
     e.preventDefault();
@@ -934,7 +904,7 @@ $(function(){
       cmd = "<lc id=\""+locoSelected+"\" cmd=\"shuntingoff\"/>";
       lc.setAttribute('shuntingon', "false");
     }
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 
   function tapholdF9Handler(e) {
@@ -1019,7 +989,7 @@ function onRE() {
   }
   trace("release loco " + locoSelected);
   var cmd = "<lc throttleid=\""+throttleid+"\" cmd=\"release\" id=\""+locoSelected+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onST() {
@@ -1031,7 +1001,7 @@ function onST() {
     cmd = "<lc id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"stop\"/>";
   else
     cmd = "<lc id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"go\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onFunction(id, nr) {
@@ -1051,7 +1021,7 @@ function onFunction(id, nr) {
   var mask = 1 << (nr-1);
   var on = fx&mask?"false":"true";
   var cmd = "<fn id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onLights() {
@@ -1069,7 +1039,7 @@ function onLights() {
     on = "false";
   trace("lights was "+fn+" will be "+on);
   var cmd = "<fn id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+0+"\" f"+0+"=\""+on+"\"/>"
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function speedUpdate(value) {
@@ -1085,7 +1055,7 @@ function speedUpdate(value) {
   trace("value="+value+" V_max="+V_max);
   var cmd = "<lc throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+value+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1093,13 +1063,13 @@ function speedUpdate(value) {
 function actionPower() {
   var mOn = power == 'true' ? false:true;
   var cmd = "<sys informall=\"true\" cmd=\""+(mOn?"go":"stop")+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionStartAll() {
   $( "#popupSystem" ).popup( "close" );
   var cmd = "<auto cmd=\"start\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionLevelSelect(z) {
@@ -1161,26 +1131,26 @@ function actionAuto(auto) {
   if( autoMode == "on" )
     auto = "off";
   var cmd = "<auto cmd=\""+auto+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionEBreak() {
   trace("emergancy break");
   $( "#popupSystem" ).popup( "close" );
   var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionSystemInitfield() {
   $( "#popupSystem" ).popup( "close" );
   var cmd = "<model cmd=\"initfield\" informall=\"true\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionSystemQuerySensors() {
   $( "#popupSystem" ).popup( "close" );
   var cmd = "<sys cmd=\"sod\" informall=\"true\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionRoute(id) {
@@ -1188,7 +1158,7 @@ function actionRoute(id) {
   trace("route action on " + stid );
   st = stMap[stid];
   var cmd = "<st cmd=\"test\" id=\""+stid+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionSensor(id)
@@ -1207,7 +1177,7 @@ function actionSensor(id)
     cmd = "<fb state=\"false\" id=\""+fbid+"\"/>";
   else
     cmd = "<fb state=\"true\" id=\""+fbid+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1225,7 +1195,7 @@ function onChangeText() {
   txid = sessionStorage.getItem("text");
   var text = document.getElementById("newText").value;
   var cmd = "<model cmd=\"modify\"><tx id=\""+txid+"\" text=\""+text+"\"/></model>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 
 }
 
@@ -1234,7 +1204,7 @@ function actionSwitch(id) {
   sw = swMap[swid];
   trace("switch action on " + swid + " state=" + sw.getAttribute('state'));
   var cmd = "<sw cmd=\"flip\" id=\""+swid+"\" manualcmd=\"true\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionOutput(id) {
@@ -1244,7 +1214,7 @@ function actionOutput(id) {
   var toggleswitch = co.getAttribute('toggleswitch');
   if( toggleswitch == undefined || toggleswitch == "true" ) {
     var cmd = "<co cmd=\"flip\" id=\""+coid+"\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 }
 
@@ -1256,7 +1226,7 @@ function actionOutputDown(id) {
   if( toggleswitch == undefined || toggleswitch == "true" )
     return;
   var cmd = "<co cmd=\"on\" id=\""+coid+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionOutputUp(id) {
@@ -1267,7 +1237,7 @@ function actionOutputUp(id) {
   if( toggleswitch == undefined || toggleswitch == "true" )
     return;
   var cmd = "<co cmd=\"off\" id=\""+coid+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionSignal(id) {
@@ -1275,7 +1245,7 @@ function actionSignal(id) {
   sg = sgMap[sgid];
   trace("signal action on " + sgid + " state=" + sg.getAttribute('state'));
   var cmd = "<sg cmd=\"flip\" id=\""+sgid+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function actionTurntable(id) {
@@ -1505,12 +1475,12 @@ function onBlockTrain() {
     if( trainBlockSelect == "none" ) {
       // release train
       var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"releasetrain\"/>";
-      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+      sendCommand(cmd);
     }
     else {
       // assign train
       var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"assigntrain\" train=\""+trainBlockSelect+"\"/>";
-      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+      sendCommand(cmd);
     }
   }  
 }
@@ -1521,14 +1491,14 @@ function onBlockStart(gomanual) {
   if( locoBlockSelect != "none" ) {
     if( scheduleBlockSelect != "none" && scheduleBlockSelect.length > 0 ) {
       var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"useschedule\" scheduleid=\""+scheduleBlockSelect+"\"/>";
-      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+      sendCommand(cmd);
     }  
     else if( blockBlockSelect != "none" && blockBlockSelect.length > 0 ) {
       var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"gotoblock\" blockid=\""+blockBlockSelect+"\"/>";
-      worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+      sendCommand(cmd);
     }  
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(gomanual?"gomanual":"go")+"\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 }
 
@@ -1537,7 +1507,7 @@ function onBlockReset(soft) {
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(soft?"softreset":"reset")+"\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 }
 
@@ -1546,7 +1516,7 @@ function onBlockStop() {
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"stop\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 }
 
@@ -1555,7 +1525,7 @@ function onBlockSwapPlacing() {
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"swap\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 }
 
@@ -1564,7 +1534,7 @@ function onBlockSwapEnter() {
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"blockside\"/>";
-    worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+    sendCommand(cmd);
   }
 }
 
@@ -1572,14 +1542,14 @@ function onBlockOpen() {
   $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
   var cmd = "<bk id=\""+bkid+"\" state=\"open\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onBlockClose() {
   $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
   var cmd = "<bk id=\""+bkid+"\" state=\"closed\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onGuestProt(prot) {
@@ -1598,7 +1568,7 @@ function onAddGuest() {
     return;
   trace("add guest: "+address+" id="+id);
   var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" spcnt=\""+guestSteps+"\" prot=\""+guestProt+"\" V=\"0\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onUserColor() {
@@ -1622,7 +1592,7 @@ function onLocoInBlock(lcid) {
     cmd = "<lc id=\""+lcid+"\" cmd=\"block\" blockid=\""+bkid+"\"/>";
   else
     cmd = "<bk id=\""+bkid+"\" cmd=\"loc\" locid=\"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1638,7 +1608,7 @@ function onStageCompress() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" cmd=\"compress\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1646,7 +1616,7 @@ function onStageOpen() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" state=\"open\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1654,7 +1624,7 @@ function onStageClose() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" state=\"closed\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1662,7 +1632,7 @@ function onStageOpenExit() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" exitstate=\"open\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1670,21 +1640,21 @@ function onStageCloseExit() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
   var cmd = "<sb id=\""+sbid+"\" exitstate=\"closed\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onTurntableGotoTrack() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
   var cmd = "<tt id=\""+ttid+"\" cmd=\""+trackTTSelect+"\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onTurntableNext() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
   var cmd = "<tt id=\""+ttid+"\" cmd=\"next\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1692,7 +1662,7 @@ function onTurntablePrevious() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
   var cmd = "<tt id=\""+ttid+"\" cmd=\"previous\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1700,7 +1670,7 @@ function onFiddleYardNext() {
   $( "#popupFiddleYard" ).popup( "close" );
   fyid = sessionStorage.getItem("fiddleyard");
   var cmd = "<seltab id=\""+fyid+"\" cmd=\"next\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 
@@ -1708,7 +1678,7 @@ function onFiddleYardPrevious() {
   $( "#popupFiddleYard" ).popup( "close" );
   fyid = sessionStorage.getItem("fiddleyard");
   var cmd = "<seltab id=\""+fyid+"\" cmd=\"previous\"/>";
-  worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+  sendCommand(cmd);
 }
 
 function onOptionDebug() {
@@ -2874,13 +2844,10 @@ function handleSystem(sys) {
 }
 
 function Disconnect(closemenu) {
-  var cmd = "<sys shutdown=\"true\"/>";
-  worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
   for( var i = 0; i < zlevelDivList.length; i++ )
     zlevelDivList[i].style.display = 'none';
   if(closemenu)
     $( "#popupMenu" ).popup( "close" );
-
 }
 
 function onZoom(zoomin) {
@@ -2916,7 +2883,7 @@ function onZoom100() {
 
 /* Processing events from server */
 function evaluateEvent(xmlStr) {
-  var xmlDoc = ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
+  var xmlDoc = parser.parseFromString(xmlStr, "text/xml");
   var root = xmlDoc.documentElement;
   var evtName = root.nodeName;
   trace("evaluate: " + evtName);
@@ -2952,6 +2919,10 @@ function evaluateEvent(xmlStr) {
     handleRoute(root);
   else if( evtName == "model" )
     handleModel(root);
+  else if( evtName == "debug" )
+    trace(xmlStr);
+  else if( evtName == "alert" )
+    alert(xmlStr);
 }
 
 function processResponse() {
@@ -3041,9 +3012,7 @@ function processResponse() {
             function doShutdown() {
               trace("no key; shutdown...");
               clearInterval(shutdownTimer);
-              var cmd = "<sys shutdown=\"true\"/>";
-              worker.postMessage(JSON.stringify({type:'shutdown', msg:cmd}));
-              zlevelSelected.style.display = 'none';
+              Disconnect(false)
               document.getElementById("donkeyWarning").style.display = 'none'
               openDonkey();
             }
@@ -3063,28 +3032,10 @@ function processResponse() {
       if( planloaded ) {
         worker = new Worker("rocwebworker.js");
         worker.onmessage = function (e) {
-          var result = JSON.parse(e.data);
-          if(result.type == 'debug') {
-            trace(result.msg);
-          } 
-          else if(result.type == 'alert') {
-            alert(result.msg);
-          } 
-          else if(result.type == 'response') {
-            trace("response: "+result.answer);
-            if( !didShowDonkey && donkey == 'false' ) {
-              openDonkey();
-              didShowDonkey = true;
-            }
-            /* ToDo: Evaluate server event. */
-            evaluateEvent(result.answer);
-          }
-          else if(result.type == 'command') {
-            trace("command: "+result.msg);
-            /* ToDo: Send to server. */
-          }
-          else {
-            trace("data: " + e.data);
+          evaluateEvent(e.data);
+          if( !didShowDonkey && donkey == 'false' ) {
+            openDonkey();
+            didShowDonkey = true;
           }
         }
         
@@ -3092,7 +3043,7 @@ function processResponse() {
         function doPing() {
           trace("ping...");
           var cmd = "<sys cmd=\"getstate\"/>";
-          worker.postMessage(JSON.stringify({type:'command', msg:cmd}));
+          sendCommand(cmd);
         }
 
         
