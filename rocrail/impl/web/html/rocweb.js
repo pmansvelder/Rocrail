@@ -94,7 +94,7 @@ function langDE() {
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
   //document.getElementById("menuTrains").innerHTML = "Züge";
-  document.getElementById("menuDisconnect").innerHTML = "Server trennen";
+  //document.getElementById("menuDisconnect").innerHTML = "Server trennen";
   document.getElementById("menuHelp").innerHTML = "Hilfe";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
@@ -177,7 +177,7 @@ function langEN() {
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("menuGuest").innerHTML = "Guest loco";
   //document.getElementById("menuTrains").innerHTML = "Trains";
-  document.getElementById("menuDisconnect").innerHTML = "Disconnect server";
+  //document.getElementById("menuDisconnect").innerHTML = "Disconnect server";
   document.getElementById("menuHelp").innerHTML = "Help";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
   document.getElementById("systemInitField").innerHTML = "Init field";
@@ -259,7 +259,7 @@ function langNL() {
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
   //document.getElementById("menuTrains").innerHTML = "Treinstellen";
-  document.getElementById("menuDisconnect").innerHTML = "Server loskoppelen";
+  //document.getElementById("menuDisconnect").innerHTML = "Server loskoppelen";
   document.getElementById("menuHelp").innerHTML = "Hulp";
   document.getElementById("systemTitle").innerHTML = "<b>Systeem</b>";
   document.getElementById("systemInitField").innerHTML = "Init veld";
