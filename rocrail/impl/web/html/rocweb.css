@@ -15,7 +15,7 @@
 .itemtext {
  white-space: nowrap;
  vertical-align:middle;
- overflow:auto;
+ //overflow:hidden;
 }
 
 .itemtextV {
