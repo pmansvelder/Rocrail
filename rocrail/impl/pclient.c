@@ -128,8 +128,8 @@ static Boolean _work( struct OPClient* inst, iONode event, char** command ) {
     iOPClientData data = Data(inst);
     char str[1025] = {'\0'};
 
-    SocketOp.setRcvTimeout( data->socket, 1000 );
-    SocketOp.setSndTimeout( data->socket, 1000 );
+    SocketOp.setRcvTimeout( data->socket, 5 );
+    SocketOp.setSndTimeout( data->socket, 5 );
 
     if( data->websocket ) {
       char* cmd = NULL;

@@ -546,6 +546,10 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
     }
     freeMem(b);
     StrOp.free(info);
+    if( !ok ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket: could not write the event" );
+      return True;
+    }
   }
 
   if( SocketOp.isBroken( data->socket ) ) {

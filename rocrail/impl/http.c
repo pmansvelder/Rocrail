@@ -209,6 +209,7 @@ static void __pportserver( void* threadinst ) {
       MutexOp.post( data->pclientmux );
     }
 
+    event = NULL;
     obj post = ThreadOp.getPost( th );
     if( post != NULL ) {
       event = (iONode)post;
