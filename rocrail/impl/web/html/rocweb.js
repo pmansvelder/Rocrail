@@ -2322,44 +2322,82 @@ function handleLoco(lc) {
   if( lc == undefined)
     lc = carMap[fn.getAttribute('id')];
 
+
+  var newmode  = lc.getAttribute('mode');
+  var prevmode = lcNode.getAttribute('mode');
+  var modechanged = false;
+  if( newmode != undefined && newmode != prevmode ) {
+    lcNode.setAttribute('mode', newmode );
+    modechanged = true;
+  }
   
-  if( lc.getAttribute('mode') != undefined )
-    lcNode.setAttribute('mode', lc.getAttribute('mode'));
   if( lc.getAttribute('modereason') != undefined )
     lcNode.setAttribute('modereason', lc.getAttribute('modereason'));
+  
   if( lc.getAttribute('V') != undefined )
     lcNode.setAttribute('V', lc.getAttribute('V'));
   if( lc.getAttribute('dir') != undefined )
     lcNode.setAttribute('dir', lc.getAttribute('dir'));
   if( lc.getAttribute('fn') != undefined )
     lcNode.setAttribute('fn', lc.getAttribute('fn'));
-  if( lc.getAttribute('destblockid') != undefined )
-    lcNode.setAttribute('destblockid', lc.getAttribute('destblockid'));
-  if( lc.getAttribute('blockid') != undefined )
-    lcNode.setAttribute('blockid', lc.getAttribute('blockid'));
-  if( lc.getAttribute('blockenterside') != undefined )
-    lcNode.setAttribute('blockenterside', lc.getAttribute('blockenterside'));
-  if( lc.getAttribute('train') != undefined )
-    lcNode.setAttribute('train', lc.getAttribute('train'));
+  
+  var newdestblock  = lc.getAttribute('destblockid');
+  var prevdestblock = lcNode.getAttribute('destblockid');
+  var destblockchanged = false;
+  if( newdestblock != undefined && newdestblock != prevdestblock ) {
+    lcNode.setAttribute('destblockid', newdestblock);
+    destblockchanged = true;
+  }
+  
+  var newblock  = lc.getAttribute('blockid');
+  var prevblock = lcNode.getAttribute('blockid');
+  var blockchanged = false;
+  if( newblock != undefined && newblock != prevblock ) {
+    lcNode.setAttribute('blockid', newblock);
+    blockchanged = true;
+  }
+  
+  var newblockenterside  = lc.getAttribute('blockenterside');
+  var prevblockenterside = lcNode.getAttribute('blockenterside');
+  var blockentersidechanged = false;
+  if( newblockenterside != undefined && newblockenterside != prevblockenterside ) {
+    lcNode.setAttribute('blockenterside', newblockenterside);
+    blockentersidechanged = true;
+  }
+  
+  var newtrain  = lc.getAttribute('train');
+  var prevtrain = lcNode.getAttribute('train');
+  var trainchanged = false;
+  if( newtrain != undefined && newtrain != prevtrain) {
+    lcNode.setAttribute('train', newtrain);
+    trainchanged = true;
+  }
+  
   if( lc.getAttribute('consist') != undefined )
     lcNode.setAttribute('consist', lc.getAttribute('consist'));
 
-  var bk = findBlock4Loco(lc.getAttribute('id'));
-  if( bk != undefined ) {
-    updateBlockstate(bk.getAttribute('id'), bk.getAttribute('statesignal'), lc.getAttribute('id'), "loco");
-    if( lc.getAttribute('blockenterside') != undefined ) {
-      var div = document.getElementById("bk_"+bk.getAttribute('id'));
-      getBlockLabel(bk, div);
+  if( modechanged || blockentersidechanged || trainchanged ) {
+    var bk = findBlock4Loco(lc.getAttribute('id'));
+    if( bk != undefined ) {
+      if( modechanged )
+        updateBlockstate(bk.getAttribute('id'), bk.getAttribute('statesignal'), lc.getAttribute('id'), "loco");
+      if( blockentersidechanged || trainchanged ) {
+        var div = document.getElementById("bk_"+bk.getAttribute('id'));
+        getBlockLabel(bk, div);
+      }
+    }
+  }
+
+  if( ! $(popupThrottle).parent().hasClass('ui-popup-hidden') ) {
+    if( lc.getAttribute('id') == locoSelected ) {
+      initThrottleStatus();
+      updateDir();
+      if( localStorage.getItem("allspeedsteps") != "true" ) {
+        updateSpeed(lcNode);
+      }
     }
   }
   
-  if( lc.getAttribute('id') == locoSelected ) {
-    initThrottleStatus();
-    updateDir();
-    if( localStorage.getItem("allspeedsteps") != "true" ) {
-      updateSpeed(lcNode);
-    }
-  }
 }
 
 
@@ -2912,6 +2950,8 @@ function evaluateEvent(xmlStr) {
     trace(xmlStr);
   else if( xmlStr.indexOf("<alert") == 0 )
     alert(xmlStr);
+  else 
+    trace("unhandled XML: "+xmlStr); 
 }
 
 function processResponse() {
