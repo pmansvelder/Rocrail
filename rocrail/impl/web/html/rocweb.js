@@ -64,13 +64,6 @@ var speedUpdateVal = 0;
 var parser = new window.DOMParser();
 
 
-function forceRedraw(div){
-  var disp = div.style.display;
-  div.style.display = 'none';
-  var trick = div.offsetHeight;
-  div.style.display = disp;
-};
-
 function trace(msg) {
   var debug = localStorage.getItem("debug");
   if( debug == undefined )
@@ -2192,7 +2185,6 @@ function handleSensor(fb) {
     fbNode = fbMap[fb.getAttribute('id')];
     fbNode.setAttribute('state', fb.getAttribute('state'));
     div.style.backgroundImage = getSensorImage(fbNode);
-    forceRedraw(div);
     updateSensorOcc(fbNode);
   }
   else {
@@ -2258,7 +2250,6 @@ function handleText(tx) {
         div.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(tx)+ "</div>";
     }
 
-    forceRedraw(div);
   }
 }
 
@@ -2269,7 +2260,6 @@ function handleOutput(co) {
     coNode = coMap[co.getAttribute('id')];
     coNode.setAttribute('state', co.getAttribute('state'));
     div.style.backgroundImage = getOutputImage(coNode);
-    forceRedraw(div);
   }
   else {
     trace("output: " + co.getAttribute('id') + " not found");
@@ -2286,7 +2276,6 @@ function handleSwitch(sw) {
     if( sw.getAttribute('set') != undefined )
       swNode.setAttribute('set', sw.getAttribute('set'));
     div.style.backgroundImage = getSwitchImage(swNode, div, true);
-    forceRedraw(div);
   }
   else {
     trace("switch: " + sw.getAttribute('id') + " not found");
@@ -2302,7 +2291,6 @@ function handleSignal(sg) {
     sgNode.setAttribute('state', sg.getAttribute('state'));
     sgNode.setAttribute('aspect', sg.getAttribute('aspect'));
     div.style.backgroundImage = getSignalImage(sgNode, div);
-    forceRedraw(div);
   }
   else {
     trace("signal: " + sg.getAttribute('id') + " not found");
@@ -2436,7 +2424,6 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
   }
   trace("blockstate: block="+bkid+" signal="+sgid+" loco="+lcid+" from="+from+" label="+label);
   div.innerHTML = "<label class='itemtext'>"+label+"</label>";
-  forceRedraw(div);
 }
 
 function getBlockLabel(bk, div) {
@@ -2627,7 +2614,6 @@ function handleBlock(bk) {
     
     getBlockLabel(bk, div);
     div.style.backgroundImage = getBlockImage(bkNode, div);
-    forceRedraw(div);
   }
   else {
     trace("block: " + bk.getAttribute('id') + " not found");
@@ -2651,7 +2637,6 @@ function handleTurntable(tt) {
     ttNode.setAttribute('state2', tt.getAttribute('state2'));
     
     div.innerHTML = getTurntableImage(ttNode, div);
-    forceRedraw(div);
   }
   else {
     trace("turntable: " + tt.getAttribute('id') + " not found");
@@ -2669,7 +2654,6 @@ function handleFiddleYard(fy) {
     fyNode.setAttribute('state', fy.getAttribute('state'));
     
     div.innerHTML = getFiddleYardImage(fyNode, div);
-    forceRedraw(div);
   }
   else {
     trace("fiddleyard: " + fy.getAttribute('id') + " not found");
@@ -2719,7 +2703,6 @@ function handleStageBlock(sb) {
     getStageLabel(sb, div);
     
     div.style.backgroundImage = getStageBlockImage(sbNode, div);
-    forceRedraw(div);
 
   }
   else {
@@ -2806,7 +2789,6 @@ function handleRoute(st) {
     var div = document.getElementById("st_"+st.getAttribute('id'));
     if( div != undefined ) {
       div.style.backgroundImage = getRouteImage(st);
-      forceRedraw(div);
     }
 
   }
@@ -2818,7 +2800,6 @@ function handleTrack(tk) {
   if( div == null )
     return;
   div.style.backgroundImage = getTrackImage(tk);
-  forceRedraw(div);
 }
 
 
