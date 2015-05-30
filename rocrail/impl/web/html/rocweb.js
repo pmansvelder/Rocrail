@@ -3646,6 +3646,8 @@ function getBlockImage(bk, div) {
     return "url('block-ent"+suffix+"."+ori+".svg')";
   else if( "closed" == bk.getAttribute('state') )
     return "url('block-closed"+suffix+"."+ori+".svg')";
+  else if( "ghost" == bk.getAttribute('state') )
+    return "url('block-ghost"+suffix+"."+ori+".svg')";
   if( "true" == bk.getAttribute('reserved') )
     return "url('block-res"+suffix+"."+ori+".svg')";
   else if( label != undefined && label != "null" && label.length > 0 ) {
