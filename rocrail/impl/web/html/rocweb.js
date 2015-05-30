@@ -2881,47 +2881,49 @@ function onZoom100() {
   }
 }
 
+function parseString(xmlStr) {
+  var xmlDoc = parser.parseFromString(xmlStr, "text/xml");
+  return xmlDoc.documentElement;
+}
+
 /* Processing events from server */
 function evaluateEvent(xmlStr) {
-  var xmlDoc = parser.parseFromString(xmlStr, "text/xml");
-  var root = xmlDoc.documentElement;
-  var evtName = root.nodeName;
-  trace("evaluate: " + evtName);
-  if( evtName == "fb" )
-    handleSensor(root);
-  else if( evtName == "bk" )
-    handleBlock(root);
-  else if( evtName == "state" )
-    handleState(root);
-  else if( evtName == "auto" )
-    handleAuto(root);
-  else if( evtName == "sys" )
-    handleSystem(root);
-  else if( evtName == "fn" )
-    handleFunction(root);
-  else if( evtName == "lc" )
-    handleLoco(root);
-  else if( evtName == "sw" )
-    handleSwitch(root);
-  else if( evtName == "co" )
-    handleOutput(root);
-  else if( evtName == "sg" )
-    handleSignal(root);
-  else if( evtName == "tx" )
-    handleText(root);
-  else if( evtName == "sb" )
-    handleStageBlock(root);
-  else if( evtName == "tt" )
-    handleTurntable(root);
-  else if( evtName == "seltab" )
-    handleFiddleYard(root);
-  else if( evtName == "st" )
-    handleRoute(root);
-  else if( evtName == "model" )
-    handleModel(root);
-  else if( evtName == "debug" )
+  trace("evaluate: " + xmlStr);
+  if( xmlStr.indexOf("<fb") == 0 )
+    handleSensor(parseString(xmlStr));
+  else if( xmlStr.indexOf("<bk") == 0 )
+    handleBlock(parseString(xmlStr));
+  else if( xmlStr.indexOf("<state") == 0 )
+    handleState(parseString(xmlStr));
+  else if( xmlStr.indexOf("<auto") == 0 )
+    handleAuto(parseString(xmlStr));
+  else if( xmlStr.indexOf("<sys") == 0 )
+    handleSystem(parseString(xmlStr));
+  else if( xmlStr.indexOf("<fn") == 0 )
+    handleFunction(parseString(xmlStr));
+  else if( xmlStr.indexOf("<lc") == 0 )
+    handleLoco(parseString(xmlStr));
+  else if( xmlStr.indexOf("<sw") == 0 )
+    handleSwitch(parseString(xmlStr));
+  else if( xmlStr.indexOf("<co") == 0 )
+    handleOutput(parseString(xmlStr));
+  else if( xmlStr.indexOf("<sg") == 0 )
+    handleSignal(parseString(xmlStr));
+  else if( xmlStr.indexOf("<tx") == 0 )
+    handleText(parseString(xmlStr));
+  else if( xmlStr.indexOf("<sb") == 0 )
+    handleStageBlock(parseString(xmlStr));
+  else if( xmlStr.indexOf("<tt") == 0 )
+    handleTurntable(parseString(xmlStr));
+  else if( xmlStr.indexOf("<seltab") == 0 )
+    handleFiddleYard(parseString(xmlStr));
+  else if( xmlStr.indexOf("<st") == 0 )
+    handleRoute(parseString(xmlStr));
+  else if( xmlStr.indexOf("<model") == 0 )
+    handleModel(parseString(xmlStr));
+  else if( xmlStr.indexOf("<debug") == 0 )
     trace(xmlStr);
-  else if( evtName == "alert" )
+  else if( xmlStr.indexOf("<alert") == 0 )
     alert(xmlStr);
 }
 
