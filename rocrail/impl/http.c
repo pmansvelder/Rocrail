@@ -449,12 +449,14 @@ static void _shutdown( struct OHttp* inst ) {
 /**  */
 static void _broadcastEvent( struct OHttp* inst ,iONode evt ) {
   iOHttpData data = Data(inst);
-  if( data->pportserver == NULL ) {
+  if( data->demoEnd || data->pportserver == NULL ) {
     NodeOp.base.del(evt);
     return;
   }
+
   if( !ThreadOp.post( data->pportserver, (obj)evt ) ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Unable to broadcast event: Shutdown service." );
+    data->demoEnd = True;
     NodeOp.base.del(evt);
     HttpOp.shutdown(inst);
     data->pportserver = NULL;
