@@ -478,14 +478,16 @@ static void rocWebSocketReader( void* threadinst ) {
         if( data->websocketrun )
           data->websocketavail = True;
       }
+      /*
       else {
         data->websocketerror = True;
         data->websocketrun   = False;
         data->websocketavail = False;
         break;
       }
+      */
     }
-    ThreadOp.sleep(50);
+    ThreadOp.sleep(100);
   };
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket reader stopped" );

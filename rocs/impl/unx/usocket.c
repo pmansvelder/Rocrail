@@ -714,7 +714,7 @@ Boolean rocs_socket_readpeek( iOSocket inst, char* buf, int size, Boolean peek )
       #endif
       }
       else
-        TraceOp.terrno( name, TRCLEVEL_EXCEPTION, __LINE__, 8035, o->rc, "recv() failed" );
+        TraceOp.terrno( name, o->rc == EAGAIN ? TRCLEVEL_INFO:TRCLEVEL_EXCEPTION, __LINE__, 8035, o->rc, "recv() failed" );
       return False;
     }
     treaded += readed;
