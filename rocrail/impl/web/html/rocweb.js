@@ -2472,9 +2472,15 @@ function getBlockLabel(bk, div) {
             newLabel = label + " >";
           }
         }
-        else if( ori=="north" || ori=="south" ) {
+        else if( ori=="north" ) {
           newLabel = "< " + label;
-          if( (ori=="north" && rotate=="false" ) || (ori=="south" && rotate=="true" ) ) {
+          if( (ori=="north" && rotate=="true" ) ) {
+            newLabel = label + " >";
+          }
+        }
+        else if( ori=="south" ) {
+          newLabel = "< " + label;
+          if( (ori=="south" && rotate=="true" ) ) {
             newLabel = label + " >";
           }
         }
