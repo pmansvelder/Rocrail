@@ -623,8 +623,10 @@ Boolean rocs_socket_readpeek( iOSocket inst, char* buf, int size, Boolean peek )
         continue;
       }
       */
-      if( o->rc == WSAEWOULDBLOCK || o->rc == WSAESHUTDOWN || o->rc == WSAENOTSOCK || o->rc == WSAETIMEDOUT || o->rc == WSAECONNRESET )
-        rocs_socket_close(o);
+      if( o->rc != WSAETIMEDOUT ) {
+        if( o->rc == WSAEWOULDBLOCK || o->rc == WSAESHUTDOWN || o->rc == WSAENOTSOCK || o->rc == WSAECONNRESET )
+          rocs_socket_close(o);
+      }
 
       if( o->ssl ) {
       #ifdef __OPENSSL__
