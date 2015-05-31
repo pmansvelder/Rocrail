@@ -49,9 +49,9 @@ static void __del( void* inst ) {
     data->websocketrun = False;
     if( data->socket != NULL && data->websocket ) {
       iOSocket socket = data->socket;
+      rocWebSocketClose(inst);
       data->socket = NULL;
       ThreadOp.sleep(100);
-      rocWebSocketClose(inst);
       SocketOp.base.del(socket);
     }
     ThreadOp.sleep(50);
@@ -126,6 +126,9 @@ static void _shutdown( struct OPClient* inst ) {
   if( inst != NULL ) {
     iOPClientData data = Data(inst);
     data->websocketrun = False;
+    if( data->websocketreader != NULL )
+      ThreadOp.requestQuit( data->websocketreader );
+
   }
 }
 

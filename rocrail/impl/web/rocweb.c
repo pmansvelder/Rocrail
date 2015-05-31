@@ -466,8 +466,6 @@ Boolean rocWebSocketClose( iOPClient inst ) {
   return ok;
 }
 
-/* Windows timeout return code: */
-#define WSAETIMEDOUT 10060
 static void rocWebSocketReader( void* threadinst ) {
   iOThread      th      = (iOThread)threadinst;
   iOPClient     pclient = (iOPClient)ThreadOp.getParm(th);
@@ -475,13 +473,13 @@ static void rocWebSocketReader( void* threadinst ) {
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket reader started" );
 
-  while( data->websocketrun && data->socket != NULL && !SocketOp.isBroken( data->socket ) ) {
+  while( !ThreadOp.isQuit( th ) && data->websocketrun && data->socket != NULL && !SocketOp.isBroken( data->socket ) ) {
     if( !data->websocketavail ) {
       if( SocketOp.read( data->socket, (char*)&data->firstbyte, 1 ) ) {
         if( data->websocketrun )
           data->websocketavail = True;
       }
-      else if( data->websocketrun && data->socket != NULL ) {
+      else if( !ThreadOp.isQuit( th ) && data->websocketrun && data->socket != NULL ) {
         int rc = SocketOp.getRc(data->socket);
         if( rc != 0 && !SocketOp.isTimedOut(data->socket) ) {
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket reader rc=%d", rc );
