@@ -1318,7 +1318,7 @@ static void _broadcastEvent( iONode event ) {
       ClntConOp.broadcastEvent(data->clntCon, (iONode)NodeOp.base.clone(event));
     if( data->srcpCon != NULL )
       SrcpConOp.broadcastEvent(data->srcpCon, (iONode)NodeOp.base.clone(event));
-    if( data->http != NULL )
+    if( data->http != NULL && !HttpOp.isEnded(data->http) )
       HttpOp.broadcastEvent(data->http, (iONode)NodeOp.base.clone(event));
 
     NodeOp.base.del(event);

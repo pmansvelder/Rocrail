@@ -1974,6 +1974,9 @@
       <param name="inst" vt="this" remark="Http instance."/>
       <param name="evt" vt="iONode"/>
     </fun>
+    <fun name="isEnded" vt="Boolean">
+      <param name="inst" vt="this" remark="Http instance."/>
+    </fun>
     <data>
       <var name="port" vt="int" remark="Port to service."/>
       <var name="portmanager" vt="iOThread" remark="Port manager thread."/>

@@ -43,6 +43,7 @@
 #include "rocs/public/mime64.h"
 #include "rocs/public/system.h"
 
+#include <errno.h>
 
 
 static const char* ROCWEB_INDEX    = "index.html";
@@ -478,14 +479,18 @@ static void rocWebSocketReader( void* threadinst ) {
         if( data->websocketrun )
           data->websocketavail = True;
       }
-      /*
-      else {
-        data->websocketerror = True;
-        data->websocketrun   = False;
-        data->websocketavail = False;
-        break;
+      else if( data->socket != NULL ) {
+        int rc = SocketOp.getRc(data->socket);
+        if( rc != 0 && rc != EAGAIN ) {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket reader rc=%d", rc );
+          data->websocketerror = True;
+          data->websocketrun   = False;
+          data->websocketavail = False;
+          SocketOp.base.del(data->socket);
+          data->socket = NULL;
+          break;
+        }
       }
-      */
     }
     ThreadOp.sleep(100);
   };
@@ -503,7 +508,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   int payload = 0;
   Boolean mask = False;
 
-  if( SocketOp.isBroken( data->socket ) || data->websocketerror ) {
+  if( data->socket == NULL || SocketOp.isBroken( data->socket ) || data->websocketerror ) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
   }
@@ -517,7 +522,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
     }
   }
 
-  if( event != NULL && !StrOp.equals( NodeOp.getName(event), wException.name() )) {
+  if( data->socket != NULL && event != NULL && !StrOp.equals( NodeOp.getName(event), wException.name() )) {
     char* info = NodeOp.base.toString( event );
     int len = StrOp.len(info);
     char* b = allocMem(20 + len + 1);
@@ -550,11 +555,14 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
     StrOp.free(info);
     if( !ok ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket: could not write the event" );
+      if( data->socket != NULL )
+        SocketOp.base.del(data->socket);
+      data->socket = NULL;
       return True;
     }
   }
 
-  if( SocketOp.isBroken( data->socket ) ) {
+  if( data->socket == NULL || SocketOp.isBroken( data->socket ) ) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket down" );
     return True;
   }
@@ -568,7 +576,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
 
   b[0] = data->firstbyte;
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb: 0x%02X", b );
-  if(ok) {
+  if(data->socket != NULL && ok) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: fin=%s opcode=%d", b[0]&0x80?"true":"false", b[0]&0x0F );
     ok = SocketOp.read( data->socket, b, 1 );
     if(ok) {
@@ -613,7 +621,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   }
   data->websocketavail = False;
 
-  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "ready work for rocWebSocketME" );
+  TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "ready work for Rocweb" );
   return !ok;
 }
 
