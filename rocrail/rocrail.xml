@@ -2035,6 +2035,9 @@
     <fun name="getId" vt="const char*" remark="PClient ID.">
       <param name="inst" vt="this" remark="PClient instance."/>
     </fun>
+    <fun name="shutdown" vt="void" remark="PClient ID.">
+      <param name="inst" vt="this" remark="PClient instance."/>
+    </fun>
     <data>
       <var name="id" vt="long" remark=""/>
       <var name="cid" vt="char*" remark="Client ID"/>

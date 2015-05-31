@@ -481,7 +481,7 @@ static void rocWebSocketReader( void* threadinst ) {
         if( data->websocketrun )
           data->websocketavail = True;
       }
-      else if( data->socket != NULL ) {
+      else if( data->websocketrun && data->socket != NULL ) {
         int rc = SocketOp.getRc(data->socket);
         if( rc != 0 && !SocketOp.isTimedOut(data->socket) ) {
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket reader rc=%d", rc );

@@ -226,6 +226,7 @@ static void __pportserver( void* threadinst ) {
             MapOp.remove( data->pclientMap, PClientOp.getId( client ) );
             MutexOp.post( data->pclientmux );
           }
+          PClientOp.shutdown(client);
           PClientOp.base.del( client );
           client = (iOPClient)MapOp.first( data->pclientMap );
         }

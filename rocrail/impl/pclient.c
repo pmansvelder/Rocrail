@@ -122,7 +122,12 @@ static struct OPClient* _inst( iOSocket socket ,iONode ini ) {
 }
 
 
-
+static void _shutdown( struct OPClient* inst ) {
+  if( inst != NULL ) {
+    iOPClientData data = Data(inst);
+    data->websocketrun = False;
+  }
+}
 
 /** Work slice. */
 static Boolean _work( struct OPClient* inst, iONode event, char** command ) {
