@@ -50,6 +50,7 @@ static void __del( void* inst ) {
     if( data->socket != NULL && data->websocket ) {
       iOSocket socket = data->socket;
       data->socket = NULL;
+      ThreadOp.sleep(100);
       rocWebSocketClose(inst);
       SocketOp.base.del(socket);
     }
