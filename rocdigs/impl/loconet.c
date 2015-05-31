@@ -2254,8 +2254,10 @@ static int __translate( iOLocoNet loconet_inst, iONode node, byte* cmd, Boolean*
     }
     if( StrOp.equals( cmdstr, wSysCmd.sod ) ) {
       if( data->SensorQuery == NULL ) {
+        char* threadname = StrOp.fmt("sod%X", loconet_inst);
         TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Start of Day [%s]", data->iid );
-        data->SensorQuery =  ThreadOp.inst( "lnqGPON", &__loconetSensorQuery, loconet_inst );
+        data->SensorQuery =  ThreadOp.inst( threadname, &__loconetSensorQuery, loconet_inst );
+        StrOp.free(threadname);
         ThreadOp.start( data->SensorQuery );
       }
       else {
