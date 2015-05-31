@@ -635,7 +635,7 @@ Boolean rocs_socket_readpeek( iOSocket inst, char* buf, int size, Boolean peek )
       #endif
       }
 
-      TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "recv() failed [%d] size=%d readed=%d", o->rc, size, treaded );
+      TraceOp.trc( name, o->rc == WSAETIMEDOUT ? TRCLEVEL_INFO:TRCLEVEL_EXCEPTION, __LINE__, 9999, "recv() failed [%d] size=%d readed=%d", o->rc, size, treaded );
 
       return False;
     }
