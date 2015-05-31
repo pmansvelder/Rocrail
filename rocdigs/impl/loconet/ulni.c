@@ -332,6 +332,7 @@ static void __writer( void* threadinst ) {
 Boolean ulniConnect( obj inst ) {
   iOLocoNetData data = Data(inst);
   data->bps = wDigInt.getbps( data->ini );
+  char* threadname = NULL;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "device  =%s", data->device );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "bps     =%d", data->bps );
@@ -342,9 +343,15 @@ Boolean ulniConnect( obj inst ) {
   data->subReadQueue = QueueOp.inst(1000);
   data->subWriteQueue = QueueOp.inst(1000);
   data->run = True;
-  data->subReader = ThreadOp.inst( "ulnireader", &__reader, inst );
+
+  threadname = StrOp.fmt("ulnireader%X", inst);
+  data->subReader = ThreadOp.inst( threadname, &__reader, inst );
+  StrOp.free(threadname);
   ThreadOp.start( data->subReader );
-  data->subWriter = ThreadOp.inst( "ulniwriter", &__writer, inst );
+
+  threadname = StrOp.fmt("ulniwriter%X", inst);
+  data->subWriter = ThreadOp.inst( threadname, &__writer, inst );
+  StrOp.free(threadname);
   ThreadOp.start( data->subWriter );
 
   return True;

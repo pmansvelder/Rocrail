@@ -2753,30 +2753,45 @@ static struct OLocoNet* _inst( const iONode ini ,const iOTrace trc ) {
   data->commOK = data->lnConnect((obj)__LocoNet);
 
   if( data->commOK) {
+    char* threadname = NULL;
     if( data->stress ) {
-      data->stressRunner = ThreadOp.inst( "lnstress", &__stressRunner, __LocoNet );
+      threadname = StrOp.fmt("lnstress%X", __LocoNet);
+      data->stressRunner = ThreadOp.inst( threadname, &__stressRunner, __LocoNet );
+      StrOp.free(threadname);
       ThreadOp.start( data->stressRunner );
     }
 
-    data->loconetReader = ThreadOp.inst( "lnreader", &__loconetReader, __LocoNet );
+    threadname = StrOp.fmt("lnreader%X", __LocoNet);
+    data->loconetReader = ThreadOp.inst( threadname, &__loconetReader, __LocoNet );
+    StrOp.free(threadname);
     ThreadOp.start( data->loconetReader );
 
-    data->loconetWriter = ThreadOp.inst( "lnwriter", &__loconetWriter, __LocoNet );
+    threadname = StrOp.fmt("lnwriter%X", __LocoNet);
+    data->loconetWriter = ThreadOp.inst( threadname, &__loconetWriter, __LocoNet );
+    StrOp.free(threadname);
     ThreadOp.start( data->loconetWriter );
 
-    data->swReset = ThreadOp.inst( "swreset", &__swReset, __LocoNet );
+    threadname = StrOp.fmt("swreset%X", __LocoNet);
+    data->swReset = ThreadOp.inst( threadname, &__swReset, __LocoNet );
+    StrOp.free(threadname);
     ThreadOp.start( data->swReset );
 
-    data->lissyReset = ThreadOp.inst( "lissyreset", &__lissyReset, __LocoNet );
+    threadname = StrOp.fmt("lissyreset%X", __LocoNet);
+    data->lissyReset = ThreadOp.inst( threadname, &__lissyReset, __LocoNet );
+    StrOp.free(threadname);
     ThreadOp.start( data->lissyReset );
 
     if( data->purgetime > 0 && wLocoNet.isslotping(data->loconet) ) {
-      data->slotPing = ThreadOp.inst( "slotping", &__slotPing, __LocoNet );
+      threadname = StrOp.fmt("slotping%X", __LocoNet);
+      data->slotPing = ThreadOp.inst( threadname, &__slotPing, __LocoNet );
+      StrOp.free(threadname);
       ThreadOp.start( data->slotPing );
     }
 
     if( data->activeSlotServer ) {
-      data->slotServer = ThreadOp.inst( "slotsrvr", &lnmasterThread, __LocoNet );
+      threadname = StrOp.fmt("slotsrvr%X", __LocoNet);
+      data->slotServer = ThreadOp.inst( threadname, &lnmasterThread, __LocoNet );
+      StrOp.free(threadname);
       ThreadOp.start( data->slotServer );
     }
 
