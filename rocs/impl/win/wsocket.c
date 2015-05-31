@@ -130,6 +130,17 @@ Boolean rocs_socket_init( iOSocketData o ) {
   return True;
 }
 
+Boolean rocs_socket_istimedout( iOSocketData o ) {
+#ifdef __ROCS_SOCKET__
+  if( o->rc == WSAETIMEDOUT )
+    return True;
+#endif
+  return False;
+}
+
+
+
+
 /* OS dependent */
 static Boolean __resolveHost( iOSocketData o, const char* hostname ) {
 #ifdef __ROCS_SOCKET__

@@ -78,6 +78,7 @@ char* rocs_socket_mac( const char* device );
 Boolean rocs_socket_LoadCerts( iOSocket inst, const char *cFile, const char *kFile );
 const char* rocs_socket_gethostaddr( void );
 const char* rocs_socket_getsockname(iOSocket inst);
+Boolean rocs_socket_istimedout( iOSocketData o );
 
 #ifdef __OPENSSL__
 Boolean rocs_socket_CreateCTX( iOSocket inst );
@@ -265,7 +266,7 @@ static int _getRc( iOSocket inst ) {
 
 static Boolean _isTimedOut( iOSocket inst ) {
   iOSocketData data = Data(inst);
-  return data->rc == ETIMEDOUT ? True:False;
+  return rocs_socket_istimedout(data);
 }
 
 static long _getReceived( iOSocket inst ) {

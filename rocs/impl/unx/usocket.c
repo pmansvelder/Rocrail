@@ -87,6 +87,15 @@ Boolean rocs_socket_init( iOSocketData o ) {
 #endif
 }
 
+Boolean rocs_socket_istimedout( iOSocketData o ) {
+#ifdef __ROCS_SOCKET__
+  if( o->rc == EAGAIN )
+    return True;
+#endif
+  return False;
+}
+
+
 /* OS dependent */
 static Boolean __resolveHost( iOSocketData o, const char* hostname ) {
 #ifdef __ROCS_SOCKET__
