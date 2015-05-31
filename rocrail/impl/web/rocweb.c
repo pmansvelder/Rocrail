@@ -504,6 +504,8 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
   char b[128];
+  char pong[128];
+  int pongIdx = 0;
   byte opcode = 0;
   char bMask[10];
   int payload = 0;
@@ -576,12 +578,16 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb" );
 
   b[0] = data->firstbyte;
+  pong[pongIdx] = b[0];
+  pongIdx++;
   opcode = b[0]&0x0F;
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb: 0x%02X", b );
   if(data->socket != NULL && ok) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: fin=%s opcode=%d", b[0]&0x80?"true":"false", b[0]&0x0F );
     ok = SocketOp.read( data->socket, b, 1 );
     if(ok) {
+      pong[pongIdx] = b[0];
+      pongIdx++;
       mask = b[0]&0x80 ? True:False;
       payload = b[0]&0x7F;
       TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: mask=%s payload=%d", mask?"true":"false", payload );
@@ -601,10 +607,19 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
       }
       if(ok && mask ) {
         ok = SocketOp.read( data->socket, bMask, 4 );
+        pong[pongIdx] = bMask[0];
+        pongIdx++;
+        pong[pongIdx] = bMask[1];
+        pongIdx++;
+        pong[pongIdx] = bMask[2];
+        pongIdx++;
+        pong[pongIdx] = bMask[3];
+        pongIdx++;
       }
       if(ok) {
         char* buffer = allocMem(payload+1);
         ok = SocketOp.read( data->socket, buffer, payload );
+        MemOp.copy(pong+pongIdx, buffer, payload);
         if(ok && mask) {
           char* decoded = allocMem(payload+1);
           int i = 0;
@@ -614,12 +629,17 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
           MemOp.copy(buffer, decoded, payload);
           freeMem(decoded);
         }
-        if( opcode > 0x02 )
+        if( opcode == 0x09 ) {
+          /* PING:0X09 PONG:0x0A */
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket: opcode=%02X message=%.80s", opcode, buffer );
-        else
+          pong[0] = pong[0] & 0xF0;
+          pong[0] = pong[0] | 0x0A;
+          ok = SocketOp.write( data->socket, pong, pong[1]&0x7F );
+        }
+        else {
           TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: opcode=%02X message=%.80s", opcode, buffer );
-        *cmd = StrOp.dup(buffer);
-
+          *cmd = StrOp.dup(buffer);
+        }
         freeMem(buffer);
       }
     }

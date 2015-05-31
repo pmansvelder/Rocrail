@@ -23,6 +23,7 @@ function doWebSocket() {
   };
   ws.onerror = function (error) {
     debug('WebSocket Error: ' + error);
+    ws.close(1000, "<error/>");
     if( retryWebSocket < 10 ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
