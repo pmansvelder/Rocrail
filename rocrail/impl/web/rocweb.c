@@ -482,7 +482,7 @@ static void rocWebSocketReader( void* threadinst ) {
       else if( !ThreadOp.isQuit( th ) && data->websocketrun && data->socket != NULL ) {
         int rc = SocketOp.getRc(data->socket);
         if( rc != 0 && !SocketOp.isTimedOut(data->socket) ) {
-          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket reader rc=%d", rc );
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket [%X] reader rc=%d", data->socket, rc );
           data->websocketerror = True;
           data->websocketrun   = False;
           data->websocketavail = False;
@@ -504,6 +504,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   iOPClientData data = Data(inst);
   Boolean ok = True;
   char b[128];
+  byte opcode = 0;
   char bMask[10];
   int payload = 0;
   Boolean mask = False;
@@ -575,6 +576,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb" );
 
   b[0] = data->firstbyte;
+  opcode = b[0]&0x0F;
   TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "work for Rocweb: 0x%02X", b );
   if(data->socket != NULL && ok) {
     TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: fin=%s opcode=%d", b[0]&0x80?"true":"false", b[0]&0x0F );
@@ -612,7 +614,10 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
           MemOp.copy(buffer, decoded, payload);
           freeMem(decoded);
         }
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: message=%.80s", buffer );
+        if( opcode > 0x02 )
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket: opcode=%02X message=%.80s", opcode, buffer );
+        else
+          TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: opcode=%02X message=%.80s", opcode, buffer );
         *cmd = StrOp.dup(buffer);
 
         freeMem(buffer);
