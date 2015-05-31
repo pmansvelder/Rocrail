@@ -48,9 +48,10 @@ static void __del( void* inst ) {
     /* Cleanup data->xxx members...*/
     data->websocketrun = False;
     if( data->socket != NULL && data->websocket ) {
-      rocWebSocketClose(inst);
-      SocketOp.base.del(data->socket);
+      iOSocket socket = data->socket;
       data->socket = NULL;
+      rocWebSocketClose(inst);
+      SocketOp.base.del(socket);
     }
     ThreadOp.sleep(50);
     freeMem( data );
