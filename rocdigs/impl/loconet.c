@@ -1111,8 +1111,11 @@ static void __evaluatePacket(iOLocoNet loconet, byte* rsp, int size ) {
       data->power = True;
       _stateChanged(loconet);
       if( !data->didSensorQuery && data->doSensorQuery ) {
+        char* threadname = StrOp.fmt("sod%X", loconet);
+        TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Start of Day [%s]", data->iid );
+        data->SensorQuery =  ThreadOp.inst( threadname, &__loconetSensorQuery, loconet );
+        StrOp.free(threadname);
         data->didSensorQuery = True;
-        data->SensorQuery =  ThreadOp.inst( "lnqGPON", &__loconetSensorQuery, loconet );
         ThreadOp.start( data->SensorQuery );
       }
       __post2SlotServer( loconet, rsp, 2 );
