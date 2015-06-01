@@ -1,7 +1,7 @@
 /*
  Rocrail - Model Railroad Control System
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
                2014-2015 Bert Havinga
  
 
@@ -154,8 +154,8 @@ static byte* __makeMsg( int prio, int cmd, Boolean rsp, int len, byte* buffer ) 
   msg[0] |= (cmd >> 7);
   msg[1]  = ((cmd & 0x7F) << 1 );
   msg[1] |= rsp;
-  msg[2]  = (rrHash/256)&0xFF;
-  msg[3]  = (rrHash%256)&0xFF;
+  msg[2]  = (rrHash / 256) & 0xFF;
+  msg[3]  = (rrHash % 256) & 0xFF;
   msg[4]  = len;
   if( cmd == CAN_CMD_PING ) len = 8; /* however a ping cmd is length == 0, the system uses the UID to determine a valid packet by computing the hash from the UID */ 
   for(i = 0; i < len; i++ )
@@ -902,7 +902,12 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
   float tTemp = 0.0;
   int uid = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
   int gfpUID = data->gbUID ? data->gbUID : data->mcs2gfpUID;
-  if ( (dlc == 5 && addr1 == 0 && addr2 == 0 && addr3 == 0 && addr4 == 0) || (dlc == 5 && uid == gfpUID) ) {
+  if( (cmd > 0x0C) && !((cmd == 0x30) || (cmd == 0x80)) ) {
+    TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "INVALID system command received: CAN-ID=0x%02X len=%d cmd=0x%02X", in[1]&0xFF, in[4]&0x0F, cmd );
+    TraceOp.dump( NULL, TRCLEVEL_EXCEPTION, (char*)in, 13 );
+    return;
+  }
+  if( (dlc == 5 && addr1 == 0 && addr2 == 0 && addr3 == 0 && addr4 == 0) || (dlc == 5 && uid == gfpUID) ) {
     if (cmd == CMD_SYSSUB_STOP && data->power ) {
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "from %s STOP", ( data->gbUID ? "MS2" : "CS2" ) );
       data->power = False;
@@ -976,11 +981,24 @@ static void __evaluateMCS2PingCmd( iOMCS2Data data, byte* in ) {
   }
 }
 
-static int __calculateGfpHash( byte* in ) {
+static int __calculateGfpHash( iOMCS2Data data, byte* in ) {
   int ctrlhash =  ((in[6] ^ in[8]) << 8) + (in[5] ^ in[7]);
+  char devtype[] = "Gleisbox";
+  if( (in[11] + in[12]) == 0x00 ) {
+    StrOp.copy( devtype, "CS2" );
+  }
   ctrlhash &= 0xFF7F;
   ctrlhash |= 0x0300;
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "calculated hash gfp 0x%08X", ctrlhash );
+  if( in[1] == 0x37 && in[11] == 0 && in[12] == 0x10 ) {
+    ctrlhash = ((in[5] ^ in[7]) << 8) + (in[6] ^ in[8]);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CAN Bootloader Service hash calculation requested" );
+  }
+  int cmd = (in[1] | 1);
+  if( cmd == 1 && in[9] == 0x0B) {
+    StrOp.copy( devtype, data->gbUID ? "Gleisbox" : "CS2");
+  }  
+  if( !(cmd == 1 && in[9] == 0x0B) || ctrlhash != ((in[2] << 8) + in[3]) ) 
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "calculated hash for %s 0x%04X", devtype, ctrlhash );
   return(ctrlhash);
 }
 
@@ -1006,39 +1024,41 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
     switch( cstype )
     {
       case 0x0010:
-        if(  data->gbUID != rcvuid ) {
-          ctrlhash = __calculateGfpHash( in );
-          if( rcvhash == ctrlhash ) {
-            data->gbUID = rcvuid;
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> Gleisbox UID: 0x%08X stored", cstype, data->gbUID );
+        if( data->gbUID != rcvuid ) {
+            if( data->gbUID == 0 && data->mcs2gfpUID == 0 ) {
+              data->gbUID = rcvuid;
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> Gleisbox UID: 0x%08X stored for hash: 0x%04X", cstype, data->gbUID, rcvhash );
+            }
+            else {
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: Two Gleisbox systems found on CAN bus interface %s, Gleisbox 0x%08X cleared", data->iid, rcvuid );
+            }
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Gleisbox firmware version = %d.%d", in[9], in[10] );
-          }
-          else {
-            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Invalid Ping packet received for type Gleisbox UID 0x%08X", rcvuid );
-          }
         }
         break;
       case 0x0000: 
         if( data->mcs2gfpUID != rcvuid ) {
-          ctrlhash = __calculateGfpHash( in );
-          if( rcvhash == ctrlhash ) {
-            data->mcs2gfpUID = rcvuid;
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> CS2-GFP UID: 0x%08X stored", cstype, data->mcs2gfpUID );
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GFP firmware version = %d.%d", in[9], in[10] );
-            if( data->gbUID != 0 ) {
-              TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ERROR: Gleisbox and CS2 found on CAN bus, Gleisbox 0x%08X cleared", data->gbUID );
-              data->gbUID = 0;
+            if(  data->gbUID == 0 && data->mcs2gfpUID == 0 ) {
+              data->mcs2gfpUID = rcvuid;
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> CS2-GFP UID: 0x%08X stored for hash: 0x%04X", cstype, data->mcs2gfpUID, rcvhash );
             }
-          }
-          else {
-            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Invalid Ping packet received for type CS2 GFP UID 0x%08X", rcvuid );
-          }
+            else {
+              TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "ERROR: Two GFP systems found on CAN bus interface %s", data->iid );
+              if( data->gbUID != 0 && data->mcs2gfpUID == 0 ) {
+                data->mcs2gfpUID = rcvuid;
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Gleisbox with UID 0x%08X cleared", data->gbUID );
+                data->gbUID = 0;
+              }
+              else {
+                TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "CS2 with UID 0x%08X ignored", rcvuid );
+              }
+            }
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CS2-GFP firmware version = %d.%d", in[9], in[10] );
         }
         break;
       case 0xFFF0:
         ctrlhash = __calculateGuiHash( in );
         if( data->mcs2guiUID != rcvuid ) { 
-/* the CS2 GUI type responses with the CAN hash of the PING sender.... it looks a bug to me, the calculated hash seems to be half correct in case of a CS2 :( */
+/* the CS2 GUI type responses with the CAN hash of the PING sender.... */
           if( rcvhash == ctrlhash || (rcvhash == rrHash && ((rcvuid - 1) == data->mcs2gfpUID)) ) {
             data->mcs2guiUID = rcvuid;
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> CS2-GUI UID: 0x%08X stored", cstype, data->mcs2guiUID );
@@ -1051,17 +1071,11 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
         break;
     /* despite the CAN documentation the "Geraetekennung" of a MS2 is 0x0032 */
       case 0x0030:
-        ctrlhash = __calculateGuiHash( in );
-        if( data->ms2UID != rcvuid ) {
           if( rcvhash == ctrlhash ) {
             data->ms2UID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Ping type: 0x%04X -> MS-2 UID: 0x%08X stored", cstype, data->ms2UID );
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MS-2 firmware version = %d.%d", in[9], in[10] );
           }
-          else {
-            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Invalid Ping packet received for type MS2 UID 0x%08X", rcvuid );           
-          }
-        }
         break;
       default: 
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Unknown Ping for type: 0x%04X", cstype );
@@ -1085,6 +1099,8 @@ static void __evaluateMCS2Ping( iOMCS2Data data, byte* in ) {
   buffer[7]  = (sysgerken % 256) & 0xFF;
   ThreadOp.post( data->writer, (obj)__makeMsg(0, CAN_CMD_PING, True, 8, buffer) );
 */
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "mcs2gfpUID: 0x%08X  mcs2guiUID: 0x%08X ms2UID: 0x%08X gbUID: 0x%08X on interface %s", data->mcs2gfpUID, data->mcs2guiUID, data->ms2UID, data->gbUID, data->iid );
+
 }
 
 static void __evaluateMCS2Switch( iOMCS2Data mcs2, byte* in ) {
@@ -1346,7 +1362,7 @@ static void __evaluateMCS2ReadConfig(iOMCS2Data data, byte* in) {
         }
       }
       idname[index - 1] = in[11];
-      if( index == 0x10 || in[11] == 0 ) {
+      if( ((index == 0x10 || in[11] == 0) && idname[0] != '\0') || (idname[0] == '\0' && index == 1) ) {
         data->sid = addr;
         loco = __getBySID(data, addr);
         wProduct.setdesc(loco, data->id);
@@ -1375,6 +1391,7 @@ static void __evaluateMCS2ReadConfig(iOMCS2Data data, byte* in) {
           buffer[5]  = (wProduct.getsid(loco) % 256) & 0xFF;
           ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_LOCO_BIND, False, 6, buffer) );
           TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "bind posted for UID: 0x%08X, sid: %d", wProduct.getpid(loco), wProduct.getsid(loco) );
+          idname[0] = '\0';
         }
       }
     }
@@ -1461,7 +1478,6 @@ static void __evaluateMCS2Verify( iOMCS2Data mcs2, byte* in ) {
         __reqFullName(mcs2, in);
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "full name requested for sid: %d", mcs2->sid);
       }
-/* hier een scheiding maken voor CS2 en MS2 zodat het registreren pas plaatsvindt nadat alle herkenning heeft plaatsgevonden */
       /* sid 1 is used during registering */
       if( (mcs2->sid > 1)  && wProduct.getcid(loco) == 0 ){
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Registering by verify UID=0x%08X, address %d", mcs2->uid, mcs2->sid);
@@ -1525,7 +1541,6 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
       TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X modifying sid %d to new sid %d", wProduct.getpid(loco), wProduct.getsid(loco), mcs2->sid);
       wProduct.setsid(loco, mcs2->sid);
     }
-/*  || mcs2->ms2UID != 0 || mcs2->mcs2guiUID != 0 */
     if( wMCS2.isdiscovery(mcs2->mcs2ini) || mcs2->ms2UID != 0 || mcs2->mcs2guiUID != 0 ) {    
       if( (mcs2->ms2UID == 0) && (mcs2->mcs2guiUID == 0) ) {
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind acknowledged, requesting Verify UID=0x%08X on sid: %d", mcs2->uid, mcs2->sid);
@@ -1578,7 +1593,6 @@ static void __evaluateMCS2Discovery( iOMCS2Data mcs2, byte* in ) {
     TraceOp.trc(name, TRCLEVEL_MONITOR, __LINE__, 9999, "Discovery completed, ready for operation");
   }
 
-/*  if( !mcs2->mfxDetectInProgress && dlc == 6 && (in[5] & in[6] & in[7] & in[8] == 0xFF) && ( in[9] == 0x03 || in[9] == 0x01 ) && wMCS2.isdiscovery(mcs2->mcs2ini) ) { */
   if( !mcs2->mfxDetectInProgress && dlc == 6 && in[1] == 0x03 && (in[5] & in[6] & in[7] & in[8] == 0xFF) ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Start mfx detect by gfp software detected" );
     mcs2->mfxDetectInProgress = True;
@@ -1601,7 +1615,12 @@ static void __evaluateMCS2Discovery( iOMCS2Data mcs2, byte* in ) {
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Discovery UID=0x%08X name in structure: %s", wProduct.getpid(loco), mcs2->id);
       }
       if( mcs2->ms2UID == 0 && mcs2->mcs2gfpUID == 0) {
-        if ( loco == NULL || StrOp.len(idname) == 0 ) {
+        if( loco == NULL || StrOp.len(idname) == 0 ) {
+          if( loco == NULL ) {
+            loco = NodeOp.inst(wProduct.name(), mcs2->mcs2ini, ELEMENT_NODE);
+            NodeOp.addChild(mcs2->mcs2ini, loco);
+            wProduct.setpid(loco, mcs2->uid);
+          }
           mcs2->sid = 1;
           TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Discovery UID=0x%08X to temporary address %d", mcs2->uid, mcs2->sid);
           wProduct.setsid(loco, 1);
@@ -1636,14 +1655,7 @@ static void __evaluateMCS2CANBootBound( iOMCS2Data data, byte* in ) {
   cstype &= 0xFFF0;
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Evaluate CAN boot bound for type: 0x%04X", cstype );
   if( cstype == 0x0010 && data->ms2UID == 0 && data->mcs2gfpUID == 0 && data->gbUID == 0 ) {
-      rcvHash = (in[2] << 8) + in[3];
-      highword = (in[5] << 8) + in[6];
-      lowword = (in[7] << 8) + in[8];
-      controlhash = ( highword ^ lowword ) | 0x0300;   /* this is the way according to the documentation S.6 */
-      lowword ^= highword;                             /* this is the way it is implemented in Gleisbox V1.39 */
-      if( controlhash == rcvHash || lowword == rcvHash ) {
         data->gbUID = (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Gleisbox found with UID: 0x%08X", data->gbUID );
         byte  buffer[32];
         buffer[0]  = 0;
         buffer[1]  = 0;
@@ -1653,7 +1665,7 @@ static void __evaluateMCS2CANBootBound( iOMCS2Data data, byte* in ) {
         buffer[5]  = 0;
         buffer[6]  = 0;
         buffer[7]  = 0;
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Sending boot with current version command to standalone Gleisbox" );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Sending boot with current version command to standalone Gleisbox with UID: 0x%08X", data->gbUID );
         ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_CAN_BOOT_BOUND, False, 5, buffer) );
         ThreadOp.sleep(2000);
         buffer[4]  = 0;
@@ -1662,13 +1674,9 @@ static void __evaluateMCS2CANBootBound( iOMCS2Data data, byte* in ) {
         buffer[3]  = (rrUID  & 0x0000FF00) >> 8;
         buffer[4]  = (rrUID  & 0x000000FF);
         ThreadOp.post( data->writer, (obj)__makeMsg(0, CAN_CMD_PING, False, 0, buffer) );
-      }
-      else {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Invalid packet received on boot bound request" );
-      }
   }
   else {
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CAN Boot not handled, unknown type: 0x%04X", cstype );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CAN boot not handled, unknown type: 0x%04X", cstype );
   }
 }
 
@@ -1932,7 +1940,6 @@ static int __convertBin2ASCII( const byte* out, char* outASCII) {
   return StrOp.len(outASCII);
 }
 
-
 static void __reader( void* threadinst ) {
   iOThread th = (iOThread)threadinst;
   iOMCS2 mcs2 = (iOMCS2)ThreadOp.getParm( th );
@@ -1941,6 +1948,7 @@ static void __reader( void* threadinst ) {
   int mod = 0;
   unsigned char store[1024];
   int retry = 0;
+  Boolean hashError = False;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MCS2 reader started." );
 
@@ -2081,7 +2089,31 @@ static void __reader( void* threadinst ) {
        response bit (lsb) set, so always odd. When Rocrail sends a command, this is not broadcasted by the CS2, only the reply
        is broadcasted. When a command is issued from the CS2 user interface, both the command and the reply is broadcasted.
        This means that when a command (even) is received, Rocrail did not send that command. */
-    if( in[1] == ID_SYSTEM || in[1] == (ID_SYSTEM + BIT_RESPONSE) ) {
+    int ctrlHash;
+    int cmd = (in[1] | 1);
+    if( cmd == 0x31 && (in[4] > 4) && in[12] > 0x10) {
+      ctrlHash = __calculateGuiHash( in );
+    }
+    else {
+      if( (cmd == 1 && in[9] == 0x0B) || cmd == 0x31 || cmd == 0x37 || cmd == 0x3B ) {
+        ctrlHash = __calculateGfpHash( data, in );
+      }
+    }
+    hashError = False;
+    if( !( (ctrlHash == (in[2] << 8) + in[3]) || ( (in[2] & 0x03) == 0x03 && (in[3] & 0x80) == 0 ) ) )
+        hashError = True;
+    if( ((in[0] & 0xF0) > 0) || ((in[1] > 0x45) && (in[1] != 0x60)) || hashError || (in[4] > 8) ) {
+      TraceOp.dump( NULL, TRCLEVEL_EXCEPTION, (char*)in, 13 );
+      if( (in[0] & 0xF0) > 0 )
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "INVALID packet; PRIO byte contains too high value: prio=0x%02X",  in[0]&0xFF );
+      if( ((in[1] > 0x45) && (in[1] != 0x60)) )
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "INVALID packet; command value: CAN-ID=0x%02X", in[1]&0xFF );
+      if( hashError )
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "INVALID packet; CAN hash value: 0x%04X", ((in[2] << 8) + in[3]) );
+      if( in[4] > 8 )
+          TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "INVALID packet; DLC byte contains too high value (max=8): ", in[4]&0x0F );
+    }
+    else if( in[1] == ID_SYSTEM || in[1] == (ID_SYSTEM + BIT_RESPONSE) ) {
       /*System command */
       __evaluateMCS2System( data, in );
     }
@@ -2138,7 +2170,6 @@ static void __reader( void* threadinst ) {
     else if( in[1] == (ID_SYS_STAT_DATA + BIT_RESPONSE) ) {
        __evaluateMCS2StatusConfig( data, in );
     }
-
     else if( in[1] != 0xFF ) {
       TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "Above packet unhandled: CAN-ID=0x%02X len=%d", in[1]&0xFF, in[4]&0x0F );
     }
@@ -2155,6 +2186,7 @@ static void __binder( iOMCS2Data data) {
   int guiTimeout = 0;
   int mfxTimeout = 0;
   int regTimeout = 0;
+  byte in[32];
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Bind/Discovery option started." );
   
@@ -2266,7 +2298,6 @@ static void __xS2Svc( void* threadinst ) {
   iOMCS2Data data = Data(mcs2);
   int i = 0;
   byte buffer[32];
-  byte in[32];
   int GFP;
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CAN device detection started on interface: %s.", data->iid );
   if( !data->power ) {
@@ -2314,8 +2345,7 @@ static void __xS2Svc( void* threadinst ) {
     i++;
   }
 
-/*  if( !data->swtimeset ) */
-      __setSwitchtime(data);
+  __setSwitchtime(data);
   if( wMCS2.isbind(data->mcs2ini) || wMCS2.isdiscovery(data->mcs2ini) ) {
     __binder(data);
   }
