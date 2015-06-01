@@ -106,6 +106,7 @@ function langDE() {
   document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
   document.getElementById("labOptionShowBlockID").innerHTML = "Zeige Block Kennungen";
   document.getElementById("labOptionShowTrainID").innerHTML = "Zeige Zug Kennungen";
+  document.getElementById("labOptionShowLocoImage").innerHTML = "Zeige Lok-Bild im Block";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -189,6 +190,7 @@ function langEN() {
   document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
   document.getElementById("labOptionShowBlockID").innerHTML = "Show block IDs";
   document.getElementById("labOptionShowTrainID").innerHTML = "Show train ID";
+  document.getElementById("labOptionShowLocoImage").innerHTML = "Show loco image in block";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -271,6 +273,7 @@ function langNL() {
   document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
   document.getElementById("labOptionShowBlockID").innerHTML = "Toon blok ID's";
   document.getElementById("labOptionShowTrainID").innerHTML = "Toon treinstel ID";
+  document.getElementById("labOptionShowLocoImage").innerHTML = "Toon lok afbeelding in het blok";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -717,6 +720,8 @@ function openOptions() {
   $('#optionShowBlockID').prop('checked', showblockid=="true"?true:false).checkboxradio('refresh');
   var showtrainid = localStorage.getItem("showtrainid");
   $('#optionShowTrainID').prop('checked', showtrainid=="true"?true:false).checkboxradio('refresh');
+  var showlocoimage = localStorage.getItem("showlocoimage");
+  $('#optionShowLocoImage').prop('checked', showtrainid=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -1762,6 +1767,12 @@ function onOptionShowTrainID() {
   trace("option showtrainid = "+ optionShowTrainID.checked );
 }
 
+function onOptionShowLocoImage() {
+  var optionShowLocoImage = document.getElementById("optionShowLocoImage");
+  localStorage.setItem("showlocoimage", optionShowLocoImage.checked ? "true":"false");
+  trace("option showlocoiamge = "+ optionShowLocoImage.checked );
+}
+
 function initThrottleStatus() {
   trace("init throttle status: " + locoSelected );
   var lc = lcMap[locoSelected]
@@ -2491,13 +2502,26 @@ function getBlockLabel(bk, div) {
   var locid = bk.getAttribute('locid');
   var label = bk.getAttribute('locid');
   
-  if( localStorage.getItem("showblockid") == "true" && locid != undefined && locid.length > 0 && "true" != small ) 
-    label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
+  if( localStorage.getItem("showblockid") == "true" && locid != undefined && locid.length > 0 && "true" != small ) {
+    var lc = lcMap[locid];
+    if( localStorage.getItem("showlocoimage") == "true" && lc != undefined ) {
+      var image = lc.getAttribute('image');
+      label = bk.getAttribute('id') + "<img src='"+image+"' height='24px'/>";
+    }
+    else
+      label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
+  }
+  else if( localStorage.getItem("showlocoimage") == "true" && locid != undefined && locid.length > 0 && "true" != small ) {
+    var lc = lcMap[locid];
+    var image = lc.getAttribute('image');
+    label = "<img src='"+image+"' height='24px'/>";
+  }
       
   if( label == undefined || label.length == 0 ) {
     label = bk.getAttribute('id');
   }
   else {
+    console.log("label: "+label);
     var lc = lcMap[locid];
     if( lc != undefined ) {
       var rotate = lc.getAttribute('blockenterside');
@@ -2538,8 +2562,8 @@ function getBlockLabel(bk, div) {
   
   if( ori == "north" || ori == "south" ) {
     // Work around for rotated labels:
-    label = label.split(' ').join('.');
-    label = label.split('-').join('.');
+    //label = label.split(' ').join('.');
+    //label = label.split('-').join('.');
     
     var labdiv = document.createElement('div');
     if( ori == "north" ) {
@@ -2565,6 +2589,7 @@ function getBlockLabel(bk, div) {
     labdiv.style.fontSize = ""+blockPointsize+"px";
     labdiv.style.position = "absolute";
     labdiv.innerHTML      = label;
+    console.log("vert label: "+label);
     div.innerHTML      = "";
     div.appendChild(labdiv);
   }
