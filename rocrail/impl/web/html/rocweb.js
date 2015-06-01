@@ -4132,12 +4132,16 @@ function processPlan() {
        if( red != undefined && green != undefined && blue != undefined )
          newdiv.style.color = "rgb("+red+","+green+","+blue+")";
        newdiv.style.textAlign = 'left';
-       
+
+       setXY(txlist[i], zlevelMap[z], newdiv);
+
        var border = txlist[i].getAttribute('border');
        var borderWidth = 0;
        if( border != undefined && border == "true" ) {
          newdiv.style.border = '1px solid black';
-         borderWidth = 1;
+         borderWidth = 2;
+         newdiv.style.left = "" + (parseInt(newdiv.style.left)+1);
+         newdiv.style.top  = "" + (parseInt(newdiv.style.top)+1);
        }
        
        if( ori == "north" || ori == "south" ) {
@@ -4148,7 +4152,6 @@ function processPlan() {
          newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32 - borderWidth) + "px";
          newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32 - borderWidth) + "px";
        }
-       setXY(txlist[i], zlevelMap[z], newdiv);
 
        if( text != undefined && text.indexOf(".png") != -1 ) {
          //newdiv.style.backgroundImage = "url('"+text+"')";
