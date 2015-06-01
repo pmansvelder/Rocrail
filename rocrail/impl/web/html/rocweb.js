@@ -799,7 +799,7 @@ $(function(){
   $("#F13").bind("taphold", tapholdF13Handler);
   $("#F14").bind("taphold", tapholdF14Handler);
   $("#direction").bind("taphold", tapholdDirectionHandler);
-  //$("#locoImage").bind("taphold", tapholdLocoImageHandler);
+  $("#locoImage").bind("taphold", tapholdLocoImageHandler);
   $("#locoImageBlock").bind("taphold", tapholdLocoImageBlockHandler);
   $("#F9").bind("taphold", tapholdF9Handler);
   $("#F10").bind("taphold", tapholdF10Handler);
@@ -931,6 +931,11 @@ $(function(){
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold locoImage: ...");
+    var bk = findBlock4Loco(locoSelected);
+    if( bk != undefined ) {
+      prevPopup = "popupThrottle;"
+      actionBlock("bk_"+bk.getAttribute('id'), true);
+    }
   }
 
   function tapholdLocoImageBlockHandler(e) {
@@ -1338,7 +1343,7 @@ function isBlockInLocation(bkid, locationid) {
   return false;
 }
 
-function actionBlock(id) {
+function actionBlock(id, throttle) {
   bkid = id.replace("bk_","");
   sessionStorage.setItem("block", bkid);
   document.getElementById("blockTitle").innerHTML = "<b>" + getString("block") + ": " + bkid + "</b>";
@@ -1457,7 +1462,22 @@ function actionBlock(id) {
   var yPos = parseInt(bkNode.getAttribute('y')) * 32;
   prevPopup = "popupBlock";
   //$( "#popupBlock" ).popup( "open" ).position({x: xPos, y: yPos, positionTo: window});
-  $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
+  if( throttle ) {
+    trace("close throttle");
+    prevPopup = "popupThrottle;"
+    $( "#popupThrottle" ).popup( "close" );
+    trace("open loco select");
+    $('#popupThrottle').on("popupafterclose", function(){
+      $('#popupThrottle').unbind( "popupafterclose" );
+      $( "#popupBlock" ).popup( "open" );
+      });
+    $('#popupBlock').on("popupafterclose", function(){
+      $('#popupBlock').unbind( "popupafterclose" );
+      $( "#popupThrottle" ).popup( "open" );
+      });
+  }
+  else
+    $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
 
 }
 
@@ -4268,7 +4288,7 @@ function processPlan() {
        bkMap[bklist[i].getAttribute('id')] = bklist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
-       newdiv.setAttribute('onClick', "actionBlock(this.id)");
+       newdiv.setAttribute('onClick', "actionBlock(this.id, false)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
        newdiv.style.width    = "128px";
