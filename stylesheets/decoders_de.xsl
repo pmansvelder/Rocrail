@@ -40,20 +40,23 @@
 <xsl:template match="dec">  
 
 	<TR>
-       <th rowspan="3" align="center">
-	  <xsl:choose>
-	   <xsl:when test="contains(@image, '.xpm')">
-              <xsl:text>-</xsl:text>
+      <th rowspan="1" align="center">
+        <xsl:choose>
+          <xsl:when test="contains(@image, '.xpm')">
+            <xsl:text>-</xsl:text>
           </xsl:when>
- 	      <xsl:when test="contains(@image, '.XPM')">
-              <xsl:text>-</xsl:text>
+          <xsl:when test="contains(@image, '.XPM')">
+            <xsl:text>-</xsl:text>
           </xsl:when>
-		  <xsl:otherwise>
-        <img><xsl:attribute name="src"><xsl:value-of select="concat(../../@guiimagepath, '/', @image)" /></xsl:attribute></img>
-       </xsl:otherwise>
-	   </xsl:choose>
-	   </th>
-
+          <xsl:otherwise>
+            <img>
+              <xsl:attribute name="src">
+                <xsl:value-of select="concat(../../@guiimagepath, '/', @image)" />
+              </xsl:attribute>
+            </img>
+          </xsl:otherwise>
+        </xsl:choose>
+      </th>
 	   <TD><xsl:value-of select="@id" /></TD>
 
 	   <xsl:variable name="addr" select="@addr" />
@@ -72,7 +75,7 @@
 	   <TD align="center"><xsl:value-of select="@manu" /></TD>
 
 	   <TD>
-	   <xsl:variable name="remark" select="../../@desc" />
+	   <xsl:variable name="remark" select="@desc" />
 	   <xsl:choose>
          <xsl:when test="@remark = ''">
          <xsl:text>-</xsl:text>
@@ -88,4 +91,5 @@
 </xsl:template>
 
 </xsl:stylesheet>
+
 
