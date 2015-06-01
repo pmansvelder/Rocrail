@@ -2826,6 +2826,20 @@ void SymbolRenderer::drawText( wxPaintDC& dc, bool occupied, const char* ori ) {
 
   delete font;
 
+  if( wText.isborder(m_Props) ) {
+    wxPen* pen = getPen(NULL);
+    pen->SetWidth(1);
+    setPen( *pen );
+    setBrush( *wxTRANSPARENT_BRUSH );
+    if( m_UseGC ) {
+      m_GC->DrawRectangle(0,0,(wText.getcx(m_Props) * 32)-1, (wText.getcy(m_Props) * 32)-1);
+    }
+    else {
+      dc.DrawRectangle(0,0,(wText.getcx(m_Props) * 32)-1, (wText.getcy(m_Props) * 32)-1);
+    }
+  }
+
+
 }
 
 

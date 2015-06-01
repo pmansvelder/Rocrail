@@ -7871,3 +7871,9 @@ msgstr ""
 msgid "Signal quality"
 msgstr ""
 
+#. 
+# id="border"
+#, c-format
+msgid "Border"
+msgstr ""
+

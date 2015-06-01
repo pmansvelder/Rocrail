@@ -29856,4 +29856,7 @@
   <Msg id="signalquality">
     <en txt="Signal quality"/>
   </Msg>
+  <Msg id="border">
+    <en txt="Border"/>
+  </Msg>
 </Messages>

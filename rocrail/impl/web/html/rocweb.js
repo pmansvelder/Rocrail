@@ -4132,13 +4132,21 @@ function processPlan() {
        if( red != undefined && green != undefined && blue != undefined )
          newdiv.style.color = "rgb("+red+","+green+","+blue+")";
        newdiv.style.textAlign = 'left';
+       
+       var border = txlist[i].getAttribute('border');
+       var borderWidth = 0;
+       if( border != undefined && border == "true" ) {
+         newdiv.style.border = '1px solid black';
+         borderWidth = 1;
+       }
+       
        if( ori == "north" || ori == "south" ) {
-         newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";
-         newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
+         newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cy')) * 32 - borderWidth) + "px";
+         newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cx')) * 32 - borderWidth) + "px";
        }
        else {
-         newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32) + "px";
-         newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32) + "px";
+         newdiv.style.width    = "" + (parseInt(txlist[i].getAttribute('cx')) * 32 - borderWidth) + "px";
+         newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32 - borderWidth) + "px";
        }
        setXY(txlist[i], zlevelMap[z], newdiv);
 
@@ -4148,7 +4156,7 @@ function processPlan() {
          if( ori == "north" || ori == "south" )
            newdiv.innerHTML = "<div class='imageV'><img height='"+newdiv.style.width+"' src='"+text+"'/></div>";
          else
-           newdiv.innerHTML = "<div><img height='"+newdiv.style.height+"' src='"+text+"'/></div>";
+           newdiv.innerHTML = "<div <img height='"+newdiv.style.height+"' src='"+text+"'/></div>";
        }
        else {  
          var pointsize = txlist[i].getAttribute('pointsize');

@@ -203,6 +203,7 @@ public:
     wxCheckBox* m_Italic;
     wxCheckBox* m_Transparent;
     wxCheckBox* m_Input;
+    wxCheckBox* m_Border;
     wxRadioBox* m_Ori;
     wxCheckBox* m_Reset;
     wxButton* m_Actions;

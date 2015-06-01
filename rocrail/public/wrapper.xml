@@ -3075,6 +3075,7 @@
         <var name="backblue" vt="int" defval="-1" range="0-255"/>
         <var name="bold" vt="bool" defval="False"/>
         <var name="underlined" vt="bool" defval="False"/>
+        <var name="border" vt="bool" defval="False"/>
         <var name="italic" vt="bool" defval="False"/>
         <var name="manualinput" vt="bool" defval="False"/>
         <var name="transparent" vt="bool" defval="True"/>
