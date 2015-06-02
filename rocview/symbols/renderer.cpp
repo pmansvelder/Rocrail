@@ -2832,10 +2832,16 @@ void SymbolRenderer::drawText( wxPaintDC& dc, bool occupied, const char* ori ) {
     setPen( *pen );
     setBrush( *wxTRANSPARENT_BRUSH );
     if( m_UseGC ) {
-      m_GC->DrawRectangle(0,0,(wText.getcx(m_Props) * 32)-1, (wText.getcy(m_Props) * 32)-1);
+      if( StrOp.equals( ori, wItem.south ) || StrOp.equals( ori, wItem.north ) )
+        m_GC->DrawRectangle(0,0,(wText.getcy(m_Props) * 32)-1, (wText.getcx(m_Props) * 32)-1);
+      else
+        m_GC->DrawRectangle(0,0,(wText.getcx(m_Props) * 32)-1, (wText.getcy(m_Props) * 32)-1);
     }
     else {
-      dc.DrawRectangle(0,0,(wText.getcx(m_Props) * 32)-1, (wText.getcy(m_Props) * 32)-1);
+      if( StrOp.equals( ori, wItem.south ) || StrOp.equals( ori, wItem.north ) )
+        dc.DrawRectangle(0,0,(wText.getcy(m_Props) * 32)-1, (wText.getcx(m_Props) * 32)-1);
+      else
+        dc.DrawRectangle(0,0,(wText.getcx(m_Props) * 32)-1, (wText.getcy(m_Props) * 32)-1);
     }
   }
 
