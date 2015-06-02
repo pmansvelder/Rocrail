@@ -617,9 +617,11 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
         pongIdx++;
       }
       if(ok) {
-        char* buffer = allocMem(payload+1);
+        char* buffer = allocMem(payload+10);
         ok = SocketOp.read( data->socket, buffer, payload );
-        MemOp.copy(pong+pongIdx, buffer, payload);
+        if( ok && opcode == 0x09 && (payload+pongIdx) < 128) {
+          MemOp.copy(pong+pongIdx, buffer, payload);
+        }
         if(ok && mask) {
           char* decoded = allocMem(payload+1);
           int i = 0;
@@ -629,14 +631,14 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
           MemOp.copy(buffer, decoded, payload);
           freeMem(decoded);
         }
-        if( opcode == 0x09 ) {
+        if( ok && opcode == 0x09 ) {
           /* PING:0X09 PONG:0x0A */
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket: opcode=%02X message=%.80s", opcode, buffer );
           pong[0] = pong[0] & 0xF0;
           pong[0] = pong[0] | 0x0A;
           ok = SocketOp.write( data->socket, pong, pong[1]&0x7F );
         }
-        else {
+        else if(ok) {
           TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: opcode=%02X message=%.80s", opcode, buffer );
           *cmd = StrOp.dup(buffer);
         }
