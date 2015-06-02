@@ -486,8 +486,8 @@ static void rocWebSocketReader( void* threadinst ) {
           data->websocketerror = True;
           data->websocketrun   = False;
           data->websocketavail = False;
-          SocketOp.base.del(data->socket);
-          data->socket = NULL;
+          if( data->socket != NULL )
+            SocketOp.disConnect(data->socket);
           break;
         }
       }
@@ -558,9 +558,12 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
     StrOp.free(info);
     if( !ok ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "websocket: could not write the event" );
-      if( data->socket != NULL )
-        SocketOp.base.del(data->socket);
-      data->socket = NULL;
+      if( data->socket != NULL ) {
+        iOSocket socket = data->socket;
+        data->socket = NULL;
+        ThreadOp.sleep(10);
+        SocketOp.base.del(socket);
+      }
       return True;
     }
   }
