@@ -721,7 +721,7 @@ function openOptions() {
   var showtrainid = localStorage.getItem("showtrainid");
   $('#optionShowTrainID').prop('checked', showtrainid=="true"?true:false).checkboxradio('refresh');
   var showlocoimage = localStorage.getItem("showlocoimage");
-  $('#optionShowLocoImage').prop('checked', showtrainid=="true"?true:false).checkboxradio('refresh');
+  $('#optionShowLocoImage').prop('checked', showlocoimage=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -2601,7 +2601,7 @@ function getBlockLabel(bk, div) {
     labdiv.style.fontSize = ""+blockPointsize+"px";
     labdiv.style.position = "absolute";
     labdiv.innerHTML      = label;
-    console.log("vert label: "+label);
+    trace("vert label: "+label);
     div.innerHTML      = "";
     div.appendChild(labdiv);
   }
