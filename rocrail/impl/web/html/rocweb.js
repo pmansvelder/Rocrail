@@ -1474,6 +1474,9 @@ function actionBlock(id, throttle) {
     trace("open loco select");
     $('#popupThrottle').on("popupafterclose", function(){
       $('#popupThrottle').unbind( "popupafterclose" );
+      var maxHeight = $(window).height() - 75;
+      $('#divBlock').css('max-height', maxHeight + 'px');
+      $('#divBlock').css('overflow-y', 'scroll'); 
       $( "#popupBlock" ).popup( "open" );
       });
     $('#popupBlock').on("popupafterclose", function(){
@@ -1481,8 +1484,12 @@ function actionBlock(id, throttle) {
       $( "#popupThrottle" ).popup( "open" );
       });
   }
-  else
+  else {
+    var maxHeight = $(window).height() - 75;
+    $('#divBlock').css('max-height', maxHeight + 'px');
+    $('#divBlock').css('overflow-y', 'scroll'); 
     $( "#popupBlock" ).popup( "open", {positionTo: '#'+id} );
+  }
 
 }
 
