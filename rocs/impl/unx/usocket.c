@@ -89,7 +89,7 @@ Boolean rocs_socket_init( iOSocketData o ) {
 
 Boolean rocs_socket_istimedout( iOSocketData o ) {
 #ifdef __ROCS_SOCKET__
-  if( o->rc == EAGAIN )
+  if( o->rc == EAGAIN || o->rc == ETIMEDOUT )
     return True;
 #endif
   return False;
