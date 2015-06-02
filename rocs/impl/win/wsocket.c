@@ -623,7 +623,7 @@ Boolean rocs_socket_readpeek( iOSocket inst, char* buf, int size, Boolean peek )
         continue;
       }
       */
-      if( o->rc != WSAETIMEDOUT && o->rc != WSAECONNABORTED) {
+      if( o->rc != WSAETIMEDOUT ) {
         if( o->rc == WSAEWOULDBLOCK || o->rc == WSAESHUTDOWN || o->rc == WSAENOTSOCK || o->rc == WSAECONNRESET )
           rocs_socket_close(o);
       }
@@ -635,7 +635,7 @@ Boolean rocs_socket_readpeek( iOSocket inst, char* buf, int size, Boolean peek )
       #endif
       }
 
-      TraceOp.trc( name, ( o->rc == WSAETIMEDOUT || o->rc == WSAECONNABORTED ) ? TRCLEVEL_DEBUG:TRCLEVEL_EXCEPTION, __LINE__, 9999, "recv() failed [%d] size=%d readed=%d", o->rc, size, treaded );
+      TraceOp.trc( name, o->rc == WSAETIMEDOUT ? TRCLEVEL_DEBUG:TRCLEVEL_EXCEPTION, __LINE__, 9999, "recv() failed [%d] size=%d readed=%d", o->rc, size, treaded );
 
       return False;
     }
