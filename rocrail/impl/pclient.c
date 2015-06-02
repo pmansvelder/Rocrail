@@ -117,6 +117,10 @@ static struct OPClient* _inst( iOSocket socket ,iONode ini ) {
   data->socket        = socket;
   data->cid           = StrOp.fmt( "%08X", __PClient );
 
+  SocketOp.setRcvTimeout( data->socket, 10 );
+  SocketOp.setSndTimeout( data->socket, 10 );
+  SocketOp.setNodelay(data->socket, True);
+
   instCnt++;
   return __PClient;
 }
@@ -139,10 +143,6 @@ static Boolean _work( struct OPClient* inst, iONode event, char** command ) {
     char str[1025] = {'\0'};
 
     if( data->socket == NULL )
-      return True;
-    if( !SocketOp.setRcvTimeout( data->socket, 10 ) )
-      return True;
-    if( !SocketOp.setSndTimeout( data->socket, 10 ) )
       return True;
 
     if( data->websocket ) {
