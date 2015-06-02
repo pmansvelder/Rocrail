@@ -2250,37 +2250,42 @@ function getTextFormat(tx) {
   return (prefix+text+suffix);
 }
 
+
+function getTextImage(txNode, div) {
+  var text = txNode.getAttribute('text');
+  var ori  = getOri(txNode);
+
+  if( text != undefined && text.indexOf(".png") != -1 ) {
+    if( ori == "north" || ori == "south" )
+      div.innerHTML = "<div class='imageV'><img width='"+div.style.height+"' src='"+text+"'/></div>";
+    else
+      div.innerHTML = "<div><img height='"+div.style.height+"' src='"+text+"'/></div>";
+  }
+  else {  
+    var pointsize = txNode.getAttribute('pointsize');
+    if( pointsize == undefined || pointsize == "0")
+      pointsize = "10";
+    if( text == undefined )
+      text = "";
+    
+    if( ori == "north" )
+      div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
+    else if( ori == "south" )
+      div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
+    else
+      div.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(txNode)+ "</div>";
+  }
+  
+}
+
+
 function handleText(tx) {
   trace("text event: " + tx.getAttribute('id') + " " + tx.getAttribute('text'));
   var div = document.getElementById("tx_"+tx.getAttribute('id'));
   if( div != null ) {
-    var text = tx.getAttribute('text');
     var txNode = txMap[tx.getAttribute('id')];
-    
-    var ori = getOri(txNode);
-    txNode.setAttribute('text', text);
-
-    if( text != undefined && text.indexOf(".png") != -1 ) {
-      if( ori == "north" || ori == "south" )
-        div.innerHTML = "<div class='imageV'><img width='"+div.style.height+"' src='"+text+"'/></div>";
-      else
-        div.innerHTML = "<div><img height='"+div.style.height+"' src='"+text+"'/></div>";
-    }
-    else {  
-      var pointsize = txNode.getAttribute('pointsize');
-      if( pointsize == undefined || pointsize == "0")
-        pointsize = "10";
-      if( text == undefined )
-        text = "";
-      
-      if( ori == "north" )
-        div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(tx)+"</div>";
-      else if( ori == "south" )
-        div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(tx)+"</div>";
-      else
-        div.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(tx)+ "</div>";
-    }
-
+    txNode.setAttribute('text', tx.getAttribute('text'));
+    getTextImage(txNode, div);
   }
 }
 
@@ -2521,7 +2526,7 @@ function getBlockLabel(bk, div) {
     label = bk.getAttribute('id');
   }
   else {
-    console.log("label: "+label);
+    trace("label: "+label);
     var lc = lcMap[locid];
     if( lc != undefined ) {
       var rotate = lc.getAttribute('blockenterside');
@@ -4198,25 +4203,7 @@ function processPlan() {
          newdiv.style.height   = ""  + (parseInt(txlist[i].getAttribute('cy')) * 32 - borderWidth) + "px";
        }
 
-       if( text != undefined && text.indexOf(".png") != -1 ) {
-         //newdiv.style.backgroundImage = "url('"+text+"')";
-         newdiv.style.backgroundSize = newdiv.style.width;
-         if( ori == "north" || ori == "south" )
-           newdiv.innerHTML = "<div class='imageV'><img height='"+newdiv.style.width+"' src='"+text+"'/></div>";
-         else
-           newdiv.innerHTML = "<div <img height='"+newdiv.style.height+"' src='"+text+"'/></div>";
-       }
-       else {  
-         var pointsize = txlist[i].getAttribute('pointsize');
-         if( pointsize == undefined || pointsize == "0")
-           pointsize = "10";
-         
-         if( ori == "north" || ori == "south" )
-           newdiv.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txlist[i])+"</div>";
-         else
-           newdiv.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(txlist[i])+ "</div>";
-       }
-       //newdiv.style.backgroundImage = getTextImage(txlist[i]);
+       getTextImage(txlist[i], newdiv);
        leveldiv.appendChild(newdiv);
      }
      
