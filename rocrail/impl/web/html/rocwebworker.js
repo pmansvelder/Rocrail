@@ -1,4 +1,5 @@
 var retryWebSocket = 0;
+var retryMax = 10;
 
 function debug(msg) {                                                           
   postMessage("<debug>"+msg+"</debug>");                          
@@ -32,12 +33,12 @@ function doWebSocket() {
   ws.onerror = function (error) {
     debug('WebSocket Error: ' + error);
     ws.close(1000, "<error/>");
-    if( retryWebSocket < 50 ) {
+    if( retryWebSocket < retryMax ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
     else
-      fatal('Rocweb:\nWebSocket fatal error; Give up after 50 retries.');
+      fatal("Rocweb:\nWebSocket fatal error; Give up after "+retryMax+" retries.");
   };
   ws.onmessage = function (evt) 
   {
@@ -47,7 +48,7 @@ function doWebSocket() {
   ws.onclose = function(event)
   { 
      // websocket is closed.
-    if( event.code == 1006 && retryWebSocket < 50) {
+    if( event.code == 1006 && retryWebSocket < retryMax) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
