@@ -3804,9 +3804,9 @@ function addMobileToList(cat, id, image, dir, addr) {
   var li = document.createElement('li');
   li.setAttribute('onclick', "onLocoSelected('"+id+"')");
   li.setAttribute('class', "ui-first-child ui-last-child");
-  var img = "<img src='noimg.png' width='120'/>";
+  var img = "<img src='noimg.png' height='40'/>";
   if( image != undefined && image.length > 0 )
-    img = "<img src='"+image+"' width='120'/>";
+    img = "<img src='"+image+"' height='40'/>";
   var dirImg = "<img src='fwd.png'/>";
   if( dir == "false" )
     dirImg = "<img src='rev.png'/>";
