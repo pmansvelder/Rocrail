@@ -8,6 +8,10 @@ function alert(msg) {
   postMessage("<alert>"+msg+"</alert>");                          
 }
 
+function fatal(msg) {                                                           
+  postMessage("<fatal>"+msg+"</fatal>");                          
+}
+
 function doWebSocket() {
   var host = location.hostname;
   host.replace("www.","");
@@ -24,12 +28,12 @@ function doWebSocket() {
   ws.onerror = function (error) {
     debug('WebSocket Error: ' + error);
     ws.close(1000, "<error/>");
-    if( retryWebSocket < 10 ) {
+    if( retryWebSocket < 50 ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
     else
-      alert('Rocweb:\nWebSocket fatal error; Give up.');
+      fatal('Rocweb:\nWebSocket fatal error; Give up after 50 retries.');
   };
   ws.onmessage = function (evt) 
   {
@@ -39,12 +43,11 @@ function doWebSocket() {
   ws.onclose = function(event)
   { 
      // websocket is closed.
-    if( event.code == 1006 && retryWebSocket < 10) {
+    if( event.code == 1006 && retryWebSocket < 50) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
     else if( event.code == 1001 ) {
-      retryWebSocket = 10; // Stop.
       alert("Rocweb:\nWebSocket is closed: " + event.code + "\nEnd of Demo.");
     }
     else {

@@ -3006,6 +3006,8 @@ function evaluateEvent(xmlStr) {
   else if( xmlStr.indexOf("<debug") == 0 )
     trace(xmlStr);
   else if( xmlStr.indexOf("<alert") == 0 )
+    console.log(xmlStr);
+  else if( xmlStr.indexOf("<fatal") == 0 )
     alert(xmlStr);
   else 
     trace("unhandled XML: "+xmlStr); 
