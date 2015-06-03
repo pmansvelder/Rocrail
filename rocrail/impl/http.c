@@ -240,15 +240,16 @@ static void __pportserver( void* threadinst ) {
       /* Let the client do the work... */
       Boolean remove = PClientOp.work( client, event, &cmd );
       if( cmd != NULL ) {
-        /* Parse command and semd it over the callback function to the control. */
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "command received: %.120s", cmd );
-        TraceOp.dump( name, TRCLEVEL_BYTE, (const char*)cmd, StrOp.len(cmd) );
         if( (byte)(cmd[0]) == 0x03 && ((byte)(cmd[1]) == 0xE8 || (byte)(cmd[1]) == 0xE9) ) {
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutdown Rocweb [%s]", PClientOp.getId( client ) );
+          TraceOp.dump( name, TRCLEVEL_INFO, (const char*)cmd, StrOp.len(cmd) );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "shutdown Rocweb [%s] unexpected opcode 0X%02X", PClientOp.getId( client ), (byte)(cmd[0]) );
           remove = True;
         }
         else {
-          iODoc doc = DocOp.parse( cmd );
+          iODoc doc = NULL;
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "command received: %.120s", cmd );
+          /* Parse command and semd it over the callback function to the control. */
+          doc = DocOp.parse( cmd );
           if( doc != NULL ) {
             iONode nodeA = DocOp.getRootNode( doc );
             if( nodeA != NULL ) {
