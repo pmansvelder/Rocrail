@@ -2059,7 +2059,7 @@ static void __runner( void* threadinst ) {
     obj   udata = NULL;
 
     /* BBT 10ms cycle */
-    if( !data->gomanual && wLoc.isusebbt(data->props) && data->drvSpeed > 0 ) {
+    if( !data->gomanual && wLoc.isusebbt(data->props) && data->drvSpeed > 0 && data->bbtEnterBlock != NULL) {
       if( StrOp.equals( wLoc.mode_wait, wLoc.getmode(data->props) )  && !data->bbtExternalStop ) {
         __BBT(loc);
       }
@@ -2203,7 +2203,7 @@ static void __runner( void* threadinst ) {
       }
     }
 
-    if( data->gomanual || !wLoc.isusebbt(data->props) || data->drvSpeed == 0) {
+    if( data->gomanual || !wLoc.isusebbt(data->props) || data->drvSpeed == 0 || data->bbtEnterBlock == NULL) {
       ThreadOp.sleep( RUNNERTICK );
     }
     tick++;
