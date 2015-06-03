@@ -3810,7 +3810,7 @@ function addMobileToList(cat, id, image, dir, addr) {
   var dirImg = "<img src='fwd.png'/>";
   if( dir == "false" )
     dirImg = "<img src='rev.png'/>";
-  var row = "<table><tr><td>"+img+"<td>"+dirImg+"<td>"+id+"<br>"+addr+"</table>";
+  var row = "<table><tr><td style='width: 160px;'>"+img+"<td>"+dirImg+"<td>"+id+"<br>"+addr+"</table>";
   li.innerHTML = "<a href='#' class='ui-btn ui-btn-icon-right ui-icon-carat-r'>"+row+"</a>";
   cat.appendChild(li);
   $('div[data-role=collapsible]').collapsible({refresh:true});  
