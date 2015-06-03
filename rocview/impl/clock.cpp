@@ -263,7 +263,7 @@ void Clock::Timer(wxTimerEvent& WXUNUSED(event))
 {
   if( deviderchanged ) {
     deviderchanged = false;
-    if( this->devider <= 10 ) {
+    if( this->devider <= 10 && showsecondhand ) {
       WxTimer->Start(TIMER/devider);
     }
     else {
