@@ -3005,10 +3005,16 @@ function evaluateEvent(xmlStr) {
     handleModel(parseString(xmlStr));
   else if( xmlStr.indexOf("<debug") == 0 )
     trace(xmlStr);
-  else if( xmlStr.indexOf("<alert") == 0 )
+  else if( xmlStr.indexOf("<alert") == 0 ) {
     console.log(xmlStr);
+    document.getElementById("headerMenu").style.backgroundColor= redBackground;
+  }
   else if( xmlStr.indexOf("<fatal") == 0 )
     alert(xmlStr);
+  else if( xmlStr.indexOf("<connected") == 0 ) {
+    trace(xmlStr);
+    document.getElementById("headerMenu").style.backgroundColor= '';
+  }
   else 
     trace("unhandled XML: "+xmlStr); 
 }

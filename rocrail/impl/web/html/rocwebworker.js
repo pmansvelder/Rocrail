@@ -12,6 +12,10 @@ function fatal(msg) {
   postMessage("<fatal>"+msg+"</fatal>");                          
 }
 
+function connected(msg) {                                                           
+  postMessage("<connected>"+msg+"</connected>");                          
+}
+
 function doWebSocket() {
   var host = location.hostname;
   host.replace("www.","");
@@ -22,7 +26,7 @@ function doWebSocket() {
   ws.onopen = function()
   {
     retryWebSocket = 0;
-    debug("websocket connection is established...");
+    connected("websocket connection is established...");
     ws.send("<sys cmd=\"getstate\"/>");
   };
   ws.onerror = function (error) {
