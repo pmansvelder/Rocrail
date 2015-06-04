@@ -3278,10 +3278,19 @@ function getSignalImage(sg) {
   var signal  = sg.getAttribute('signal');
   var type    = sg.getAttribute('type');
   var aspects = sg.getAttribute('aspects');
+  var aspect  = sg.getAttribute('aspect');
   var pattern = parseInt( sg.getAttribute('usepatterns') );
   var route   = sg.getAttribute('route');
   var occ     = sg.getAttribute('occ');
+  var symbolprefix    = sg.getAttribute('symbolprefix');
+  var usesymbolprefix = sg.getAttribute('usesymbolprefix');
   var suffix = ""; 
+  
+  // symbolprefix + 'signalaspect-' + aspect + '.svg'
+  var iAspects = parseInt(aspects);
+  var iAspect  = parseInt(aspect);
+  if( iAspects > 4 && symbolprefix != undefined )
+    usesymbolprefix = "true";
   
   if( route=="1" )
     suffix = "-route";
@@ -3328,6 +3337,9 @@ function getSignalImage(sg) {
   
   if( signal == "blockstate" ) {
     return "url('blockstate"+"."+ ori + ".svg')";
+  }
+  if( usesymbolprefix == "true" ) {
+    return "url('"+symbolprefix+"signalaspect-"+iAspect+"."+ ori + ".svg')";
   }
   if( signal == "distant" ) {
     return "url('"+type+"distant"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
