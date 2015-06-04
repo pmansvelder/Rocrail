@@ -934,6 +934,13 @@ $(function(){
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold direction: ...");
+    var lc = lcMap[locoSelected];
+    if( lc == undefined )
+      lc = carMap[locoSelected];
+    if( lc == undefined )
+      return;
+    var cmd = "<lc id=\""+locoSelected+"\" V=\"0\" fn=\""+lc.getAttribute("fn")+"\" dir=\""+lc.getAttribute("dir")+"\"/>";
+    sendCommand(cmd);
   }
   
   function tapholdLocoImageHandler(e) {
