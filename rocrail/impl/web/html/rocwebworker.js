@@ -1,5 +1,5 @@
 var retryWebSocket = 0;
-var retryMax = 10;
+var retryMax = 20;
 
 function debug(msg) {                                                           
   postMessage("<debug>"+msg+"</debug>");                          
@@ -27,8 +27,8 @@ function doWebSocket() {
   ws.onopen = function()
   {
     retryWebSocket = 0;
-    connected("websocket connection is established...");
     ws.send("<sys cmd=\"getstate\"/>");
+    connected("websocket connection is established...");
   };
   ws.onerror = function (error) {
     debug('WebSocket Error: ' + error);

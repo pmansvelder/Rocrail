@@ -2105,10 +2105,10 @@ $(document).on("pagecreate",function(){
 
 $(document).ready(function(){
   trace("document ready");
-  //$('.ui-slider-handle').height(50)
-  //$('.ui-slider').input("none");
-  //$('.ui-slider-track').marginLeft("15px");
+  doLang();
+})
 
+function doLang() {
   var lang = localStorage.lang;
   var sel = document.getElementById('languageSelect');
   
@@ -2122,8 +2122,8 @@ $(document).ready(function(){
     // default english
     langEN();
   }
-  
-})
+}
+
 
 function getString(s) {
   var lang = localStorage.lang;
@@ -2514,11 +2514,15 @@ function getBlockLabel(bk, div) {
   var locid = bk.getAttribute('locid');
   var label = bk.getAttribute('locid');
   
+  /*
+   * <div id="div111">3<img src="gitblit.png" style="height:24px;vertical-align:middle"/></div>
+   */
+  
   if( localStorage.getItem("showblockid") == "true" && locid != undefined && locid.length > 0 && "true" != small ) {
     var lc = lcMap[locid];
     if( localStorage.getItem("showlocoimage") == "true" && lc != undefined ) {
       var image = lc.getAttribute('image');
-      label = bk.getAttribute('id') + "<img src='"+image+"' height='24px'/>";
+      label = bk.getAttribute('id') + "<img src='"+image+"' style='height:22px;vertical-align:middle'/>";
     }
     else
       label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
@@ -2526,7 +2530,7 @@ function getBlockLabel(bk, div) {
   else if( localStorage.getItem("showlocoimage") == "true" && locid != undefined && locid.length > 0 && "true" != small ) {
     var lc = lcMap[locid];
     var image = lc.getAttribute('image');
-    label = "<img src='"+image+"' height='24px'/>";
+    label = "<img src='"+image+"' style='height:22px;vertical-align:middle'/>";
   }
       
   if( label == undefined || label.length == 0 ) {
@@ -3132,15 +3136,6 @@ function processResponse() {
             didShowDonkey = true;
           }
         }
-        
-        var pingTimer = setInterval(function () {doPing()}, (60 * 1000) );
-        function doPing() {
-          trace("ping...");
-          var cmd = "<sys cmd=\"getstate\"/>";
-          sendCommand(cmd);
-        }
-
-        
       }
      
     }
