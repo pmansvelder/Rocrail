@@ -57,7 +57,7 @@ static const char* ROCWEB_DOWNIMG  = "down.png";
 
 Boolean webSocketHeader( iOSocket s, const char* key, const char* protocol ) {
   Boolean ok = True;
-  TraceOp.trc( "web", TRCLEVEL_USER2, __LINE__, 9999, "webSocketHeader key=%s protocol=%s", key, protocol );
+  TraceOp.trc( "web", TRCLEVEL_INFO, __LINE__, 9999, "webSocketHeader key=%s protocol=%s", key, protocol );
   if(ok) ok=SocketOp.fmt( s, "HTTP/1.1 101 Switching Protocols\r\n" );
   if(ok) ok=SocketOp.fmt( s, "Connection: Upgrade\r\n" );
   if(ok) ok=SocketOp.fmt( s, "Upgrade: websocket\r\n" );
@@ -694,7 +694,7 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
         data->websocket = True;
         StrOp.replaceAll(l_str, '\n', '\0');
         StrOp.replaceAll(l_str, '\r', '\0');
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket key=%s", l_str + 19 );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket key=%s", l_str + 19 );
         rc = Mime64Op.decode(dest, &dlen, (const unsigned char*)(l_str+19), StrOp.len(l_str+19));
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket rc=%d keylen=%d", rc, dlen );
         TraceOp.dump( name, TRCLEVEL_USER2, (const char*)dest, dlen );

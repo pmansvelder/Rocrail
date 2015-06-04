@@ -146,6 +146,7 @@ function langDE() {
   document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
   document.getElementById("helpTitle").innerHTML = "<b>Hilfe</b>";
   var help  = "<tr><th>Taste<th>Lange klick Funktion";
+  help += "<tr><td>Lokbild<td>Öffnet das Block-Menü, wenn die ausgewählte Lok im Block ist.";
   help += "<tr><td>F1-F4<td>Fahrregler-Auswahl";
   help += "<tr><td>RE<td>Gleisspannung AUS";
   help += "<tr><td>FG<td>Nothalt";
@@ -230,6 +231,7 @@ function langEN() {
   document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
   document.getElementById("helpTitle").innerHTML = "<b>Help</b>";
   var help  = "<tr><th>Button<th>Long click function";
+  help += "<tr><td>Loco image<td>Opens the block menu if the selected loco is in a block";
   help += "<tr><td>F1-F4<td>Throttle selection";
   help += "<tr><td>RE<td>Power OFF";
   help += "<tr><td>FG<td>Emergency Break";
@@ -313,6 +315,7 @@ function langNL() {
   document.getElementById("locoSelectTitle").innerHTML = "Locomotieven";
   document.getElementById("helpTitle").innerHTML = "<b>Help</b>";
   var help  = "<tr><th>Knop<th>Lange click functie";
+  help += "<tr><td>Lok afbeelding<td>Opent het blok menu indien de lok in een blok staat";
   help += "<tr><td>F1-F4<td>Loc besturing keuze";
   help += "<tr><td>RE<td>Rail spanning UIT";
   help += "<tr><td>FG<td>Noodstop";
