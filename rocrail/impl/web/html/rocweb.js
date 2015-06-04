@@ -157,6 +157,7 @@ function langDE() {
   help += "<tr><td>F13<td>Manueller Modus EIN/AUS";
   help += "<tr><td>F14<td>Rangieren EIN/AUS";
   help += "<tr><td>Licht<td>Bereitstellen für Regler"; 
+  help += "<tr><td>Richtung<td>Anhalten: V=0"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-de";
   
@@ -242,6 +243,7 @@ function langEN() {
   help += "<tr><td>F13<td>Manual mode ON/OFF";
   help += "<tr><td>F14<td>Shunting ON/OFF";
   help += "<tr><td>Lights<td>Dispatch"; 
+  help += "<tr><td>Direction<td>Stop: V=0"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
@@ -326,6 +328,7 @@ function langNL() {
   help += "<tr><td>F13<td>Handbedien modus AAN/UIT";
   help += "<tr><td>F14<td>Rangeren AAN/UIT";
   help += "<tr><td>Licht<td>Klaarzetten voor handregelaar"; 
+  help += "<tr><td>Richting<td>Stoppen: V=0"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
