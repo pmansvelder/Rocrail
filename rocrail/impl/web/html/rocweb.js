@@ -61,6 +61,7 @@ var sliderDelta = 3;
 var redBackground = "#FFC8C8";
 var throttleid = "rocweb";
 var speedUpdateVal = 0;
+var timelabel = "";
 var parser = new window.DOMParser();
 
 
@@ -1089,7 +1090,7 @@ function actionLevelSelect(z) {
   var zlevel = zlevelMap[z];
   var title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
-  h.innerHTML = title;
+  h.innerHTML = timelabel + title;
 }
 
 function actionLevelDown() {
@@ -1108,7 +1109,7 @@ function actionLevelDown() {
   var zlevel = zlevelList[zlevelIdx];
   var title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
-  h.innerHTML = title;
+  h.innerHTML = timelabel + title;
 }
 
 function actionLevelUp() {
@@ -1127,7 +1128,7 @@ function actionLevelUp() {
   var zlevel = zlevelList[zlevelIdx];
   var title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
-  h.innerHTML = title;
+  h.innerHTML = timelabel + title;
 }
 
 
@@ -2812,6 +2813,22 @@ function handleStageBlock(sb) {
   }
 }
 
+function handleClock(clock) {
+  var cmd = clock.getAttribute('cmd');
+  trace("clock: "+cmd);
+  if( cmd == "sync" ) {
+    var time = parseInt(clock.getAttribute('time'));
+    var d = new Date(time*1000);
+    timelabel = ""+d.getHours()+":"+d.getMinutes() + " ";
+    trace(timelabel);
+    var zlevel = zlevelList[zlevelIdx];
+    var title = zlevel.getAttribute('title');
+    var h = document.getElementById("title");
+    h.innerHTML = timelabel + title;
+  }
+}
+
+
 function handleModel(model) {
   var cmd = model.getAttribute('cmd');
   trace("model: "+cmd);
@@ -3010,6 +3027,8 @@ function evaluateEvent(xmlStr) {
     handleRoute(parseString(xmlStr));
   else if( xmlStr.indexOf("<model") == 0 )
     handleModel(parseString(xmlStr));
+  else if( xmlStr.indexOf("<clock") == 0 )
+    handleClock(parseString(xmlStr));
   else if( xmlStr.indexOf("<debug") == 0 )
     trace(xmlStr);
   else if( xmlStr.indexOf("<alert") == 0 ) {
