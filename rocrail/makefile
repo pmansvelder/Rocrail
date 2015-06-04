@@ -212,6 +212,7 @@ install_all:
 	-cp -Rp$(CPUPDATE) ..$(FS)stylesheets $(DESTDIR)
 	-cp -Rp$(CPUPDATE) package$(FS)images $(DESTDIR)
 	-cp -Rp$(CPUPDATE) ..$(FS)decspecs $(DESTDIR)
+	-cp -Rp$(CPUPDATE) impl$(FS)web$(FS)html $(DESTDIR)$(FS)web
 ifeq (,$(wildcard $(DESTDIR)$(FS)default$(FS)plan.xml))
 	-cp -p$(CPUPDATE) package$(FS)plan.xml $(DESTDIR)$(FS)default
 endif
