@@ -2527,7 +2527,7 @@ function getBlockLabel(bk, div) {
     else
       label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
   }
-  else if( localStorage.getItem("showlocoimage") == "true" && locid != undefined && locid.length > 0 && "true" != small ) {
+  else if( localStorage.getItem("showlocoimage") == "true" && locid != undefined && locid.length > 0 ) {
     var lc = lcMap[locid];
     var image = lc.getAttribute('image');
     label = "<img src='"+image+"' style='height:22px;vertical-align:middle'/>";
