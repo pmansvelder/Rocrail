@@ -694,7 +694,7 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
         data->websocket = True;
         StrOp.replaceAll(l_str, '\n', '\0');
         StrOp.replaceAll(l_str, '\r', '\0');
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket key=%s", l_str + 19 );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket client key=\"%s\"", l_str + 19 );
         rc = Mime64Op.decode(dest, &dlen, (const unsigned char*)(l_str+19), StrOp.len(l_str+19));
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket rc=%d keylen=%d", rc, dlen );
         TraceOp.dump( name, TRCLEVEL_USER2, (const char*)dest, dlen );
@@ -703,17 +703,17 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
         TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "clientkey=%s", clientkey );
         serverkey = StrOp.cat(serverkey, l_str + 19);
         serverkey = StrOp.cat(serverkey, SERVER_KEY);
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "serverkey=%s", serverkey );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "websocket serverkey=\"%s\"", serverkey );
 
         sha1 = Mime64Op.sha1(serverkey);
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "sha1=%s", sha1 );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "sha1=\"%s\"", sha1 );
 
         mime64key = StrOp.strToByte(sha1);
         dlen = 128;
         rc = Mime64Op.encode(dest, &dlen, (const unsigned char*)mime64key, StrOp.len(sha1)/2);
         MemOp.copy(serverKey, dest, dlen);
         serverKey[dlen] = 0;
-        TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "mime64=%s", serverKey );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "mime64=\"%s\"", serverKey );
 
         StrOp.free(clientkey);
         StrOp.free(serverkey);
