@@ -2837,7 +2837,9 @@ function handleClock(clock) {
   if( cmd == "sync" ) {
     var time = parseInt(clock.getAttribute('time'));
     var d = new Date(time*1000);
-    timelabel = ""+d.getHours()+":"+d.getMinutes() + " ";
+    var min = ""+d.getMinutes() ;
+    if(min.length == 1) min = "0" + min;
+    timelabel = ""+d.getHours()+":"+min+ " ";
     trace(timelabel);
     var zlevel = zlevelList[zlevelIdx];
     var title = zlevel.getAttribute('title');
