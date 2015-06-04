@@ -1343,7 +1343,8 @@ static char* _sha1(const char* str) {
   SHA1Input(&sha, (const unsigned char *) str, strlen(str));
 
   if( SHA1Result(&sha) ) {
-     char* result = StrOp.fmt("%X%X%X%X%X", sha.Message_Digest[0], sha.Message_Digest[1], sha.Message_Digest[2], sha.Message_Digest[3], sha.Message_Digest[4]);
+     char* result = StrOp.fmt("%08X%08X%08X%08X%08X",
+         sha.Message_Digest[0], sha.Message_Digest[1], sha.Message_Digest[2], sha.Message_Digest[3], sha.Message_Digest[4]);
      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "SHA1 = %s", result);
      return result;
   }
