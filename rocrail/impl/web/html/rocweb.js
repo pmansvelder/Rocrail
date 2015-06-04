@@ -2610,7 +2610,7 @@ function getBlockLabel(bk, div) {
     div.appendChild(labdiv);
   }
   else {
-    div.innerHTML      = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
+    div.innerHTML = "<label class='itemtext' style='font-size:"+blockPointsize+"px;'>"+label+"</label>";
   }
 }
 
@@ -4312,6 +4312,7 @@ function processPlan() {
        newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionBlock(this.id, false)");
        newdiv.setAttribute('class', "item");
+       newdiv.style.overflow = 'hidden';
        newdiv.style.position = "absolute";
        newdiv.style.width    = "128px";
        newdiv.style.height   = "32px";
