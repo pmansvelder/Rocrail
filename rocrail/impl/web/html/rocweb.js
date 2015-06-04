@@ -2517,12 +2517,20 @@ function getBlockLabel(bk, div) {
   var small = bkNode.getAttribute('smallsymbol');
   var locid = bk.getAttribute('locid');
   var label = bk.getAttribute('locid');
+  var isEntering = false;
+  var isReserved = false;
+  var occupied   = 0;
   
-  /*
-   * <div id="div111">3<img src="gitblit.png" style="height:24px;vertical-align:middle"/></div>
-   */
+  if(locid != undefined && locid.length > 0) {
+    if( "true" == bk.getAttribute('entering') )
+     isEntering = true;
+    if( "true" == bk.getAttribute('reserved') )
+     isReserved = true;
+    occupied = isReserved ? 2:1;
+    occupied = isEntering ? 3:occupied;
+  }
   
-  if( localStorage.getItem("showblockid") == "true" && locid != undefined && locid.length > 0 && "true" != small ) {
+  if( localStorage.getItem("showblockid") == "true" && (occupied == 1 || occupied == 3) && "true" != small ) {
     var lc = lcMap[locid];
     if( localStorage.getItem("showlocoimage") == "true" && lc != undefined ) {
       var image = lc.getAttribute('image');
@@ -2531,7 +2539,7 @@ function getBlockLabel(bk, div) {
     else
       label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
   }
-  else if( localStorage.getItem("showlocoimage") == "true" && locid != undefined && locid.length > 0 ) {
+  else if( localStorage.getItem("showlocoimage") == "true" && (occupied == 1 || occupied == 3) ) {
     var lc = lcMap[locid];
     var image = lc.getAttribute('image');
     label = "<img src='"+image+"' style='height:22px;vertical-align:middle'/>";
