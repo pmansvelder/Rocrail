@@ -95,6 +95,7 @@ function langDE() {
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
   document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
   document.getElementById("systemStartAll").innerHTML = "Alle Loks starten";
+  document.getElementById("systemShutdown").innerHTML = "Server herunterfahren";
   document.getElementById("optionsTitle").innerHTML = "<b>Optionen</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Rückmelder simulieren";
@@ -157,7 +158,7 @@ function langDE() {
   help += "<tr><td>F13<td>Manueller Modus EIN/AUS";
   help += "<tr><td>F14<td>Rangieren EIN/AUS";
   help += "<tr><td>Licht<td>Bereitstellen für Regler"; 
-  help += "<tr><td>Richtung<td>Anhalten: V=0"; 
+  help += "<tr><td>Richtung<td>Stopp (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-de";
   
@@ -181,6 +182,7 @@ function langEN() {
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
   document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
   document.getElementById("systemStartAll").innerHTML = "Start all locs";
+  document.getElementById("systemShutdown").innerHTML = "Shutdown server";
   document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Simulate sensors";
@@ -243,7 +245,7 @@ function langEN() {
   help += "<tr><td>F13<td>Manual mode ON/OFF";
   help += "<tr><td>F14<td>Shunting ON/OFF";
   help += "<tr><td>Lights<td>Dispatch"; 
-  help += "<tr><td>Direction<td>Stop: V=0"; 
+  help += "<tr><td>Direction<td>Stop (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
@@ -266,6 +268,7 @@ function langNL() {
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
   document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
   document.getElementById("systemStartAll").innerHTML = "Start alle loc's";
+  document.getElementById("systemShutdown").innerHTML = "Server beëindigen";
   document.getElementById("optionsTitle").innerHTML = "<b>Opties</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
   document.getElementById("labOptionSimSensors").innerHTML = "Melders simuleren";
@@ -328,7 +331,7 @@ function langNL() {
   help += "<tr><td>F13<td>Handbedien modus AAN/UIT";
   help += "<tr><td>F14<td>Rangeren AAN/UIT";
   help += "<tr><td>Licht<td>Klaarzetten voor handregelaar"; 
-  help += "<tr><td>Richting<td>Stoppen: V=0"; 
+  help += "<tr><td>Richting<td>Stoppen (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
@@ -1086,6 +1089,12 @@ function actionPower() {
 function actionStartAll() {
   $( "#popupSystem" ).popup( "close" );
   var cmd = "<auto cmd=\"start\"/>";
+  sendCommand(cmd);
+}
+
+function actionShutdown() {
+  $( "#popupSystem" ).popup( "close" );
+  var cmd = "<sys cmd=\"shutdown\"/>";
   sendCommand(cmd);
 }
 
