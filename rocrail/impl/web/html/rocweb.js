@@ -418,7 +418,7 @@ function onLocoSelected(sel) {
       newslaves += ",";
     newslaves += sel;
     master.setAttribute('consist', newslaves);
-    var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
+    var cmd = "<model controlcode=\""+controlCode+"\" cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
     sendCommand(cmd);
   }
   else if( locoSelectAction == "consistdel" ) {
@@ -433,7 +433,7 @@ function onLocoSelected(sel) {
       newslaves += sel;
     }
     master.setAttribute('consist', newslaves);
-    var cmd = "<model cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
+    var cmd = "<model controlcode=\""+controlCode+"\" cmd=\"modify\"><lc id=\""+master.getAttribute('id')+"\" consist=\""+newslaves+"\"/></model>";
     sendCommand(cmd);
   }
   else if( locoSelectAction == "consistshow" ) {
@@ -873,21 +873,21 @@ $(function(){
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold RE: power off");
-    var cmd = "<sys informall=\"true\" cmd=\"stop\"/>";
+    var cmd = "<sys controlcode=\""+controlCode+"\" informall=\"true\" cmd=\"stop\"/>";
     sendCommand(cmd);
   }
   function tapholdFGHandler(e) {
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold FG: emergancy break");
-    var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
+    var cmd = "<sys controlcode=\""+controlCode+"\" cmd=\"ebreak\" informall=\"true\"/>";
     sendCommand(cmd);
   }
   function tapholdF0Handler(e) {
     e.preventDefault();
     tapholdFkey = 1;
     trace("taphold F0: dispatch");
-    var cmd = "<lc id=\""+locoSelected+"\" cmd=\"dispatch\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" cmd=\"dispatch\"/>";
     sendCommand(cmd);
   }
   function tapholdF13Handler(e) {
@@ -898,11 +898,11 @@ $(function(){
     var manualon = lc.getAttribute('manualon');
     var cmd = "";
     if( manualon == undefined || manualon == "false" ) {
-      cmd = "<lc id=\""+locoSelected+"\" cmd=\"manualon\"/>";
+      cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" cmd=\"manualon\"/>";
       lc.setAttribute('manualon', "true");
     }
     else {
-      cmd = "<lc id=\""+locoSelected+"\" cmd=\"manualoff\"/>";
+      cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" cmd=\"manualoff\"/>";
       lc.setAttribute('manualon', "false");
     }
     sendCommand(cmd);
@@ -914,11 +914,11 @@ $(function(){
     var shuntingon = lc.getAttribute('shuntingon');
     var cmd = "";
     if( shuntingon == undefined || shuntingon == "false" ) {
-      cmd = "<lc id=\""+locoSelected+"\" cmd=\"shuntingon\"/>";
+      cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" cmd=\"shuntingon\"/>";
       lc.setAttribute('shuntingon', "true");
     }
     else {
-      cmd = "<lc id=\""+locoSelected+"\" cmd=\"shuntingoff\"/>";
+      cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" cmd=\"shuntingoff\"/>";
       lc.setAttribute('shuntingon', "false");
     }
     sendCommand(cmd);
@@ -954,7 +954,7 @@ $(function(){
       lc = carMap[locoSelected];
     if( lc == undefined )
       return;
-    var cmd = "<lc id=\""+locoSelected+"\" V=\"0\" fn=\""+lc.getAttribute("fn")+"\" dir=\""+lc.getAttribute("dir")+"\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" V=\"0\" fn=\""+lc.getAttribute("fn")+"\" dir=\""+lc.getAttribute("dir")+"\"/>";
     sendCommand(cmd);
   }
   
@@ -1017,7 +1017,7 @@ function onRE() {
     return;
   }
   trace("release loco " + locoSelected);
-  var cmd = "<lc throttleid=\""+throttleid+"\" cmd=\"release\" id=\""+locoSelected+"\"/>";
+  var cmd = "<lc controlcode=\""+controlCode+"\" throttleid=\""+throttleid+"\" cmd=\"release\" id=\""+locoSelected+"\"/>";
   sendCommand(cmd);
 }
 
@@ -1027,9 +1027,9 @@ function onST() {
   var mode = lc.getAttribute('mode');
   var cmd = "";
   if( mode != undefined && (mode == "auto" || mode == "halfauto") )
-    cmd = "<lc id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"stop\"/>";
+    cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"stop\"/>";
   else
-    cmd = "<lc id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"go\"/>";
+    cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" cmd=\"go\"/>";
   sendCommand(cmd);
 }
 
@@ -1049,7 +1049,7 @@ function onFunction(id, nr) {
   var fx = parseInt(lc.getAttribute('fx'));
   var mask = 1 << (nr-1);
   var on = fx&mask?"false":"true";
-  var cmd = "<fn id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
+  var cmd = "<fn controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
   sendCommand(cmd);
 }
 
@@ -1067,7 +1067,7 @@ function onLights() {
   if( fn != undefined && fn == "true" )
     on = "false";
   trace("lights was "+fn+" will be "+on);
-  var cmd = "<fn id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+0+"\" f"+0+"=\""+on+"\"/>"
+  var cmd = "<fn controlcode=\""+controlCode+"\" id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+0+"\" f"+0+"=\""+on+"\"/>"
   sendCommand(cmd);
 }
 
@@ -1082,7 +1082,7 @@ function speedUpdate(value) {
   trace("Speed: " + value + " for loco " + locoSelected);
   lc.setAttribute('V', value);
   trace("value="+value+" V_max="+V_max);
-  var cmd = "<lc throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+value+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
+  var cmd = "<lc controlcode=\""+controlCode+"\" throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+value+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   sendCommand(cmd);
 }
@@ -1091,19 +1091,19 @@ function speedUpdate(value) {
 /* System commands */
 function actionPower() {
   var mOn = power == 'true' ? false:true;
-  var cmd = "<sys informall=\"true\" cmd=\""+(mOn?"go":"stop")+"\"/>";
+  var cmd = "<sys controlcode=\""+controlCode+"\" informall=\"true\" cmd=\""+(mOn?"go":"stop")+"\"/>";
   sendCommand(cmd);
 }
 
 function actionStartAll() {
   $( "#popupSystem" ).popup( "close" );
-  var cmd = "<auto cmd=\"start\"/>";
+  var cmd = "<auto controlcode=\""+controlCode+"\" cmd=\"start\"/>";
   sendCommand(cmd);
 }
 
 function actionShutdown() {
   $( "#popupSystem" ).popup( "close" );
-  var cmd = "<sys cmd=\"shutdown\"/>";
+  var cmd = "<sys controlcode=\""+controlCode+"\" cmd=\"shutdown\"/>";
   sendCommand(cmd);
 }
 
@@ -1165,26 +1165,26 @@ function actionAuto(auto) {
   trace("auto action " + auto);
   if( autoMode == "on" )
     auto = "off";
-  var cmd = "<auto cmd=\""+auto+"\"/>";
+  var cmd = "<auto controlcode=\""+controlCode+"\" cmd=\""+auto+"\"/>";
   sendCommand(cmd);
 }
 
 function actionEBreak() {
   trace("emergancy break");
   $( "#popupSystem" ).popup( "close" );
-  var cmd = "<sys cmd=\"ebreak\" informall=\"true\"/>";
+  var cmd = "<sys controlcode=\""+controlCode+"\" cmd=\"ebreak\" informall=\"true\"/>";
   sendCommand(cmd);
 }
 
 function actionSystemInitfield() {
   $( "#popupSystem" ).popup( "close" );
-  var cmd = "<model cmd=\"initfield\" informall=\"true\"/>";
+  var cmd = "<model controlcode=\""+controlCode+"\" cmd=\"initfield\" informall=\"true\"/>";
   sendCommand(cmd);
 }
 
 function actionSystemQuerySensors() {
   $( "#popupSystem" ).popup( "close" );
-  var cmd = "<sys cmd=\"sod\" informall=\"true\"/>";
+  var cmd = "<sys controlcode=\""+controlCode+"\" cmd=\"sod\" informall=\"true\"/>";
   sendCommand(cmd);
 }
 
@@ -1192,7 +1192,7 @@ function actionRoute(id) {
   stid = id.replace("st_","");
   trace("route action on " + stid );
   st = stMap[stid];
-  var cmd = "<st cmd=\"test\" id=\""+stid+"\"/>";
+  var cmd = "<st controlcode=\""+controlCode+"\" cmd=\"test\" id=\""+stid+"\"/>";
   sendCommand(cmd);
 }
 
@@ -1209,9 +1209,9 @@ function actionSensor(id)
   fb = fbMap[fbid];
   var cmd;
   if( "true" == fb.getAttribute('state') )
-    cmd = "<fb state=\"false\" id=\""+fbid+"\"/>";
+    cmd = "<fb controlcode=\""+controlCode+"\" state=\"false\" id=\""+fbid+"\"/>";
   else
-    cmd = "<fb state=\"true\" id=\""+fbid+"\"/>";
+    cmd = "<fb controlcode=\""+controlCode+"\" state=\"true\" id=\""+fbid+"\"/>";
   sendCommand(cmd);
 }
 
@@ -1229,7 +1229,7 @@ function onChangeText() {
   $( "#popupText" ).popup( "close" );
   txid = sessionStorage.getItem("text");
   var text = document.getElementById("newText").value;
-  var cmd = "<model cmd=\"modify\"><tx id=\""+txid+"\" text=\""+text+"\"/></model>";
+  var cmd = "<model controlcode=\""+controlCode+"\" cmd=\"modify\"><tx id=\""+txid+"\" text=\""+text+"\"/></model>";
   sendCommand(cmd);
 
 }
@@ -1238,7 +1238,7 @@ function actionSwitch(id) {
   swid = id.replace("sw_","");
   sw = swMap[swid];
   trace("switch action on " + swid + " state=" + sw.getAttribute('state'));
-  var cmd = "<sw cmd=\"flip\" id=\""+swid+"\" manualcmd=\"true\"/>";
+  var cmd = "<sw controlcode=\""+controlCode+"\" cmd=\"flip\" id=\""+swid+"\" manualcmd=\"true\"/>";
   sendCommand(cmd);
 }
 
@@ -1248,7 +1248,7 @@ function actionOutput(id) {
   trace("output action on " + coid + " state=" + co.getAttribute('state'));
   var toggleswitch = co.getAttribute('toggleswitch');
   if( toggleswitch == undefined || toggleswitch == "true" ) {
-    var cmd = "<co cmd=\"flip\" id=\""+coid+"\"/>";
+    var cmd = "<co controlcode=\""+controlCode+"\" cmd=\"flip\" id=\""+coid+"\"/>";
     sendCommand(cmd);
   }
 }
@@ -1260,7 +1260,7 @@ function actionOutputDown(id) {
   var toggleswitch = co.getAttribute('toggleswitch');
   if( toggleswitch == undefined || toggleswitch == "true" )
     return;
-  var cmd = "<co cmd=\"on\" id=\""+coid+"\"/>";
+  var cmd = "<co controlcode=\""+controlCode+"\" cmd=\"on\" id=\""+coid+"\"/>";
   sendCommand(cmd);
 }
 
@@ -1271,7 +1271,7 @@ function actionOutputUp(id) {
   var toggleswitch = co.getAttribute('toggleswitch');
   if( toggleswitch == undefined || toggleswitch == "true" )
     return;
-  var cmd = "<co cmd=\"off\" id=\""+coid+"\"/>";
+  var cmd = "<co controlcode=\""+controlCode+"\" cmd=\"off\" id=\""+coid+"\"/>";
   sendCommand(cmd);
 }
 
@@ -1279,7 +1279,7 @@ function actionSignal(id) {
   sgid = id.replace("sg_","");
   sg = sgMap[sgid];
   trace("signal action on " + sgid + " state=" + sg.getAttribute('state'));
-  var cmd = "<sg cmd=\"flip\" id=\""+sgid+"\"/>";
+  var cmd = "<sg controlcode=\""+controlCode+"\" cmd=\"flip\" id=\""+sgid+"\"/>";
   sendCommand(cmd);
 }
 
@@ -1531,12 +1531,12 @@ function onBlockTrain() {
   if( locoBlockSelect != "none" ) {
     if( trainBlockSelect == "none" ) {
       // release train
-      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"releasetrain\"/>";
+      var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"releasetrain\"/>";
       sendCommand(cmd);
     }
     else {
       // assign train
-      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"assigntrain\" train=\""+trainBlockSelect+"\"/>";
+      var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"assigntrain\" train=\""+trainBlockSelect+"\"/>";
       sendCommand(cmd);
     }
   }  
@@ -1547,14 +1547,14 @@ function onBlockStart(gomanual) {
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
     if( scheduleBlockSelect != "none" && scheduleBlockSelect.length > 0 ) {
-      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"useschedule\" scheduleid=\""+scheduleBlockSelect+"\"/>";
+      var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"useschedule\" scheduleid=\""+scheduleBlockSelect+"\"/>";
       sendCommand(cmd);
     }  
     else if( blockBlockSelect != "none" && blockBlockSelect.length > 0 ) {
-      var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"gotoblock\" blockid=\""+blockBlockSelect+"\"/>";
+      var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"gotoblock\" blockid=\""+blockBlockSelect+"\"/>";
       sendCommand(cmd);
     }  
-    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(gomanual?"gomanual":"go")+"\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\""+(gomanual?"gomanual":"go")+"\"/>";
     sendCommand(cmd);
   }
 }
@@ -1563,7 +1563,7 @@ function onBlockReset(soft) {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
-    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\""+(soft?"softreset":"reset")+"\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\""+(soft?"softreset":"reset")+"\"/>";
     sendCommand(cmd);
   }
 }
@@ -1572,7 +1572,7 @@ function onBlockStop() {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
-    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"stop\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"stop\"/>";
     sendCommand(cmd);
   }
 }
@@ -1581,7 +1581,7 @@ function onBlockSwapPlacing() {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
-    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"swap\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"swap\"/>";
     sendCommand(cmd);
   }
 }
@@ -1590,7 +1590,7 @@ function onBlockSwapEnter() {
   $( "#popupBlock" ).popup( "close" );
   locoBlockSelect = sessionStorage.getItem("locoBlockSelect");
   if( locoBlockSelect != "none" ) {
-    var cmd = "<lc id=\""+locoBlockSelect+"\" cmd=\"blockside\"/>";
+    var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+locoBlockSelect+"\" cmd=\"blockside\"/>";
     sendCommand(cmd);
   }
 }
@@ -1598,14 +1598,14 @@ function onBlockSwapEnter() {
 function onBlockOpen() {
   $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
-  var cmd = "<bk id=\""+bkid+"\" state=\"open\"/>";
+  var cmd = "<bk controlcode=\""+controlCode+"\" id=\""+bkid+"\" state=\"open\"/>";
   sendCommand(cmd);
 }
 
 function onBlockClose() {
   $( "#popupBlock" ).popup( "close" );
   bkid = sessionStorage.getItem("block");
-  var cmd = "<bk id=\""+bkid+"\" state=\"closed\"/>";
+  var cmd = "<bk controlcode=\""+controlCode+"\" id=\""+bkid+"\" state=\"closed\"/>";
   sendCommand(cmd);
 }
 
@@ -1624,7 +1624,7 @@ function onAddGuest() {
   if( address.length == 0 )
     return;
   trace("add guest: "+address+" id="+id);
-  var cmd = "<lc id=\""+address+"\" shortid=\""+id+"\" spcnt=\""+guestSteps+"\" prot=\""+guestProt+"\" V=\"0\"/>";
+  var cmd = "<lc controlcode=\""+controlCode+"\" id=\""+address+"\" shortid=\""+id+"\" spcnt=\""+guestSteps+"\" prot=\""+guestProt+"\" V=\"0\"/>";
   sendCommand(cmd);
 }
 
@@ -1646,9 +1646,9 @@ function onLocoInBlock(lcid) {
   bkid = sessionStorage.getItem("block");
   var cmd = "";
   if( lcid.length > 0 )
-    cmd = "<lc id=\""+lcid+"\" cmd=\"block\" blockid=\""+bkid+"\"/>";
+    cmd = "<lc controlcode=\""+controlCode+"\" id=\""+lcid+"\" cmd=\"block\" blockid=\""+bkid+"\"/>";
   else
-    cmd = "<bk id=\""+bkid+"\" cmd=\"loc\" locid=\"\"/>";
+    cmd = "<bk controlcode=\""+controlCode+"\" id=\""+bkid+"\" cmd=\"loc\" locid=\"\"/>";
   sendCommand(cmd);
 }
 
@@ -1664,7 +1664,7 @@ function actionStageBlock(id)
 function onStageCompress() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
-  var cmd = "<sb id=\""+sbid+"\" cmd=\"compress\"/>";
+  var cmd = "<sb controlcode=\""+controlCode+"\" id=\""+sbid+"\" cmd=\"compress\"/>";
   sendCommand(cmd);
 }
 
@@ -1672,7 +1672,7 @@ function onStageCompress() {
 function onStageOpen() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
-  var cmd = "<sb id=\""+sbid+"\" state=\"open\"/>";
+  var cmd = "<sb controlcode=\""+controlCode+"\" id=\""+sbid+"\" state=\"open\"/>";
   sendCommand(cmd);
 }
 
@@ -1680,7 +1680,7 @@ function onStageOpen() {
 function onStageClose() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
-  var cmd = "<sb id=\""+sbid+"\" state=\"closed\"/>";
+  var cmd = "<sb controlcode=\""+controlCode+"\" id=\""+sbid+"\" state=\"closed\"/>";
   sendCommand(cmd);
 }
 
@@ -1688,7 +1688,7 @@ function onStageClose() {
 function onStageOpenExit() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
-  var cmd = "<sb id=\""+sbid+"\" exitstate=\"open\"/>";
+  var cmd = "<sb controlcode=\""+controlCode+"\" id=\""+sbid+"\" exitstate=\"open\"/>";
   sendCommand(cmd);
 }
 
@@ -1696,21 +1696,21 @@ function onStageOpenExit() {
 function onStageCloseExit() {
   $( "#popupStageBlock" ).popup( "close" );
   sbid = sessionStorage.getItem("stageblock");
-  var cmd = "<sb id=\""+sbid+"\" exitstate=\"closed\"/>";
+  var cmd = "<sb controlcode=\""+controlCode+"\" id=\""+sbid+"\" exitstate=\"closed\"/>";
   sendCommand(cmd);
 }
 
 function onTurntableGotoTrack() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
-  var cmd = "<tt id=\""+ttid+"\" cmd=\""+trackTTSelect+"\"/>";
+  var cmd = "<tt controlcode=\""+controlCode+"\" id=\""+ttid+"\" cmd=\""+trackTTSelect+"\"/>";
   sendCommand(cmd);
 }
 
 function onTurntableNext() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
-  var cmd = "<tt id=\""+ttid+"\" cmd=\"next\"/>";
+  var cmd = "<tt controlcode=\""+controlCode+"\" id=\""+ttid+"\" cmd=\"next\"/>";
   sendCommand(cmd);
 }
 
@@ -1718,7 +1718,7 @@ function onTurntableNext() {
 function onTurntablePrevious() {
   $( "#popupTurntable" ).popup( "close" );
   ttid = sessionStorage.getItem("turntable");
-  var cmd = "<tt id=\""+ttid+"\" cmd=\"previous\"/>";
+  var cmd = "<tt controlcode=\""+controlCode+"\" id=\""+ttid+"\" cmd=\"previous\"/>";
   sendCommand(cmd);
 }
 
@@ -1726,7 +1726,7 @@ function onTurntablePrevious() {
 function onFiddleYardNext() {
   $( "#popupFiddleYard" ).popup( "close" );
   fyid = sessionStorage.getItem("fiddleyard");
-  var cmd = "<seltab id=\""+fyid+"\" cmd=\"next\"/>";
+  var cmd = "<seltab controlcode=\""+controlCode+"\" id=\""+fyid+"\" cmd=\"next\"/>";
   sendCommand(cmd);
 }
 
@@ -1734,7 +1734,7 @@ function onFiddleYardNext() {
 function onFiddleYardPrevious() {
   $( "#popupFiddleYard" ).popup( "close" );
   fyid = sessionStorage.getItem("fiddleyard");
-  var cmd = "<seltab id=\""+fyid+"\" cmd=\"previous\"/>";
+  var cmd = "<seltab controlcode=\""+controlCode+"\" id=\""+fyid+"\" cmd=\"previous\"/>";
   sendCommand(cmd);
 }
 

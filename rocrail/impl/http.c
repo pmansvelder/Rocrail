@@ -26,6 +26,7 @@
 #include "rocrail/wrapper/public/HttpService.h"
 #include "rocrail/wrapper/public/WebClient.h"
 #include "rocrail/wrapper/public/Global.h"
+#include "rocrail/wrapper/public/Tcp.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
@@ -253,8 +254,21 @@ static void __pportserver( void* threadinst ) {
           if( doc != NULL ) {
             iONode nodeA = DocOp.getRootNode( doc );
             if( nodeA != NULL ) {
-              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
-              data->callback( data->callbackObj, nodeA );
+              /* Check the control code... */
+              if( data->controlcode != NULL && StrOp.len( data->controlcode ) > 0 ) {
+                if( StrOp.equals( data->controlcode, wTcp.getcontrolcode(nodeA) ) ) {
+                  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
+                  data->callback( data->callbackObj, nodeA );
+                }
+                else {
+                  NodeOp.base.del(nodeA);
+                  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "control code does not match..." );
+                }
+              }
+              else {
+                TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
+                data->callback( data->callbackObj, nodeA );
+              }
             }
             DocOp.base.del(doc);
           }
@@ -351,7 +365,7 @@ static void _setCallback( iOHttp inst, httpcon_callback pfun, obj callbackObj ) 
 
 
 /** Object creator. */
-static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, const char* imgpath ) {
+static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, const char* imgpath, const char* controlcode ) {
   if( ini != NULL ) {
     iOHttp __Http = allocMem( sizeof( struct OHttp ) );
     iOHttpData data = allocMem( sizeof( struct OHttpData ) );
@@ -362,6 +376,7 @@ static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, 
     data->webclient = wHttpService.getwebclient( ini );
     data->callback    = pfun;
     data->callbackObj = callbackObj;
+    data->controlcode = controlcode;
   
     /* Initialize data->xxx members... */
     if( data->port > 0 ) {

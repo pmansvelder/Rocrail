@@ -1016,8 +1016,13 @@ static int _Main( iOApp inst, int argc, char** argv ) {
   /* Http (Optional)*/
   {
     iONode http = wRocRail.gethttp( data->ini );
-    if( http != NULL )
-      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control, wRocRail.getimgpath(data->ini) );
+    if( http != NULL ) {
+      iONode tcp  = wRocRail.gettcp(data->ini);
+      const char* controlcode = NULL;
+      if( tcp != NULL )
+        controlcode = wTcp.getcontrolcode(tcp);
+      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control, wRocRail.getimgpath(data->ini), controlcode );
+    }
   }
 
   /* Snmp (Optional)*/
