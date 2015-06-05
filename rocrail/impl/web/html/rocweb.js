@@ -58,6 +58,7 @@ var guestProt = "P";
 var guestSteps = "28";
 var trackTTSelect = 'none';
 var sliderDelta = 3;
+var controlCode = "";
 var redBackground = "#FFC8C8";
 var throttleid = "rocweb";
 var speedUpdateVal = 0;
@@ -74,6 +75,7 @@ function trace(msg) {
 }
 
 function sendCommand(cmd) {
+  // TODO: insert control code.
   worker.postMessage(cmd);
 }
 
@@ -145,6 +147,7 @@ function langDE() {
   document.getElementById("colorUser").innerHTML = "Eigene Farbe";
   document.getElementById("labUserColor").innerHTML = "Hintergrundfarbe";
   document.getElementById("labSliderDelta").innerHTML = "Regler-Delta";
+  document.getElementById("labControlCode").innerHTML = "Zugriffscode";
   document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
   document.getElementById("helpTitle").innerHTML = "<b>Hilfe</b>";
   var help  = "<tr><th>Taste<th>Lange klick Funktion";
@@ -232,6 +235,7 @@ function langEN() {
   document.getElementById("colorUser").innerHTML = "Own color";
   document.getElementById("labUserColor").innerHTML = "Background color";
   document.getElementById("labSliderDelta").innerHTML = "Slider delta";
+  document.getElementById("labControlCode").innerHTML = "Control code";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
   document.getElementById("helpTitle").innerHTML = "<b>Help</b>";
   var help  = "<tr><th>Button<th>Long click function";
@@ -318,6 +322,7 @@ function langNL() {
   document.getElementById("colorUser").innerHTML = "Eigen kleur";
   document.getElementById("labUserColor").innerHTML = "Achtergrond kleur";
   document.getElementById("labSliderDelta").innerHTML = "Regelaar delta";
+  document.getElementById("labControlCode").innerHTML = "Controle code";
   document.getElementById("locoSelectTitle").innerHTML = "Locomotieven";
   document.getElementById("helpTitle").innerHTML = "<b>Help</b>";
   var help  = "<tr><th>Knop<th>Lange click functie";
@@ -763,6 +768,10 @@ function openOptions() {
     sliderdelta = 3;
   document.getElementById("sliderDelta").value = sliderdelta;
 
+  var controlcode = localStorage.getItem("controlcode");
+  if( controlcode == undefined )
+    controlcode = "";
+  document.getElementById("controlCode").value = controlcode;
 
   $('#popupMenu').on("panelclose", function(){
     $('#popupMenu').unbind( "panelclose" );
@@ -2124,6 +2133,14 @@ $(document).on("pagecreate",function(){
     localStorage.setItem("sliderdelta", delta);
     sliderDelta = parseInt(delta);
   });
+
+  $('#controlCode').change(function() {
+    var code = document.getElementById("controlCode").value;
+    trace("controlCode="+code);
+    localStorage.setItem("controlcode", code);
+    controlCode = code;
+  });
+
 });
 
 $(document).ready(function(){
@@ -3105,6 +3122,13 @@ function processResponse() {
         }
         else {
           sliderDelta = parseInt(sliderdelta); 
+        }
+        var controlcode = localStorage.getItem("controlcode");
+        if(controlcode == undefined || controlcode.length == 0) {
+          localStorage.setItem("controlcode", "");
+        }
+        else {
+          controlCode = controlcode; 
         }
         
         planlist = xmlDoc.getElementsByTagName("plan")
@@ -4128,6 +4152,10 @@ function processPlan() {
        trace("processing " + colist.length + " outputs");
 
      for (var i = 0; i < colist.length; i++) {
+       var show  = colist[i].getAttribute('show');
+       if( show != undefined && show == "false" )
+         continue;
+
        var z     = colist[i].getAttribute('z');
        var ori   = getOriNr(colist[i].getAttribute('ori'));
        var leveldiv = zlevelDivMap[z]; 
