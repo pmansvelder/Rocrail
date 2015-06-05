@@ -302,7 +302,6 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
         AppOp.broadcastEvent( clone );
       }
 
-      NodeOp.base.del(nodeA);
     }
     else if( StrOp.equals(wFunCmd.name(), nodename) ) {
       int mappedfn  = 0;
@@ -397,17 +396,12 @@ static Boolean _cmd( iOCar inst, iONode nodeA ) {
       __traceFunctions(inst, fnchanged);
 
       /* Broadcast to clients. */
-      {
-        iONode clone = (iONode)NodeOp.base.clone( nodeA );
-        AppOp.broadcastEvent( clone );
-      }
-
-      ControlOp.cmd( control, nodeA, NULL );
-    }
-    else {
-      NodeOp.base.del(nodeA);
+      AppOp.broadcastEvent( (iONode)NodeOp.base.clone( nodeA ) );
+      ControlOp.cmd( control, (iONode)NodeOp.base.clone( nodeA ), NULL );
     }
   }
+
+  NodeOp.base.del(nodeA);
 
   return True;
 }
