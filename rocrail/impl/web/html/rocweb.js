@@ -2282,6 +2282,8 @@ function getTextFormat(tx) {
   var underlined = tx.getAttribute('underlined');
   var italic = tx.getAttribute('italic');
 
+  text = text.replace("|","<br>");
+  
   if( bold != undefined && bold == "true") {
     prefix += "<b>";
     suffix += "</b>";
