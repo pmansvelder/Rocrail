@@ -142,7 +142,7 @@ static byte __getProtocol(iONode loc) {
   if( StrOp.equals( wLoc.getprot(loc), wLoc.prot_N ) || StrOp.equals( wLoc.getprot(loc), wLoc.prot_L ) || StrOp.equals( wLoc.getprot(loc), wLoc.prot_P ) ) {
     if( wLoc.getspcnt(loc) < 28 )
       prot = RN_MOBILE_PROT_DCC14;
-    if( wLoc.getspcnt(loc) > 28 )
+    else if( wLoc.getspcnt(loc) > 28 )
       prot = RN_MOBILE_PROT_DCC128;
     else
       prot = RN_MOBILE_PROT_DCC28;
