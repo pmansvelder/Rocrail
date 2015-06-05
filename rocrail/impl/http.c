@@ -27,6 +27,7 @@
 #include "rocrail/wrapper/public/WebClient.h"
 #include "rocrail/wrapper/public/Global.h"
 #include "rocrail/wrapper/public/Tcp.h"
+#include "rocrail/wrapper/public/SysCmd.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
@@ -254,20 +255,35 @@ static void __pportserver( void* threadinst ) {
           if( doc != NULL ) {
             iONode nodeA = DocOp.getRootNode( doc );
             if( nodeA != NULL ) {
+              Boolean slave    = False;
+              Boolean readonly = False;
+              if( data->controlcode != NULL && StrOp.len( data->controlcode ) > 0 && !StrOp.equals( data->controlcode, wTcp.getcontrolcode(nodeA) ) )
+                readonly = True;
+              if( data->slavecode != NULL && StrOp.len( data->slavecode ) > 0 && !StrOp.equals( data->slavecode, wTcp.getslavecode(nodeA) ) )
+                slave = True;
+
               /* Check the control code... */
-              if( data->controlcode != NULL && StrOp.len( data->controlcode ) > 0 ) {
-                if( StrOp.equals( data->controlcode, wTcp.getcontrolcode(nodeA) ) ) {
+              if( readonly ) {
+                TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "client is readonly, reject: %.120s", cmd );
+                NodeOp.base.del(nodeA);
+              }
+              else {
+                if( slave ) {
+                  if( StrOp.equals( wSysCmd.name(), NodeOp.getName(nodeA) ) ) {
+                    const char* cmd = wSysCmd.getcmd(nodeA);
+                    if( StrOp.equals( wSysCmd.shutdown, cmd ) || StrOp.equals( wSysCmd.go, cmd ) )
+                    {
+                      /* ignore */
+                      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "ignore [%s] from slave client", cmd);
+                      NodeOp.base.del(nodeA);
+                      nodeA = NULL;
+                    }
+                  }
+                }
+                if( nodeA != NULL ) {
                   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
                   data->callback( data->callbackObj, nodeA );
                 }
-                else {
-                  NodeOp.base.del(nodeA);
-                  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "control code does not match..." );
-                }
-              }
-              else {
-                TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "send command received to control: %.120s", cmd );
-                data->callback( data->callbackObj, nodeA );
               }
             }
             DocOp.base.del(doc);
@@ -365,7 +381,7 @@ static void _setCallback( iOHttp inst, httpcon_callback pfun, obj callbackObj ) 
 
 
 /** Object creator. */
-static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, const char* imgpath, const char* controlcode ) {
+static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, const char* imgpath, const char* controlcode, const char* slavecode ) {
   if( ini != NULL ) {
     iOHttp __Http = allocMem( sizeof( struct OHttp ) );
     iOHttpData data = allocMem( sizeof( struct OHttpData ) );
@@ -377,6 +393,7 @@ static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, 
     data->callback    = pfun;
     data->callbackObj = callbackObj;
     data->controlcode = controlcode;
+    data->slavecode   = slavecode;
   
     /* Initialize data->xxx members... */
     if( data->port > 0 ) {

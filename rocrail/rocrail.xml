@@ -1956,6 +1956,7 @@
       <param name="callbackobj" vt="obj"/>
       <param name="imgpath" vt="const char*" remark="Image path from the server."/>
       <param name="controlcode" vt="const char*"/>
+      <param name="slavecode" vt="const char*"/>
     </fun>
     <fun name="shutdown" vt="void" remark="Shutdown Http.">
       <param name="inst" vt="this" remark="Http instance."/>
@@ -1998,6 +1999,7 @@
       <var name="demoTime" vt="long"/>
       <var name="demoEnd" vt="Boolean" remark=""/>
       <var name="controlcode" vt="const char*"/>
+      <var name="slavecode" vt="const char*"/>
     </data>
   </object>
 

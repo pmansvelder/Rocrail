@@ -1019,9 +1019,12 @@ static int _Main( iOApp inst, int argc, char** argv ) {
     if( http != NULL ) {
       iONode tcp  = wRocRail.gettcp(data->ini);
       const char* controlcode = NULL;
-      if( tcp != NULL )
+      const char* slavecode   = NULL;
+      if( tcp != NULL ) {
         controlcode = wTcp.getcontrolcode(tcp);
-      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control, wRocRail.getimgpath(data->ini), controlcode );
+        slavecode   = wTcp.getslavecode(tcp);
+      }
+      data->http = HttpOp.inst( http, ControlOp.getCallback( data->control), (obj)data->control, wRocRail.getimgpath(data->ini), controlcode, slavecode );
     }
   }
 
