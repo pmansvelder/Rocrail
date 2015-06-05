@@ -5518,6 +5518,7 @@ static void _setBlockOccupancy( iOModel inst, const char* BlockId, const char* L
   block = ModelOp.getBlock( inst, BlockId );
   if( block == NULL ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "occ: ignore unknown block [%s] for loco [%s]", BlockId, LocId );
+    MutexOp.post( data->occMux );
     return;
   }
 
