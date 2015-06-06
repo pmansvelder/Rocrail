@@ -4058,12 +4058,24 @@ function setXY(item, zlevel, div) {
   div.style.top  = "" + ((parseInt(item.getAttribute('y')) + zY) * 32) + "px";
 }
 
+function sortById(a, b) {
+  var attrname = "id";
+  if (a.getAttribute(attrname) > b.getAttribute(attrname))
+    return 1;
+  if (a.getAttribute(attrname) < b.getAttribute(attrname))
+    return -1;
+  // a must be equal to b
+  return 0;
+}
 
 function processPlan() {
   
    try {
      xmlDoc = req.responseXML;
      
+     /* ----------------------------------------
+      * ZLevels
+      */
      zlevellist = xmlDoc.getElementsByTagName("zlevel");
      if( zlevellist.length > 0 ) {
        var title = "";
@@ -4111,6 +4123,9 @@ function processPlan() {
      }
      
      
+     /* ----------------------------------------
+      * Locos
+      */
      lclistRaw = xmlDoc.getElementsByTagName("lc");
      if( lclistRaw.length > 0 ) {
        var lclist = Array.prototype.slice.call(lclistRaw, 0);
@@ -4148,18 +4163,14 @@ function processPlan() {
      }
 
      
+     /* ----------------------------------------
+      * Cars
+      */
      carlistRaw = xmlDoc.getElementsByTagName("car");
      if( carlistRaw.length > 0 ) {
        var carlist = Array.prototype.slice.call(carlistRaw, 0);
        lclist.sort( function (a, b) {
-         if (a.getAttribute('id') > b.getAttribute('id')) {
-           return 1;
-         }
-         if (a.getAttribute('id') < b.getAttribute('id')) {
-           return -1;
-         }
-         // a must be equal to b
-         return 0;
+         return sortById(a, b);
        });
        trace("processing " + carlist.length + " cars");
      
@@ -4172,6 +4183,9 @@ function processPlan() {
      
      
      
+     /* ----------------------------------------
+      * Outputs
+      */
      colist = xmlDoc.getElementsByTagName("co");
      if( colist.length > 0 )
        trace("processing " + colist.length + " outputs");
@@ -4208,6 +4222,9 @@ function processPlan() {
      }
      
      
+     /* ----------------------------------------
+      * Signals
+      */
      sglist = xmlDoc.getElementsByTagName("sg");
      if( sglist.length > 0 )
        trace("processing " + sglist.length + " signals");
@@ -4239,6 +4256,9 @@ function processPlan() {
      }
      
      
+     /* ----------------------------------------
+      * Tracks
+      */
      tklist = xmlDoc.getElementsByTagName("tk");
      if( tklist.length > 0 )
        trace("processing " + tklist.length + " tracks");
@@ -4269,6 +4289,9 @@ function processPlan() {
      }
      
 
+     /* ----------------------------------------
+      * Texts
+      */
      txlist = xmlDoc.getElementsByTagName("tx");
      if( txlist.length > 0 )
        trace("processing " + txlist.length + " texts");
@@ -4334,6 +4357,9 @@ function processPlan() {
      }
      
 
+     /* ----------------------------------------
+      * Switches
+      */
      swlist = xmlDoc.getElementsByTagName("sw");
      if( swlist.length > 0 )
        trace("processing " + swlist.length + " switches");
@@ -4367,6 +4393,9 @@ function processPlan() {
      }
      
      
+     /* ----------------------------------------
+      * Sensors
+      */
      fblist = xmlDoc.getElementsByTagName("fb");
      if( fblist.length > 0 )
        trace("processing " + fblist.length + " sensors");
@@ -4408,41 +4437,54 @@ function processPlan() {
        updateSensorOcc(fblist[i]);
      }
      
-     bklist = xmlDoc.getElementsByTagName("bk");
-     if( bklist.length > 0 )
+     
+     /* ----------------------------------------
+      * Blocks
+      */
+     bklistRaw = xmlDoc.getElementsByTagName("bk");
+     if( bklistRaw.length > 0 ) {
+       var bklist = Array.prototype.slice.call(bklistRaw, 0);
+       bklist.sort( function (a, b) {
+         return sortById(a, b);
+       });
+     
        trace("processing " + bklist.length + " blocks");
-     for (var i = 0; i < bklist.length; i++) {
-       var z = bklist[i].getAttribute('z');
-       if( z == undefined )
-         z = '0';
-       var ori      = getOri(bklist[i]);
-       var small    = bklist[i].getAttribute('smallsymbol');
-       var leveldiv = zlevelDivMap[z]; 
-       trace('block: ' + bklist[i].getAttribute('id') + " at level " + z);
-       if( leveldiv == undefined ) {
-         trace("Error: zlevel ["+z+"] does not exist!");
-         continue;
+       for (var i = 0; i < bklist.length; i++) {
+         var z = bklist[i].getAttribute('z');
+         if( z == undefined )
+           z = '0';
+         var ori      = getOri(bklist[i]);
+         var small    = bklist[i].getAttribute('smallsymbol');
+         var leveldiv = zlevelDivMap[z]; 
+         trace('block: ' + bklist[i].getAttribute('id') + " at level " + z);
+         if( leveldiv == undefined ) {
+           trace("Error: zlevel ["+z+"] does not exist!");
+           continue;
+         }
+         bkMap[bklist[i].getAttribute('id')] = bklist[i];
+         var newdiv = document.createElement('div');
+         newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
+         newdiv.setAttribute('onClick', "actionBlock(this.id, false)");
+         newdiv.setAttribute('class', "item");
+         newdiv.style.overflow = 'hidden';
+         newdiv.style.position = "absolute";
+         newdiv.style.width    = "128px";
+         newdiv.style.height   = "32px";
+         setXY(bklist[i], zlevelMap[z], newdiv);
+         newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
+         newdiv.style.lineHeight = newdiv.style.height;
+  
+         getBlockLabel(bklist[i], newdiv);
+         
+         leveldiv.appendChild(newdiv);
+         updateBlockOcc(bklist[i]);
        }
-       bkMap[bklist[i].getAttribute('id')] = bklist[i];
-       var newdiv = document.createElement('div');
-       newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
-       newdiv.setAttribute('onClick', "actionBlock(this.id, false)");
-       newdiv.setAttribute('class', "item");
-       newdiv.style.overflow = 'hidden';
-       newdiv.style.position = "absolute";
-       newdiv.style.width    = "128px";
-       newdiv.style.height   = "32px";
-       setXY(bklist[i], zlevelMap[z], newdiv);
-       newdiv.style.backgroundImage = getBlockImage(bklist[i], newdiv);
-       newdiv.style.lineHeight = newdiv.style.height;
-
-       getBlockLabel(bklist[i], newdiv);
-       
-       leveldiv.appendChild(newdiv);
-       updateBlockOcc(bklist[i]);
      }
      
 
+     /* ----------------------------------------
+      * Turntables
+      */
      ttlist = xmlDoc.getElementsByTagName("tt");
      if( ttlist.length > 0 )
        trace("processing " + ttlist.length + " turntables");
@@ -4475,38 +4517,74 @@ function processPlan() {
      }
      
      
-     sclist = xmlDoc.getElementsByTagName("sc");
-     if( sclist.length > 0 )
+     /* ----------------------------------------
+      * Schedules
+      */
+     sclistRaw = xmlDoc.getElementsByTagName("sc");
+     if( sclistRaw.length > 0 ) {
+       var sclist = Array.prototype.slice.call(sclistRaw, 0);
+       sclist.sort( function (a, b) {
+         return sortById(a, b);
+       });
+     
        trace("processing " + sclist.length + " schedules");
-     for (var i = 0; i < sclist.length; i++) {
-       scMap[sclist[i].getAttribute('id')] = sclist[i];
-     }
+       for (var i = 0; i < sclist.length; i++) {
+         scMap[sclist[i].getAttribute('id')] = sclist[i];
+       }
+     }     
      
-     
-     tourlist = xmlDoc.getElementsByTagName("tour");
-     if( tourlist.length > 0 )
+
+     /* ----------------------------------------
+      * Tours
+      */
+     tourlistRaw = xmlDoc.getElementsByTagName("tour");
+     if( tourlistRaw.length > 0 ) {
+       var tourlist = Array.prototype.slice.call(tourlistRaw, 0);
+       tourlist.sort( function (a, b) {
+         return sortById(a, b);
+       });
        trace("processing " + tourlist.length + " tours");
-     for (var i = 0; i < tourlist.length; i++) {
-       tourMap[tourlist[i].getAttribute('id')] = tourlist[i];
-     }
+       for (var i = 0; i < tourlist.length; i++) {
+         tourMap[tourlist[i].getAttribute('id')] = tourlist[i];
+       }
+     }     
      
-     
-     locationlist = xmlDoc.getElementsByTagName("location");
-     if( locationlist.length > 0 )
+
+     /* ----------------------------------------
+      * Locations
+      */
+     locationlistRaw = xmlDoc.getElementsByTagName("location");
+     if( locationlistRaw.length > 0 ) {
+       var locationlist = Array.prototype.slice.call(locationlistRaw, 0);
+       locationlist.sort( function (a, b) {
+         return sortById(a, b);
+       });
        trace("processing " + locationlist.length + " locations");
-     for (var i = 0; i < locationlist.length; i++) {
-       locationMap[locationlist[i].getAttribute('id')] = locationlist[i];
+       for (var i = 0; i < locationlist.length; i++) {
+         locationMap[locationlist[i].getAttribute('id')] = locationlist[i];
+       }
      }
      
      
-     operatorlist = xmlDoc.getElementsByTagName("operator");
-     if( operatorlist.length > 0 )
+     /* ----------------------------------------
+      * Operators (Trains)
+      */
+     operatorlistRaw = xmlDoc.getElementsByTagName("operator");
+     if( operatorlistRaw.length > 0 ) {
+       var operatorlist = Array.prototype.slice.call(operatorlistRaw, 0);
+       operatorlist.sort( function (a, b) {
+         return sortById(a, b);
+       });
        trace("processing " + operatorlist.length + " operators");
-     for (var i = 0; i < operatorlist.length; i++) {
-       operatorMap[operatorlist[i].getAttribute('id')] = operatorlist[i];
+       for (var i = 0; i < operatorlist.length; i++) {
+         operatorMap[operatorlist[i].getAttribute('id')] = operatorlist[i];
+       }
      }
      
      
+     /* ----------------------------------------
+      * Routes
+      */
      stlist = xmlDoc.getElementsByTagName("st");
      if( stlist.length > 0 )
        trace("processing " + stlist.length + " routes");
@@ -4541,6 +4619,9 @@ function processPlan() {
      }
      
      
+     /* ----------------------------------------
+      * Selection tables (Fiddleyards)
+      */
      fylist = xmlDoc.getElementsByTagName("seltab");
      if( fylist.length > 0 )
        trace("processing " + fylist.length + " fiddle yards");
@@ -4568,7 +4649,10 @@ function processPlan() {
        leveldiv.appendChild(newdiv);
      }
      
-     
+
+     /* ----------------------------------------
+      * Staging blocks
+      */
      sblist = xmlDoc.getElementsByTagName("sb");
      if( sblist.length > 0 )
        trace("processing " + sblist.length + " staging blocks");
