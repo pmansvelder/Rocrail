@@ -61,6 +61,11 @@ var sliderDelta = 3;
 var controlCode = "";
 var slaveCode = "";
 var redBackground = "#FFC8C8";
+var greyBackground = "#E1E1E1";
+var yellowBackground = "#FFFF00";
+var greenBackground = "#C8FFC8";
+var blueBackground = "#C8C8FF";
+
 var throttleid = "rocweb";
 var speedUpdateVal = 0;
 var timelabel = "";
@@ -2550,19 +2555,40 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
 
   var div = document.getElementById("sg_"+sgid);
   var label = "-";
+  var color = greyBackground;
   if( lc != undefined ) {
     var mode = lc.getAttribute('mode');
-    if( mode == "auto" )
+    var modereason = lc.getAttribute('modereason');
+    var nodest = false;
+    if( modereason != undefined && "nodest" == modereason );
+    nodest = true;
+
+    if( mode == "auto" ) {
       label = "A";
-    else if( mode == "idle" )
+      if( mode == "halfauto" )
+        color = blueBackground;
+      else
+        color = greenBackground;
+    }
+    else if( mode == "idle" ) {
       label = "O";
-    else if( mode == "wait" )
+    }
+    else if( mode == "wait" ) {
       label = "W";
-    else if( mode == "halfauto" )
+      if( nodest )
+        color = yellowBackground;
+      else if( mode == "halfauto" )
+        color = blueBackground;
+      else
+        color = greenBackground;
+    }
+    else if( mode == "halfauto" ) {
       label = "H";
+      color = blueBackground;
+    }
   }
   trace("blockstate: block="+bkid+" signal="+sgid+" loco="+lcid+" from="+from+" label="+label);
-  div.innerHTML = "<label class='itemtext'>"+label+"</label>";
+  div.innerHTML = "<label class='itemtext' style='line-height:20px; background-color: "+color+";position:relative;left:5px;top:5px;width:21px;height:21px;'>"+label+"</label>";
 }
 
 function getBlockLabel(bk, div) {
