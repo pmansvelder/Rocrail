@@ -2337,13 +2337,13 @@ function getTextImage(txNode, div) {
       pointsize = "10";
     if( text == undefined )
       text = "";
-    
+    var height = div.style.height;
     if( ori == "north" )
-      div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
+      div.innerHTML = "<div class='itemtextV' style='line-height:"+height+"; font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
     else if( ori == "south" )
-      div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
+      div.innerHTML = "<div class='itemtextV' style='line-height:"+height+";font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
     else
-      div.innerHTML = "<div class='itemtext' style='font-size:"+pointsize+"px;'>" +getTextFormat(txNode)+ "</div>";
+      div.innerHTML = "<div class='itemtext' style='line-height:"+height+";font-size:"+pointsize+"px;'>" +getTextFormat(txNode)+ "</div>";
   }
   
 }
