@@ -7877,3 +7877,15 @@ msgstr ""
 msgid "Border"
 msgstr ""
 
+#. 
+# id="mdate"
+#, c-format
+msgid "M-Date"
+msgstr ""
+
+#. 
+# id="mdate"
+#, c-format
+msgid "Last serviced date."
+msgstr ""
+
