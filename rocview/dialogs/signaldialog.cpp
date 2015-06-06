@@ -294,6 +294,8 @@ void SignalDialog::initLabels() {
   m_labWhite->SetLabel( wxGetApp().getMsg( "white" ) );
   m_labBlank->SetLabel( wxGetApp().getMsg( "blank" ) );
 
+  m_labAspectNames->SetLabel( wxGetApp().getMsg( "aspectnames" ) );
+
   // Buttons
   m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
   m_Cancel->SetLabel( wxGetApp().getMsg( "cancel" ) );
@@ -474,6 +476,8 @@ void SignalDialog::initValues() {
   m_YellowNr->SetValue( wSignal.getyellownr( m_Props) );
   m_WhiteNr->SetValue(wSignal.getwhitenr( m_Props) );
   m_BlankNr->SetValue(wSignal.getblanknr( m_Props) );
+
+  m_AspectNames->SetValue( wxString(wSignal.getaspectnames( m_Props ),wxConvUTF8) );
 }
 
 
@@ -586,6 +590,8 @@ bool SignalDialog::evaluate() {
   wSignal.setwhitenr ( m_Props, m_WhiteNr->GetValue() );
   wSignal.setblanknr ( m_Props, m_BlankNr->GetValue() );
 
+  wSignal.setaspectnames( m_Props, m_AspectNames->GetValue().mb_str(wxConvUTF8) );
+
   return true;
 }
 
@@ -697,6 +703,8 @@ bool SignalDialog::Create( wxWindow* parent, wxWindowID id, const wxString& capt
     m_Blank1 = NULL;
     m_Blank2 = NULL;
     m_BlankNr = NULL;
+    m_labAspectNames = NULL;
+    m_AspectNames = NULL;
     m_Cancel = NULL;
     m_OK = NULL;
     m_Apply = NULL;
@@ -1198,27 +1206,37 @@ void SignalDialog::CreateControls()
     m_BlankNr = new wxSpinCtrl( m_PropsPanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0, 31, 0 );
     itemFlexGridSizer99->Add(m_BlankNr, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+    wxFlexGridSizer* itemFlexGridSizer124 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer85->Add(itemFlexGridSizer124, 0, wxGROW, 5);
+    m_labAspectNames = new wxStaticText( m_PropsPanel, wxID_ANY, _("Aspect names"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer124->Add(m_labAspectNames, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_AspectNames = new wxTextCtrl( m_PropsPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer124->Add(m_AspectNames, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    itemFlexGridSizer124->AddGrowableCol(1);
+
     m_Notebook->AddPage(m_PropsPanel, _("Properties"));
 
     itemBoxSizer2->Add(m_Notebook, 1, wxGROW|wxALL, 5);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer124 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer127 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer124, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer127, 0, wxGROW|wxALL, 5);
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer124->AddButton(m_Cancel);
+    itemStdDialogButtonSizer127->AddButton(m_Cancel);
 
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     m_OK->SetDefault();
-    itemStdDialogButtonSizer124->AddButton(m_OK);
+    itemStdDialogButtonSizer127->AddButton(m_OK);
 
     m_Apply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer124->AddButton(m_Apply);
+    itemStdDialogButtonSizer127->AddButton(m_Apply);
 
-    wxButton* itemButton128 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer124->AddButton(itemButton128);
+    wxButton* itemButton131 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer127->AddButton(itemButton131);
 
-    itemStdDialogButtonSizer124->Realize();
+    itemStdDialogButtonSizer127->Realize();
 
 ////@end SignalDialog content construction
 }

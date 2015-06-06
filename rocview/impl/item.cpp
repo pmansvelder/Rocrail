@@ -180,7 +180,8 @@ enum {
     ME_FYGo = ME_ScheduleGo + 20,
     ME_TTGo = ME_FYGo + 10,
     ME_CmdSignalAspect = ME_TTGo + 10,
-    ME_CmdAction = ME_CmdSignalAspect + 20,
+    ME_CmdAction = ME_CmdSignalAspect + 20, // 10 command actions
+    ME_CmdSignalAspectName = ME_CmdAction + 10, // 16 aspect names
 
 };
 
@@ -258,6 +259,23 @@ BEGIN_EVENT_TABLE(Symbol, wxWindow)
   EVT_MENU     (ME_CmdSignalGreen, Symbol::OnCmdSignalGreen )
   EVT_MENU     (ME_CmdSignalWhite, Symbol::OnCmdSignalWhite )
   EVT_MENU     (ME_CmdSignalAspect, Symbol::OnCmdSignalAspect )
+
+  EVT_MENU     (ME_CmdSignalAspectName+0, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+1, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+2, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+3, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+4, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+5, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+6, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+7, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+8, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+9, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+10, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+11, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+12, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+13, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+14, Symbol::OnCmdSignalAspectName)
+  EVT_MENU     (ME_CmdSignalAspectName+15, Symbol::OnCmdSignalAspectName)
 
   EVT_MENU     (ME_Info, Symbol::OnInfo)
   EVT_MENU     (ME_ResetWheelcounter, Symbol::OnResetWheelcounter)
@@ -1051,6 +1069,16 @@ void Symbol::OnCmdSignalWhite(wxCommandEvent& event) {
   wSignal.setid( cmd, wSignal.getid( m_Props ) );
   wSignal.setcmd( cmd, wSignal.white );
   wSignal.setaspect( cmd, -1 );
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
+}
+
+void Symbol::OnCmdSignalAspectName(wxCommandEvent& event) {
+  int aspect = event.GetId()-ME_CmdSignalAspectName;
+  iONode cmd = NodeOp.inst( wSignal.name(), NULL, ELEMENT_NODE );
+  wSignal.setid( cmd, wSignal.getid( m_Props ) );
+  wSignal.setcmd( cmd, wSignal.aspect );
+  wSignal.setaspect( cmd, aspect );
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
 }
@@ -1850,14 +1878,30 @@ void Symbol::OnPopup(wxMouseEvent& event)
       else {
         menuSgCmd->Append( ME_CmdSignalManual, wxGetApp().getMenu("manualoperated") );
       }
-      menuSgCmd->Append( ME_CmdSignalRed, wxGetApp().getMenu("red") );
-      menuSgCmd->Append( ME_CmdSignalGreen, wxGetApp().getMenu("green") );
-      if( wSignal.getaspects( m_Props ) > 2 )
-        menuSgCmd->Append( ME_CmdSignalYellow, wxGetApp().getMenu("yellow") );
-      if( wSignal.getaspects( m_Props ) > 3 )
-        menuSgCmd->Append( ME_CmdSignalWhite, wxGetApp().getMenu("white") );
-      if( wSignal.getaspects( m_Props ) > 4 )
-        menuSgCmd->Append( ME_CmdSignalAspect, wxGetApp().getMenu("aspect") );
+      const char* aspectnames = wSignal.getaspectnames(m_Props);
+      if( wSignal.getaspects(m_Props) > 4 && aspectnames != NULL && StrOp.len(aspectnames) > 0 ) {
+        iOStrTok tok = StrTokOp.inst( aspectnames, ',' );
+        int aspect = 0;
+        int idx = 0;
+        const char* aspectname = StrTokOp.nextToken(tok);
+
+        while( aspectname != NULL && idx < 16) {
+          menuSgCmd->Append( ME_CmdSignalAspectName+idx, wxString(aspectname,wxConvUTF8) );
+          idx++;
+          aspectname = StrTokOp.nextToken(tok);
+        };
+        StrTokOp.base.del( tok );
+      }
+      else {
+        menuSgCmd->Append( ME_CmdSignalRed, wxGetApp().getMenu("red") );
+        menuSgCmd->Append( ME_CmdSignalGreen, wxGetApp().getMenu("green") );
+        if( wSignal.getaspects( m_Props ) > 2 )
+          menuSgCmd->Append( ME_CmdSignalYellow, wxGetApp().getMenu("yellow") );
+        if( wSignal.getaspects( m_Props ) > 3 )
+          menuSgCmd->Append( ME_CmdSignalWhite, wxGetApp().getMenu("white") );
+        if( wSignal.getaspects( m_Props ) > 4 )
+          menuSgCmd->Append( ME_CmdSignalAspect, wxGetApp().getMenu("aspect") );
+        }
       menu.Append( -1, wxGetApp().getMenu("command"), menuSgCmd );
     }
     else if( StrOp.equals( wTurntable.name(), NodeOp.getName( m_Props ) ) ) {

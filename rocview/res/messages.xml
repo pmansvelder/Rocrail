@@ -31122,4 +31122,7 @@
   <Msg id="mdate">
     <en txt="M-Date" tip="Last serviced date."/>
   </Msg>
+  <Msg id="aspectnames">
+    <en txt="Aspect names"/>
+  </Msg>
 </Messages>

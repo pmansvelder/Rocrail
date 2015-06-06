@@ -311,6 +311,8 @@ public:
     wxRadioBox* m_Blank1;
     wxRadioBox* m_Blank2;
     wxSpinCtrl* m_BlankNr;
+    wxStaticText* m_labAspectNames;
+    wxTextCtrl* m_AspectNames;
     wxButton* m_Cancel;
     wxButton* m_OK;
     wxButton* m_Apply;

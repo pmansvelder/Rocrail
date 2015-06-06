@@ -7889,3 +7889,9 @@ msgstr ""
 msgid "Last serviced date."
 msgstr ""
 
+#. 
+# id="aspectnames"
+#, c-format
+msgid "Aspect names"
+msgstr ""
+

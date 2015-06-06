@@ -1960,7 +1960,8 @@
         <var name="dwarf" vt="bool" defval="false"/>
         <var name="symbolprefix" vt="string" defval="" range="*" remark="Optional symbol name prefix for multiaspect signals."/>
         <var name="usesymbolprefix" vt="bool" defval="flase" remark="Use symbol prefix for aspects less then 5."/>
-
+        <var name="aspectnames" vt="string" defval="" range="*" remark="CSV list of aspect names"/>
+        
         <!-- patterns -->
         <const name="use_patterns" vt="int" val="1"/>
         <const name="use_aspectnrs" vt="int" val="2"/>
