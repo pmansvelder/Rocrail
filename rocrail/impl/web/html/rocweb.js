@@ -2338,7 +2338,7 @@ function getTextImage(txNode, div) {
     else if( ori == "south" )
       div.innerHTML = "<div class='itemtextV' style='font-size:"+pointsize+"px;'>"+getTextFormat(txNode)+"</div>";
     else
-      div.innerHTML = "<div style='font-size:"+pointsize+"px; horizontal-align:left;'>" +getTextFormat(txNode)+ "</div>";
+      div.innerHTML = "<div class='itemtext' style='font-size:"+pointsize+"px;'>" +getTextFormat(txNode)+ "</div>";
   }
   
 }
@@ -4331,6 +4331,7 @@ function processPlan() {
        if( red != undefined && green != undefined && blue != undefined )
          newdiv.style.color = "rgb("+red+","+green+","+blue+")";
        newdiv.style.textAlign = 'left';
+       newdiv.style.verticalAlign = 'middle';
 
        setXY(txlist[i], zlevelMap[z], newdiv);
 
