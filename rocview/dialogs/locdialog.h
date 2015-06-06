@@ -488,6 +488,8 @@ public:
     wxTextCtrl* m_RunTime;
     wxStaticText* m_labMTime;
     wxTextCtrl* m_MTime;
+    wxStaticText* m_labMDate;
+    wxTextCtrl* m_MDate;
     wxCheckBox* m_UseShortID;
     wxStaticText* m_labThrottleNr;
     wxSpinCtrl* m_ThrottleNr;

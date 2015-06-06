@@ -31119,4 +31119,7 @@
     <sl txt="Meja"/>
     <sr_latin txt="Granica"/>
   </Msg>
+  <Msg id="mdate">
+    <en txt="M-Date" tip="Last serviced date."/>
+  </Msg>
 </Messages>

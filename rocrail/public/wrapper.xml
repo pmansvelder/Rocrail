@@ -2885,6 +2885,7 @@
         <var name="purchased" vt="string" defval="" remark="Date of purchase"/>
         <var name="runtime" vt="long" defval="0" remark="Auto runtime in seconds"/>
         <var name="mtime" vt="long" defval="0" remark="last maintenance in seconds"/>
+        <var name="mdate" vt="long" defval="0" remark="last maintenance date"/>
         <var name="mint" vt="int" defval="0" remark="maintenance interval in hours"/>
         <var name="evttimer" vt="int" defval="0" range="0-*" unit="ms" remark="event timer; loc should wait this time before processing the event"/>
         <var name="ent2incorr" vt="int" defval="100" range="1-*" unit="%" remark="Correction percentage for enter2in block timer"/>
