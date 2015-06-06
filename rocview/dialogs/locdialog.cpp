@@ -1973,16 +1973,16 @@ void LocDialog::CreateControls()
 
     wxBoxSizer* itemBoxSizer77 = new wxBoxSizer(wxVERTICAL);
     itemBoxSizer29->Add(itemBoxSizer77, 0, wxGROW|wxALL, 5);
-    wxFlexGridSizer* itemFlexGridSizer78 = new wxFlexGridSizer(0, 3, 0, 0);
-    itemBoxSizer77->Add(itemFlexGridSizer78, 0, wxGROW, 5);
-    m_Serviced = new wxButton( m_General_Panel, ID_LC_SERVICED, _("Serviced"), wxDefaultPosition, wxSize(100, 30), 0 );
-    itemFlexGridSizer78->Add(m_Serviced, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_Serviced = new wxButton( m_General_Panel, ID_LC_SERVICED, _("Serviced"), wxDefaultPosition, wxSize(-1, 30), 0 );
+    itemBoxSizer77->Add(m_Serviced, 0, wxALIGN_LEFT|wxALL, 5);
 
+    wxFlexGridSizer* itemFlexGridSizer79 = new wxFlexGridSizer(0, 2, 0, 0);
+    itemBoxSizer77->Add(itemFlexGridSizer79, 0, wxGROW, 5);
     m_labMInt = new wxStaticText( m_General_Panel, wxID_ANY, _("M-Int.:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer78->Add(m_labMInt, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer79->Add(m_labMInt, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_MInt = new wxSpinCtrl( m_General_Panel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(70, -1), wxSP_ARROW_KEYS, 0, 1000, 0 );
-    itemFlexGridSizer78->Add(m_MInt, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_MInt = new wxSpinCtrl( m_General_Panel, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 1000, 0 );
+    itemFlexGridSizer79->Add(m_MInt, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticLine* itemStaticLine82 = new wxStaticLine( m_General_Panel, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
     itemBoxSizer77->Add(itemStaticLine82, 0, wxGROW|wxALL, 5);
