@@ -3025,13 +3025,14 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
     if( wSwitch.getlocid( node )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( node )) )
       isLocked = False;
 
-    if( wxGetApp().getFrame()->isShowLocked() ) {
-      SetBackgroundColour( isLocked? Base::getRed():m_PlanPanel->GetBackgroundColour() );
+    wxColor bgcolor = m_PlanPanel->GetBackgroundColour();
+    if( (isLocked ) && wxGetApp().getFrame()->isShowLocked() ) {
+      bgcolor = Base::getRed();
     }
-
-    if( wxGetApp().getFrame()->isShowPending() ) {
-      SetBackgroundColour( isSet? m_PlanPanel->GetBackgroundColour():*wxRED );
+    if( !isSet && wxGetApp().getFrame()->isShowPending() ) {
+      bgcolor = *wxRED;
     }
+    SetBackgroundColour( bgcolor );
 
     if( addr > 0 && port > 0 ) {
       pada = (addr-1) * 4 + port;
