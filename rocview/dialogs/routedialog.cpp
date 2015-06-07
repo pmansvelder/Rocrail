@@ -100,7 +100,7 @@ BEGIN_EVENT_TABLE( RouteDialog, wxDialog )
     EVT_BUTTON( ID_SPEEDCOND_DEL, RouteDialog::OnSpeedcondDelClick )
     EVT_BUTTON( ID_SPEEDCOND_MODIFY, RouteDialog::OnSpeedcondModifyClick )
     EVT_BUTTON( ID_SPEEDCOND_IMPORT, RouteDialog::OnSpeedcondImportClick )
-    EVT_LISTBOX( ID_LISTBOX_COMMANDS, RouteDialog::OnListboxCommandsSelected )
+    EVT_LIST_ITEM_SELECTED( ID_LISTCTRL_COMMANDS, RouteDialog::OnListctrlCommandsSelected )
     EVT_BUTTON( ID_BUTTON_ST_DELETE, RouteDialog::OnButtonTurnoutDeleteClick )
     EVT_BUTTON( ID_BUTTON_ST_MODIFY, RouteDialog::OnButtonTurnoutModifyClick )
     EVT_COMBOBOX( ID_COMBOBOX_ST_SWITCH_ID, RouteDialog::OnComboboxStSwitchIdSelected )
@@ -354,6 +354,13 @@ void RouteDialog::initLabels() {
   ListOp.base.del(list);
 
   // Commands
+  m_Commands2->InsertColumn(0, wxGetApp().getMsg( "id" ), wxLIST_FORMAT_LEFT );
+  m_Commands2->InsertColumn(1, wxGetApp().getMsg( "command" ), wxLIST_FORMAT_LEFT );
+  m_Commands2->InsertColumn(2, wxGetApp().getMsg( "track" ), wxLIST_FORMAT_LEFT );
+  m_Commands2->InsertColumn(3, wxGetApp().getMsg( "lock" ), wxLIST_FORMAT_LEFT );
+  m_Commands2->InsertColumn(4, wxGetApp().getMsg( "reducespeed" ), wxLIST_FORMAT_LEFT );
+  m_Commands2->InsertColumn(5, wxGetApp().getMsg( "atfree" ), wxLIST_FORMAT_LEFT );
+
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
   m_Delete->SetLabel( wxGetApp().getMsg( "delete" ) );
   m_Modify->SetLabel( wxGetApp().getMsg( "modify" ) );
@@ -1084,17 +1091,35 @@ void RouteDialog::initCondList() {
 
 
 void RouteDialog::initCommands() {
-  m_Commands->Clear();
+  int idx = 0;
+  m_Commands2->DeleteAllItems();
+  m_SwCmd = NULL;
+
   iONode swcmd = wRoute.getswcmd( m_Props );
   while( swcmd != NULL ) {
-    char* str = StrOp.fmt( "%s %s %d %s",
-        wSwitchCmd.getid( swcmd ), wSwitchCmd.getcmd(swcmd), wSwitchCmd.gettrack(swcmd), wSwitchCmd.islock(swcmd)?"lock":"" );
-    m_Commands->Append( wxString(str,wxConvUTF8), swcmd );
-    StrOp.free( str );
+    m_Commands2->InsertItem( idx, wxString(wSwitchCmd.getid( swcmd ),wxConvUTF8) );
+    m_Commands2->SetItem( idx, 1, wxString(wSwitchCmd.getcmd( swcmd ),wxConvUTF8) );
+    m_Commands2->SetItem( idx, 2, wxString::Format(wxT("%d"), wSwitchCmd.gettrack(swcmd)) );
+    m_Commands2->SetItem( idx, 3, wxString::Format(wxT("%s"), wSwitchCmd.islock(swcmd)?"X":"") );
+    m_Commands2->SetItem( idx, 4, wxString::Format(wxT("%s"), wSwitchCmd.isreduceV(swcmd)?"X":"") );
+    m_Commands2->SetItem( idx, 5, wxString::Format(wxT("%s"), wSwitchCmd.isatfree(swcmd)?"X":"") );
+    m_Commands2->SetItemPtrData(idx, (wxUIntPtr)swcmd);
+
+    idx++;
     swcmd = wRoute.nextswcmd( m_Props, swcmd );
   }
   m_Delete->Enable( false );
   m_Modify->Enable( false );
+
+  // resize
+  for( int n = 0; n < 6; n++ ) {
+    m_Commands2->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+    int autoheadersize = m_Commands2->GetColumnWidth(n);
+    m_Commands2->SetColumnWidth(n, wxLIST_AUTOSIZE);
+    int autosize = m_Commands2->GetColumnWidth(n);
+    if(autoheadersize > autosize )
+      m_Commands2->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+  }
 
 }
 
@@ -1357,7 +1382,7 @@ bool RouteDialog::Create( wxWindow* parent, wxWindowID id, const wxString& capti
     m_SpeedCondImport = NULL;
     m_SpeedCondImportFrom = NULL;
     m_CommandPanel = NULL;
-    m_Commands = NULL;
+    m_Commands2 = NULL;
     m_Delete = NULL;
     m_Modify = NULL;
     m_LabelSwitchId = NULL;
@@ -1756,9 +1781,8 @@ void RouteDialog::CreateControls()
     wxBoxSizer* itemBoxSizer83 = new wxBoxSizer(wxVERTICAL);
     m_CommandPanel->SetSizer(itemBoxSizer83);
 
-    wxArrayString m_CommandsStrings;
-    m_Commands = new wxListBox( m_CommandPanel, ID_LISTBOX_COMMANDS, wxDefaultPosition, wxDefaultSize, m_CommandsStrings, wxLB_SINGLE|wxLB_ALWAYS_SB );
-    itemBoxSizer83->Add(m_Commands, 1, wxGROW|wxALL, 5);
+    m_Commands2 = new wxListCtrl( m_CommandPanel, ID_LISTCTRL_COMMANDS, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
+    itemBoxSizer83->Add(m_Commands2, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer85 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer83->Add(itemBoxSizer85, 0, wxGROW|wxALL, 5);
@@ -2294,11 +2318,7 @@ void RouteDialog::OnButtonTurnoutAddClick( wxCommandEvent& event )
 
   NodeOp.addChild( m_Props, swcmd );
 
-  char* str = StrOp.fmt( "%s %s %d %s",
-      wSwitchCmd.getid( swcmd ), wSwitchCmd.getcmd(swcmd), wSwitchCmd.gettrack(swcmd), wSwitchCmd.islock(swcmd)?"lock":"" );
-  m_Commands->Append( wxString(str,wxConvUTF8), swcmd );
-  StrOp.free( str );
-
+  initCommands();
 }
 
 /*!
@@ -2307,12 +2327,9 @@ void RouteDialog::OnButtonTurnoutAddClick( wxCommandEvent& event )
 
 void RouteDialog::OnButtonTurnoutDeleteClick( wxCommandEvent& event )
 {
-  if( m_Commands->GetSelection() != wxNOT_FOUND ) {
-    iONode swcmd = (iONode)m_Commands->GetClientData( m_Commands->GetSelection() );
-    if( swcmd != NULL ) {
-      m_Commands->Delete( m_Commands->GetSelection() );
-      NodeOp.removeChild( m_Props, swcmd );
-    }
+  if( m_SwCmd != NULL ) {
+    NodeOp.removeChild( m_Props, m_SwCmd );
+    initCommands();
   }
 }
 
@@ -2329,9 +2346,8 @@ void RouteDialog::OnCancelClick( wxCommandEvent& event )
  * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_COMMANDS
  */
 
-void RouteDialog::OnListboxCommandsSelected( wxCommandEvent& event )
+void RouteDialog::CommandsSelected( iONode swcmd )
 {
-  iONode swcmd = (iONode)m_Commands->GetClientData( m_Commands->GetSelection() );
   m_TrackNumber->Enable(false);
   if( swcmd != NULL ) {
     m_SwitchId->SetStringSelection( wxString(wSwitchCmd.getid(swcmd),wxConvUTF8));
@@ -2444,10 +2460,6 @@ void RouteDialog::OnListboxCommandsSelected( wxCommandEvent& event )
   }
 }
 
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
- */
 
 void RouteDialog::OnOkClick( wxCommandEvent& event )
 {
@@ -2562,11 +2574,12 @@ void RouteDialog::OnApplyClick( wxCommandEvent& event )
 
 void RouteDialog::OnButtonTurnoutModifyClick( wxCommandEvent& event )
 {
-  iONode swcmd = (iONode)m_Commands->GetClientData( m_Commands->GetSelection() );
+  iONode swcmd = m_SwCmd;
   if( swcmd != NULL ) {
     wSwitchCmd.setid(swcmd, m_SwitchId->GetStringSelection().mb_str(wxConvUTF8) );
     wSwitchCmd.setlock( swcmd, m_Lock->IsChecked() ? True:False );
     wSwitchCmd.setreduceV( swcmd, m_SwReduceV->IsChecked() ? True:False );
+    wSwitchCmd.setatfree( swcmd, m_AtFree->IsChecked() ? True:False );
 
     setSwCmd(swcmd);
 
@@ -3243,6 +3256,20 @@ void RouteDialog::OnSpeedcondImportClick( wxCommandEvent& event )
         initValues();
       }
     }
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_LISTCTRL_COMMANDS
+ */
+
+void RouteDialog::OnListctrlCommandsSelected( wxListEvent& event )
+{
+  int index = event.GetIndex();
+  m_SwCmd = (iONode)m_Commands2->GetItemData(index);
+  if( m_SwCmd != NULL ) {
+    CommandsSelected(m_SwCmd);
   }
 }
 

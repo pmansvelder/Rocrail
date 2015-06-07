@@ -2558,7 +2558,7 @@ function handleFunction(fn) {
     if( on == "true")
       div.style.backgroundColor = redBackground;
     else
-      div.style.backgroundColor = ''
+      div.style.backgroundColor = "";
   }
 }
 

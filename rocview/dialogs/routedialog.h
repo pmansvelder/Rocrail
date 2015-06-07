@@ -87,7 +87,7 @@ class wxGrid;
 #define ID_SPEEDCOND_MODIFY 10465
 #define ID_SPEEDCOND_IMPORT 10466
 #define ID_PANEL_ST_COMMANDS 10014
-#define ID_LISTBOX_COMMANDS 10015
+#define ID_LISTCTRL_COMMANDS 10485
 #define ID_BUTTON_ST_DELETE 10016
 #define ID_BUTTON_ST_MODIFY 10082
 #define ID_COMBOBOX_ST_SWITCH_ID 10000
@@ -149,6 +149,8 @@ class RouteDialog: public wxDialog, public BaseDialog
   iONode findSpeedCond(const char* desc);
   const char* getSpeedCondType();
   void setSpeedCondType(const char* condtype);
+  void CommandsSelected( iONode swcmd );
+
 
 public:
     /// Constructors
@@ -213,8 +215,8 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SPEEDCOND_IMPORT
     void OnSpeedcondImportClick( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_COMMANDS
-    void OnListboxCommandsSelected( wxCommandEvent& event );
+    /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_LISTCTRL_COMMANDS
+    void OnListctrlCommandsSelected( wxListEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ST_DELETE
     void OnButtonTurnoutDeleteClick( wxCommandEvent& event );
@@ -353,7 +355,7 @@ public:
     wxButton* m_SpeedCondImport;
     wxComboBox* m_SpeedCondImportFrom;
     wxPanel* m_CommandPanel;
-    wxListBox* m_Commands;
+    wxListCtrl* m_Commands2;
     wxButton* m_Delete;
     wxButton* m_Modify;
     wxStaticText* m_LabelSwitchId;
@@ -452,6 +454,7 @@ public:
     iOList m_CondList;
     bool m_bReadOnly;
     bool m_bStandalone;
+    iONode m_SwCmd;
 };
 
 #endif
