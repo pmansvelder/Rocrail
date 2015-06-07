@@ -170,7 +170,7 @@ function langDE() {
   help += "<tr><td>Licht<td>Bereitstellen für Regler"; 
   help += "<tr><td>Richtung<td>Stopp (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
-  document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-de";
+  document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-de";
   
   $('#colorSelect').selectmenu("refresh");
 }
@@ -259,7 +259,7 @@ function langEN() {
   help += "<tr><td>Lights<td>Dispatch"; 
   help += "<tr><td>Direction<td>Stop (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
-  document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
+  document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -347,7 +347,7 @@ function langNL() {
   help += "<tr><td>Licht<td>Klaarzetten voor handregelaar"; 
   help += "<tr><td>Richting<td>Stoppen (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
-  document.getElementById("helpLink").href = "http://wiki.rocrail.net/doku.php?id=rocweb:rocweb-en";
+  document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-en";
   $('#colorSelect').selectmenu("refresh");
 }
 
