@@ -1221,7 +1221,7 @@ function actionSensor(id)
     return;
 
   var div = document.getElementById(id);
-  div.style.backgroundColor = greenBackground;
+  div.style.backgroundColor = "red";
   
   fbid = id.replace("fb_","");
   trace("sensor action on " + fbid );
@@ -1255,7 +1255,7 @@ function onChangeText() {
 
 function actionSwitch(id) {
   var div = document.getElementById(id);
-  div.style.backgroundColor = greenBackground;
+  div.style.backgroundColor = "red";
   swid = id.replace("sw_","");
   sw = swMap[swid];
   trace("switch action on " + swid + " state=" + sw.getAttribute('state'));
@@ -1265,7 +1265,7 @@ function actionSwitch(id) {
 
 function actionOutput(id) {
   var div = document.getElementById(id);
-  div.style.backgroundColor = greenBackground;
+  div.style.backgroundColor = "red";
   coid = id.replace("co_","");
   co = coMap[coid];
   trace("output action on " + coid + " state=" + co.getAttribute('state'));
@@ -1300,7 +1300,7 @@ function actionOutputUp(id) {
 
 function actionSignal(id) {
   var div = document.getElementById(id);
-  div.style.backgroundColor = greenBackground;
+  div.style.backgroundColor = "red";
   sgid = id.replace("sg_","");
   sg = sgMap[sgid];
   trace("signal action on " + sgid + " state=" + sg.getAttribute('state'));
