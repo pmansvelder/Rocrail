@@ -7895,3 +7895,9 @@ msgstr ""
 msgid "Aspect names"
 msgstr ""
 
+#. 
+# id="atfree"
+#, c-format
+msgid "At free"
+msgstr ""
+

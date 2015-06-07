@@ -364,6 +364,7 @@ public:
     wxRadioBox* m_SwitchCmd;
     wxCheckBox* m_Lock;
     wxCheckBox* m_SwReduceV;
+    wxCheckBox* m_AtFree;
     wxPanel* m_SensorPanel;
     wxListBox* m_SensorList;
     wxComboBox* m_SensorCombo;

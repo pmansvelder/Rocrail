@@ -330,7 +330,7 @@ static void __checkAction( iORoute inst, const char* state ) {
 /*
  ***** _Public functions.
  */
-static Boolean __syncGo( iORoute inst ) {
+static Boolean __syncGo( iORoute inst, Boolean unlock ) {
   iORouteData o = Data(inst);
   iOModel model = AppOp.getModel(  );
   iONode sw = wRoute.getswcmd( o->props );
@@ -346,7 +346,18 @@ static Boolean __syncGo( iORoute inst ) {
     const char* swId  = wSwitchCmd.getid( sw );
     const char* swCmd = wSwitchCmd.getcmd( sw );
     Boolean     lock  = wSwitchCmd.islock(sw);
+    Boolean   atfree  = wSwitchCmd.isatfree(sw);
     Boolean   isState = False;
+
+    if( atfree != unlock ) {
+      sw = wRoute.nextswcmd( o->props, sw );
+      ThreadOp.sleep(0);
+      continue;
+    }
+
+    if( atfree ) {
+      lock = False;
+    }
 
     if( StrOp.equals( wSwitchCmd.cmd_track, swCmd ) ) {
       iOTT isw = ModelOp.getTurntable( model, swId );
@@ -507,15 +518,15 @@ static Boolean _go( iORoute inst ) {
 
   if( wCtrl.issyncroutes( wRocRail.getctrl(AppOp.getIni())) ) {
     if( MutexOp.trywait( __routeSem, wCtrl.getsyncroutetimeout( wRocRail.getctrl(AppOp.getIni())) ) ) {
-      ok = __syncGo(inst);
+      ok = __syncGo(inst, False);
       MutexOp.post( __routeSem );
     }
     else {
-      ok = __syncGo(inst);
+      ok = __syncGo(inst, False);
     }
   }
   else {
-    ok = __syncGo(inst);
+    ok = __syncGo(inst, False);
   }
 
   return ok;
@@ -1539,6 +1550,9 @@ static Boolean _unLock( iORoute inst, const char* lcid, const char** resblocks, 
     TraceOp.trc( name, force?TRCLEVEL_WARNING:TRCLEVEL_INFO, __LINE__, 9999, "unlocking route %s by %s", RouteOp.getId(inst), force?"**force**":lcid );
     if( !force )
       __checkAction(inst, "unlock");
+
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "route %s: run the commands at free", RouteOp.getId(inst) );
+    __syncGo(inst, True);
 
     if( unlockswitches )
       __unlockSwitches( inst, lcid, force );
