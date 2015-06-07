@@ -1203,6 +1203,8 @@ function actionSystemQuerySensors() {
 }
 
 function actionRoute(id) {
+  var div = document.getElementById(id);
+  div.style.backgroundColor = greenBackground;
   stid = id.replace("st_","");
   trace("route action on " + stid );
   st = stMap[stid];
@@ -1218,10 +1220,13 @@ function actionSensor(id)
   if( simsensors == "false" )
     return;
 
+  var div = document.getElementById(id);
+  div.style.backgroundColor = greenBackground;
+  
   fbid = id.replace("fb_","");
   trace("sensor action on " + fbid );
   fb = fbMap[fbid];
-  var cmd;
+  var cmd = "";
   if( "true" == fb.getAttribute('state') )
     cmd = "<fb controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" state=\"false\" id=\""+fbid+"\"/>";
   else
@@ -1249,6 +1254,8 @@ function onChangeText() {
 }
 
 function actionSwitch(id) {
+  var div = document.getElementById(id);
+  div.style.backgroundColor = greenBackground;
   swid = id.replace("sw_","");
   sw = swMap[swid];
   trace("switch action on " + swid + " state=" + sw.getAttribute('state'));
@@ -1257,6 +1264,8 @@ function actionSwitch(id) {
 }
 
 function actionOutput(id) {
+  var div = document.getElementById(id);
+  div.style.backgroundColor = greenBackground;
   coid = id.replace("co_","");
   co = coMap[coid];
   trace("output action on " + coid + " state=" + co.getAttribute('state'));
@@ -1290,6 +1299,8 @@ function actionOutputUp(id) {
 }
 
 function actionSignal(id) {
+  var div = document.getElementById(id);
+  div.style.backgroundColor = greenBackground;
   sgid = id.replace("sg_","");
   sg = sgMap[sgid];
   trace("signal action on " + sgid + " state=" + sg.getAttribute('state'));
@@ -2283,6 +2294,7 @@ function handleSensor(fb) {
   if( div != null ) {
     fbNode = fbMap[fb.getAttribute('id')];
     fbNode.setAttribute('state', fb.getAttribute('state'));
+    div.style.backgroundColor = "";
     div.style.backgroundImage = getSensorImage(fbNode);
     updateSensorOcc(fbNode);
   }
@@ -2365,6 +2377,7 @@ function handleOutput(co) {
   if( div != null ) {
     coNode = coMap[co.getAttribute('id')];
     coNode.setAttribute('state', co.getAttribute('state'));
+    div.style.backgroundColor = "";
     div.style.backgroundImage = getOutputImage(coNode);
   }
   else {
@@ -2381,6 +2394,7 @@ function handleSwitch(sw) {
     swNode.setAttribute('state', sw.getAttribute('state'));
     if( sw.getAttribute('set') != undefined )
       swNode.setAttribute('set', sw.getAttribute('set'));
+    div.style.backgroundColor = "";
     div.style.backgroundImage = getSwitchImage(swNode, div, true);
   }
   else {
@@ -2396,6 +2410,7 @@ function handleSignal(sg) {
     sgNode = sgMap[sg.getAttribute('id')];
     sgNode.setAttribute('state', sg.getAttribute('state'));
     sgNode.setAttribute('aspect', sg.getAttribute('aspect'));
+    div.style.backgroundColor = "";
     div.style.backgroundImage = getSignalImage(sgNode, div);
   }
   else {
@@ -2997,6 +3012,7 @@ function handleRoute(st) {
 
     var div = document.getElementById("st_"+st.getAttribute('id'));
     if( div != undefined ) {
+      div.style.backgroundColor = "";
       div.style.backgroundImage = getRouteImage(st);
     }
 
