@@ -31,14 +31,16 @@ function doWebSocket() {
     connected("websocket connection is established...");
   };
   ws.onerror = function (error) {
-    debug('WebSocket Error: ' + error);
+    alert('WebSocket Error: ' + error);
+    /*
     ws.close(1000, "<error/>");
     if( retryWebSocket < retryMax ) {
       doWebSocket();
       debug('WebSocket retry='+retryWebSocket);
     }
     else
-      fatal("Rocweb:\nWebSocket fatal error; Give up after "+retryMax+" retries.");
+      fatal("Rocweb:\nWebSocket fatal error; Give up after "+retryMax+" retries: "+error);
+    */
   };
   ws.onmessage = function (evt) 
   {
@@ -50,7 +52,7 @@ function doWebSocket() {
      // websocket is closed.
     if( event.code == 1006 && retryWebSocket < retryMax) {
       doWebSocket();
-      debug('WebSocket retry='+retryWebSocket);
+      alert('WebSocket retry='+retryWebSocket);
     }
     else if( event.code == 1001 ) {
       alert("Rocweb:\nWebSocket is closed: " + event.code + "\nEnd of Demo.");
