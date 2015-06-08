@@ -302,36 +302,39 @@ static Boolean _removeListener( iOSwitch inst, obj listener ) {
 }
 
 
-
-static void __checkAction( iOSwitch inst ) {
+static void __checkAction( iOSwitch inst, Boolean event ) {
 
   iOSwitchData data     = Data(inst);
   iOModel      model    = AppOp.getModel();
   iONode       swaction = wSwitch.getactionctrl( data->props );
 
   while( swaction != NULL) {
-    if( StrOp.len( wActionCtrl.getstate(swaction) ) == 0 ||
-        StrOp.equals(wActionCtrl.getstate(swaction), wSwitch.getstate(data->props) ) )
-    {
-      iOAction action = ModelOp.getAction( AppOp.getModel(), wActionCtrl.getid( swaction ));
-      if( action != NULL ) {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch action: %s", wActionCtrl.getid( swaction ));
+    Boolean atcmd = wActionCtrl.isatcmd(swaction);
+    Boolean atevt = wActionCtrl.isatevt(swaction);
 
-        if( wAction.getoid( swaction) == NULL || StrOp.len(wAction.getoid( swaction)) == 0 ) {
-          wActionCtrl.setlcid( swaction, data->lockedId );
-          if(data->lockedId != NULL && StrOp.len(data->lockedId) > 0 ) {
-            iOLoc lc = ModelOp.getLoc( AppOp.getModel(), data->lockedId, NULL, False );
-            if( lc != NULL ) {
-              wActionCtrl.setlcclass(swaction, LocOp.getClass(lc));
+    if( (!event && atcmd) || (event && atevt) ) {
+      if( StrOp.len( wActionCtrl.getstate(swaction) ) == 0 || StrOp.equals(wActionCtrl.getstate(swaction), wSwitch.getstate(data->props) ) )
+      {
+        iOAction action = ModelOp.getAction( AppOp.getModel(), wActionCtrl.getid( swaction ));
+        if( action != NULL ) {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch action: %s", wActionCtrl.getid( swaction ));
+
+          if( wAction.getoid( swaction) == NULL || StrOp.len(wAction.getoid( swaction)) == 0 ) {
+            wActionCtrl.setlcid( swaction, data->lockedId );
+            if(data->lockedId != NULL && StrOp.len(data->lockedId) > 0 ) {
+              iOLoc lc = ModelOp.getLoc( AppOp.getModel(), data->lockedId, NULL, False );
+              if( lc != NULL ) {
+                wActionCtrl.setlcclass(swaction, LocOp.getClass(lc));
+              }
             }
           }
+          ActionOp.exec(action, swaction);
         }
-        ActionOp.exec(action, swaction);
       }
-    }
-    else {
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s action state does not match: [%s-%s]",
-          wSwitch.getid(data->props), wActionCtrl.getstate( swaction ), wSwitch.getstate(data->props) );
+      else {
+        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s action state does not match: [%s-%s]",
+            wSwitch.getid(data->props), wActionCtrl.getstate( swaction ), wSwitch.getstate(data->props) );
+      }
     }
     swaction = wSwitch.nextactionctrl( data->props, swaction );
   } /* end loop */
@@ -1306,7 +1309,7 @@ static Boolean __doCmd( iOSwitch inst, iONode nodeA, Boolean update, int extra, 
     }
   }
 
-  __checkAction( inst );
+  __checkAction( inst, False );
 
   /* both strings can be compared by pointer because they both are of qualifier const */
   if( prevstate != state ) {
@@ -1718,7 +1721,7 @@ static void _event( iOSwitch inst, iONode nodeC ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch [%s] field state=%s(%s) gatevalue=%d inv=%d state=%s",
         SwitchOp.getId(inst), wSwitch.getstate( data->props), wSwitch.getstate(nodeC), wSwitch.getgatevalue(nodeC), inv, state );
 
-    __checkAction( inst );
+    __checkAction( inst, True );
 
     /* Broadcast to clients. Node4 */
     {

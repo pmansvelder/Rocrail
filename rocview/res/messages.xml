@@ -31128,4 +31128,10 @@
   <Msg id="atfree">
     <en txt="At free"/>
   </Msg>
+  <Msg id="atcommand">
+    <en txt="At command"/>
+  </Msg>
+  <Msg id="atevent">
+    <en txt="At event"/>
+  </Msg>
 </Messages>

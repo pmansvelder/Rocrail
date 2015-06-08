@@ -7901,3 +7901,15 @@ msgstr ""
 msgid "At free"
 msgstr ""
 
+#. 
+# id="atcommand"
+#, c-format
+msgid "At command"
+msgstr ""
+
+#. 
+# id="atevent"
+#, c-format
+msgid "At event"
+msgstr ""
+
