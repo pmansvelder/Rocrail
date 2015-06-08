@@ -51,6 +51,8 @@
 
 static int instCnt = 0;
 
+static void __checkAction( iOSignal inst, Boolean event );
+
 /*
  ***** OBase functions.
  */
@@ -313,6 +315,8 @@ static void _event( iOSignal inst, iONode nodeC ) {
 
 
   }
+
+  __checkAction( inst, True );
 
   /* Broadcast to clients. */
   if( update ) {
@@ -1130,7 +1134,7 @@ static Boolean __process2AspectsAsSwitchCmd( iOSignal inst, const char* state ) 
 }
 
 
-static void __checkAction( iOSignal inst ) {
+static void __checkAction( iOSignal inst, Boolean event ) {
 
   iOSignalData data     = Data(inst);
   iOModel      model    = AppOp.getModel();
@@ -1139,10 +1143,12 @@ static void __checkAction( iOSignal inst ) {
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "signal action check for state: [%s]", wSignal.getstate(data->props));
   while( sgaction != NULL) {
-      if( StrOp.len( wActionCtrl.getstate(sgaction) ) == 0 ||
-          StrOp.equals(wActionCtrl.getstate(sgaction), wSignal.getstate(data->props) ) )
-      {
+    Boolean atcmd = wActionCtrl.isatcmd(sgaction);
+    Boolean atevt = wActionCtrl.isatevt(sgaction);
 
+    if( (!event && atcmd) || (event && atevt) ) {
+      if( StrOp.len( wActionCtrl.getstate(sgaction) ) == 0 || StrOp.equals(wActionCtrl.getstate(sgaction), wSignal.getstate(data->props) ) )
+      {
         iOAction action = ModelOp.getAction( AppOp.getModel(), wActionCtrl.getid( sgaction ));
         if( action != NULL ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "signal action: %s", wActionCtrl.getid( sgaction ));
@@ -1168,6 +1174,7 @@ static void __checkAction( iOSignal inst ) {
         TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s action state does not match: [%s-%s]",
             wSignal.getid(data->props), wActionCtrl.getstate( sgaction ), wSignal.getstate(data->props) );
       }
+    }
     sgaction = wSignal.nextactionctrl( data->props, sgaction );
   }
 
@@ -1370,7 +1377,7 @@ static Boolean __doCmd( iOSignal inst, iONode nodeA, Boolean update ) {
     }
 
     if( ok )
-      __checkAction( inst );
+      __checkAction( inst, False );
   }
 
   /* Broadcast to clients. Node6 */
