@@ -90,6 +90,8 @@ class wxGrid;
 #define ID_LISTCTRL_COMMANDS 10485
 #define ID_BUTTON_ST_DELETE 10016
 #define ID_BUTTON_ST_MODIFY 10082
+#define ID_ROUTE_CMD_UP 10486
+#define ID_ROUTE_CMD_DOWN 10487
 #define ID_COMBOBOX_ST_SWITCH_ID 10000
 #define ID_BUTTON_ST_ADD 10004
 #define ID_RADIOBOX_ST_SW_CMD 10018
@@ -223,6 +225,12 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ST_MODIFY
     void OnButtonTurnoutModifyClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROUTE_CMD_UP
+    void OnRouteCmdUpClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ROUTE_CMD_DOWN
+    void OnRouteCmdDownClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_COMBOBOX_ST_SWITCH_ID
     void OnComboboxStSwitchIdSelected( wxCommandEvent& event );
@@ -358,6 +366,8 @@ public:
     wxListCtrl* m_Commands2;
     wxButton* m_Delete;
     wxButton* m_Modify;
+    wxButton* m_CmdUp;
+    wxButton* m_CmdDown;
     wxStaticText* m_LabelSwitchId;
     wxComboBox* m_SwitchId;
     wxStaticText* m_labTrackNumber;
@@ -455,6 +465,7 @@ public:
     bool m_bReadOnly;
     bool m_bStandalone;
     iONode m_SwCmd;
+    int m_SwCmdIdx;
 };
 
 #endif
