@@ -451,6 +451,7 @@ static void _event( iOFBack inst, iONode nodeC ) {
   iOFBackData data = Data(inst);
   Boolean hasListener = False;
   Boolean state = wFeedback.isstate( nodeC );
+  Boolean stateDidChange = True;
 
   if( TraceOp.getLevel(NULL) & TRCLEVEL_DEBUG ) {
     char* strNode = (char*)NodeOp.base.toString( nodeC );
@@ -490,7 +491,8 @@ static void _event( iOFBack inst, iONode nodeC ) {
     }
   }
 
-
+  if( data->state == state )
+    stateDidChange = False;
   data->state = state;
 
   if( wFeedback.getfbtype(data->props) == wFeedback.fbtype_wheelcounter ) {
@@ -589,7 +591,8 @@ static void _event( iOFBack inst, iONode nodeC ) {
   }
 
   __ctcAction( inst );
-  __checkAction( inst );
+  if( stateDidChange )
+    __checkAction( inst );
 
   if(!hasListener) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "fb[%s] (%s) ident=%s val=%d count=%d has no listener...",
