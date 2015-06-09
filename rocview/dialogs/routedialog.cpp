@@ -3054,12 +3054,13 @@ void RouteDialog::OnHelpClick( wxCommandEvent& event )
   switch( m_Notebook->GetSelection() ) {
   case 0: wxGetApp().openLink( "route-index" ); break;
   case 1: wxGetApp().openLink( "route-gen" ); break;
-  case 2: wxGetApp().openLink( "route-turnouts" ); break;
-  case 3: wxGetApp().openLink( "route-sensors" ); break;
-  case 4: wxGetApp().openLink( "route-perm" ); break;
-  case 5: wxGetApp().openLink( "route-cond" ); break;
-  case 6: wxGetApp().openLink( "route" ); break; // Position
-  case 7: wxGetApp().openLink( "route-wiring" ); break;
+  case 2: wxGetApp().openLink( "route-speed" ); break;
+  case 3: wxGetApp().openLink( "route-turnouts" ); break;
+  case 4: wxGetApp().openLink( "route-sensors" ); break;
+  case 5: wxGetApp().openLink( "route-perm" ); break;
+  case 6: wxGetApp().openLink( "route-cond" ); break;
+  case 7: wxGetApp().openLink( "route" ); break; // Position
+  case 8: wxGetApp().openLink( "route-wiring" ); break;
   default: wxGetApp().openLink( "route-index" ); break;
   }
 }
