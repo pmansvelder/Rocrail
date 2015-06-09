@@ -1113,11 +1113,12 @@ function speedUpdate(value) {
   if( lc == undefined ) return;
 
   var V_max = parseInt(lc.getAttribute('V_max'));
-
+  var sec = document.getElementById("secondaryAddress").value;
+  var usesecaddr = (sec=="on") ? true:false;
   trace("Speed: " + value + " for loco " + locoSelected);
   lc.setAttribute('V', value);
   trace("value="+value+" V_max="+V_max);
-  var cmd = "<lc controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+value+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
+  var cmd = "<lc controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" usesecaddr=\""+usesecaddr+"\" throttleid=\""+throttleid+"\" id=\""+locoSelected+"\" V=\""+value+"\" dir=\""+lc.getAttribute('dir')+"\"/>";
   updateDir();
   sendCommand(cmd);
 }
