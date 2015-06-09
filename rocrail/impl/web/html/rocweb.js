@@ -114,6 +114,7 @@ function langDE() {
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Zeige Fahrstraßen bei Weichen";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Alle Geschwindigkeitsstufen verwenden";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Geschwindigkeitstasten";
+  document.getElementById("labOptionBinState").innerHTML = "BinState Bedienung";
   document.getElementById("labOptionShowBlockID").innerHTML = "Zeige Block Kennungen";
   document.getElementById("labOptionShowTrainID").innerHTML = "Zeige Zug Kennungen";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Zeige Lok-Bild im Block";
@@ -203,6 +204,7 @@ function langEN() {
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Show routes on switches";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Use all speed steps";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Speed buttons";
+  document.getElementById("labOptionBinState").innerHTML = "BinState control";
   document.getElementById("labOptionShowBlockID").innerHTML = "Show block IDs";
   document.getElementById("labOptionShowTrainID").innerHTML = "Show train ID";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Show loco image in block";
@@ -291,6 +293,7 @@ function langNL() {
   document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Toon rijwegen over wissels";
   document.getElementById("labOptionAllSpeedSteps").innerHTML = "Gebruik alle snelheid stappen";
   document.getElementById("labOptionSpeedButtons").innerHTML = "Snelheid knoppen";
+  document.getElementById("labOptionBinState").innerHTML = "BinState bediening";
   document.getElementById("labOptionShowBlockID").innerHTML = "Toon blok ID's";
   document.getElementById("labOptionShowTrainID").innerHTML = "Toon treinstel ID";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Toon lok afbeelding in het blok";
@@ -740,6 +743,8 @@ function openOptions() {
   $('#optionAllSpeedSteps').prop('checked', allspeedsteps=="true"?true:false).checkboxradio('refresh');
   var speedbuttons = localStorage.getItem("speedbuttons");
   $('#optionSpeedButtons').prop('checked', speedbuttons=="true"?true:false).checkboxradio('refresh');
+  var binstate = localStorage.getItem("binstate");
+  $('#optionBinState').prop('checked', binstate=="true"?true:false).checkboxradio('refresh');
   var showblockid = localStorage.getItem("showblockid");
   $('#optionShowBlockID').prop('checked', showblockid=="true"?true:false).checkboxradio('refresh');
   var showtrainid = localStorage.getItem("showtrainid");
@@ -1064,6 +1069,22 @@ function onFunction(id, nr) {
   var mask = 1 << (nr-1);
   var on = fx&mask?"false":"true";
   var cmd = "<fn controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+locoSelected+"\" throttleid=\""+throttleid+"\" fnchanged=\""+nr+"\" group=\""+group+"\" f"+nr+"=\""+on+"\"/>"
+  sendCommand(cmd);
+}
+
+function onBinState(bindata) {
+  lc = lcMap[locoSelected];
+  if(lc == undefined)
+    lc = carMap[locoSelected];
+  if( lc == undefined ) 
+    return;
+  
+  var nr  = document.getElementById("binStateAddress").value;
+  var sec = document.getElementById("secondaryAddress").value;
+  var decaddr = lc.getAttribute("secaddr");
+  if( sec == "off" )
+    decaddr = lc.getAttribute("addr");
+  var cmd = "<binstate controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+locoSelected+"\" throttleid=\""+throttleid+"\"  nr=\""+nr+"\" data=\""+bindata+"\" addr=\""+decaddr+"\"/>"
   sendCommand(cmd);
 }
 
@@ -1813,8 +1834,11 @@ function onOptionAllSpeedSteps() {
 
 function onOptionSpeedButtons() {
   var optionSpeedButtons = document.getElementById("optionSpeedButtons");
+  var optionBinState = document.getElementById("optionBinState");
   localStorage.setItem("speedbuttons", optionSpeedButtons.checked ? "true":"false");
+  localStorage.setItem("binstate", optionBinState.checked ? "true":"false");
   trace("option speedbuttons = "+ optionSpeedButtons.checked );
+  document.getElementById("binStateDiv").style.display = optionBinState.checked ? 'block':'none';
   document.getElementById("speedSliderDiv").style.display = optionSpeedButtons.checked ? 'none':'block';
   document.getElementById("speedButtonsDiv").style.display = optionSpeedButtons.checked ? 'block':'none';
 }
@@ -3240,6 +3264,10 @@ function processResponse() {
             document.getElementById("speedSliderDiv").style.display = 'none';
             document.getElementById("speedButtonsDiv").style.display = 'block';
           }
+          var binstate = localStorage.getItem("binstate");
+          document.getElementById("binStateDiv").style.display = 'none';
+          if( binstate != undefined && binstate == "true" )
+            document.getElementById("binStateDiv").style.display = 'block';
           
           trace("selected loco = " + locoSelected);
 
