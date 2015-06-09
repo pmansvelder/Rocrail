@@ -21,7 +21,7 @@
 
 
   <div id="header" data-role="header" data-position="fixed" style="overflow:hidden;">
-    <h1 id="title">Rocweb</h1>
+    <h1 id="title" onclick="openClock()">Rocweb</h1>
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
       <a href="#" id="headerThrottle" title="Throttle" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
       <a href="#" id="headerPower" title="Power" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
@@ -77,6 +77,17 @@
       <div class="ui-block-a"><a id="labTTGoto" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onTurntableGotoTrack()">Go</a></div>
       <div class="ui-block-b"><select name="TrackTTSelect" id="trackTTSelect"></select></div>
     </div>
+  </div>
+  </div>
+
+  <div data-role="popup" id="popupClock" class="ui-popup" data-theme="a">
+  <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+  <div style="padding:10px 10px;">
+  <label id="clockTitle">Clock</label>
+  <div class="ui-grid-a">
+    <div class="ui-block-a"><a id="labClockFreeze" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClock(false)">Freeze</a></div>
+    <div class="ui-block-b"><a id="labClockResume" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClock(true)">Resume</a></div>
+  </div>
   </div>
   </div>
 

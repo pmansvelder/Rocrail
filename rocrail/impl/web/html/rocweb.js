@@ -172,6 +172,9 @@ function langDE() {
   help += "<tr><td>Richtung<td>Stopp (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-de";
+  document.getElementById("clockTitle").innerHTML = "<b>Modelluhr</b>";
+  document.getElementById("labClockFreeze").innerHTML = "Anhalten";
+  document.getElementById("labClockResume").innerHTML = "Fortsetzen";
   
   $('#colorSelect').selectmenu("refresh");
 }
@@ -262,6 +265,10 @@ function langEN() {
   help += "<tr><td>Direction<td>Stop (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-en";
+  document.getElementById("clockTitle").innerHTML = "<b>Fastclock</b>";
+  document.getElementById("labClockFreeze").innerHTML = "Freeze";
+  document.getElementById("labClockResume").innerHTML = "Resume";
+
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -351,6 +358,10 @@ function langNL() {
   help += "<tr><td>Richting<td>Stoppen (V=0)"; 
   document.getElementById("helpTable").innerHTML = help;
   document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-en";
+  document.getElementById("clockTitle").innerHTML = "<b>Model klok</b>";
+  document.getElementById("labClockFreeze").innerHTML = "Stoppen";
+  document.getElementById("labClockResume").innerHTML = "Starten";
+
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -367,6 +378,11 @@ function openInfo()
     $('#popupMenu').unbind( "panelclose" );
     $( "#popupInfo" ).popup( "open" );
     });
+}
+
+function openClock()
+{
+  $( "#popupClock" ).popup( "open" );
 }
 
 function onLocoImage() {
@@ -1955,6 +1971,12 @@ function onConsistView() {
     });
 }
 
+
+function onClock(resume) {
+  $( "#popupClock" ).popup( "close" );
+  var cmd = "<clock cmd=\""+(resume?"go":"freeze")+"\"/>";
+  sendCommand(cmd);
+}
 
 function onConsistAdd() {
   trace("consist add");
