@@ -261,7 +261,7 @@
   </div>
 
   
-  <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a" data-dismissible="false">
+  <div data-role="popup" id="popupThrottle" class="ui-popup" data-theme="a" data-dismissible="false" style="max-width:360px !important;">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
     <div style="padding:5px 5px;">
     <center><img id="locoImage" src="noimg.png" height="50px" onclick="onLocoImage()"/></center>
@@ -295,10 +295,10 @@
     </div>
     
     <div id="binStateDiv" class="ui-grid-c">
-      <div class="ui-block-a"><input data-clear-btn="false" style="height:100%;" name="binStateAddress" id="binStateAddress" value="0" type="number"></div>
-      <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="binStateSet" onclick="onBinState(1)">Set</a></div>
-      <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all" id="binStateReset" onclick="onBinState(0)">Reset</a></div>
-      <div class="ui-block-d"><select name="secondaryAddress" id="secondaryAddress" data-role="slider" data-theme="a"><option value="off">Pri</option><option value="on">Sec</option></select></div>
+      <div class="ui-block-a"><input data-clear-btn="false" data-mini="true" name="binStateAddress" id="binStateAddress" value="0" type="number"></div>
+      <div class="ui-block-b"><a href="#" style="font-size:14px;" data-mini="true" class="ui-shadow ui-btn ui-corner-all" id="binStateSet" onclick="onBinState(1)">Set</a></div>
+      <div class="ui-block-c"><a href="#" style="font-size:14px;" data-mini="true" class="ui-shadow ui-btn ui-corner-all" id="binStateReset" onclick="onBinState(0)">Reset</a></div>
+      <div class="ui-block-d"><select name="secondaryAddress" id="secondaryAddress" data-role="slider" data-mini="true" data-theme="a"><option value="off">P</option><option value="on">S</option></select></div>
     </div>
     
     <div id="speedSliderDiv" class="full-width-slider">
