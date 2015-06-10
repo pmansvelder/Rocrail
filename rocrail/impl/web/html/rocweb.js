@@ -1293,9 +1293,10 @@ function onChangeText() {
 
 function actionSwitch(id) {
   var div = document.getElementById(id);
-  div.style.backgroundColor = "red";
   swid = id.replace("sw_","");
   sw = swMap[swid];
+  if( parseInt(sw.getAttribute("addr1")) != 0 || parseInt(sw.getAttribute("port1")) != 0 ) 
+    div.style.backgroundColor = "red";
   trace("switch action on " + swid + " state=" + sw.getAttribute('state'));
   var cmd = "<sw controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"flip\" id=\""+swid+"\" manualcmd=\"true\"/>";
   sendCommand(cmd);
@@ -1303,9 +1304,10 @@ function actionSwitch(id) {
 
 function actionOutput(id) {
   var div = document.getElementById(id);
-  div.style.backgroundColor = "red";
   coid = id.replace("co_","");
   co = coMap[coid];
+  if( parseInt(co.getAttribute("addr")) != 0 || parseInt(co.getAttribute("port")) != 0 ) 
+    div.style.backgroundColor = "red";
   trace("output action on " + coid + " state=" + co.getAttribute('state'));
   var toggleswitch = co.getAttribute('toggleswitch');
   if( toggleswitch == undefined || toggleswitch == "true" ) {
@@ -1338,9 +1340,10 @@ function actionOutputUp(id) {
 
 function actionSignal(id) {
   var div = document.getElementById(id);
-  div.style.backgroundColor = "red";
   sgid = id.replace("sg_","");
   sg = sgMap[sgid];
+  if( parseInt(sg.getAttribute("addr")) != 0 || parseInt(sg.getAttribute("port1")) != 0 ) 
+    div.style.backgroundColor = "red";
   trace("signal action on " + sgid + " state=" + sg.getAttribute('state'));
   var cmd = "<sg controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"flip\" id=\""+sgid+"\"/>";
   sendCommand(cmd);
@@ -1941,7 +1944,6 @@ function updateSpeed(lc) {
   slider.value = V;
   speedUpdateVal = V;
   $("#speedSlider").slider("refresh");
-
 }
 
 
@@ -2555,6 +2557,9 @@ function handleLoco(lc) {
       }
     }
   }
+
+  var V = parseInt(lc.getAttribute('V'));
+  speedUpdateVal = V;
 
   if( ! $(popupThrottle).parent().hasClass('ui-popup-hidden') ) {
     if( lc.getAttribute('id') == locoSelected ) {
