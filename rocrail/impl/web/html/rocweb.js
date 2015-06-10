@@ -1975,8 +1975,9 @@ function initThrottleStatus() {
       fromTo = " " + blockid + " >> " + destblockid;
 
     var train = lc.getAttribute('train');
-    if( train != undefined && train.length > 0 )
-      train = "_" + train;
+    if( train != undefined && train.length > 0 ) {
+      train = "_" + train + "("+lc.getAttribute('trainlen')+","+lc.getAttribute('trainweight')+")";
+    }
     else
       train = "";
     locoStatus.style.backgroundColor = modeColor;
@@ -2641,6 +2642,11 @@ function handleLoco(lc) {
     lcNode.setAttribute('train', newtrain);
     trainchanged = true;
   }
+  if( lc.getAttribute('trainlen') != undefined )
+    lcNode.setAttribute('trainlen', lc.getAttribute('trainlen'));
+  if( lc.getAttribute('trainweight') != undefined )
+    lcNode.setAttribute('trainweight', lc.getAttribute('trainweight'));
+
   
   if( lc.getAttribute('consist') != undefined )
     lcNode.setAttribute('consist', lc.getAttribute('consist'));
