@@ -438,6 +438,26 @@ function onLocoSelected(sel) {
     locoSelectedList[locoSelectedIdx] = locoSelected;
     localStorage.setItem("locoSelected"+locoSelectedIdx, locoSelected);
   }
+  else if( locoSelectAction == "trainaddcar" ) {
+    var lc = lcMap[locoSelected];
+    var cmd = "<operator controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+lc.getAttribute('train')+"\" cmd=\"addcar\" carids=\""+sel+"\" />";
+    sendCommand(cmd);
+  }
+  else if( locoSelectAction == "trainleavecar" ) {
+    var lc = lcMap[locoSelected];
+    var cmd = "<operator controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+lc.getAttribute('train')+"\" cmd=\"removecar\" carids=\""+sel+"\" />";
+    sendCommand(cmd);
+  }
+  else if( locoSelectAction == "trainemptycar" ) {
+    var lc = lcMap[locoSelected];
+    var cmd = "<operator controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+lc.getAttribute('train')+"\" cmd=\"emptycar\" carids=\""+sel+"\" />";
+    sendCommand(cmd);
+  }
+  else if( locoSelectAction == "trainloadcar" ) {
+    var lc = lcMap[locoSelected];
+    var cmd = "<operator controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+lc.getAttribute('train')+"\" cmd=\"loadcar\" carids=\""+sel+"\" />";
+    sendCommand(cmd);
+  }
   else if( locoSelectAction == "consistadd" ) {
     var master = lcMap[locoSelected];
     var slaves = master.getAttribute('consist');
@@ -2322,6 +2342,10 @@ function getString(s) {
     if( s == "master" ) return "Hauptlok";
     if( s == "slaves" ) return "Mehrfachtraktion";
     if( s == "guests" ) return "Gäste";
+    if( s == "trainaddcar" ) return "Wagen hinzufügen";
+    if( s == "trainleavecar" ) return "Wagen entfernen";
+    if( s == "trainloadcar" ) return "Wagen beladen";
+    if( s == "trainemptycar" ) return "Wagen leeren";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -2341,6 +2365,10 @@ function getString(s) {
     if( s == "master" ) return "Master loco";
     if( s == "slaves" ) return "Slave locos";
     if( s == "guests" ) return "Guests";
+    if( s == "trainaddcar" ) return "Add car";
+    if( s == "trainleavecar" ) return "Leave car";
+    if( s == "trainloadcar" ) return "Load car";
+    if( s == "trainemptycar" ) return "Empty car";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -2360,6 +2388,10 @@ function getString(s) {
     if( s == "master" ) return "Tractie hoofd loc";
     if( s == "slaves" ) return "Tractie locs";
     if( s == "guests" ) return "Gasten";
+    if( s == "trainaddcar" ) return "Wagon toevoegen";
+    if( s == "trainleavecar" ) return "Wagon achterlaten";
+    if( s == "trainloadcar" ) return "Wagon beladen";
+    if( s == "trainemptycar" ) return "Wagon legen";
   }
 
   return s;
@@ -3025,6 +3057,14 @@ function handleStageBlock(sb) {
   }
 }
 
+function handleOperator(operator) {
+  var cmd = operator.getAttribute('cmd');
+  trace("operator: "+cmd);
+  op = operatorMap[operator.getAttribute('id')];
+  op.setAttribute('carids', operator.getAttribute('carids'));
+}
+
+
 function handleClock(clock) {
   var cmd = clock.getAttribute('cmd');
   trace("clock: "+cmd);
@@ -3244,6 +3284,8 @@ function evaluateEvent(xmlStr) {
     handleModel(parseString(xmlStr));
   else if( xmlStr.indexOf("<clock") == 0 )
     handleClock(parseString(xmlStr));
+  else if( xmlStr.indexOf("<operator") == 0 )
+    handleOperator(parseString(xmlStr));
   else if( xmlStr.indexOf("<debug") == 0 )
     trace(xmlStr);
   else if( xmlStr.indexOf("<alert") == 0 ) {
@@ -4156,7 +4198,7 @@ function initLocoList(action) {
           var car = carMap[key];
           var carid = car.getAttribute('id');
           if( carids.indexOf(carid) == -1 ) {
-            addLocoToList(car, null, firstCat);
+            addLocoToList(car, getString(action), firstCat);
             firstCat = false;
           }
         }
@@ -4168,7 +4210,7 @@ function initLocoList(action) {
           var car = carMap[key];
           var carid = car.getAttribute('id');
           if( carids.indexOf(carid) != -1 ) {
-            addLocoToList(car, null, firstCat);
+            addLocoToList(car, getString(action), firstCat);
             firstCat = false;
           }
         }
