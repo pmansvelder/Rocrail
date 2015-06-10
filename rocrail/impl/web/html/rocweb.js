@@ -165,8 +165,8 @@ function langDE() {
   help += "<tr><td>F1-F4<td>Fahrregler-Auswahl";
   help += "<tr><td>F5<td>Einen Wagen zum Zug hinzufügen";
   help += "<tr><td>F6<td>Einen Wagen an der augenblicklichen Position abstellen";
-  help += "<tr><td>F7<td>Einen Wagen vom Zug beladen";
-  help += "<tr><td>F8<td>Einen Wagen vom Zug entladen";
+  help += "<tr><td>F7<td>Einen Wagen des Zuges beladen";
+  help += "<tr><td>F8<td>Einen Wagen des Zuges entladen";
   help += "<tr><td>F9<td>Mehrfachtraktions-Lok hinzufügen";
   help += "<tr><td>F10<td>Mehrfachtraktions-Lok entfernen";
   help += "<tr><td>F11<td>Zeige komplette Mehrfachtraktion inkl. Haupt-Lok";
