@@ -855,6 +855,10 @@ $(function(){
   $("#RE").bind("taphold", tapholdREHandler);
   $("#FG").bind("taphold", tapholdFGHandler);
   $("#F0").bind("taphold", tapholdF0Handler);
+  $("#F5").bind("taphold", tapholdF5Handler);
+  $("#F6").bind("taphold", tapholdF6Handler);
+  $("#F7").bind("taphold", tapholdF7Handler);
+  $("#F8").bind("taphold", tapholdF8Handler);
   $("#F13").bind("taphold", tapholdF13Handler);
   $("#F14").bind("taphold", tapholdF14Handler);
   $("#direction").bind("taphold", tapholdDirectionHandler);
@@ -903,6 +907,30 @@ $(function(){
     initThrottle();
     updateDir();
     updateFunctionLabels();
+  }
+  function tapholdF5Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F5: Add car");
+    onTrainCar("trainaddcar");
+  }
+  function tapholdF6Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F6: Leave car");
+    onTrainCar("trainleavecar");
+  }
+  function tapholdF7Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F7: Load car");
+    onTrainCar("trainloadcar");
+  }
+  function tapholdF8Handler(e) {
+    e.preventDefault();
+    tapholdFkey = 1;
+    trace("taphold F8: Empty car");
+    onTrainCar("trainemptycar");
   }
   function tapholdREHandler(e) {
     e.preventDefault();
@@ -1914,8 +1942,13 @@ function initThrottleStatus() {
     if( blockid != undefined && blockid.length > 0 && destblockid != undefined && destblockid.length > 0 )
       fromTo = " " + blockid + " >> " + destblockid;
 
+    var train = lc.getAttribute('train');
+    if( train != undefined && train.length > 0 )
+      train = "_" + train;
+    else
+      train = "";
     locoStatus.style.backgroundColor = modeColor;
-    locoStatus.innerHTML = lc.getAttribute('id') + " [" + mode + "]" + fromTo;
+    locoStatus.innerHTML = lc.getAttribute('id') + train + " [" + mode + "]" + fromTo;
     locoDescription.innerHTML = lc.getAttribute('desc');
     var consist = lc.getAttribute('consist');
     if( consist == undefined || consist.length == 0 ) {
@@ -1979,6 +2012,28 @@ function onClock(resume) {
   var cmd = "<clock cmd=\""+(resume?"go":"freeze")+"\"/>";
   sendCommand(cmd);
 }
+
+function onTrainCar(action) {
+  trace("train: "+action);
+  
+  var lc = lcMap[locoSelected];
+  var train = lc.getAttribute('train');
+  if( train == undefined || train.length == 0 ) {
+    return;
+  }
+
+  initLocoList(action);
+
+  trace("close throttle");
+  prevPopup = "popupThrottle;"
+  $( "#popupThrottle" ).popup( "close" );
+  trace("open loco select");
+  $('#popupThrottle').on("popupafterclose", function(){
+    $('#popupThrottle').unbind( "popupafterclose" );
+    $( "#popupLocoSelect" ).popup( "open" );
+    });
+}
+
 
 function onConsistAdd() {
   trace("consist add");
@@ -2581,6 +2636,8 @@ function handleFunction(fn) {
     lc = carMap[fn.getAttribute('id')];
   
   if( lc == undefined)
+    return;
+  if( fn.getAttribute('fnchanged') == undefined)
     return;
   
   var fnchanged = parseInt(fn.getAttribute('fnchanged'));
@@ -4086,6 +4143,40 @@ function initLocoList(action) {
       addCarToList(car);
     }
   }
+
+  else if( action == "trainaddcar" || action == "trainleavecar" || action == "trainloadcar" || action == "trainemptycar" ) {
+    var lc = lcMap[locoSelected];
+    var train = lc.getAttribute('train');
+    var operator = operatorMap[train];
+    if( operator != undefined ) {
+      if( action == "trainaddcar" ) {
+        var op = operatorMap[train];
+        var carids = op.getAttribute('carids');
+        for (var key in carMap) {
+          var car = carMap[key];
+          var carid = car.getAttribute('id');
+          if( carids.indexOf(carid) == -1 ) {
+            addLocoToList(car, null, firstCat);
+            firstCat = false;
+          }
+        }
+      }
+      else if( action == "trainleavecar" || action == "trainloadcar" || action == "trainemptycar" ) {
+        var op = operatorMap[train];
+        var carids = op.getAttribute('carids');
+        for (var key in carMap) {
+          var car = carMap[key];
+          var carid = car.getAttribute('id');
+          if( carids.indexOf(carid) != -1 ) {
+            addLocoToList(car, null, firstCat);
+            firstCat = false;
+          }
+        }
+      }
+      
+    }
+  }  
+
   else if( action == "consistadd" || action == "consistdel" || action == "consistshow" ) {
     var master = lcMap[locoSelected];
     var masterid = master.getAttribute('id');
