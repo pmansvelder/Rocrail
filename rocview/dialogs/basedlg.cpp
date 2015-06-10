@@ -487,6 +487,8 @@ void BaseDialog::appendItem( iONode Item) {
   if( m_ShowTime ) {
     long runtime = wLoc.getruntime(Item);
     long mtime   = wLoc.getmtime(Item);
+    long deltatime = runtime-mtime;
+
     char mdate[32] = {'\0'};
     if( wLoc.getmdate( Item ) > 0 ) {
       long ltime = wLoc.getmdate( Item );
@@ -496,7 +498,8 @@ void BaseDialog::appendItem( iONode Item) {
 
     m_ItemList->SetItem( index, m_colRTime, wxString::Format(_T("%d:%02d.%02d"), (int)(runtime/3600), (int)((runtime%3600)/60), (int)((runtime%3600)%60)));
     m_ItemList->SetColumnWidth(m_colRTime, wxLIST_AUTOSIZE);
-    m_ItemList->SetItem( index, m_colMTime, wxString::Format(_T("%d:%02d.%02d"), (int)(mtime/3600), (int)((mtime%3600)/60), (int)((mtime%3600)%60)));
+    m_ItemList->SetItem( index, m_colMTime, wxString::Format(_T("%d:%02d.%02d (%d:%02d.%02d)"),
+        (int)(mtime/3600), (int)((mtime%3600)/60), (int)((mtime%3600)%60), (int)(deltatime/3600), (int)((deltatime%3600)/60), (int)((deltatime%3600)%60) ) );
     m_ItemList->SetColumnWidth(m_colMTime, wxLIST_AUTOSIZE);
     m_ItemList->SetItem( index, m_colMDate, wxString(mdate, wxConvUTF8) );
     m_ItemList->SetColumnWidth(m_colMDate, wxLIST_AUTOSIZE);
