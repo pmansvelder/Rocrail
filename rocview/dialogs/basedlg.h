@@ -54,6 +54,7 @@ public:
   int m_colType;
   int m_colRTime;
   int m_colMTime;
+  int m_colMDate;
   bool m_sortID;
   bool m_sortIID;
   bool m_sortAddr;
@@ -65,6 +66,7 @@ public:
   bool m_sortType;
   bool m_sortRTime;
   bool m_sortMTime;
+  bool m_sortMDate;
   bool m_longaddr;
 };
 
