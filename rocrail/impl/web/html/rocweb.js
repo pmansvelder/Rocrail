@@ -158,7 +158,7 @@ function langDE() {
   document.getElementById("labSlaveCode").innerHTML = "Eingeschränkter Zugangscode";
   document.getElementById("locoSelectTitle").innerHTML = "Lokomotiven";
   document.getElementById("helpTitle").innerHTML = "<b>Hilfe</b>";
-  var help  = "<tr><th>Taste<th>Lange klick Funktion";
+  var help  = "<tr><th>Taste<th>Lange Klick-Funktion";
   help += "<tr><td>Lokbild<td>Öffnet das Block-Menü, wenn die ausgewählte Lok im Block ist.";
   help += "<tr><td>RE<td>Gleisspannung AUS";
   help += "<tr><td>FG<td>Nothalt";

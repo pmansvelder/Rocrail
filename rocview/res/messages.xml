@@ -116,7 +116,7 @@
     <all txt="Suomi" tip="Finnish"/>
   </Msg>
   <Msg id="lang_be">
-    <all txt="Беларусь" tip="Belarusian"/>
+    <all txt="Беларуская" tip="Belarusian"/>
   </Msg>
   <Msg id="changelang">
     <en txt="Restart to change language."/>
