@@ -3071,7 +3071,7 @@ static void __checkConsist( iOLoc inst, iONode nodeA, Boolean byEvent ) {
     while( StrTokOp.hasMoreTokens( consist ) ) {
       const char* tok = StrTokOp.nextToken( consist );
       iOLoc consistloc = ModelOp.getLoc( AppOp.getModel(), tok, NULL, False );
-      if( consistloc != NULL ) {
+      if( consistloc != NULL && consistloc != inst ) {
         iONode consistcmd = (iONode)NodeOp.base.clone( nodeA );
 
         /* check consist details */
