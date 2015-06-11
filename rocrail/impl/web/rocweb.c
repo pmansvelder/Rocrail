@@ -43,6 +43,8 @@
 #include "rocs/public/mime64.h"
 #include "rocs/public/system.h"
 
+#include "rocutils/public/fileutils.h"
+
 #include <errno.h>
 
 
@@ -322,6 +324,18 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
     png = StrOp.fmt("%s/%s", wWebClient.getimgpath(data->ini), cleanFname);
   else
     png = StrOp.fmt("%s/%s", wWebClient.getwebpath(data->ini), cleanFname);
+
+  if( !FileOp.exist( png ) ) {
+    /* Do a recursive search. */
+    char* foundfilename = FileUtilsOp.findFile(wWebClient.getwebpath(data->ini), cleanFname);
+    if( foundfilename != NULL && FileOp.exist( foundfilename ) ) {
+      StrOp.free(png);
+      png = foundfilename;
+    }
+    else
+      StrOp.free(foundfilename);
+  }
+
 
   if( FileOp.exist( png ) ) {
     long size = FileOp.fileSize( png );
