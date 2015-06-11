@@ -4179,6 +4179,16 @@ function getMobileCategory(lc) {
   return lcCat;
 }
 
+function isCarFree(carid) {
+  for (var key in operatorMap) {
+    var op = operatorMap[key];
+    var carids = op.getAttribute('carids');
+    if( carids.indexOf(carid) != -1 )
+      return false;
+  }
+  return true;
+}
+
 function initLocoList(action) {
   trace("initLocoList: "+action);
   locoSelectAction = action;
@@ -4215,7 +4225,7 @@ function initLocoList(action) {
         for (var key in carMap) {
           var car = carMap[key];
           var carid = car.getAttribute('id');
-          if( carids.indexOf(carid) == -1 ) {
+          if( isCarFree(carid) ) {
             addLocoToList(car, getString(action), firstCat);
             firstCat = false;
           }
