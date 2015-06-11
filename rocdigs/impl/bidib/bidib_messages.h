@@ -43,6 +43,7 @@
 //            2013-01-21           added FEATURE_GEN_NOTIFY_DRIVE_MANUAL
 //            2013-02-10 V0.09 kw  added addtional BST_STATE values
 //            2013-02-21 V0.10 kw  added MSG_BOOST_DIAGNOSTIC, BIDIB_ERR_SUBPAKET
+//                                 removed MSG_BOOST_CURRENT
 //            2013-03-25 V0.11 kw  added MSG_LOGON_REJECTED
 //            2013-06-04       kw  added FEATURE_CTRL_STRETCH_DIMM
 //            2013-06-17       kw  added FEATURE_GEN_WATCHDOG, BIDIB_ERR_OVERRUN
@@ -76,6 +77,8 @@
 //            2015-02-12       ab  renamed: SPORT, LPORT, ANALOG to SWITCH, LIGHT, ANALOGOUT (in porttypes, features, structs)
 //                                 renamed OUTTYPE to PORTTYPE, added INPUT
 //            2015-02-28       kw  added MSG_LC_CONFIGX_GET_ALL, added BIDIB_ERR_LC_PORT_*
+//            2015-06-01       ab  added MSG_CS_RCPLUS, MSG_CS_RCPLUS_ACK, MSG_BM_RCPLUS, added RCPLUS Opcodes
+//            2015-06-02 V0.19 kw  added FEATURE_*_RCPLUS_AVAILABLE
 //
 //===============================================================================
 //
@@ -94,6 +97,7 @@
 //            7. System Messages, Serial Link, BiDiBus
 //            8. Booster and Command Station Handling (useful defines)
 //            9. IO-Control and Macro (useful defines)
+//           10. Defines for RailcomPlus
 //
 //===============================================================================
 //
@@ -209,8 +213,9 @@
 #define MSG_CS_DRIVE            (MSG_DGEN + 0x04)       // 1:addrl, 2:addrh, 3:format, 4:active, 5:speed, 6:1-4, 7:5-12, 8:13-20, 9:21-28
 #define MSG_CS_ACCESSORY        (MSG_DGEN + 0x05)       // 1:addrl, 2:addrh, 3:data(aspect), 4:time_l, 5:time_h
 #define MSG_CS_BIN_STATE        (MSG_DGEN + 0x06)       // 1:addrl, 2:addrh, 3:bin_statl, 4:bin_stath
-#define MSG_CS_POM              (MSG_DGEN + 0x07)       // 1..4:addr, 5:MID, 6:opcode, 7:cv_l, 8:cv_h, 9:cv_x, 10..13: data
-                                                        // 1:did[0], 2:did[1], 3:did[2], 4:did[4]
+#define MSG_CS_POM              (MSG_DGEN + 0x07)       // 1..4:addr/did, 5:MID, 6:opcode, 7:cv_l, 8:cv_h, 9:cv_x, 10..13: data
+#define MSG_CS_RCPLUS           (MSG_DGEN + 0x08)       // 1:opcode, [2..n:parameter]
+
 //-- service mode
 #define MSG_CS_PROG             (MSG_DGEN + 0x0F)       // 1:opcode, 2:cv_l, 3:cv_h, 4: data
 
@@ -254,30 +259,31 @@
 #define MSG_FEATURE_COUNT       (MSG_UFC + 0x02)        // 1:count
 #define MSG_VENDOR              (MSG_UFC + 0x03)        // 1..n: length,'string',length,'value'
 #define MSG_VENDOR_ACK          (MSG_UFC + 0x04)        // 1:ack
-#define MSG_STRING              (MSG_UFC + 0x05)        // 1:Nspace, 2:ID, 3:Strsize, 4...n: string
+#define MSG_STRING              (MSG_UFC + 0x05)        // 1:namespace, 2:id, 3:stringsize, 4...n: string
 
-//-- occupancy messages
+//-- occupancy and bidi-detection messages
 #define MSG_UBM                 (MSG_USTRM + 0x20)
 #define MSG_BM_OCC              (MSG_UBM + 0x00)        // 1:mnum
 #define MSG_BM_FREE             (MSG_UBM + 0x01)        // 1:mnum
 #define MSG_BM_MULTIPLE         (MSG_UBM + 0x02)        // 1:base, 2:size; 3..n:data
 #define MSG_BM_ADDRESS          (MSG_UBM + 0x03)        // 1:mnum, [2,3:addr_l, addr_h]
-#define MSG_BM_ACCESSORY        (MSG_UBM + 0x04)        // 1:mnum, [2,3:addr_l, addr_h]
+#define MSG_BM_ACCESSORY        (MSG_UBM + 0x04)        // (reserved, do not use yet) 1:mnum, [2,3:addr_l, addr_h]
 #define MSG_BM_CV               (MSG_UBM + 0x05)        // 1:addr_l, 2:addr_h, 3:cv_addr_l, 4:cv_addr_h, 5:cv_dat
 #define MSG_BM_SPEED            (MSG_UBM + 0x06)        // 1:addr_l, 2:addr_h, 3:speed_l, 4:speed_h (from loco)
 #define MSG_BM_CURRENT          (MSG_UBM + 0x07)        // 1:mnum, 2:current
-#define MSG_BM_BLOCK_CV         (MSG_UBM + 0x08)        //
+#define MSG_BM_BLOCK_CV         (MSG_UBM + 0x08)        // 1..4:decuid, 5:decvid, 6:offset, 7:idxl, 8:idxh, 9..12:data
 #define MSG_BM_CONFIDENCE       (MSG_UBM + 0x09)        // 1:void, 2:freeze, 3:signal
 #define MSG_BM_DYN_STATE        (MSG_UBM + 0x0a)        // 1:mnum, 2:addr_l, 3:addr_h, 4:dyn_num, 5:value (from loco)
+#define MSG_BM_RCPLUS           (MSG_UBM + 0x0b)        // 1:mnum, 2:opcode, [3..n:parameter]
 
 //-- booster messages
 #define MSG_UBST                (MSG_USTRM + 0x30)
 #define MSG_BOOST_STAT          (MSG_UBST + 0x00)       // 1:state (see defines below)
-#define MSG_BOOST_CURRENT       (MSG_UBST + 0x01)       // 1:current
+#define MSG_BOOST_CURRENT       (MSG_UBST + 0x01)       // (deprecated by DIAGNOSTIC with V0.10) 1:current
 #define MSG_BOOST_DIAGNOSTIC    (MSG_UBST + 0x02)       // [1:enum, 2:value],[3:enum, 4:value] ...
-#define MSG_NEW_DECODER         (MSG_UBST + 0x03)       // 1:mnum, 2: dec_vid, 3,4,5,6:dec_uid
-#define MSG_ID_SEARCH_ACK       (MSG_UBST + 0x04)       // 1:mnum, 2: s_vid, 3,4,5,6:s_uid[0..3],  7: dec_vid, 8,9,10,11:dec_uid
-#define MSG_ADDR_CHANGE_ACK     (MSG_UBST + 0x05)       // 1:mnum, 2: dec_vid, 3,4,5,6:dec_uid, 7:addr_l, 8:addr_h
+//                              (MSG_UBST + 0x03)       // was reserved for MSG_NEW_DECODER (deprecated) 1:mnum, 2: dec_vid, 3..6:dec_uid
+//                              (MSG_UBST + 0x04)       // was reserved for MSG_ID_SEARCH_ACK (deprecated) 1:mnum, 2: s_vid, 3..6:s_uid[0..3], 7: dec_vid, 8..11:dec_uid
+//                              (MSG_UBST + 0x05)       // was reserved for MSG_ADDR_CHANGE_ACK (deprecated) 1:mnum, 2: dec_vid, 3..6:dec_uid, 7:addr_l, 8:addr_h
 
 //-- accessory control messages
 #define MSG_UACC                (MSG_USTRM + 0x38)
@@ -303,7 +309,7 @@
 
 //-- dcc control messages
 #define MSG_UGEN                (MSG_USTRM + 0x60)
-#define MSG_CS_ALLOC_ACK        (MSG_UGEN + 0x00)       // noch genauer zu klaeren
+#define MSG_CS_ALLOC_ACK        (MSG_UGEN + 0x00)       // noch genauer zu klaeren / to be specified
 #define MSG_CS_STATE            (MSG_UGEN + 0x01)
 #define MSG_CS_DRIVE_ACK        (MSG_UGEN + 0x02)
 #define MSG_CS_ACCESSORY_ACK    (MSG_UGEN + 0x03)       // 1:addrl, 2:addrh, 3:data
@@ -311,6 +317,7 @@
 #define MSG_CS_DRIVE_MANUAL     (MSG_UGEN + 0x05)       // 1:addrl, 2:addrh, 3:format, 4:active, 5:speed, 6:1-4, 7:5-12, 8:13-20, 9:21-28
 #define MSG_CS_DRIVE_EVENT      (MSG_UGEN + 0x06)       // 1:addrl, 2:addrh, 3:eventtype, Parameters
 #define MSG_CS_ACCESSORY_MANUAL (MSG_UGEN + 0x07)       // 1:addrl, 2:addrh, 3:data
+#define MSG_CS_RCPLUS_ACK       (MSG_UGEN + 0x08)       // 1:opcode, [2..n:parameter]
 
 //-- service mode
 #define MSG_CS_PROG_STATE       (MSG_UGEN + 0x0F)       // 1: state, 2:time, 3:cv_l, 4:cv_h, 5:data
@@ -607,6 +614,7 @@ typedef struct                              // t_bidib_cs_prog_state
 //
 //===============================================================================
 
+//-- occupancy
 #define FEATURE_BM_SIZE                     0   // number of occupancy detectors
 #define FEATURE_BM_ON                       1   // occupancy detection on/off
 #define FEATURE_BM_SECACK_AVAILABLE         2   // secure ack available
@@ -618,7 +626,8 @@ typedef struct                              // t_bidib_cs_prog_state
 #define FEATURE_BM_ADDR_DETECT_AVAILABLE    8   // detector ic capable to detect loco address
 #define FEATURE_BM_ADDR_DETECT_ON           9   // address detection enabled
 #define FEATURE_BM_ADDR_AND_DIR            10   // address detection contains direction
-#define FEATURE_BM_ISTSPEED_AVAILABLE      11   // speed messages enabled
+//-- bidi detection
+#define FEATURE_BM_ISTSPEED_AVAILABLE      11   // speed messages available
 #define FEATURE_BM_ISTSPEED_INTERVAL       12   // speed update interval
 #define FEATURE_BM_CV_AVAILABLE            13   // CV readback available
 #define FEATURE_BM_CV_ON                   14   // CV readback enabled
@@ -632,17 +641,18 @@ typedef struct                              // t_bidib_cs_prog_state
 #define FEATURE_BST_AMPERE_ADJUSTABLE      21   // booster output current is adjustable
 #define FEATURE_BST_AMPERE                 22   // booster output current value (special coding)
 #define FEATURE_BST_CURMEAS_INTERVAL       23   // current update interval
-#define FEATURE_BST_CV_AVAILABLE           24   // CV readback available
-#define FEATURE_BST_CV_ON                  25   // CV readback enabled
+#define FEATURE_BST_CV_AVAILABLE           24   // (deprecated, now synonym to 13) CV readback available
+#define FEATURE_BST_CV_ON                  25   // (deprecated, now synonym to 14) CV readback enabled
 #define FEATURE_BST_INHIBIT_AUTOSTART      26   // 1: Booster does no automatic BOOST_ON when DCC at input wakes up.
-#define FEATURE_BST_INHIBIT_LOCAL_ONOFF    27   // 1: Booster annouces local STOP/GO key stroke only, no local action
+#define FEATURE_BST_INHIBIT_LOCAL_ONOFF    27   // 1: Booster announces local STOP/GO key stroke only, no local action
 
-//-- booster/occupancy2
+//-- bidi detection
 #define FEATURE_BM_DYN_STATE_INTERVAL      28   // transmit interval of MSG_BM_DYN_STATE (unit 100ms)
+#define FEATURE_BM_RCPLUS_AVAILABLE        29   // 1: RailcomPlus messages available
 
 //-- accessory
 #define FEATURE_ACCESSORY_COUNT            40   // number of objects
-#define FEATURE_ACCESSORY_SURVEILLED       41   // 1: annouce if operated outside bidib
+#define FEATURE_ACCESSORY_SURVEILLED       41   // 1: announce if operated outside bidib
 #define FEATURE_ACCESSORY_MACROMAPPED      42   // 1..n: no of accessory aspects are mapped to macros
 
 //-- control
@@ -684,6 +694,7 @@ typedef struct                              // t_bidib_cs_prog_state
 #define FEATURE_GEN_LOK_LOST_DETECT        108  // 1: command station annouces lost loco
 #define FEATURE_GEN_NOTIFY_DRIVE_MANUAL    109  // 1: dcc gen reports manual operation
 #define FEATURE_GEN_START_STATE            110  // 1: power up state, 0=off, 1=on
+#define FEATURE_GEN_RCPLUS_AVAILABLE       111  // 1: supports rcplus messages
 
 #define FEATURE_STRING_SIZE                252  // length of user strings, 0:n.a (default); allowed 8..24
 #define FEATURE_RELEVANT_PID_BITS          253  // how many bits of 'vendor32' are relevant for PID (default 16, LSB aligned)
@@ -952,7 +963,7 @@ typedef struct                              // t_bidib_cs_prog_state
 #define BIDIB_MSYS_BEGIN_CRITCAL    252     // current macro will ignore stop requests
 #define BIDIB_MSYS_END_CRITCAL      251     // current macro can be stopped by a stop (default)
 
-#define BIDIB_MSYS_FLAG_QUERY       250     // deprecated
+#define BIDIB_MSYS_FLAG_QUERY       250     // deprecated (by QUERY0 and QUERY1)
 #define BIDIB_MSYS_FLAG_QUERY1      250     // query flag and pause as long as flag is not set (advance if set)
 #define BIDIB_MSYS_FLAG_SET         249     // set flag
 #define BIDIB_MSYS_FLAG_CLEAR       248     // reset flag
@@ -982,6 +993,85 @@ typedef struct                              // t_bidib_cs_prog_state
 //                  from input
 // stop condition:
 
+//===============================================================================
+//
+// 10. Defines for RailcomPlus
+//
+//===============================================================================
 
-#endif // __BIDIB_MESSAGES_H__
+// phase generally in bit 0
+#define RC_P0           (0<<0)
+#define RC_P1           (1<<0)
+// type generally in bit 1
+#define RC_TYPE_LOCO    (0<<1)
+#define RC_TYPE_ACC     (1<<1)
 
+// Note: in bidib, we have little endian; on DCC, the order is big endian.
+typedef struct
+  {
+    unsigned char mun_0;        // manufacturer unique number
+    unsigned char mun_1;
+    unsigned char mun_2;
+    unsigned char mun_3;
+    unsigned char mid;          // manufacturer ID (like DCC vendor ID)
+  } t_rcplus_unique_id;         // as Central ID or Decoder ID
+
+typedef struct
+  {
+    t_rcplus_unique_id cid;
+    unsigned char sid;          // session number
+  } t_rcplus_tid;
+
+// a) for MSG_CS_RCPLUS
+
+#define RC_BIND                     0 // 2:dec_mun[0],3:dec_mun[1],4:dec_mun[2],5:dec_mun[3], 6:dec_mid, 7:new_addrl, 8:new_addrh
+#define RC_PING                     1 // 2:interval
+#define RC_GET_TID                  2 // -
+#define RC_SET_TID                  3 // 2:cid[0],3:cid[1],4:cid[2],5:cid[3],6:cid[4],7:sid
+#define RC_PING_ONCE                4 // -
+#define RC_FIND                     6 // 2:dec_mun[0],3:dec_mun[1],4:dec_mun[2],5:dec_mun[3], 6:dec_mid
+// expanded (redundant aliases):
+#define RC_PING_ONCE_P0             (RC_PING_ONCE | RC_P0)
+#define RC_PING_ONCE_P1             (RC_PING_ONCE | RC_P1)
+#define RC_FIND_P0                  (RC_FIND | RC_P0)
+#define RC_FIND_P1                  (RC_FIND | RC_P1)
+
+// b) for MSG_CS_RCPLUS_ACK
+
+#define RC_BIND                     0 // 2:data, 3:dec_mun[0],4:dec_mun[1],5:dec_mun[2],6:dec_mun[3], 7:dec_mid
+#define RC_PING                     1 // 2:interval
+#define RC_TID                      2 // 2:cid[0],3:cid[1],4:cid[2],5:cid[3],6:cid[4], 7:sid
+#define RC_PING_ONCE                4 // 2:data
+#define RC_FIND                     6 // 2:data, 3:dec_mun[0],4:dec_mun[1],5:dec_mun[2],6:dec_mun[3], 7:dec_mid
+// expanded (redundant aliases):
+#define RC_PING_ONCE_P0             (RC_PING_ONCE | RC_P0)
+#define RC_PING_ONCE_P1             (RC_PING_ONCE | RC_P1)
+#define RC_FIND_P0                  (RC_FIND | RC_P0)
+#define RC_FIND_P1                  (RC_FIND | RC_P1)
+
+// c) for MSG_BM_RCPLUS
+
+#define RC_BIND_ACCEPTED            (0 << 2)                // 3:dec_mun[0],4:dec_mun[1],5:dec_mun[2],6:dec_mun[3], 7:dec_mid, 8:addr_l, 9:addr_h
+#define RC_COLLISION                (1 << 2)
+#define RC_PING_COLLISION           (RC_COLLISION | (0<<1)) // -
+#define RC_FIND_COLLISION           (RC_COLLISION | (1<<1)) // 3:dec_mun[0],4:dec_mun[1],5:dec_mun[2],6:dec_mun[3], 7:dec_mid (of find command)
+#define RC_PONG_OKAY                (2 << 2)                // 3:dec_mun[0],4:dec_mun[1],5:dec_mun[2],6:dec_mun[3], 7:dec_mid (of found decoder)
+#define RC_PONG_NEW                 (3 << 2)                // 3:dec_mun[0],4:dec_mun[1],5:dec_mun[2],6:dec_mun[3], 7:dec_mid (of found decoder)
+// expanded (redundant aliases):
+#define RC_BIND_ACCEPTED_LOCO       (RC_BIND_ACCEPTED  | RC_TYPE_LOCO        ) // no phase!
+#define RC_BIND_ACCEPTED_ACCESSORY  (RC_BIND_ACCEPTED  | RC_TYPE_ACC         ) // no phase!
+#define RC_PING_COLLISION_P0        (RC_PING_COLLISION                | RC_P0) // no type!
+#define RC_PING_COLLISION_P1        (RC_PING_COLLISION                | RC_P1) // no type!
+#define RC_FIND_COLLISION_P0        (RC_FIND_COLLISION                | RC_P0) // no type!
+#define RC_FIND_COLLISION_P1        (RC_FIND_COLLISION                | RC_P1) // no type!
+#define RC_PONG_OKAY_LOCO_P0        (RC_PONG_OKAY      | RC_TYPE_LOCO | RC_P0)
+#define RC_PONG_OKAY_LOCO_P1        (RC_PONG_OKAY      | RC_TYPE_LOCO | RC_P1)
+#define RC_PONG_OKAY_ACCESSORY_P0   (RC_PONG_OKAY      | RC_TYPE_ACC  | RC_P0)
+#define RC_PONG_OKAY_ACCESSORY_P1   (RC_PONG_OKAY      | RC_TYPE_ACC  | RC_P1)
+#define RC_PONG_NEW_LOCO_P0         (RC_PONG_NEW       | RC_TYPE_LOCO | RC_P0)
+#define RC_PONG_NEW_LOCO_P1         (RC_PONG_NEW       | RC_TYPE_LOCO | RC_P1)
+#define RC_PONG_NEW_ACCESSORY_P0    (RC_PONG_NEW       | RC_TYPE_ACC  | RC_P0)
+#define RC_PONG_NEW_ACCESSORY_P1    (RC_PONG_NEW       | RC_TYPE_ACC  | RC_P1)
+
+
+#endif // __BIDIB_MESSAGES_H__	

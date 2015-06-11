@@ -1,7 +1,7 @@
 /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -3392,33 +3392,15 @@ static Boolean __processBidiMsg(iOBiDiB bidib, byte* msg, int size) {
     break;
   }
 
-  case MSG_NEW_DECODER:
-  { // MNUM DECVID DECUID[4]
-    int port = pdata[0] & 0xFF;
-    int vid = pdata[1] & 0xFF;
-    int uid = pdata[2] + pdata[3]*0xFF + pdata[4]*0xFFFF + pdata[5]*0xFFFFFF;
-    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "new decoder on port %d VID=%s(%d) UID=%d", port, m_Vendor[vid], vid, uid);
+  case MSG_CS_RCPLUS_ACK:
+  {
+    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "MSG_CS_RCPLUS_ACK");
     break;
   }
 
-  case MSG_ID_SEARCH_ACK:
-  { // MNUM, S_VID, S_UID[4], DECVID, DECUID[4]
-    int port = pdata[0] & 0xFF;
-    int svid = pdata[1] & 0xFF;
-    int suid = pdata[2] + pdata[3]*0xFF + pdata[4]*0xFFFF + pdata[5]*0xFFFFFF;
-    int vid = pdata[6] & 0xFF;
-    int uid = pdata[7] + pdata[8]*0xFF + pdata[9]*0xFFFF + pdata[10]*0xFFFFFF;
-    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "decoder search ack on port %d VID=%s(%d) UID=%d", port, m_Vendor[vid], vid, uid);
-    break;
-  }
-
-  case MSG_ADDR_CHANGE_ACK:
-  { // MNUM, DECVID, DECUID[4], NADDRL, NADDRH
-    int port = pdata[0] & 0xFF;
-    int vid = pdata[1] & 0xFF;
-    int uid = pdata[2] + pdata[3]*0xFF + pdata[4]*0xFFFF + pdata[5]*0xFFFFFF;
-    int addr = pdata[6] + pdata[7]*0xFF;
-    TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "new address report on port %d VID=%s(%d) UID=%d address=%d", port, m_Vendor[vid], vid, uid, addr);
+  case MSG_BM_RCPLUS:
+  {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MSG_BM_RCPLUS");
     break;
   }
 
