@@ -357,6 +357,18 @@ static int __sortMTime(obj* _a, obj* _b)
       return order?1:-1;
     return 0;
 }
+static int __sortMDate(obj* _a, obj* _b)
+{
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    long timeA = wLoc.getmdate( a );
+    long timeB = wLoc.getmdate( b );
+    if( timeA > timeB )
+      return order?-1:1;
+    if( timeA < timeB )
+      return order?1:-1;
+    return 0;
+}
 
 
 void BaseDialog::fillIndex( iONode Items, bool sort) {
@@ -431,6 +443,11 @@ void BaseDialog::fillIndex( iONode Items, bool sort) {
     if(sort) m_sortMTime = !m_sortMTime;
     order = m_sortMTime;
     ListOp.sort(sortlist, &__sortMTime);
+  }
+  else if( m_SortCol == m_colMDate ) {
+    if(sort) m_sortMDate = !m_sortMDate;
+    order = m_sortMDate;
+    ListOp.sort(sortlist, &__sortMDate);
   }
 
   size = ListOp.size( sortlist );
