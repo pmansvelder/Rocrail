@@ -392,7 +392,7 @@
     <zh_CN txt="仅"/>
     <sr_latin txt="samo"/>
     <sl txt="samo"/>
-    <be txt="толькі"/>
+    <be txt="выключна"/>
   </Msg>
   <Msg id="stop">
     <de txt="Stopp" tip="Lok anhalten"/>
@@ -427,7 +427,7 @@
     <zh_CN txt="停止" tip="机车停车"/>
     <sr_latin txt="Stop" tip="Zaustavi lokomotivu"/>
     <sl txt="Ustavi" tip="Ustavi lokomotivo"/>
-    <be txt="Спыніць" tip="Спыніць лякаматыў"/>
+    <be txt="Спыненьне" tip="Спыніць лякаматыў"/>
   </Msg>
   <Msg id="station">
     <de txt="Bahnhof"/>
@@ -807,7 +807,7 @@
     <zh_CN txt="编辑控制面板" tip="编辑铁路网图板"/>
     <sr_latin txt="Prepravi panel" tip="Prepravi panel pruge"/>
     <sl txt="Urejevalni panel" tip="Panle za urejanje tirov"/>
-    <be txt="Рэдагаваць панэль" tip="Рэдагаваць панэль рэйкавага шляху."/>
+    <be txt="Рэдагаваць бягучую панэль" tip="Рэдагаваць панэль рэйкавага шляху."/>
   </Msg>
   <Msg id="undo" key="Ctrl-Z">
     <de txt="Rückgängig machen" tip="Rückgängig"/>
@@ -909,7 +909,7 @@
     <sr_latin txt="Informacija" tip="Rocrail informacija"/>
     <ja txt="詳細" tip="Rocrailの詳細"/>
     <sl txt="Info" tip="Informacije Rocrail."/>
-    <be txt="Звесткі" tip="Інфармацыя пра Rocrail."/>
+    <be txt="Зьвесткі" tip="Інфармацыя пра Rocrail."/>
   </Msg>
   <Msg id="poweron" key="Ctrl-P">
     <de txt="Gleisspannung ein" accel="5" tip="Gleisspannung einschalten"/>
@@ -2022,7 +2022,7 @@
     <sl txt="Pogled"/>
     <pt_BR txt="Visualizar"/>
     <fi txt="Näytä"/>
-    <be txt="Від"/>
+    <be txt="Выгляд"/>
   </Msg>
   <Msg id="extra">
     <de txt="Extra" accel="0"/>
@@ -4747,7 +4747,7 @@
     <sl txt="Indeks"/>
     <pt_BR txt="Índice"/>
     <fi txt="Luettelo"/>
-    <be txt="Індэкс"/>
+    <be txt="Пералік"/>
   </Msg>
   <Msg id="general">
     <de txt="Allgemein"/>
@@ -5981,7 +5981,7 @@
     <sl txt="Počakaj"/>
     <pt_BR txt="Espera"/>
     <fi txt="Odota"/>
-    <be txt="Пачакайце"/>
+    <be txt="Чаканьне"/>
   </Msg>
   <Msg id="random">
     <de txt="Zufall"/>
@@ -6014,7 +6014,7 @@
     <sl txt="Naključno"/>
     <pt_BR txt="Aleatório"/>
     <fi txt="Satunnainen"/>
-    <be txt="Выпадкова"/>
+    <be txt="Выпадковае"/>
   </Msg>
   <Msg id="fixed">
     <de txt="Fest"/>
@@ -6113,7 +6113,7 @@
     <sl txt="Čakam podrobnosti"/>
     <pt_BR txt="Detalhes de espera"/>
     <fi txt="Odotuksen tarkemmat tiedot"/>
-    <be txt="Пачакайце (падрабязнасьці)"/>
+    <be txt="Чаканьне (падрабязнасьці)"/>
   </Msg>
   <Msg id="randommin">
     <de txt="Zufall Min."/>
@@ -6146,7 +6146,7 @@
     <sl txt="Naključno min."/>
     <pt_BR txt="Aleatório Mín."/>
     <fi txt="Satunnaisen alin"/>
-    <be txt="Выпадкова мін."/>
+    <be txt="Выпадковае мін."/>
   </Msg>
   <Msg id="randommax">
     <de txt="Zufall Max."/>
@@ -6179,7 +6179,7 @@
     <sl txt="Naključno max."/>
     <pt_BR txt="Aleatório Máx."/>
     <fi txt="Satunnaisen ylin"/>
-    <be txt="Выпадкова макс."/>
+    <be txt="Выпадковае макс."/>
   </Msg>
   <Msg id="apply">
     <de txt="Übernehmen"/>
@@ -6414,7 +6414,7 @@
     <sl txt="Prikaži"/>
     <pt_BR txt="Exibir"/>
     <fi txt="Näytä"/>
-    <be txt="Паказаць"/>
+    <be txt="Паказваць"/>
   </Msg>
   <Msg id="iid">
     <de txt="Schnittstellenkennung"/>
@@ -7136,7 +7136,7 @@
     <pt_BR txt="Padrão"/>
     <fi txt="Oletus"/>
     <pl txt="Domyślny"/>
-    <be txt="Прадвызначанае"/>
+    <be txt="Па змоўчаньні"/>
   </Msg>
   <Msg id="fromto">
     <de txt="Von - Nach"/>
@@ -9833,7 +9833,7 @@
     <pt_BR txt="Visível"/>
     <fi txt="Näkyvissä"/>
     <pl txt="Widoczny"/>
-    <be txt="бачны"/>
+    <be txt="Бачны"/>
   </Msg>
   <Msg id="module">
     <de txt="Module"/>
@@ -10284,7 +10284,7 @@
     <pt_BR txt="livre"/>
     <fi txt="vapaa"/>
     <pl txt="wolny"/>
-    <be txt="вольны"/>
+    <be txt="Вызваліць"/>
   </Msg>
   <Msg id="buffer">
     <de txt="Prellbock"/>
@@ -10892,7 +10892,7 @@
     <sl txt="Uredi"/>
     <pt_BR txt="Modificar"/>
     <fi txt="Muokkaa"/>
-    <be txt="зьмяніць"/>
+    <be txt="Зьмяніць"/>
   </Msg>
   <Msg id="refresh">
     <de txt="aktualisieren"/>
@@ -12519,7 +12519,7 @@
     <pt_BR txt="Excluir"/>
     <fi txt="Estetyt"/>
     <pl txt="Pomiń"/>
-    <be txt="Выключыць"/>
+    <be txt="Адлучыць"/>
   </Msg>
   <Msg id="include">
     <de txt="einschliesslich"/>
@@ -12549,7 +12549,7 @@
     <pt_BR txt="Incluir"/>
     <fi txt="Sallitut"/>
     <pl txt="Dołącz"/>
-    <be txt="Уключыць"/>
+    <be txt="Далучыць"/>
   </Msg>
   <Msg id="iconpath">
     <de txt="Symbolverzeichnis"/>
@@ -16732,7 +16732,7 @@
     <pt_BR txt="Acessório#"/>
     <fi txt="Lisälaite nro."/>
     <pl txt="Wyposażenie#"/>
-    <be txt="#Аксэсуара"/>
+    <be txt="№ аксэсуара"/>
   </Msg>
   <Msg id="portbase">
     <de txt="Portbasis"/>
@@ -19546,7 +19546,7 @@
     <en txt="M-Time" tip="Last serviced run time."/>
     <cs txt="M-Čas" tip="Poslední čas servisu"/>
     <hu txt="M idő"/>
-    <de txt="letzte Wartung" tip="Laufzeit seit der letzten Wartung"/>
+    <de txt="Letzte Wartungs-Zeit" tip="Laufzeit seit der letzten Wartung"/>
     <fr txt="Temps-M" tip="Temps de fonctionnement depuis la dernière révision."/>
     <nl txt="O-Tijd" tip="Laatste onderhoudsbeurt"/>
     <pt txt="M-Time"/>
@@ -21155,7 +21155,7 @@
     <sv txt="Support"/>
     <fi txt="Tuki"/>
     <pl txt="Wsparcie finansowe"/>
-    <be txt="Падтрымка"/>
+    <be txt="Падтрымаць"/>
   </Msg>
   <Msg id="loadkey" dialog="true">
     <en txt="Load key"/>
@@ -25353,7 +25353,7 @@
     <en_CA txt="Issue" tip="Create a server issue context."/>
     <fr txt="Incident" tip="Créer un contexte de problème serveur"/>
     <da txt="Problem"/>
-    <be txt="Праблема" tip="Стварыць кантэкст праблемаў  з сэрвэрам."/>
+    <be txt="Справаздача па праблеме" tip="Стварыць кантэкст праблемаў  з сэрвэрам."/>
   </Msg>
   <Msg id="issuepath">
     <en txt="Issue path"/>
@@ -25373,7 +25373,7 @@
     <es txt="Ruta del problema"/>
     <fr txt="Répertoire des problèmes"/>
     <sv txt="Problemsökväg"/>
-    <be txt="Файл праблемаў"/>
+    <be txt="Шлях да справаздачы"/>
   </Msg>
   <Msg id="reconnectafterservershutdown">
     <en txt="Reconnect after server shutdown"/>
@@ -27725,7 +27725,7 @@
     <en_CA txt="day"/>
     <fr txt="jour"/>
     <zh_CN txt="日"/>
-    <be txt="дзень"/>
+    <be txt="Дзень"/>
   </Msg>
   <Msg id="preview">
     <en txt="Preview"/>
@@ -30597,7 +30597,7 @@
     <sv txt="Solnedgång"/>
     <pt_BR txt="Pôr do sol"/>
     <fr txt="Coucher du soleil"/>
-    <be txt="Захад"/>
+    <be txt="Заход"/>
   </Msg>
   <Msg id="watchnodes">
     <en txt="Watch nodes"/>
@@ -30834,7 +30834,7 @@
     <sr_latin txt="Stanje signala"/>
     <ru txt="Состояние сигнала"/>
     <fr txt="Signal d'état"/>
-    <be txt="Cыгнал стану"/>
+    <be txt="Паказчык стану"/>
   </Msg>
   <Msg id="bounce">
     <en txt="Bounce"/>
@@ -31041,7 +31041,7 @@
     <pt_BR txt="Todas as condições devem ser possíveis"/>
     <sl txt="Vsi pogoji morajo biti res"/>
     <sr_latin txt="Svi uslovi moraju biti istiniti"/>
-    <be txt="Усе ўмовы мусяць выконвацца (true)"/>
+    <be txt="Усе ўмовы мусяць выконвацца (быць true)"/>
     <en_GB txt="All conditions must be true"/>
   </Msg>
   <Msg id="mustbetrue">
@@ -31102,6 +31102,7 @@
     <pt_BR txt="Estatística"/>
     <sl txt="Statistika"/>
     <sr_latin txt="Statistički"/>
+    <de txt="Statistik"/>
   </Msg>
   <Msg id="signalquality">
     <en txt="Signal quality"/>
@@ -31110,6 +31111,7 @@
     <pt_BR txt="Qualidade de sinal"/>
     <sl txt="Kvaliteta signala"/>
     <sr_latin txt="Kvalitet signala"/>
+    <de txt="Signal-Qualität"/>
   </Msg>
   <Msg id="border">
     <en txt="Border"/>
@@ -31118,15 +31120,31 @@
     <pt_BR txt="Fronteira"/>
     <sl txt="Meja"/>
     <sr_latin txt="Granica"/>
+    <de txt="Rahmen"/>
   </Msg>
   <Msg id="mdate">
     <en txt="M-Date" tip="Last serviced date."/>
+    <de txt="Letztes Wartungs-Datum" tip="Letztes Indstandsetzungs-Datum"/>
+    <nl txt="O-Datum" tip="Onderhoudsbeurt datum"/>
+    <pt_BR txt="Data-M" tip="Data da última manutenção."/>
+    <sl txt="M-Date" tip="Datum zadnje revizije"/>
+    <sr_latin txt="M-datum" tip="Datum poslednjeg pregleda."/>
   </Msg>
   <Msg id="aspectnames">
     <en txt="Aspect names"/>
+    <de txt="Begriffs-Namen"/>
+    <nl txt="Beeld namen"/>
+    <pt_BR txt="Nomes dos aspectos"/>
+    <sl txt="Imena stanj"/>
+    <sr_latin txt="Odnos imena"/>
   </Msg>
   <Msg id="atfree">
     <en txt="At free"/>
+    <de txt="Bei Freiwerden"/>
+    <nl txt="Na vrijgave"/>
+    <pt_BR txt="Quando liberado"/>
+    <sl txt="Ob prostem"/>
+    <sr_latin txt="Besplatno"/>
   </Msg>
   <Msg id="atcommand">
     <en txt="At command"/>
