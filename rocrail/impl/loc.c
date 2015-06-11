@@ -3537,8 +3537,12 @@ static void _modify( iOLoc inst, iONode props ) {
     if(NodeOp.findAttr(props, "engine"))
       wLoc.setengine( data->props, wLoc.getengine(props) );
     if(NodeOp.findAttr(props, "consist")) {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "modify: %s consist=\"%s\"", LocOp.getId(inst), wLoc.getconsist(props));
-      wLoc.setconsist( data->props, wLoc.getconsist(props) );
+      if( StrOp.find( wLoc.getconsist(props), LocOp.getId(inst) ) == NULL ) {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "modify: %s consist=\"%s\"", LocOp.getId(inst), wLoc.getconsist(props));
+        wLoc.setconsist( data->props, wLoc.getconsist(props) );
+      }
+      else
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "consist rejected: %s consist=\"%s\"", LocOp.getId(inst), wLoc.getconsist(props));
     }
   }
   else {
