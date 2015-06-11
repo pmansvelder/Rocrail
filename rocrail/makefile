@@ -1,7 +1,7 @@
 # ------------------------------------------------------------
 # Rocrail - Model Railroad Software
 #
-# Copyright (C) 2002-2012 Rob Versluis, Rocrail.net
+# Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 #
 # Without an official permission commercial use is not permitted.
 # Forking this project is not permitted.  
@@ -212,7 +212,8 @@ install_all:
 	-cp -Rp$(CPUPDATE) ..$(FS)stylesheets $(DESTDIR)
 	-cp -Rp$(CPUPDATE) package$(FS)images $(DESTDIR)
 	-cp -Rp$(CPUPDATE) ..$(FS)decspecs $(DESTDIR)
-	-cp -Rp$(CPUPDATE) impl$(FS)web$(FS)html $(DESTDIR)$(FS)web
+	-mkdir -p $(DESTDIR)$(FS)web
+	-cp -Rp$(CPUPDATE) impl$(FS)web$(FS)html$(FS)* $(DESTDIR)$(FS)web
 ifeq (,$(wildcard $(DESTDIR)$(FS)default$(FS)plan.xml))
 	-cp -p$(CPUPDATE) package$(FS)plan.xml $(DESTDIR)$(FS)default
 endif
