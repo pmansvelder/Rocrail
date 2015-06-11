@@ -3467,7 +3467,10 @@ void LocDialog::OnButtonLocConsistDeleteClick( wxCommandEvent& event )
 
 void LocDialog::OnButtonLocConsistAddClick( wxCommandEvent& event )
 {
-  m_ConsistList->Append( m_ConsistLocID->GetStringSelection() );
+  char* id = StrOp.dup(m_ConsistLocID->GetStringSelection().mb_str(wxConvUTF8));
+  if( !StrOp.equals( wLoc.getid(m_Props), id ) )
+    m_ConsistList->Append( m_ConsistLocID->GetStringSelection() );
+  StrOp.free(id);
 }
 
 void LocDialog::initCVDesc() {
