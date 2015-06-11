@@ -327,7 +327,7 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
 
   if( !FileOp.exist( png ) ) {
     /* Do a recursive search. */
-    char* foundfilename = FileUtilsOp.findFile(wWebClient.getwebpath(data->ini), cleanFname);
+    char* foundfilename = FileUtilsOp.findFile(wWebClient.getimgpath(data->ini), cleanFname);
     if( foundfilename != NULL && FileOp.exist( foundfilename ) ) {
       StrOp.free(png);
       png = foundfilename;
