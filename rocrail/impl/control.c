@@ -1320,11 +1320,13 @@ static void __listener( obj inst, iONode nodeC, int level ) {
 
     if( wClock.isstopclockatpoweroff(wRocRail.getclock(AppOp.getIni())) && data->power && !wState.ispower( nodeC ) ) {
       /* freeze clock */
-      control_callback cb = ControlOp.getCallback((iOControl)inst);
-      iONode clockcmd = NodeOp.inst( wClock.name(), NULL, ELEMENT_NODE );
-      wClock.setcmd(clockcmd, wClock.freeze );
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "power off, freeze clock" );
-      cb(inst,clockcmd);
+      if( data->clockrun ) {
+        control_callback cb = ControlOp.getCallback((iOControl)inst);
+        iONode clockcmd = NodeOp.inst( wClock.name(), NULL, ELEMENT_NODE );
+        wClock.setcmd(clockcmd, wClock.freeze );
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "power off, freeze clock" );
+        cb(inst,clockcmd);
+      }
     }
 
     if( wState.isemergency(nodeC) ) {
