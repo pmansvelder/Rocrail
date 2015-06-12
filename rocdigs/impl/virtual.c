@@ -2,7 +2,7 @@
  /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  
 
@@ -665,7 +665,27 @@ static void __reportState(iOVirtual vcs, int uid) {
     data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
 }
 
+static void __commander( void* threadinst ) {
+  iOThread      th   = (iOThread)threadinst;
+  iOVirtual     vcs  = (iOVirtual)ThreadOp.getParm(th);
+  iOVirtualData data = Data(vcs);
 
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Commander is started.");
+
+  do {
+    iONode cmd = (iONode)ThreadOp.getPost( th );
+    if (cmd != NULL) {
+      iONode rsp = __translate( vcs, cmd );
+      if( rsp != NULL ) {
+        data->listenerFun( data->listenerObj, rsp, TRCLEVEL_INFO );
+      }
+      NodeOp.base.del(cmd);
+    }
+    ThreadOp.sleep( 10 );
+  } while( data->run );
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Commander has stopped.");
+}
 
 static void __transactor( void* threadinst ) {
   iOThread      th   = (iOThread)threadinst;
@@ -727,16 +747,10 @@ static void __transactor( void* threadinst ) {
 
 static iONode _cmd( obj inst ,const iONode nodeA ) {
   iOVirtualData data = Data(inst);
-  char out[256];
   iONode nodeB = NULL;
 
   if( nodeA != NULL ) {
-    iONode rsp = __translate( (iOVirtual)inst, nodeA );
-    if( rsp != NULL ) {
-      data->listenerFun( data->listenerObj, rsp, TRCLEVEL_INFO );
-    }
-    /* Cleanup Node1 */
-    nodeA->base.del(nodeA);
+    ThreadOp.post( data->commander, (obj)nodeA );
   }
 
   /* return Node2 */
@@ -869,6 +883,9 @@ static struct OVirtual* _inst( const iONode ini ,const iOTrace trc ) {
 
   data->transactor = ThreadOp.inst( data->iid, &__transactor, __Virtual );
   ThreadOp.start( data->transactor );
+
+  data->commander = ThreadOp.inst( NULL, &__commander, __Virtual );
+  ThreadOp.start( data->commander );
 
   if( wDigInt.isstress(ini) ) {
     iOThread stressRunner = ThreadOp.inst( NULL, &__stressRunner, __Virtual );

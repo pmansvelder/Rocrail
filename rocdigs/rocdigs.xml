@@ -449,6 +449,7 @@
       <var name="readfb" vt="Boolean"/>
       <var name="responseReader" vt="iOThread"/>
       <var name="transactor" vt="iOThread"/>
+      <var name="commander" vt="iOThread"/>
       <var name="run" vt="Boolean"/>
       <var name="fbState[128*8]" vt="Boolean"/>
       <var name="listenerObj" vt="obj"/>

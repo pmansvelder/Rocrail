@@ -1665,6 +1665,9 @@
     <fun name="getPost" vt="obj" remark="Get post from the queue. (NULL if nothing is in queue.)">
       <param name="inst" vt="this" remark="Thread instance."/>
     </fun>
+    <fun name="hasPost" vt="Boolean" remark="Check if there is post the queue.">
+      <param name="inst" vt="this" remark="Thread instance."/>
+    </fun>
     <fun name="findById" vt="this" remark="Find a thread by id.">
       <param name="id" vt="unsigned long" remark="Thread id."/>
     </fun>

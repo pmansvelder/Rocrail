@@ -2023,6 +2023,7 @@ static void __runner( void* threadinst ) {
   iOList queueList = ListOp.inst();
   int   tick = 0;
   int   virtualtick = 0;
+  int extraTick = 0;
   Boolean cnfgsend = False;
   Boolean loccnfg = wCtrl.isloccnfg( AppOp.getIniNode( wCtrl.name() ) );
 
@@ -2085,6 +2086,21 @@ static void __runner( void* threadinst ) {
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "new message %d nrruns=%d", event, data->nrruns );
     }
 
+    if( event == cmd_event ) {
+      event = -1;
+      iONode cmd = (iONode)udata;
+      if( !MutexOp.trywait( data->muxEngine, 1000) ) {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "loco %s engine blocked...", LocOp.getId( loc ) );
+      }
+      else {
+        iONode consistCmd = (iONode)NodeOp.base.clone(cmd);
+        __engine( loc, cmd );
+        MutexOp.post( data->muxEngine);
+        __checkConsist(loc, consistCmd, False);
+        __broadcastLocoProps( loc, NULL, consistCmd, NULL );
+      }
+    }
+
     if( data->driver != NULL ) {
       if( event == swap_event ) {
         iONode  cmd     = (iONode)udata;
@@ -2098,6 +2114,17 @@ static void __runner( void* threadinst ) {
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "inform the driver of event=%d nrruns=%d", event, data->nrruns );
         }
         data->driver->drive( data->driver, emitter, event );
+      }
+    }
+
+    if( ThreadOp.hasPost( th ) ) {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "more messages available..." );
+      if( data->gomanual || !wLoc.isusebbt(data->props) || data->drvSpeed == 0 || data->bbtEnterBlock == NULL) {
+        if( extraTick < 9 ) {
+          ThreadOp.sleep( RUNNERBBTTICK );
+          extraTick++;
+          continue;
+        }
       }
     }
 
@@ -2204,8 +2231,9 @@ static void __runner( void* threadinst ) {
     }
 
     if( data->gomanual || !wLoc.isusebbt(data->props) || data->drvSpeed == 0 || data->bbtEnterBlock == NULL) {
-      ThreadOp.sleep( RUNNERTICK );
+      ThreadOp.sleep( RUNNERTICK - extraTick * RUNNERBBTTICK);
     }
+    extraTick = 0;
     tick++;
 
   } while( data->run && !ThreadOp.isQuit(th) );
@@ -3482,13 +3510,13 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
   /* release mutex to avoid blocking */
   MutexOp.post( data->muxCmd );
 
-  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "call engine from cmd...");
-  __engine( inst, nodeA );
-
-  __checkConsist(inst, nodeF, False);
-
-  /* Broadcast to clients. */
-  __broadcastLocoProps( inst, NULL, nodeF, NULL );
+  if( nodeA != NULL ) {
+    iOMsg msg = MsgOp.inst( NULL, cmd_event );
+    MsgOp.setTimer( msg, 0 );
+    MsgOp.setEvent( msg, cmd_event );
+    MsgOp.setUsrData(msg, nodeA, 0 );
+    ThreadOp.post( data->runner, (obj)msg );
+  }
 
   return True;
 }
