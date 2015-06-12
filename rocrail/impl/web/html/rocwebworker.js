@@ -1,3 +1,9 @@
+/*
+ Rocrail - Model Railroad Software
+
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
+
+*/
 var retryWebSocket = 0;
 var retryMax = 20;
 
