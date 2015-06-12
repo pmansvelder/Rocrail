@@ -237,6 +237,14 @@ static obj _getPost( iOThread inst ) {
   return NULL;
 }
 
+static Boolean _hasPost( iOThread inst ) {
+  if( inst != NULL ) {
+    iOThreadData data = Data(inst);
+    return !QueueOp.isEmpty( data->queue );
+  }
+  return False;
+}
+
 static obj _waitPost( iOThread inst ) {
   if( inst != NULL ) {
     iOThreadData data = Data(inst);
