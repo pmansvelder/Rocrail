@@ -510,16 +510,35 @@ void BaseDialog::appendItem( iONode Item) {
     if( wLoc.getmdate( Item ) > 0 ) {
       long ltime = wLoc.getmdate( Item );
       struct tm* ltm = localtime( &ltime );
-      StrOp.fmtb( mdate, "%d-%d-%d", ltm->tm_mday, ltm->tm_mon+1, ltm->tm_year + 1900);
+      StrOp.fmtb( mdate, "%02d-%02d-%d", ltm->tm_mday, ltm->tm_mon+1, ltm->tm_year + 1900);
     }
 
     m_ItemList->SetItem( index, m_colRTime, wxString::Format(_T("%d:%02d.%02d"), (int)(runtime/3600), (int)((runtime%3600)/60), (int)((runtime%3600)%60)));
-    m_ItemList->SetColumnWidth(m_colRTime, wxLIST_AUTOSIZE);
     m_ItemList->SetItem( index, m_colMTime, wxString::Format(_T("%d:%02d.%02d (%d:%02d.%02d)"),
         (int)(mtime/3600), (int)((mtime%3600)/60), (int)((mtime%3600)%60), (int)(deltatime/3600), (int)((deltatime%3600)/60), (int)((deltatime%3600)%60) ) );
-    m_ItemList->SetColumnWidth(m_colMTime, wxLIST_AUTOSIZE);
     m_ItemList->SetItem( index, m_colMDate, wxString(mdate, wxConvUTF8) );
+
+
+    m_ItemList->SetColumnWidth(m_colRTime, wxLIST_AUTOSIZE_USEHEADER);
+    int autoheadersize = m_ItemList->GetColumnWidth(m_colRTime);
+    m_ItemList->SetColumnWidth(m_colRTime, wxLIST_AUTOSIZE);
+    int autosize = m_ItemList->GetColumnWidth(m_colRTime);
+    if(autoheadersize > autosize )
+      m_ItemList->SetColumnWidth(m_colRTime, wxLIST_AUTOSIZE_USEHEADER);
+
+    m_ItemList->SetColumnWidth(m_colMTime, wxLIST_AUTOSIZE_USEHEADER);
+    autoheadersize = m_ItemList->GetColumnWidth(m_colRTime);
+    m_ItemList->SetColumnWidth(m_colMTime, wxLIST_AUTOSIZE);
+    autosize = m_ItemList->GetColumnWidth(m_colMTime);
+    if(autoheadersize > autosize )
+      m_ItemList->SetColumnWidth(m_colMTime, wxLIST_AUTOSIZE_USEHEADER);
+
+    m_ItemList->SetColumnWidth(m_colMDate, wxLIST_AUTOSIZE_USEHEADER);
+    autoheadersize = m_ItemList->GetColumnWidth(m_colMDate);
     m_ItemList->SetColumnWidth(m_colMDate, wxLIST_AUTOSIZE);
+    autosize = m_ItemList->GetColumnWidth(m_colMDate);
+    if(autoheadersize > autosize )
+      m_ItemList->SetColumnWidth(m_colMDate, wxLIST_AUTOSIZE_USEHEADER);
   }
 }
 
