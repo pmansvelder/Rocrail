@@ -3085,6 +3085,7 @@
         <var name="manualinput" vt="bool" defval="False"/>
         <var name="transparent" vt="bool" defval="True"/>
         <var name="reset" vt="bool" defval="False"/>
+        <var name="clock" vt="bool" defval="false" remark="Is used to show the model time."/>
         <var name="x" vt="int" defval="0" range="0-*"/>
         <var name="y" vt="int" defval="0" range="0-*"/>
         <var name="z" vt="int" defval="0" range="0-9"/>
@@ -3174,6 +3175,7 @@
         <var name="hour" vt="int" defval="0" range="0-23" remark="action hour"/>
         <var name="min" vt="int" defval="0" range="0-59" remark="action minute"/>
         <var name="sec" vt="int" defval="0" range="0-59" remark="action second"/>
+        <var name="activated" vt="bool" defval="false" remark="Pre defined activation."/>
         <var name="random" vt="bool" defval="false" remark="Use time for random activation."/>
         <var name="timed" vt="bool" defval="false" remark="Use time for activation."/>
         <var name="every" vt="bool" defval="false" remark="Activate every hour:min."/>

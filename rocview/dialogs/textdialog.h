@@ -204,6 +204,7 @@ public:
     wxCheckBox* m_Transparent;
     wxCheckBox* m_Input;
     wxCheckBox* m_Border;
+    wxCheckBox* m_Clock;
     wxRadioBox* m_Ori;
     wxCheckBox* m_Reset;
     wxButton* m_Actions;

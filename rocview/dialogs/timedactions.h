@@ -202,6 +202,7 @@ public:
     wxCheckBox* m_Timed;
     wxCheckBox* m_Every;
     wxCheckBox* m_Random;
+    wxCheckBox* m_Activated;
     wxStaticText* m_labHour;
     wxSpinCtrl* m_Hour;
     wxStaticText* m_labMin;

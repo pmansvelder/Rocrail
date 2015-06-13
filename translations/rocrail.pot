@@ -7913,3 +7913,9 @@ msgstr ""
 msgid "At event"
 msgstr ""
 
+#. 
+# id="activated"
+#, c-format
+msgid "Activated"
+msgstr ""
+

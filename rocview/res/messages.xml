@@ -31152,4 +31152,7 @@
   <Msg id="atevent">
     <en txt="At event"/>
   </Msg>
+  <Msg id="activated">
+    <en txt="Activated"/>
+  </Msg>
 </Messages>

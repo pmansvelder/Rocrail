@@ -4581,8 +4581,11 @@ function processPlan() {
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
        var input = txlist[i].getAttribute('manualinput');
+       var clock = txlist[i].getAttribute('clock');
        if( input != undefined && input == "true")
          newdiv.setAttribute('onClick', "actionText(this.id)");
+       else if( clock != undefined && clock == "true" )
+         newdiv.setAttribute('onClick', "openClock()");
        
        var transparent = txlist[i].getAttribute('transparent');
        if( transparent != undefined && transparent == "false" ) {

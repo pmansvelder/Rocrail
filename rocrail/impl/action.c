@@ -1856,7 +1856,7 @@ static void _tick( iOAction inst, int seconds ) {
       }
     }
 
-    else if( wAction.isevery(data->action) && data->enabled ) {
+    else if( wAction.isevery(data->action) && (data->enabled || wAction.isactivated(data->action) ) ) {
       int actsecs = wAction.gethour(data->action) * 60 * 60 + wAction.getmin(data->action) * 60 + wAction.getsec(data->action);
       int secs = lTime->tm_hour * 60 * 60 + lTime->tm_min * 60 + lTime->tm_sec;
       if( secs < data->lastactsec ) {
