@@ -25,7 +25,7 @@ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
 
   <div id="header" data-role="header" data-position="fixed" style="overflow:hidden;">
-    <h1 id="title" onclick="openClock()">Rocweb</h1>
+    <h1 id="title" onclick="openClock('title')">Rocweb</h1>
     <div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
       <a href="#" id="headerThrottle" title="Throttle" class="ui-btn ui-btn-icon-right ui-icon-grid ui-btn-icon-notext" onclick="openThrottle()">Throttle</a>
       <a href="#" id="headerPower" title="Power" class="ui-btn ui-btn-icon-right ui-icon-power ui-btn-icon-notext" onclick="actionPower()">Power</a>
@@ -84,7 +84,7 @@ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
   </div>
   </div>
 
-  <div data-role="popup" id="popupClock" class="ui-popup" data-theme="a">
+  <div data-role="popup" id="popupClock" class="ui-popup" data-theme="a" data-position-to="origin">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
   <label id="clockTitle">Clock</label>

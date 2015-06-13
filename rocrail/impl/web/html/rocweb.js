@@ -411,9 +411,9 @@ function openInfo()
     });
 }
 
-function openClock()
+function openClock(id)
 {
-  $( "#popupClock" ).popup( "open" );
+  $( "#popupClock" ).popup( "open", {positionTo: '#'+id} );
 }
 
 function onLocoImage() {
@@ -4624,7 +4624,7 @@ function processPlan() {
        if( input != undefined && input == "true")
          newdiv.setAttribute('onClick', "actionText(this.id)");
        else if( clock != undefined && clock == "true" )
-         newdiv.setAttribute('onClick', "openClock()");
+         newdiv.setAttribute('onClick', "openClock(this.id)");
        
        var transparent = txlist[i].getAttribute('transparent');
        if( transparent != undefined && transparent == "false" ) {
