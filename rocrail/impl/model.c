@@ -2153,7 +2153,7 @@ static void __startAllLocs( iOModel inst, Boolean virtual, int era ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Start all locos canceled: pending operation." );
   }
   else {
-    iOThread t = ThreadOp.inst( "startall", &__startAllLocosRunner, inst );
+    iOThread t = ThreadOp.inst( virtual?"startVall":"startall", &__startAllLocosRunner, inst );
     data->startallera = era;
     data->pendingstartall = True;
     data->pendingstartallvirtual = virtual;
