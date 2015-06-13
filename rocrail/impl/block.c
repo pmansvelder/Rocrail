@@ -3053,7 +3053,6 @@ static iOBlock _inst( iONode props ) {
   wBlock.setfifoids(data->props, "" );
 
   NodeOp.removeAttrByName(data->props, "cmd");
-  NodeOp.removeAttrByName(data->props, "show");
 
   if( StrOp.equals(wBlock.shortcut, wBlock.getstate(props))) {
     wBlock.setstate(props, wBlock.open);
