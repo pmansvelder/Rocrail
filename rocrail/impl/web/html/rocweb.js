@@ -75,6 +75,7 @@ var blueBackground = "#C8C8FF";
 var throttleid = "rocweb";
 var speedUpdateVal = 0;
 var timelabel = "";
+var Title = "Rocrail";
 var parser = new window.DOMParser();
 
 
@@ -3137,6 +3138,8 @@ function handleClock(clock) {
     var zlevel = zlevelList[zlevelIdx];
     var title = zlevel.getAttribute('title');
     var h = document.getElementById("title");
+    if( ModPlan )
+      title = Title;
     h.innerHTML = timelabel + title;
   }
 }
@@ -3415,8 +3418,8 @@ function processResponse() {
         if( planlist.length > 0 ) {
           var h = document.getElementById("title");
           donkey = planlist[0].getAttribute('donkey');
-          title = planlist[0].getAttribute('title');
-          trace("title: "+title);
+          Title = planlist[0].getAttribute('title');
+          trace("title: "+Title);
           rocrailversion = planlist[0].getAttribute('rocrailversion');
           rocrailpwd = planlist[0].getAttribute('rocrailpwd');
           var modplan = planlist[0].getAttribute('modplan');
@@ -3434,8 +3437,8 @@ function processResponse() {
           serverInfo.innerHTML = "<table><tr><td>"+getString("version")+":<td>" + rocrailversion + "<tr><td>" + getString("workspace")+":<td>" + rocrailpwd;
           
           
-          trace( "processing plan: " + title + " key=" + donkey );
-          h.innerHTML = title;
+          trace( "processing plan: " + Title + " key=" + donkey );
+          h.innerHTML = Title;
           processPlan();
           planloaded = true;
           locoSelected = localStorage.getItem("locoSelected");
