@@ -99,16 +99,20 @@ function langDE() {
 
   document.getElementById("menuInfo").innerHTML = "Informationen";
   document.getElementById("menuSystem").innerHTML = "System";
+  document.getElementById("menuAuto").innerHTML = "Automat";
   document.getElementById("menuOptions").innerHTML = "Optionen";
   document.getElementById("menuGuest").innerHTML = "Gast-Lok";
   //document.getElementById("menuTrains").innerHTML = "Züge";
   //document.getElementById("menuDisconnect").innerHTML = "Server trennen";
   document.getElementById("menuHelp").innerHTML = "Hilfe";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
+  document.getElementById("autoTitle").innerHTML = "<b>Automat</b>";
   document.getElementById("systemInitField").innerHTML = "Feld initialisieren";
   document.getElementById("systemQuerySensors").innerHTML = "Tages-Anfang";
   document.getElementById("systemEmergencyBreak").innerHTML = "Nothalt";
   document.getElementById("systemStartAll").innerHTML = "Alle Loks starten";
+  document.getElementById("systemStopAll").innerHTML = "Alle Loks anhalten";
+  document.getElementById("systemSoftReset").innerHTML = "Zurücksetzen; außer Blockbelegung";
   document.getElementById("systemShutdown").innerHTML = "Server herunterfahren";
   document.getElementById("optionsTitle").innerHTML = "<b>Optionen</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -196,16 +200,20 @@ function langEN() {
 
   document.getElementById("menuInfo").innerHTML = "Information";
   document.getElementById("menuSystem").innerHTML = "System";
+  document.getElementById("menuAuto").innerHTML = "Automatic";
   document.getElementById("menuOptions").innerHTML = "Options";
   document.getElementById("menuGuest").innerHTML = "Guest loco";
   //document.getElementById("menuTrains").innerHTML = "Trains";
   //document.getElementById("menuDisconnect").innerHTML = "Disconnect server";
   document.getElementById("menuHelp").innerHTML = "Help";
   document.getElementById("systemTitle").innerHTML = "<b>System</b>";
+  document.getElementById("autoTitle").innerHTML = "<b>Automatic</b>";
   document.getElementById("systemInitField").innerHTML = "Init field";
   document.getElementById("systemQuerySensors").innerHTML = "Start of day";
   document.getElementById("systemEmergencyBreak").innerHTML = "Emergency break";
   document.getElementById("systemStartAll").innerHTML = "Start all locs";
+  document.getElementById("systemStopAll").innerHTML = "Stop all locs";
+  document.getElementById("systemSoftReset").innerHTML = "Soft reset";
   document.getElementById("systemShutdown").innerHTML = "Shutdown server";
   document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -229,7 +237,7 @@ function langEN() {
   document.getElementById("labBlockStart").innerHTML = "Start train";
   document.getElementById("labBlockStop").innerHTML = "Stop train";
   document.getElementById("labBlockManual").innerHTML = "Half automatic";
-  document.getElementById("labBlockReset").innerHTML = "Soft reset";
+  document.getElementById("labBlockReset").innerHTML = "Soft reset, keep block occupancy";
   document.getElementById("labBlockSwapPlacing").innerHTML = "Swap placing";
   document.getElementById("labBlockSwapEnter").innerHTML = "Swap enter side";
   document.getElementById("labBlockClose").innerHTML = "Close";
@@ -293,16 +301,20 @@ function langNL() {
   
   document.getElementById("menuInfo").innerHTML = "Informatie";
   document.getElementById("menuSystem").innerHTML = "Systeem";
+  document.getElementById("menuAuto").innerHTML = "Automaat";
   document.getElementById("menuOptions").innerHTML = "Opties";
   document.getElementById("menuGuest").innerHTML = "Gast locomotief";
   //document.getElementById("menuTrains").innerHTML = "Treinstellen";
   //document.getElementById("menuDisconnect").innerHTML = "Server loskoppelen";
   document.getElementById("menuHelp").innerHTML = "Hulp";
   document.getElementById("systemTitle").innerHTML = "<b>Systeem</b>";
+  document.getElementById("autoTitle").innerHTML = "<b>Automat</b>";
   document.getElementById("systemInitField").innerHTML = "Init veld";
   document.getElementById("systemQuerySensors").innerHTML = "Begin van de dag";
   document.getElementById("systemEmergencyBreak").innerHTML = "Noodstop";
   document.getElementById("systemStartAll").innerHTML = "Start alle loc's";
+  document.getElementById("systemStopAll").innerHTML = "Stop alle loc's";
+  document.getElementById("systemSoftReset").innerHTML = "Reset behalve block bezetting";
   document.getElementById("systemShutdown").innerHTML = "Server beëindigen";
   document.getElementById("optionsTitle").innerHTML = "<b>Opties</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -722,6 +734,15 @@ function openSystem() {
   $('#popupMenu').on("panelclose", function(){
     $('#popupMenu').unbind( "panelclose" );
     $( "#popupSystem" ).popup( "open" );
+    });
+}
+
+function openAuto() {
+  trace("close menu");
+  //$( "#popupMenu" ).popup( "close" );
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupAuto" ).popup( "open" );
     });
 }
 
@@ -1214,8 +1235,20 @@ function actionPower() {
 }
 
 function actionStartAll() {
-  $( "#popupSystem" ).popup( "close" );
+  $( "#popupAuto" ).popup( "close" );
   var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"start\"/>";
+  sendCommand(cmd);
+}
+
+function actionStopAll() {
+  $( "#popupAuto" ).popup( "close" );
+  var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"stop\"/>";
+  sendCommand(cmd);
+}
+
+function actionSoftReset() {
+  $( "#popupAuto" ).popup( "close" );
+  var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"softreset\"/>";
   sendCommand(cmd);
 }
 
