@@ -79,6 +79,7 @@ void BaseDialog::sortOnColumn( int col ) {
   if( m_SortCol != m_colType ) m_sortType = true;
   if( m_SortCol != m_colRTime ) m_sortRTime = true;
   if( m_SortCol != m_colMTime ) m_sortMTime = true;
+  if( m_SortCol != m_colMDate ) m_sortMDate = true;
 
 }
 
@@ -109,6 +110,7 @@ void BaseDialog::initList( wxListCtrl* list, wxWindow* parent, bool showPos, boo
   m_sortType = true;
   m_sortRTime = true;
   m_sortMTime = true;
+  m_sortMDate = true;
   m_longaddr = false;
 
 
