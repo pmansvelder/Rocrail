@@ -4506,6 +4506,7 @@ function processPlan() {
        coMap[colist[i].getAttribute('id')] = colist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "co_"+colist[i].getAttribute('id'));
+       newdiv.setAttribute('title', colist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionOutput(this.id)");
        newdiv.setAttribute('onmousedown', "actionOutputDown(this.id)");
        newdiv.setAttribute('onmouseup', "actionOutputUp(this.id)");
@@ -4541,6 +4542,7 @@ function processPlan() {
        sgMap[sglist[i].getAttribute('id')] = sglist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "sg_"+sglist[i].getAttribute('id'));
+       newdiv.setAttribute('title', sglist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionSignal(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
@@ -4611,6 +4613,7 @@ function processPlan() {
        txMap[txlist[i].getAttribute('id')] = txlist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "tx_"+txlist[i].getAttribute('id'));
+       newdiv.setAttribute('title', txlist[i].getAttribute('id'));
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
        var input = txlist[i].getAttribute('manualinput');
@@ -4682,6 +4685,7 @@ function processPlan() {
        swMap[swlist[i].getAttribute('id')] = swlist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "sw_"+swlist[i].getAttribute('id'));
+       newdiv.setAttribute('title', swlist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionSwitch(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
@@ -4725,6 +4729,7 @@ function processPlan() {
        fbMap[fblist[i].getAttribute('id')] = fblist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "fb_"+fblist[i].getAttribute('id'));
+       newdiv.setAttribute('title', fblist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionSensor(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
@@ -4768,6 +4773,7 @@ function processPlan() {
          bkMap[bklist[i].getAttribute('id')] = bklist[i];
          var newdiv = document.createElement('div');
          newdiv.setAttribute('id', "bk_"+bklist[i].getAttribute('id'));
+         newdiv.setAttribute('title', bklist[i].getAttribute('id'));
          newdiv.setAttribute('onClick', "actionBlock(this.id, false)");
          newdiv.setAttribute('class', "item");
          newdiv.style.overflow = 'hidden';
@@ -4810,6 +4816,7 @@ function processPlan() {
        ttMap[ttlist[i].getAttribute('id')] = ttlist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "tt_"+ttlist[i].getAttribute('id'));
+       newdiv.setAttribute('title', ttlist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionTurntable(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
@@ -4908,6 +4915,7 @@ function processPlan() {
          }
          var newdiv = document.createElement('div');
          newdiv.setAttribute('id', "st_"+stlist[i].getAttribute('id'));
+         newdiv.setAttribute('title', stlist[i].getAttribute('id'));
          newdiv.setAttribute('onClick', "actionRoute(this.id)");
          newdiv.setAttribute('class', "item");
          newdiv.style.position = "absolute";
@@ -4944,6 +4952,7 @@ function processPlan() {
        
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "fy_"+fylist[i].getAttribute('id'));
+       newdiv.setAttribute('title', fylist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionFiddleYard(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
@@ -4974,6 +4983,7 @@ function processPlan() {
        sbMap[sblist[i].getAttribute('id')] = sblist[i];
        var newdiv = document.createElement('div');
        newdiv.setAttribute('id', "sb_"+sblist[i].getAttribute('id'));
+       newdiv.setAttribute('title', sblist[i].getAttribute('id'));
        newdiv.setAttribute('onClick', "actionStageBlock(this.id)");
        newdiv.setAttribute('class', "item");
        newdiv.style.position = "absolute";
