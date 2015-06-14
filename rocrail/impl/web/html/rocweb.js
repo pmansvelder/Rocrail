@@ -672,6 +672,7 @@ function initMenu()
   
   levelSelect.selectedIndex = 0;
   
+  var idx = 0;
   for (var i in zlevelMap){
     var zlevel = zlevelMap[i];
     var title  = zlevel.getAttribute('title');
@@ -682,8 +683,15 @@ function initMenu()
     zoption.value = z;
     zoption.innerHTML = title;
     levelSelect.add( zoption );
-    if( document.getElementById("title").innerHTML == title )
-      levelSelect.selectedIndex = i;
+    if( document.getElementById("title").innerHTML.indexOf(title) != -1 ) {
+      levelSelect.selectedIndex = ""+idx;
+      zlevelIdx = idx;
+      console.log(document.getElementById("title").innerHTML + " == " + title + " i=" +i + " idx="+idx);
+    }
+    else {
+      console.log(document.getElementById("title").innerHTML + " != " + title);
+    }
+    idx++;
   }
   $('#levelSelect').selectmenu("refresh");
 
@@ -1263,6 +1271,7 @@ function actionShutdown() {
 function actionLevelSelect(z) {
   if( ModPlan )
     return;
+  console.log("actionLevelSelect: "+ z);
   zlevelSelected.style.display = 'none';
   zleveldiv = zlevelDivMap[z];
   zlevelSelected = zleveldiv;
@@ -2357,7 +2366,7 @@ $(document).on("pagecreate",function(){
   } );
 
   $('#levelSelect').change(function() {
-    trace("levelSelect: " + this.value );
+    console.log("levelSelect: " + this.value );
     actionLevelSelect(this.value);
   } );
 
@@ -2437,6 +2446,7 @@ function getString(s) {
     if( s == "trainleavecar" ) return "Wagen entfernen";
     if( s == "trainloadcar" ) return "Wagen beladen";
     if( s == "trainemptycar" ) return "Wagen leeren";
+    if( s == "fastclock" ) return "Modelluhr";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -2460,6 +2470,7 @@ function getString(s) {
     if( s == "trainleavecar" ) return "Leave car";
     if( s == "trainloadcar" ) return "Load car";
     if( s == "trainemptycar" ) return "Empty car";
+    if( s == "fastclock" ) return "Fast clock";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -2483,6 +2494,7 @@ function getString(s) {
     if( s == "trainleavecar" ) return "Wagon achterlaten";
     if( s == "trainloadcar" ) return "Wagon beladen";
     if( s == "trainemptycar" ) return "Wagon legen";
+    if( s == "fastclock" ) return "Model klok";
   }
 
   return s;
@@ -3716,6 +3728,27 @@ function getSignalImage(sg) {
 }
 
 
+function getClockImage() {
+  // $(window).height()
+  var width  = $(window).width();
+  var height = $(window).height()-yoffset;
+  if( width > height ) 
+    width = height;  
+  else if( width < height ) 
+    height = width;  
+  
+  var label = "Here comes the fast clock...";
+  var svg = 
+    "<svg xmlns='http://www.w3.org/2000/svg' width='"+$(window).width()+"' height='"+($(window).height()-yoffset)+"'>" +
+    "  <g>" +
+    "   <circle cx='"+($(window).width()/2)+"' cy='"+(($(window).height()-yoffset)/2)+"' r='"+((width/2)-5)+"' stroke='black' stroke-width='3' fill='white' />" +
+    "   <text x='"+($(window).width()/2)+"' y='"+(($(window).height()-yoffset)/2)+"' fill='black' font-size='"+blockPointsize+"px'>"+label+"</text>" +
+    "  </g>" +
+    "</svg>";
+  
+  return svg;
+}
+
 function getFiddleYardImage(fy, div) {
   var nrtracks = 0;
   if( fy.getAttribute('nrtracks') == undefined )
@@ -4426,8 +4459,9 @@ function processPlan() {
      zlevellist = xmlDoc.getElementsByTagName("zlevel");
      if( zlevellist.length > 0 ) {
        var title = "";
+       var i = 0;
        trace("processing " + zlevellist.length + " zlevels");
-       for (var i = 0; i < zlevellist.length; i++) {
+       for(i = 0; i < zlevellist.length; i++) {
          var z = zlevellist[i].getAttribute('z');
          if( z == undefined )
            z = "0";
@@ -4443,9 +4477,6 @@ function processPlan() {
          newdiv.style.left = "0px";
          newdiv.style.top = ""+yoffset+"px";
 
-         //newdiv.style.background = '#ff9999';
-         //newdiv.style.transform = 'scale(.5)';
-         //$('#level_0').css({ transform: 'scale(.5)' });
          $(newdiv).css({'-webkit-transform': 'scale(' + scale + ')'});
          $(newdiv).css({'-moz-transform': 'scale(' + scale + ')'});
          
@@ -4459,10 +4490,32 @@ function processPlan() {
          }
          else if( !ModPlan ) {
            trace("disable level " + z);
-           newdiv.style.display = 'none'
+           newdiv.style.display = 'none';
          }
          document.body.appendChild(newdiv);
        }
+       /*
+       var clocklevel = document.createElement('zlevel');
+       clocklevel.setAttribute('id', getString("fastclock"));
+       var clockZ = "1000";
+       clocklevel.setAttribute('z', clockZ);
+       clocklevel.setAttribute('title', getString("fastclock"));
+       var clockdiv = document.createElement('div');
+       clockdiv.setAttribute('id', "level_" + clockZ);
+       clockdiv.setAttribute('overflow-x', "auto");
+       clockdiv.setAttribute('overflow-y', "auto");
+       clockdiv.style.position = "absolute";
+       clockdiv.style.left = "0px";
+       clockdiv.style.top = ""+yoffset+"px";
+       zlevelMap[""+clockZ]  = clocklevel;
+       zlevelList[i] = clocklevel;
+       zlevelDivMap[""+clockZ]  = clockdiv;
+       zlevelDivList[i] = clockdiv;
+       clockdiv.style.display = 'none';
+       clockdiv.innerHTML = getClockImage();
+       document.body.appendChild(clockdiv);
+       */
+       
        if( !ModPlan ) {
          var h = document.getElementById("title");
          h.innerHTML = title;
@@ -4806,6 +4859,9 @@ function processPlan() {
      
        trace("processing " + bklist.length + " blocks");
        for (var i = 0; i < bklist.length; i++) {
+         var show  = bklist[i].getAttribute('show');
+         if( show != undefined && show == "false" )
+           continue;
          var z = bklist[i].getAttribute('z');
          if( z == undefined )
            z = '0';
