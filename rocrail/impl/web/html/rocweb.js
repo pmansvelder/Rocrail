@@ -63,6 +63,7 @@ var prevPopup = "";
 var guestProt = "P";
 var guestSteps = "28";
 var trackTTSelect = 'none';
+var trackFYSelect = 'none';
 var sliderDelta = 3;
 var controlCode = "";
 var slaveCode = "";
@@ -1486,6 +1487,30 @@ function actionFiddleYard(id) {
   fyid = id.replace("fy_","");
   sessionStorage.setItem("fiddleyard", fyid);
   document.getElementById("fiddleyardTitle").innerHTML = "<b>" + getString("fiddleyard") + ": " + fyid + "</b>";
+  fyNode = fyMap[fyid];
+
+  var trackSelect = document.getElementById("trackFYSelect");
+  while(trackSelect.options.length > 0) {
+    trackSelect.remove(0);
+  }
+
+  track = document.createElement( 'option' );
+  track.value = "";
+  track.innerHTML = "";
+  track.selected = 'selected';
+  trackSelect.add( track );
+
+  tracklist = fyNode.getElementsByTagName("seltabpos");
+  for (var i = 0; i < tracklist.length; i++) {
+    var nr   = tracklist[i].getAttribute('nr');
+    var desc = tracklist[i].getAttribute('desc');
+    track = document.createElement( 'option' );
+    track.value = nr;
+    track.innerHTML = nr+" "+desc;
+    track.setAttribute('onclick', "onFYTrackSelected('"+nr+"')");
+    trackSelect.add( track );
+  }
+  $('#trackFYSelect').selectmenu("refresh");
 
   fyNode = fyMap[fyid];
   $( "#popupFiddleYard" ).popup( "open", {positionTo: '#'+id} );
@@ -1888,6 +1913,13 @@ function onTurntablePrevious() {
   sendCommand(cmd);
 }
 
+
+function onFiddleYardGotoTrack() {
+  $( "#popupFiddleYard" ).popup( "close" );
+  fyid = sessionStorage.getItem("fiddleyard");
+  var cmd = "<seltab controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" id=\""+fyid+"\" cmd=\""+trackFYSelect+"\"/>";
+  sendCommand(cmd);
+}
 
 function onFiddleYardNext() {
   $( "#popupFiddleYard" ).popup( "close" );
@@ -2294,6 +2326,12 @@ $(document).on("pagecreate",function(){
     trackTTSelect = this.value;
     trace("trackTTSelect: " + trackTTSelect);
     sessionStorage.setItem("trackTTSelect", trackTTSelect);
+  } );
+  
+  $('#trackFYSelect').change(function() {
+    trackFYSelect = this.value;
+    trace("trackFYSelect: " + trackFYSelect);
+    sessionStorage.setItem("trackFYSelect", trackFYSelect);
   } );
   
   /*
