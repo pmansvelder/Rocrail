@@ -3195,6 +3195,10 @@ function handleClock(clock) {
     if( ModPlan )
       title = Title;
     h.innerHTML = timelabel + title;
+    
+    var clockdiv = document.getElementById("level_" + 1000);
+    clockdiv.innerHTML = getClockImage(timelabel);
+
   }
 }
 
@@ -3728,7 +3732,7 @@ function getSignalImage(sg) {
 }
 
 
-function getClockImage() {
+function getClockImage(labelTxt) {
   // $(window).height()
   var width  = $(window).width();
   var height = $(window).height()-yoffset;
@@ -3737,7 +3741,7 @@ function getClockImage() {
   else if( width < height ) 
     height = width;  
   
-  var label = "Here comes the fast clock...";
+  var label = "Here comes the fast clock..."+labelTxt;
   var svg = 
     "<svg xmlns='http://www.w3.org/2000/svg' width='"+$(window).width()+"' height='"+($(window).height()-yoffset)+"'>" +
     "  <g>" +
@@ -4494,7 +4498,7 @@ function processPlan() {
          }
          document.body.appendChild(newdiv);
        }
-       /*
+       
        var clocklevel = document.createElement('zlevel');
        clocklevel.setAttribute('id', getString("fastclock"));
        var clockZ = "1000";
@@ -4514,7 +4518,7 @@ function processPlan() {
        clockdiv.style.display = 'none';
        clockdiv.innerHTML = getClockImage();
        document.body.appendChild(clockdiv);
-       */
+       
        
        if( !ModPlan ) {
          var h = document.getElementById("title");
