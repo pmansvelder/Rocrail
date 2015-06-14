@@ -313,14 +313,17 @@ static Boolean __getColor4Time(iONode color[], int hour, int min, float* r, floa
 
 static void __doDaylight(iOWeather weather, int hour, int min, Boolean shutdown, Boolean clearTheme ) {
   iOWeatherData data = Data(weather);
-  iOModel model = AppOp.getModel();
-  iOList list = ListOp.inst();
-  iOList nightList = ListOp.inst();
-  int minutes   = hour * 60 + min;
+  iOModel model     = AppOp.getModel();
+  iOList  list      = NULL;
+  iOList  nightList = NULL;
+  int     minutes   = hour * 60 + min;
 
   if( data->props == NULL ) {
     return;
   }
+
+  list      = ListOp.inst();
+  nightList = ListOp.inst();
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "do daylight at %02d:%02d (%d) on %s (shutdown=%s)",
       hour, min, minutes, wWeather.getoutputs(data->props), shutdown?"true":"false" );
