@@ -3179,7 +3179,6 @@ static void __swapConsist( iOLoc inst, iONode cmd ) {
 static Boolean _cmd( iOLoc inst, iONode nodeA ) {
   iOLocData data = Data(inst);
   iOControl control = AppOp.getControl(  );
-  iONode nodeF = NULL;
 
   iOModel model = AppOp.getModel(  );
 
@@ -3483,9 +3482,8 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
     }
 
     if(broadcast) {
-      nodeF = (iONode)NodeOp.base.clone( nodeA );
       /* Broadcast to clients. */
-      __broadcastLocoProps( inst, NULL, nodeF, NULL );
+      __broadcastLocoProps( inst, NULL, (iONode)NodeOp.base.clone( nodeA ), NULL );
     }
 
     nodeA->base.del(nodeA);
@@ -3500,8 +3498,6 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
   if( StrOp.equals(wFunCmd.name(), NodeOp.getName(nodeA))) {
     data->lastfncmd = SystemOp.getTick();
   }
-
-  nodeF = (iONode)NodeOp.base.clone( nodeA );
 
   /* Inform Driver. */
   if( data->driver != NULL )
