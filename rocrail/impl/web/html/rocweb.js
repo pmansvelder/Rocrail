@@ -3095,8 +3095,12 @@ function handleFiddleYard(fy) {
   var div = document.getElementById("fy_"+fy.getAttribute('id'));
   if( div != null ) {
     fyNode = fyMap[fy.getAttribute('id')];
-    fyNode.setAttribute('locid', fy.getAttribute('locid'));
-    fyNode.setAttribute('state', fy.getAttribute('state'));
+    if( fy.getAttribute('locid') != undefined )
+      fyNode.setAttribute('locid', fy.getAttribute('locid'));
+    if( fy.getAttribute('state') != undefined )
+      fyNode.setAttribute('state', fy.getAttribute('state'));
+    if( fy.getAttribute('pos') != undefined )
+      fyNode.setAttribute('pos', fy.getAttribute('pos'));
     
     div.innerHTML = getFiddleYardImage(fyNode, div);
   }
@@ -3742,9 +3746,11 @@ function getFiddleYardImage(fy, div) {
   
   var label = fy.getAttribute('locid');
   if( label == undefined || label.length == 0 )
-    label = fy.getAttribute('id');
-  else
+    label = fy.getAttribute('id') + "[" + fy.getAttribute('pos') + "]";
+  else {
     fill = "255,100,100";
+    label = fy.getAttribute('id') + "[" + fy.getAttribute('pos') + "] " + label;
+  }
 
   var transform = "rotate("+rotate+", "+(32/2)+", "+(32/2)+")";
 
@@ -3753,7 +3759,7 @@ function getFiddleYardImage(fy, div) {
     "<svg xmlns='http://www.w3.org/2000/svg' width='"+symwidth+"' height='"+(div.style.height)+"'>" +
     "  <g transform='"+transform+"'>" +
     "   <rect x='2' y='2' rx='8' ry='8' width='"+width+"' height='28' fill='rgb("+fill+")' stroke-width='2' stroke='rgb(0,0,0)'/>" +
-    "   <text x='8' y='24' fill='black' font-size='"+blockPointsize+"px'>"+label+"</text>" +
+    "   <text x='8' y='22' fill='black' font-size='"+blockPointsize+"px'>"+label+"</text>" +
     "  </g>" +
     "</svg>";
   
