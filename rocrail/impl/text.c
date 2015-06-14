@@ -61,6 +61,7 @@ static char* _replaceAllSubstitutions( const char* str, iOMap map ) {
   int strLen = StrOp.len(str);
   int i = 0;
   char* tmpStr = StrOp.dup(str);
+  char* tmpStrSave = tmpStr;
   char* resolvedStr = NULL;
 
   char* startV = NULL;
@@ -112,6 +113,8 @@ static char* _replaceAllSubstitutions( const char* str, iOMap map ) {
       startV = NULL;
     }
   } while( startV != NULL );
+
+  StrOp.free(tmpStrSave);
   return resolvedStr;
 }
 
