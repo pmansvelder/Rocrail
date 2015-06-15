@@ -1284,6 +1284,17 @@ function actionLevelSelect(z) {
   Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
   h.innerHTML = timelabel + Title;
+  
+  var idx = 0;
+  for (var i in zlevelMap){
+    var zlevel = zlevelMap[i];
+    if( zlevel.getAttribute('z') == z ) {
+      zlevelIdx = idx;
+      break;
+    }
+    idx++;
+  }
+
 }
 
 function actionLevelDown() {
