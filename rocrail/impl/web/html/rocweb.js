@@ -58,6 +58,7 @@ var didShowDonkey = false;
 var shutdownTimer;
 var clockTimer;
 var Divider = 1;
+var ClockState = "go";
 var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
@@ -2919,7 +2920,7 @@ function getBlockLabel(bk, div) {
     else {
       var placing = "";
       if( lc != undefined && lc.getAttribute('placing') != undefined && lc.getAttribute('placing') == "false" )
-        placing = "&lt;";
+        placing = "&lt; ";
       label = bk.getAttribute('id') + ":" + placing + bk.getAttribute('locid');
     }
   }
@@ -3223,6 +3224,7 @@ function handleOperator(operator) {
 
 
 function handleClock(clock) {
+  //console.log(xml2string(clock));
   var cmd = clock.getAttribute('cmd');
   trace("clock: "+cmd);
   if( cmd == "sync" ) {
@@ -3243,6 +3245,13 @@ function handleClock(clock) {
       Divider = 1;
     else
       Divider = parseInt(clock.getAttribute('divider'));
+  }
+  else if( cmd == "freeze" ) {
+    ClockState = "freeze";
+  }
+  else if( cmd == "go" ) {
+    ClockState = "go";
+    setTimeout( doFastClock, (1000/Divider) );
   }
 }
 
@@ -3270,7 +3279,8 @@ function doFastClock() {
     var element = document.getElementById('secondHand');
     element.setAttribute('visibility', 'hidden');
   }
-  setTimeout( doFastClock, (1000/Divider) );
+  if( ClockState != "freeze" )
+    setTimeout( doFastClock, (1000/Divider) );
 }
 
 function handleModel(model) {
