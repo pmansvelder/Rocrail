@@ -56,6 +56,8 @@ var autoMode = 'off';
 var donkey = 'false';
 var didShowDonkey = false;
 var shutdownTimer;
+var clockTimer;
+var Divider = 1;
 var FGroup = 0;
 var rocrailversion = '';
 var rocrailpwd = '';
@@ -77,6 +79,7 @@ var throttleid = "rocweb";
 var speedUpdateVal = 0;
 var timelabel = "";
 var Title = "Rocrail";
+var Time = 0;
 var parser = new window.DOMParser();
 
 
@@ -686,10 +689,10 @@ function initMenu()
     if( document.getElementById("title").innerHTML.indexOf(title) != -1 ) {
       levelSelect.selectedIndex = ""+idx;
       zlevelIdx = idx;
-      console.log(document.getElementById("title").innerHTML + " == " + title + " i=" +i + " idx="+idx);
+      trace(document.getElementById("title").innerHTML + " == " + title + " i=" +i + " idx="+idx);
     }
     else {
-      console.log(document.getElementById("title").innerHTML + " != " + title);
+      trace(document.getElementById("title").innerHTML + " != " + title);
     }
     idx++;
   }
@@ -1271,16 +1274,16 @@ function actionShutdown() {
 function actionLevelSelect(z) {
   if( ModPlan )
     return;
-  console.log("actionLevelSelect: "+ z);
+  trace("actionLevelSelect: "+ z);
   zlevelSelected.style.display = 'none';
   zleveldiv = zlevelDivMap[z];
   zlevelSelected = zleveldiv;
   zleveldiv.style.display = 'block';
     
   var zlevel = zlevelMap[z];
-  var title = zlevel.getAttribute('title');
+  Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
-  h.innerHTML = timelabel + title;
+  h.innerHTML = timelabel + Title;
 }
 
 function actionLevelDown() {
@@ -1297,9 +1300,9 @@ function actionLevelDown() {
   zleveldiv.style.display = 'block';
     
   var zlevel = zlevelList[zlevelIdx];
-  var title = zlevel.getAttribute('title');
+  Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
-  h.innerHTML = timelabel + title;
+  h.innerHTML = timelabel + Title;
 }
 
 function actionLevelUp() {
@@ -1316,9 +1319,9 @@ function actionLevelUp() {
   zleveldiv.style.display = 'block';
 
   var zlevel = zlevelList[zlevelIdx];
-  var title = zlevel.getAttribute('title');
+  Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
-  h.innerHTML = timelabel + title;
+  h.innerHTML = timelabel + Title;
 }
 
 
@@ -2366,7 +2369,7 @@ $(document).on("pagecreate",function(){
   } );
 
   $('#levelSelect').change(function() {
-    console.log("levelSelect: " + this.value );
+    trace("levelSelect: " + this.value );
     actionLevelSelect(this.value);
   } );
 
@@ -3179,12 +3182,13 @@ function handleOperator(operator) {
 }
 
 
+
 function handleClock(clock) {
   var cmd = clock.getAttribute('cmd');
   trace("clock: "+cmd);
   if( cmd == "sync" ) {
-    var time = parseInt(clock.getAttribute('time'));
-    var d = new Date(time*1000);
+    Time = parseInt(clock.getAttribute('time'));
+    var d = new Date(Time*1000);
     var min = ""+d.getMinutes() ;
     if(min.length == 1) min = "0" + min;
     timelabel = ""+d.getHours()+":"+min+ " ";
@@ -3196,12 +3200,39 @@ function handleClock(clock) {
       title = Title;
     h.innerHTML = timelabel + title;
     
-    var clockdiv = document.getElementById("level_" + 1000);
-    clockdiv.innerHTML = getClockImage(timelabel);
-
+    if( clock.getAttribute('divider') == undefined )
+      Divider = 1;
+    else
+      Divider = parseInt(clock.getAttribute('divider'));
   }
 }
 
+function rotate(id, angle) {
+  var element = document.getElementById(id);
+  if (element) {
+    element.setAttribute('transform', 'rotate(' + angle + ', 100, 100)');
+    if (element.getAttribute('visibility') == 'hidden') {
+      element.setAttribute('visibility', 'visible');
+    }
+  }
+}
+
+function doFastClock() {
+  Time++;
+  var now     = new Date(Time*1000);
+  var hours   = now.getHours();
+  var minutes = now.getMinutes();
+  var seconds = now.getSeconds();
+  rotate('hourHand',   hours * 30 + minutes * 0.5);
+  rotate('minuteHand', minutes * 6);
+  if( Divider < 5 )
+    rotate('secondHand', 6 * seconds + 3 * (1 + Math.cos(Math.PI)));
+  else {
+    var element = document.getElementById('secondHand');
+    element.setAttribute('visibility', 'hidden');
+  }
+  setTimeout( doFastClock, (1000/Divider) );
+}
 
 function handleModel(model) {
   var cmd = model.getAttribute('cmd');
@@ -3743,11 +3774,22 @@ function getClockImage(labelTxt) {
   
   var label = "Here comes the fast clock..."+labelTxt;
   var svg = 
-    "<svg xmlns='http://www.w3.org/2000/svg' width='"+$(window).width()+"' height='"+($(window).height()-yoffset)+"'>" +
-    "  <g>" +
-    "   <circle cx='"+($(window).width()/2)+"' cy='"+(($(window).height()-yoffset)/2)+"' r='"+((width/2)-5)+"' stroke='black' stroke-width='3' fill='white' />" +
-    "   <text x='"+($(window).width()/2)+"' y='"+(($(window).height()-yoffset)/2)+"' fill='black' font-size='"+blockPointsize+"px'>"+label+"</text>" +
-    "  </g>" +
+    "<svg id='fastClock' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events'"+
+    "  version='1.1' baseProfile='full' width='100%' height='100%' viewBox='0 0 200 200'> "+
+    " <g id='hourHand' visibility='hidden'>" +
+    "   <polygon points='94,46 100,40 106,46 106,118 94,118' style='fill:#222; stroke:none'/>" +
+    " </g>" +
+    " <g id='minuteHand' visibility='hidden'>" +
+    "   <polygon points='95.5,11.5 100,7 104.5,11.5 104.5,122 95.5,122' style='fill:#222; stroke:none'/>" +
+    " </g>" +
+    " <g id='secondHand' visibility='hidden'>" +
+    "   <polygon points='98.8,11 100,9.8 101.2,11 101.6,42 98.4,42' style='fill:#ad1a14; stroke:none'/>" +
+    "   <polygon points='98.1,58 101.9,58 102.5,122 97.5,122' style='fill:#ad1a14; stroke:none'/>" +
+    "   <circle cx='100' cy='50' r='8.5' style='fill:none; stroke:#ad1a14; stroke-width:6.5'/>" +
+    " </g>" +
+    " <g>" +
+    "   <circle cx='100' cy='100' r='4' style='fill:white; stroke:#ad1a14; stroke-width:2'/>" +
+    " </g>" +
     "</svg>";
   
   return svg;
@@ -4508,17 +4550,26 @@ function processPlan() {
        clockdiv.setAttribute('id', "level_" + clockZ);
        clockdiv.setAttribute('overflow-x', "auto");
        clockdiv.setAttribute('overflow-y', "auto");
+       clockdiv.setAttribute('onClick', "openClock(this.id)");
        clockdiv.style.position = "absolute";
        clockdiv.style.left = "0px";
        clockdiv.style.top = ""+yoffset+"px";
+       clockdiv.style.width = "100%";
+       clockdiv.style.height = "100%";
        zlevelMap[""+clockZ]  = clocklevel;
        zlevelList[i] = clocklevel;
        zlevelDivMap[""+clockZ]  = clockdiv;
        zlevelDivList[i] = clockdiv;
        clockdiv.style.display = 'none';
        clockdiv.innerHTML = getClockImage();
+       clockdiv.style.backgroundImage = "url('clock.svg')";
+       clockdiv.style.backgroundRepeat = "no-repeat";
+       clockdiv.style.backgroundPosition = "center";
+       //clockdiv.style.backgroundSize = "90% 90%";
        document.body.appendChild(clockdiv);
-       
+       Time = new Date();
+       setTimeout( doFastClock, (1000/Divider) );
+
        
        if( !ModPlan ) {
          var h = document.getElementById("title");

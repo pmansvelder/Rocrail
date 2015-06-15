@@ -270,6 +270,10 @@ static void __getSVG(iOPClient inst, const char* fname) {
     StrOp.free(svg);
     svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath5(data->ini), svgname);
   }
+  if( !FileOp.exist( svg ) ) {
+    StrOp.free(svg);
+    svg = StrOp.fmt("%s/%s.svg", wWebClient.getwebpath(data->ini), svgname);
+  }
 
   if( FileOp.exist( svg ) ) {
     char* svgRotated = NULL;
