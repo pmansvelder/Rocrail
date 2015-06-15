@@ -3250,8 +3250,13 @@ function handleClock(clock) {
     ClockState = "freeze";
   }
   else if( cmd == "go" ) {
+    Time = parseInt(clock.getAttribute('time'));
     ClockState = "go";
     setTimeout( doFastClock, (1000/Divider) );
+  }
+  else if( cmd == "set" ) {
+    Time = parseInt(clock.getAttribute('time'));
+    Divider = parseInt(clock.getAttribute('divider'));
   }
 }
 
