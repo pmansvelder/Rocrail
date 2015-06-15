@@ -133,6 +133,7 @@ function langDE() {
   document.getElementById("labOptionShowBlockID").innerHTML = "Zeige Block Kennungen";
   document.getElementById("labOptionShowTrainID").innerHTML = "Zeige Zug Kennungen";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Zeige Lok-Bild im Block";
+  document.getElementById("labOptionAnalogClock").innerHTML = "Modelluhr";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -234,6 +235,7 @@ function langEN() {
   document.getElementById("labOptionShowBlockID").innerHTML = "Show block IDs";
   document.getElementById("labOptionShowTrainID").innerHTML = "Show train ID";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Show loco image in block";
+  document.getElementById("labOptionAnalogClock").innerHTML = "Fast clock";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -335,6 +337,7 @@ function langNL() {
   document.getElementById("labOptionShowBlockID").innerHTML = "Toon blok ID's";
   document.getElementById("labOptionShowTrainID").innerHTML = "Toon treinstel ID";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Toon lok afbeelding in het blok";
+  document.getElementById("labOptionAnalogClock").innerHTML = "Model klok";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -839,6 +842,10 @@ function openOptions() {
   $('#optionShowTrainID').prop('checked', showtrainid=="true"?true:false).checkboxradio('refresh');
   var showlocoimage = localStorage.getItem("showlocoimage");
   $('#optionShowLocoImage').prop('checked', showlocoimage=="true"?true:false).checkboxradio('refresh');
+  var analogclock = localStorage.getItem("analogclock");
+  if( analogclock == undefined )
+    analogclock = "true";
+  $('#optionAnalogClock').prop('checked', analogclock=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -2034,6 +2041,12 @@ function onOptionShowLocoImage() {
   var optionShowLocoImage = document.getElementById("optionShowLocoImage");
   localStorage.setItem("showlocoimage", optionShowLocoImage.checked ? "true":"false");
   trace("option showlocoiamge = "+ optionShowLocoImage.checked );
+}
+
+function onOptionAnalogClock() {
+  var optionAnalogClock = document.getElementById("optionAnalogClock");
+  localStorage.setItem("analogclock", optionAnalogClock.checked ? "true":"false");
+  trace("option analogclock = "+ optionAnalogClock.checked );
 }
 
 function initThrottleStatus() {
@@ -4552,34 +4565,37 @@ function processPlan() {
          document.body.appendChild(newdiv);
        }
        
-       var clocklevel = document.createElement('zlevel');
-       clocklevel.setAttribute('id', getString("fastclock"));
-       var clockZ = "1000";
-       clocklevel.setAttribute('z', clockZ);
-       clocklevel.setAttribute('title', getString("fastclock"));
-       var clockdiv = document.createElement('div');
-       clockdiv.setAttribute('id', "level_" + clockZ);
-       clockdiv.setAttribute('overflow-x', "auto");
-       clockdiv.setAttribute('overflow-y', "auto");
-       clockdiv.setAttribute('onClick', "openClock(this.id)");
-       clockdiv.style.position = "absolute";
-       clockdiv.style.left = "0px";
-       clockdiv.style.top = ""+yoffset+"px";
-       clockdiv.style.width = "100%";
-       clockdiv.style.height = "100%";
-       zlevelMap[""+clockZ]  = clocklevel;
-       zlevelList[i] = clocklevel;
-       zlevelDivMap[""+clockZ]  = clockdiv;
-       zlevelDivList[i] = clockdiv;
-       clockdiv.style.display = 'none';
-       clockdiv.innerHTML = getClockImage();
-       clockdiv.style.backgroundImage = "url('clock.svg')";
-       clockdiv.style.backgroundRepeat = "no-repeat";
-       clockdiv.style.backgroundPosition = "center";
-       //clockdiv.style.backgroundSize = "90% 90%";
-       document.body.appendChild(clockdiv);
-       Time = new Date();
-       setTimeout( doFastClock, (1000/Divider) );
+       var analogclock = localStorage.getItem("analogclock");
+       if( analogclock == undefined || analogclock == "true" ) {
+         var clocklevel = document.createElement('zlevel');
+         clocklevel.setAttribute('id', getString("fastclock"));
+         var clockZ = "1000";
+         clocklevel.setAttribute('z', clockZ);
+         clocklevel.setAttribute('title', getString("fastclock"));
+         var clockdiv = document.createElement('div');
+         clockdiv.setAttribute('id', "level_" + clockZ);
+         clockdiv.setAttribute('overflow-x', "auto");
+         clockdiv.setAttribute('overflow-y', "auto");
+         clockdiv.setAttribute('onClick', "openClock(this.id)");
+         clockdiv.style.position = "absolute";
+         clockdiv.style.left = "0px";
+         clockdiv.style.top = ""+yoffset+"px";
+         clockdiv.style.width = "100%";
+         clockdiv.style.height = "100%";
+         zlevelMap[""+clockZ]  = clocklevel;
+         zlevelList[i] = clocklevel;
+         zlevelDivMap[""+clockZ]  = clockdiv;
+         zlevelDivList[i] = clockdiv;
+         clockdiv.style.display = 'none';
+         clockdiv.innerHTML = getClockImage();
+         clockdiv.style.backgroundImage = "url('clock.svg')";
+         clockdiv.style.backgroundRepeat = "no-repeat";
+         clockdiv.style.backgroundPosition = "center";
+         //clockdiv.style.backgroundSize = "90% 90%";
+         document.body.appendChild(clockdiv);
+         Time = new Date();
+         setTimeout( doFastClock, (1000/Divider) );
+       }
 
        
        if( !ModPlan ) {
