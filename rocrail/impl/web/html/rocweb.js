@@ -2764,11 +2764,18 @@ function handleLoco(lc) {
   if( lc.getAttribute('trainweight') != undefined )
     lcNode.setAttribute('trainweight', lc.getAttribute('trainweight'));
 
+  var newplacing  = lc.getAttribute('placing');
+  var prevplacing = lcNode.getAttribute('placing');
+  var placingchanged = false;
+  if( newplacing != undefined && newplacing != prevplacing) {
+    lcNode.setAttribute('placing', newplacing);
+    placingchanged = true;
+  }
   
   if( lc.getAttribute('consist') != undefined )
     lcNode.setAttribute('consist', lc.getAttribute('consist'));
 
-  if( modechanged || blockentersidechanged || trainchanged ) {
+  if( modechanged || blockentersidechanged || trainchanged || placingchanged ) {
     var bk = findBlock4Loco(lc.getAttribute('id'));
     if( bk != undefined ) {
       if( modechanged )
@@ -2909,8 +2916,12 @@ function getBlockLabel(bk, div) {
       var image = lc.getAttribute('image');
       label = bk.getAttribute('id') + "<img src='"+image+"' style='height:22px;vertical-align:middle'/>";
     }
-    else
-      label = bk.getAttribute('id') + ":" + bk.getAttribute('locid');
+    else {
+      var placing = "";
+      if( lc != undefined && lc.getAttribute('placing') != undefined && lc.getAttribute('placing') == "false" )
+        placing = "&lt;";
+      label = bk.getAttribute('id') + ":" + placing + bk.getAttribute('locid');
+    }
   }
   else if( localStorage.getItem("showlocoimage") == "true" && (occupied == 1 || occupied == 3) ) {
     var lc = lcMap[locid];
@@ -2925,8 +2936,12 @@ function getBlockLabel(bk, div) {
     trace("label: "+label);
     var lc = lcMap[locid];
     if( lc != undefined ) {
-      var rotate = lc.getAttribute('blockenterside');
-      var train  = lc.getAttribute('train');
+      var rotate  = lc.getAttribute('blockenterside');
+      var train   = lc.getAttribute('train');
+      var placing = "";
+      
+      if( lc.getAttribute('placing') != undefined && lc.getAttribute('placing') == "false" )
+        placing = "-";
       
       if( localStorage.getItem("showtrainid") == "true" && train != undefined && train.length > 0 )
         label = label + "_" + train;
