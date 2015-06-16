@@ -944,7 +944,7 @@
     <ja txt="電源オン" tip="電源を入れる"/>
     <pt_BR txt="Ligar" tip="Ligar"/>
     <sl txt="Vklop" tip="Vklop napajanja."/>
-    <be txt="Увамкнуць" tip="Увамкнуць сілкаваньне."/>
+    <be txt="Увамкнуць сілкаваньне" tip="Увамкнуць сілкаваньне."/>
   </Msg>
   <Msg id="poweroff">
     <de txt="Gleisspannung aus" accel="5" tip="Gleisspannung ausschalten"/>
@@ -16968,7 +16968,7 @@
     <pt_BR txt="Iniciar agora todas as locomotivas da sessão anterior?"/>
     <fi txt="Käynnistetäänkö nyt kaikki veturit edellisestä istunnosta?"/>
     <pl txt="Uruchomić teraz wszystkie lokomotywy z poprzedniej sesji?"/>
-    <be txt="Запусьціць усе лякаматывы зь минулай сэсіі зараз?"/>
+    <be txt="Урухоміць усе лякаматывы зь мінулай сэсіі зараз?"/>
   </Msg>
   <Msg id="disablerouteVreduce">
     <de txt="Keine Geschwindigkeitsänderung bei Weichen"/>
@@ -19565,7 +19565,7 @@
     <sv txt="M-Tid"/>
     <fi txt="Huoltoaika" tip="Ajoaika viimeisen huollon jälkeen."/>
     <pl txt="Czas przeglądu" tip="Czas ostatniego zrobionego przeglądu przebiegu."/>
-    <be txt="Час абслугі" tip="Час з апошняга абслугоўваньня."/>
+    <be txt="Час абсл." tip="Час з апошняга абслугоўваньня."/>
   </Msg>
   <Msg id="mint">
     <en txt="M-Int" tip="Maintenance interval in hours."/>
@@ -22029,7 +22029,7 @@
     <sl txt="Ponastavi"/>
     <da txt="Nulstil alle lokomotiver"/>
     <fi txt="Palauta"/>
-    <be txt="Скінуць"/>
+    <be txt="Скід (reset)"/>
     <el txt="Επαναφορά"/>
   </Msg>
   <Msg id="recentworkspaces">
@@ -27533,7 +27533,7 @@
     <pl txt="Producent"/>
     <fr txt="Vendeur"/>
     <zh_CN txt="厂商"/>
-    <be txt="Пастаўшчык"/>
+    <be txt="Вытворца"/>
   </Msg>
   <Msg id="product">
     <en txt="Product"/>
@@ -28548,7 +28548,7 @@
     <en_AU txt="Start all locs virtual" tip="Put all locs in virtual auto mode."/>
     <en_CA txt="Start all locs virtual" tip="Put all locs in virtual auto mode."/>
     <fr txt="Démarrer toutes les locomotives virtuelles" tip="Mettre toutes les locomotives en mode virtuel automatique"/>
-    <be txt="Запусьціць усе лякаматывы віртуальна" tip="Перавесьці ўсе лякаматывы ў віртуальны аўтарэжым."/>
+    <be txt="Урухоміць усе лякаматывы віртуальна" tip="Перавесьці ўсе лякаматывы ў віртуальны аўтарэжым."/>
   </Msg>
   <Msg id="paste">
     <en txt="Paste"/>
@@ -29353,7 +29353,7 @@
     <ru txt="Выключить и Rocrail сервер?"/>
     <fi txt="Sammuta myös Rocrail-palvelin?"/>
     <pl txt="Wyłącz również serwer Rocrail"/>
-    <be txt="Таксама завяршыць працу сэрвэру Rocrail?"/>
+    <be txt="Завяршыць таксама працу сэрвэру Rocrail?"/>
   </Msg>
   <Msg id="toolbar">
     <en txt="Toolbar"/>
@@ -31129,6 +31129,7 @@
     <pt_BR txt="Data-M" tip="Data da última manutenção."/>
     <sl txt="M-Date" tip="Datum zadnje revizije"/>
     <sr_latin txt="M-datum" tip="Datum poslednjeg pregleda."/>
+    <be txt="Дата абсл." tip="Апошняя дата абслугоўваньня"/>
   </Msg>
   <Msg id="aspectnames">
     <en txt="Aspect names"/>
@@ -31137,6 +31138,7 @@
     <pt_BR txt="Nomes dos aspectos"/>
     <sl txt="Imena stanj"/>
     <sr_latin txt="Odnos imena"/>
+    <be txt="Назвы ліхтароў"/>
   </Msg>
   <Msg id="atfree">
     <en txt="At free"/>
@@ -31148,11 +31150,25 @@
   </Msg>
   <Msg id="atcommand">
     <en txt="At command"/>
+    <de txt="Beim Befehl"/>
+    <nl txt="Bij commando's"/>
+    <pt_BR txt="Ao comando"/>
+    <sl txt="Ob ukazu"/>
+    <sr_latin txt="Po komandi"/>
   </Msg>
   <Msg id="atevent">
     <en txt="At event"/>
+    <de txt="Beim Ereignis"/>
+    <nl txt="Bij meldingen"/>
+    <pt_BR txt="Ao evento"/>
+    <sl txt="Ob dogodku"/>
+    <sr_latin txt="U slučaju"/>
   </Msg>
   <Msg id="activated">
     <en txt="Activated"/>
+    <de txt="Aktiviert"/>
+    <nl txt="Geactiveerd"/>
+    <pt_BR txt="Ativado"/>
+    <sl txt="Aktivirano"/>
   </Msg>
 </Messages>
