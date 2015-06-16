@@ -803,7 +803,18 @@ static void __callback( obj inst, iONode nodeA ) {
       }
       if( wClock.getdivider(nodeA) > 0 )
         data->devider = wClock.getdivider(nodeA);
-      data->time = wClock.gettime(nodeA);
+
+      if( wClock.gettime(nodeA) > 0 ) {
+        data->time = wClock.gettime(nodeA);
+      }
+      else {
+        struct tm* ltm = localtime( &data->time );
+        ltm->tm_hour = wClock.gethour( nodeA );
+        ltm->tm_min  = wClock.getminute( nodeA );
+        ltm->tm_sec  = 0;
+        data->time = mktime(ltm);
+      }
+
       if( NodeOp.findAttr(nodeA, "temp") != NULL )
         data->temp = wClock.gettemp(nodeA);
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "setting time with devider %d", data->devider );

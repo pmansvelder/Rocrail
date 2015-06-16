@@ -84,12 +84,20 @@ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
   </div>
   </div>
 
-  <div data-role="popup" id="popupClock" class="ui-popup" data-theme="a" data-position-to="origin">
+  <div data-role="popup" id="popupClock" class="ui-popup" data-theme="a" data-position-to="origin" style="width:300px;">
   <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
   <div style="padding:10px 10px;">
   <label id="clockTitle">Clock</label>
-  <div><a id="labClockFreeze" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClock(false)">Freeze</a></div>
-  <div><a id="labClockResume" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClock(true)">Resume</a></div>
+  <div class="ui-grid-b">
+  <div class="ui-block-a"><center><label id="labClockDivider">Divider</center></div>
+  <div class="ui-block-b"><center><label id="labClockHour">Hour</center></div>
+  <div class="ui-block-c"><center><label id="labClockMinute">Minute</center></div>
+  <div class="ui-block-a"><input data-clear-btn="false" data-mini="true" name="clockDivider" id="clockDivider" value="0" min="0" max="60" type="number"></div>
+  <div class="ui-block-b"><input data-clear-btn="false" data-mini="true" name="clockHour" id="clockHour" value="0" min="0" max="23" type="number"></div>
+  <div class="ui-block-c"><input data-clear-btn="false" data-mini="true" name="clockMinute" id="clockMinute" value="0" min="0" max="59" type="number"></div>
+  <div class="ui-block-a"><a id="labClockSet" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClockSet()">Set</a></div>
+  <div class="ui-block-b"><a id="labClockFreeze" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClock(false)">Freeze</a></div>
+  <div class="ui-block-c"><a id="labClockResume" href="#" class="ui-shadow ui-btn ui-corner-all" onclick="onClock(true)">Resume</a></div>
   </div>
   </div>
 

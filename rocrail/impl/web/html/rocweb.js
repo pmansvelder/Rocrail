@@ -198,7 +198,11 @@ function langDE() {
   document.getElementById("clockTitle").innerHTML = "<b>Modelluhr</b>";
   document.getElementById("labClockFreeze").innerHTML = "Anhalten";
   document.getElementById("labClockResume").innerHTML = "Fortsetzen";
-  
+  document.getElementById("labClockSet").innerHTML = "Einstellen";
+  document.getElementById("labClockDivider").innerHTML = "Teiler";
+  document.getElementById("labClockHour").innerHTML = "Stunde";
+  document.getElementById("labClockMinute").innerHTML = "Minute";
+
   $('#colorSelect').selectmenu("refresh");
 }
 
@@ -301,6 +305,10 @@ function langEN() {
   document.getElementById("clockTitle").innerHTML = "<b>Fastclock</b>";
   document.getElementById("labClockFreeze").innerHTML = "Freeze";
   document.getElementById("labClockResume").innerHTML = "Resume";
+  document.getElementById("labClockSet").innerHTML = "Set";
+  document.getElementById("labClockDivider").innerHTML = "Divider";
+  document.getElementById("labClockHour").innerHTML = "Hour";
+  document.getElementById("labClockMinute").innerHTML = "Minute";
 
   $('#colorSelect').selectmenu("refresh");
 }
@@ -404,6 +412,10 @@ function langNL() {
   document.getElementById("clockTitle").innerHTML = "<b>Model klok</b>";
   document.getElementById("labClockFreeze").innerHTML = "Stoppen";
   document.getElementById("labClockResume").innerHTML = "Starten";
+  document.getElementById("labClockSet").innerHTML = "Instellen";
+  document.getElementById("labClockDivider").innerHTML = "Deler";
+  document.getElementById("labClockHour").innerHTML = "Uren";
+  document.getElementById("labClockMinute").innerHTML = "Minuten";
 
   $('#colorSelect').selectmenu("refresh");
 }
@@ -425,6 +437,11 @@ function openInfo()
 
 function openClock(id)
 {
+  var d = new Date(Time*1000);
+
+  document.getElementById("clockDivider").value = Divider;
+  document.getElementById("clockHour").value = d.getHours();
+  document.getElementById("clockMinute").value = d.getMinutes();
   $( "#popupClock" ).popup( "open", {positionTo: '#'+id} );
 }
 
@@ -2161,6 +2178,16 @@ function onConsistView() {
 }
 
 
+function onClockSet() {
+  $( "#popupClock" ).popup( "close" );
+  var divider = document.getElementById("clockDivider").value;
+  var hour = document.getElementById("clockHour").value;
+  var minute = document.getElementById("clockMinute").value;
+  
+  var cmd = "<clock cmd=\"set\" divider=\""+divider+"\" hour=\""+hour+"\" minute=\""+minute+"\"/>";
+  sendCommand(cmd);
+}
+
 function onClock(resume) {
   $( "#popupClock" ).popup( "close" );
   var cmd = "<clock cmd=\""+(resume?"go":"freeze")+"\"/>";
@@ -3534,7 +3561,6 @@ function processResponse() {
   trace("readyState="+req.readyState+" status="+req.status);
   if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
     // only if "OK"
-    $.mobile.loading("show");
     try {
       xmlDoc = req.responseXML;
       if( xmlDoc != null ) {
@@ -3667,7 +3693,6 @@ function processResponse() {
     catch(e) {
       console.log("exception: " + e.stack);
     }
-    $.mobile.loading("hide");
     
   }
 
@@ -3869,7 +3894,7 @@ function getClockImage() {
     "   <circle cx='100' cy='50' r='8.5' style='fill:none; stroke:#ad1a14; stroke-width:6.5'/>" +
     " </g>" +
     " <g>" +
-    "   <circle cx='100' cy='100' r='4' style='fill:white; stroke:#ad1a14; stroke-width:2'/>" +
+    "   <circle cx='100' cy='100' r='4' style='fill:#ad1a14; stroke:#ad1a14; stroke-width:2'/>" +
     " </g>" +
     "</svg>";
   
