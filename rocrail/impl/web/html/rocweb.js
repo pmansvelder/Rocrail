@@ -2900,8 +2900,9 @@ function getBlockLabel(bk, div) {
   var label = bk.getAttribute('locid');
   var isEntering = false;
   var isReserved = false;
+  var isNotPlacing = false;
   var occupied   = 0;
-  
+
   if(locid != undefined && locid.length > 0) {
     if( "true" == bk.getAttribute('entering') )
      isEntering = true;
@@ -2911,17 +2912,19 @@ function getBlockLabel(bk, div) {
     occupied = isEntering ? 3:occupied;
   }
   
+  var lc = lcMap[locid];
+  if( lc != undefined && lc.getAttribute('placing') != undefined && lc.getAttribute('placing') == "false" ) {
+    isNotPlacing = true;
+    label = "<u>" + label + "</u>";
+  }
+
   if( localStorage.getItem("showblockid") == "true" && (occupied == 1 || occupied == 3) && "true" != small ) {
-    var lc = lcMap[locid];
     if( localStorage.getItem("showlocoimage") == "true" && lc != undefined ) {
       var image = lc.getAttribute('image');
       label = bk.getAttribute('id') + "<img src='"+image+"' style='height:22px;vertical-align:middle'/>";
     }
     else {
-      var placing = "";
-      if( lc != undefined && lc.getAttribute('placing') != undefined && lc.getAttribute('placing') == "false" )
-        placing = "&lt; ";
-      label = bk.getAttribute('id') + ":" + placing + bk.getAttribute('locid');
+      label = bk.getAttribute('id') + ":" + (isNotPlacing?"<u>":"") + bk.getAttribute('locid') + (isNotPlacing?"</u>":"");
     }
   }
   else if( localStorage.getItem("showlocoimage") == "true" && (occupied == 1 || occupied == 3) ) {
@@ -2939,14 +2942,10 @@ function getBlockLabel(bk, div) {
     if( lc != undefined ) {
       var rotate  = lc.getAttribute('blockenterside');
       var train   = lc.getAttribute('train');
-      var placing = "";
-      
-      if( lc.getAttribute('placing') != undefined && lc.getAttribute('placing') == "false" )
-        placing = "-";
-      
+            
       if( localStorage.getItem("showtrainid") == "true" && train != undefined && train.length > 0 )
         label = label + "_" + train;
-      
+
       if( rotate == undefined )
         rotate = "true";
       
