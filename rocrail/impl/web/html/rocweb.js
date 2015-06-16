@@ -3269,6 +3269,8 @@ function rotate(id, angle) {
   }
 }
 
+function zfill(num, len) {return (Array(len).join("0") + num).slice(-len);}
+
 function doFastClock() {
   Time++;
   var now     = new Date(Time*1000);
@@ -3283,6 +3285,8 @@ function doFastClock() {
     var element = document.getElementById('secondHand');
     element.setAttribute('visibility', 'hidden');
   }
+  var t = document.getElementById("clock24");
+  t.textContent = ""+zfill(hours,2)+":"+zfill(minutes,2);
   if( ClockState != "freeze" )
     setTimeout( doFastClock, (1000/Divider) );
 }
@@ -3816,7 +3820,7 @@ function getSignalImage(sg) {
 }
 
 
-function getClockImage(labelTxt) {
+function getClockImage() {
   // $(window).height()
   var width  = $(window).width();
   var height = $(window).height()-yoffset;
@@ -3824,11 +3828,15 @@ function getClockImage(labelTxt) {
     width = height;  
   else if( width < height ) 
     height = width;  
-  
-  var label = "Here comes the fast clock..."+labelTxt;
+  var pointsize = 24;
+  var label = "00:00";
   var svg = 
     "<svg id='fastClock' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events'"+
     "  version='1.1' baseProfile='full' width='100%' height='100%' viewBox='0 0 200 200'> "+
+    " <g>" +
+    "   <image x='60' y='40' width='80' height='40' xlink:href='logo.png' />" +
+    "   <text id='clock24' text-anchor='middle' x='100' y='150' fill='black' font-size='"+pointsize+"px'>"+label+"</text>" +
+    " </g>" +
     " <g id='hourHand' visibility='hidden'>" +
     "   <polygon points='94,46 100,40 106,46 106,118 94,118' style='fill:#222; stroke:none'/>" +
     " </g>" +
