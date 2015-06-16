@@ -136,6 +136,7 @@ function langDE() {
   document.getElementById("labOptionShowTrainID").innerHTML = "Zeige Zug Kennungen";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Zeige Lok-Bild im Block";
   document.getElementById("labOptionAnalogClock").innerHTML = "Modelluhr";
+  document.getElementById("labOptionSecondHand").innerHTML = "Sekundenzeiger anzeigen";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -238,6 +239,7 @@ function langEN() {
   document.getElementById("labOptionShowTrainID").innerHTML = "Show train ID";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Show loco image in block";
   document.getElementById("labOptionAnalogClock").innerHTML = "Fast clock";
+  document.getElementById("labOptionSecondHand").innerHTML = "Show second hand";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -340,6 +342,7 @@ function langNL() {
   document.getElementById("labOptionShowTrainID").innerHTML = "Toon treinstel ID";
   document.getElementById("labOptionShowLocoImage").innerHTML = "Toon lok afbeelding in het blok";
   document.getElementById("labOptionAnalogClock").innerHTML = "Model klok";
+  document.getElementById("labOptionSecondHand").innerHTML = "Laat secondenwijzer zien";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -848,6 +851,8 @@ function openOptions() {
   if( analogclock == undefined )
     analogclock = "true";
   $('#optionAnalogClock').prop('checked', analogclock=="true"?true:false).checkboxradio('refresh');
+  var secondhand = localStorage.getItem("secondhand");
+  $('#optionSecondHand').prop('checked', secondhand=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -2049,6 +2054,12 @@ function onOptionAnalogClock() {
   var optionAnalogClock = document.getElementById("optionAnalogClock");
   localStorage.setItem("analogclock", optionAnalogClock.checked ? "true":"false");
   trace("option analogclock = "+ optionAnalogClock.checked );
+}
+
+function onOptionSecondHand() {
+  var optionSecondHand = document.getElementById("optionSecondHand");
+  localStorage.setItem("secondhand", optionSecondHand.checked ? "true":"false");
+  trace("option secondhand = "+ optionSecondHand.checked );
 }
 
 function initThrottleStatus() {
@@ -3285,7 +3296,10 @@ function doFastClock() {
   var seconds = now.getSeconds();
   rotate('hourHand',   hours * 30 + minutes * 0.5);
   rotate('minuteHand', minutes * 6);
-  if( Divider < 5 )
+
+  var secondhand = localStorage.getItem("secondhand");
+
+  if( Divider < 5 && secondhand == "true" )
     rotate('secondHand', 6 * seconds + 3 * (1 + Math.cos(Math.PI)));
   else {
     var element = document.getElementById('secondHand');
