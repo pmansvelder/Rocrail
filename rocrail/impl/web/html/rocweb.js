@@ -81,6 +81,7 @@ var speedUpdateVal = 0;
 var timelabel = "";
 var Title = "Rocrail";
 var Time = 0;
+var clockSync = false;
 var parser = new window.DOMParser();
 
 
@@ -3244,6 +3245,7 @@ function handleClock(clock) {
       Divider = 1;
     else
       Divider = parseInt(clock.getAttribute('divider'));
+    clockSync = true;
   }
   else if( cmd == "freeze" ) {
     ClockState = "freeze";
@@ -3252,10 +3254,12 @@ function handleClock(clock) {
     Time = parseInt(clock.getAttribute('time'));
     ClockState = "go";
     setTimeout( doFastClock, (1000/Divider) );
+    clockSync = true;
   }
   else if( cmd == "set" ) {
     Time = parseInt(clock.getAttribute('time'));
     Divider = parseInt(clock.getAttribute('divider'));
+    clockSync = true;
   }
 }
 
@@ -3274,6 +3278,8 @@ function zfill(num, len) {return (Array(len).join("0") + num).slice(-len);}
 function doFastClock() {
   Time++;
   var now     = new Date(Time*1000);
+  if( !clockSync )
+    now = new Date();
   var hours   = now.getHours();
   var minutes = now.getMinutes();
   var seconds = now.getSeconds();
@@ -4630,7 +4636,6 @@ function processPlan() {
          clockdiv.style.backgroundPosition = "center";
          //clockdiv.style.backgroundSize = "90% 90%";
          document.body.appendChild(clockdiv);
-         Time = new Date();
          setTimeout( doFastClock, (1000/Divider) );
        }
 
