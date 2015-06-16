@@ -88,12 +88,12 @@ void statusCheckRoute( iILcDriverInt inst ) {
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
               "give the semaphore %dms time to get in position...", data->semaphoreWait );
           /* give the semaphore some time to get in position... */
-          ThreadOp.sleep(data->semaphoreWait);
+          wLoc.setcmdDelay(cmd, data->semaphoreWait);
         }
         else if(data->signalWait > 0){
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
               "give the signal %dms time to set another aspect...", data->signalWait );
-          ThreadOp.sleep(data->signalWait);
+          wLoc.setcmdDelay(cmd, data->signalWait);
         }
 
         if( data->curBlock == NULL ) {
@@ -107,7 +107,7 @@ void statusCheckRoute( iILcDriverInt inst ) {
         if( wLoc.isusedepartdelay(lcprops) && departdelay > 0 ) {
           TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201, "delay departure for departdelay [%d] sec of block [%s].",
                          departdelay, data->loc->getCurBlock( data->loc) );
-          ThreadOp.sleep(departdelay * 1000);
+          wLoc.setcmdDelay(cmd, departdelay * 1000);
         }
       }
 

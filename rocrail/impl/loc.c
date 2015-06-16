@@ -2024,6 +2024,7 @@ static void __runner( void* threadinst ) {
   int   tick = 0;
   int   virtualtick = 0;
   int extraTick = 0;
+  int delay = 0;
   Boolean cnfgsend = False;
   Boolean loccnfg = wCtrl.isloccnfg( AppOp.getIniNode( wCtrl.name() ) );
 
@@ -3508,7 +3509,7 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
 
   if( nodeA != NULL ) {
     iOMsg msg = MsgOp.inst( NULL, cmd_event );
-    MsgOp.setTimer( msg, 0 );
+    MsgOp.setTimer( msg, wLoc.getcmdDelay(nodeA) );
     MsgOp.setEvent( msg, cmd_event );
     MsgOp.setUsrData(msg, nodeA, 0 );
     ThreadOp.post( data->runner, (obj)msg );

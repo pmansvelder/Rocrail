@@ -2870,6 +2870,7 @@
         <const name="pomwrite" vt="string" val="pomwrite"/>
         <const name="pomread" vt="string" val="pomread"/>
         <var name="cmd" vt="string" defval="NULL" range="*" remark="Loc command."/>
+        <var name="cmdDelay" vt="int" defval="0" range="*" remark="Loc command delay."/>
         <var name="tourid" vt="string" defval="NULL" range="*" remark="Current tour ID."/>
         <var name="scheduleid" vt="string" defval="NULL" range="*" remark="Current schedule ID."/>
         <var name="startupscid" vt="string" defval="NULL" range="*" remark="Startup schedule ID."/>
