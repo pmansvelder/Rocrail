@@ -2900,8 +2900,8 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
     var mode = lc.getAttribute('mode');
     var modereason = lc.getAttribute('modereason');
     var nodest = false;
-    if( modereason != undefined && "nodest" == modereason );
-    nodest = true;
+    if( modereason != undefined && "nodest" == modereason )
+      nodest = true;
 
     if( mode == "auto" ) {
       label = "A";
