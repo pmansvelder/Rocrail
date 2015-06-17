@@ -277,6 +277,19 @@ bool LC::setButtonColor( LEDButton* button, bool state ) {
 
 bool LC::setFX( iONode l_LocProps, iONode node ) {
   int fx = wLoc.getfx(l_LocProps);
+  int fnchanged = wFunCmd.getfnchanged(node);
+  if( fnchanged != -1 && fnchanged > 0 && fnchanged < 29 ) {
+    char fn[8] = {'\0'};
+    int mask = 1 << (fnchanged-1);
+    StrOp.fmtb( fn, "f%d", fnchanged );
+    fx &= ~mask;
+    TraceOp.trc( "lc", TRCLEVEL_DEBUG, __LINE__, 9999, "fnchanged=%d mask=%X(%X) fx=%X", fnchanged, mask, ~mask, fx );
+    if(NodeOp.getBool(node, fn, False ) )
+      fx |= mask;
+    TraceOp.trc( "lc", TRCLEVEL_DEBUG, __LINE__, 9999, "fnchanged=%d mask=%X fx=%X fn=%s", fnchanged, mask, fx, fn );
+    wLoc.setfx(l_LocProps, fx);
+    return true;
+  }
   wLoc.setfx(l_LocProps,
       (NodeOp.getBool(node, "f1",  fx&0x0001?True:False)?0x0001:0x00) |
       (NodeOp.getBool(node, "f2",  fx&0x0002?True:False)?0x0002:0x00) |
