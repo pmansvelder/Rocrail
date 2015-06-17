@@ -109,12 +109,12 @@ static void __getFile(iOPClient inst, const char* fname) {
 }
 
 
-static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname, const char* scale) {
+static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname) {
   char* svgNew = NULL;
   Boolean rotatedV = False;
   iODoc doc = DocOp.parse( svgStr );
   if( doc == NULL || DocOp.getRootNode( doc ) == NULL) {
-    TraceOp.trc( "svg", TRCLEVEL_EXCEPTION, __LINE__, 9999, "svg not parsed\n %60.60s", svgStr );
+    TraceOp.trc( "svg", TRCLEVEL_EXCEPTION, __LINE__, 9999, "svg (%s) not parsed\n %60.60s", ori==NULL?"-":ori, svgStr );
     return NULL;
   }
   iONode svg = DocOp.getRootNode( doc );
@@ -211,32 +211,6 @@ static char* __rotateSVG(const char* svgStr, const char* ori, const char* fname,
 
   }
 
-  if( scale != NULL ) {
-    iONode g = NodeOp.findNode(svg, "g");
-    if( g != NULL ) {
-      int symsize = atoi(scale);
-      /* <svg viewBox="0 0 64 32" width="128" height="64">
-       * 100 = 100%
-       */
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "symsize: %d", (int)symsize );
-      if( symsize != 100 && symsize >= 25 && symsize <= 200 ) {
-        float fSymsize = symsize;
-        float f = fSymsize / 100.0;
-        char* l_scale = StrOp.fmt("scale(%f)", f);
-        const char* transform = NodeOp.getStr(g, "transform", NULL);
-        char* newTransform = NULL;
-        if( transform != NULL)
-          newTransform = StrOp.fmt("%s %s", transform, l_scale);
-        else
-          newTransform = StrOp.fmt("%s", l_scale);
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "transform: %s", newTransform );
-        NodeOp.setStr(g, "transform", newTransform);
-        StrOp.free(l_scale);
-        StrOp.free(newTransform);
-      }
-    }
-  }
-
   svgNew = NodeOp.base.toString(svg);
   if( rotatedV ) {
     /*TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s", svgNew );*/
@@ -250,8 +224,11 @@ static void __getSVG(iOPClient inst, const char* fname) {
   iOStrTok tok = StrTokOp.inst( fname, '.' );
 
   const char* svgname = StrTokOp.nextToken( tok );
-  const char* ori     = StrTokOp.nextToken( tok );
-  const char* scale   = StrTokOp.nextToken( tok );
+  const char* ori     = NULL;
+  if( StrTokOp.hasMoreTokens( tok ) )
+    ori = StrTokOp.nextToken( tok );
+
+
   /* Multiple theme support in the rocrail.ini. */
   char* svg = StrOp.fmt("%s/%s.svg", wWebClient.getsvgpath1(data->ini), svgname);
   if( !FileOp.exist( svg ) ) {
@@ -284,7 +261,8 @@ static void __getSVG(iOPClient inst, const char* fname) {
       Boolean ok = True;
       FileOp.read( f, html, size );
       FileOp.base.del( f );
-      svgRotated = __rotateSVG(html, ori, fname, scale);
+      if( ori != NULL && !StrOp.equalsi(ori, "svg") )
+        svgRotated = __rotateSVG(html, ori, fname);
       if(svgRotated != NULL ) {
         size = StrOp.len(svgRotated);
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "write %s (%s) %d", fname, svg, size );
