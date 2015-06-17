@@ -4662,8 +4662,8 @@ function processPlan() {
          clockdiv.style.position = "absolute";
          clockdiv.style.left = "0px";
          clockdiv.style.top = ""+yoffset+"px";
+         clockdiv.style.bottom = ""+yoffset+"px";
          clockdiv.style.width = "100%";
-         clockdiv.style.height = "100%";
          zlevelMap[""+clockZ]  = clocklevel;
          zlevelList[i] = clocklevel;
          zlevelDivMap[""+clockZ]  = clockdiv;
@@ -4673,7 +4673,6 @@ function processPlan() {
          clockdiv.style.backgroundImage = "url('clock.svg')";
          clockdiv.style.backgroundRepeat = "no-repeat";
          clockdiv.style.backgroundPosition = "center";
-         //clockdiv.style.backgroundSize = "90% 90%";
          document.body.appendChild(clockdiv);
          setTimeout( doFastClock, (1000/Divider) );
        }
