@@ -588,6 +588,7 @@ public:
     wxCheckBox* m_V0onSwap;
     wxCheckBox* m_BBT;
     wxCheckBox* m_ReduceSpeedAtEnter;
+    wxCheckBox* m_ResetPlacing;
     wxRadioBox* m_EngineBox;
     wxStaticText* m_labClass;
     wxTextCtrl* m_Class;

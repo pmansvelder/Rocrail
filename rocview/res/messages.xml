@@ -31171,4 +31171,7 @@
     <pt_BR txt="Ativado"/>
     <sl txt="Aktivirano"/>
   </Msg>
+  <Msg id="resetplacing">
+    <en txt="Reset placing and direction"/>
+  </Msg>
 </Messages>

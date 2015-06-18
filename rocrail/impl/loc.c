@@ -4250,6 +4250,12 @@ static iOLoc _inst( iONode props ) {
     }
   }
 
+  if( wLoc.isresetplacing(data->props) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset placing and direction to default of loco [%s]", wLoc.getid(props));
+    wLoc.setplacing( data->props, True );
+    wLoc.setdir( data->props, True );
+  }
+
   data->fn0 = wLoc.isfn(data->props);
   wLoc.setthrottleid( data->props, "" );
 

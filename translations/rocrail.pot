@@ -7919,3 +7919,9 @@ msgstr ""
 msgid "Activated"
 msgstr ""
 
+#. 
+# id="resetplacing"
+#, c-format
+msgid "Reset placing and direction"
+msgstr ""
+
