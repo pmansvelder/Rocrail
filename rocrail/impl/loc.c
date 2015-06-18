@@ -653,6 +653,7 @@ static void __broadcastLocoProps( iOLoc inst, const char* cmd, iONode node, cons
   wLoc.setV( node, wLoc.getV( data->props ) );
   wLoc.setplacing( node, wLoc.isplacing( data->props ) );
   wLoc.setblockenterside( node, wLoc.isblockenterside( data->props ) );
+  wLoc.setblockenterid( node, wLoc.getblockenterid( data->props ) );
   wLoc.setmode( node, wLoc.getmode( data->props ) );
   wLoc.setmodereason( node, wLoc.getmodereason( data->props ) );
   wLoc.setresumeauto( node, wLoc.isresumeauto(data->props) );
@@ -4153,6 +4154,7 @@ static void _setBlockEnterSide( iOLoc loc, Boolean enterside, const char* blockI
   iOLocData data = Data(loc);
 
   wLoc.setblockenterside(data->props, enterside);
+  wLoc.setblockenterid(data->props, blockId!=NULL?blockId:"");
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "block[%s] enter side for [%s] set to [%s]",
       blockId!=NULL?blockId:"-", wLoc.getid(data->props), wLoc.isblockenterside( data->props )?"+":"-" );
   ModelOp.setBlockOccupancy( AppOp.getModel(), data->curBlock, wLoc.getid(data->props), False, wLoc.isplacing( data->props) ? 1:2, wLoc.isblockenterside( data->props) ? 1:2, NULL );

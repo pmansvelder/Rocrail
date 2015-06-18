@@ -2784,6 +2784,7 @@ function handleLoco(lc) {
     blockchanged = true;
   }
   
+  var blockenterid       = lc.getAttribute('blockenterid');
   var newblockenterside  = lc.getAttribute('blockenterside');
   var prevblockenterside = lcNode.getAttribute('blockenterside');
   var blockentersidechanged = false;
@@ -2820,9 +2821,12 @@ function handleLoco(lc) {
     if( bk != undefined ) {
       if( modechanged )
         updateBlockstate(bk.getAttribute('id'), bk.getAttribute('statesignal'), lc.getAttribute('id'), "loco");
-      if( blockentersidechanged || trainchanged ) {
-        var div = document.getElementById("bk_"+bk.getAttribute('id'));
-        getBlockLabel(bk, div);
+      
+      if( blockenterid != undefined && blockenterid.length > 0 && blockenterid == bk.getAttribute('id') ) {
+        if( blockentersidechanged || trainchanged ) {
+          var div = document.getElementById("bk_"+bk.getAttribute('id'));
+          getBlockLabel(bk, div);
+        }
       }
     }
   }
@@ -2942,6 +2946,8 @@ function getBlockLabel(bk, div) {
   var isNotPlacing = false;
   var occupied   = 0;
 
+  trace("update label for block "+bk.getAttribute('id'));
+  
   if(locid != undefined && locid.length > 0) {
     if( "true" == bk.getAttribute('entering') )
      isEntering = true;
