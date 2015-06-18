@@ -127,7 +127,8 @@ void statusIdle( iILcDriverInt inst, Boolean reverse ) {
       }
     }
 
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
+    if( data->run )
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
                    "Setting state for \"%s\" from LC_IDLE to LC_FINDDEST.",
                    data->loc->getId( data->loc ) );
 
@@ -139,7 +140,8 @@ void statusIdle( iILcDriverInt inst, Boolean reverse ) {
     data->next3Block = NULL;
     data->next3Route = NULL;
 
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
+    if( data->run )
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,
         "Finding destination for \"%s\", current block \"%s\"...",
         data->loc->getId( data->loc ), data->loc->getCurBlock( data->loc ) );
   }
