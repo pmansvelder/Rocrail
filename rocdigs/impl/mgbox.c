@@ -2233,7 +2233,7 @@ static void __binder( iOMCS2Data data) {
               wProduct.setcid(loco, 1);
               TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Binder found product in locolist, product marked as registered; loco %s is: %d", wProduct.getdesc(loco), wProduct.getcid(loco) );
             }
-            byte  buffer[32];
+//            byte  buffer[32];
             buffer[0]  = (data->uid & 0xFF000000) >> 24;
             buffer[1]  = (data->uid & 0x00FF0000) >> 16;
             buffer[2]  = (data->uid & 0x0000FF00) >> 8;
@@ -2286,6 +2286,55 @@ static void __binder( iOMCS2Data data) {
       if( loco != NULL ) {
         ThreadOp.sleep(125);
       }
+    }
+  }
+  /* enable the desired dcc protocol for configured loco */\
+  if( data->locolist != NULL ) {
+    iONode loProps = wLocList.getlc( data->locolist );
+    char prot[32]  = {'\0'};
+    int addr;
+
+    while ( loProps != NULL ) {
+      if( StrOp.equals( wLoc.getprot( loProps ), wLoc.prot_N ) || StrOp.equals( wLoc.getprot( loProps ), wLoc.prot_N ) ) {
+        const char *loName = wLoc.getid( loProps );
+        byte  buffer[32];
+        buffer[0]  = 0x00;
+        buffer[1]  = 0x00;
+        buffer[2]  = (wLoc.getaddr(loProps) / 256) & 0xFF;
+        buffer[2] |= 0xC0;
+        buffer[3]  = (wLoc.getaddr(loProps) % 256) & 0xFF;
+        buffer[4]  = CMD_SYSSUB_LOCOPROT;
+        if( StrOp.equals( wLoc.getprot( loProps ), wLoc.prot_N ) ) {
+          switch(  wLoc.getspcnt( loProps ) ) {
+            case 14:
+              buffer[5] = LOCO_PROT_DCC_14;
+              StrOp.copy(prot,"dcc-14");
+            break;
+            case 126:
+            case 128:
+              buffer[5] = LOCO_PROT_DCC_128;
+              StrOp.copy(prot,"dcc-128");
+            break;
+            default:
+              buffer[5] = LOCO_PROT_DCC_28;
+              StrOp.copy(prot,"dcc-28 (default)");
+            break;
+          }
+        }
+        if( StrOp.equals( wLoc.getprot( loProps ), wLoc.prot_L ) ) {
+          if( wLoc.getspcnt( loProps ) > 28) { 
+            buffer[5] = LOCO_PROT_DCC_L_128;
+            StrOp.copy(prot,"dcc-128 long address");
+          }
+          else {
+            buffer[5] = LOCO_PROT_DCC_L_28;
+            StrOp.copy(prot,"dcc-28 long address");
+          }
+        }
+        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "locolist sid: %d, name: %s configured for %s using %d steps.", wLoc.getaddr(loProps), loName, prot, wLoc.getspcnt( loProps ));
+        ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_SYSTEM, False, 6, buffer) );
+      }
+      loProps = wLocList.nextlc(data->locolist, loProps);
     }
   }
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Thread for mfx bind completed on interface: %s.", data->iid  );

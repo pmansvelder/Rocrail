@@ -46,6 +46,7 @@
 #define CMD_SYSSUB_HALT       0x02
 #define CMD_SYSSUB_EMBREAK    0x03
 #define CMD_SYSSUB_STOPCYCLE  0x04
+#define CMD_SYSSUB_LOCOPROT   0x05
 #define CMD_SYSSUB_SWTIME     0x06
 #define CMD_SYSSUB_ENAPROT    0x08
 #define CMD_SYSSUB_NEWREGNR   0x09
@@ -58,6 +59,13 @@
 #define PROT_MM2              0x01
 #define PROT_MFX              0x02
 #define PROT_DCC              0x04
+
+/* LOC PROTOCOLS */
+#define LOCO_PROT_DCC_28      0x00
+#define LOCO_PROT_DCC_14      0x01
+#define LOCO_PROT_DCC_128     0x02
+#define LOCO_PROT_DCC_L_28    0x03
+#define LOCO_PROT_DCC_L_128   0x04
 
 /* LOCOs */
 #define CMD_LOCO_DISCOVERY    0x01
