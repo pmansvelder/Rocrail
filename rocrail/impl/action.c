@@ -1736,7 +1736,6 @@ static void __doFunction(iOActionData data, iOLoc lc, Boolean fon, int fnaction,
 
   __setFunctionCmd(data, cmd, fon, fnaction, duration);
 
-  wLoc.setfn( cmd, wFunCmd.isf0 ( cmd) );
   LocOp.cmd( lc, cmd);
 
 }
