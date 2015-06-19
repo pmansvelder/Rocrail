@@ -31173,5 +31173,9 @@
   </Msg>
   <Msg id="resetplacing">
     <en txt="Reset placing and direction"/>
+    <de txt="Platzierung und Fahrtrichtung zurücksetzen"/>
+    <nl txt="Plaatsing en richting terug zetten"/>
+    <pt_BR txt="Redefinir a colocação e direção"/>
+    <sl txt="Ponastavi položaj in smer"/>
   </Msg>
 </Messages>
