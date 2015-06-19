@@ -118,6 +118,7 @@ void statusIdle( iILcDriverInt inst, Boolean reverse ) {
           if( !wTour.isrecycle(tour) ) {
             data->tour = NULL;
             data->run = False;
+            data->loc->setMode(data->loc, wLoc.mode_idle, "");
           }
           else {
             TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201,"recycle tour [%s]", wTour.getid(tour));
