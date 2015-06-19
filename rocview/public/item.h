@@ -138,6 +138,7 @@ public:
   bool hasAlt();
 
   void Blockstate(iONode bk, iONode lc);
+  bool m_DandD;
 
 private:
   SymbolRenderer* m_Renderer;

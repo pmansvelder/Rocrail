@@ -397,6 +397,7 @@ Symbol::Symbol( PlanPanel *parent, iONode props, int itemsize, int z, double sca
   m_locidStr = NULL;
   m_Timer = NULL;
   m_RotateSym = False;
+  m_DandD = false;
   m_dragX = 0;
   m_dragY = 0;
   m_Tip = NULL;
@@ -565,7 +566,7 @@ bool BlockDrop::OnDropText(wxCoord x, wxCoord y, const wxString& data) {
         (StrOp.equals( wTurntable.name(), NodeOp.getName( m_Props ) ) && wTurntable.isembeddedblock(m_Props)) )
     {
       TraceOp.trc( "item", TRCLEVEL_INFO, __LINE__, 9999, "D&D: move from %s to %s", fromid, wBlock.getid(m_Props) );
-
+      m_Parent->m_DandD = true;
       iONode cmd = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
       wBlock.setid( cmd, wBlock.getid( m_Props ) );
       wBlock.setlocid( cmd, "" );
@@ -2067,6 +2068,7 @@ void Symbol::OnLoc(wxCommandEvent& event) {
     if( sel != NULL ) {
       const char* id = wLoc.getid( sel );
       if( id != NULL ) {
+        m_DandD = true;
         /* Inform RocRail... */
         iONode cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
         wLoc.setid( cmd, id );
@@ -3398,6 +3400,13 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
 
       // Check block enterside
       // ToDo: Update enterside on D&D...
+      if( m_DandD && StrOp.len(locoid) > 0) {
+        TraceOp.trc( "item", TRCLEVEL_INFO, __LINE__, 9999, "D&D updateEnterside=%d locoid=%s blockid=%s occupied=%d m_RotateSym=%d",
+            updateEnterside, locoid, wBlock.getid( node ), occupied, m_RotateSym );
+        m_DandD = false;
+        oncreate = true;
+      }
+
       if( updateEnterside || oncreate ) {
         if( StrOp.len(locoid) > 0 ) {
           iONode loc = wxGetApp().getFrame()->findLoc( locoid );
