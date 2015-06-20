@@ -2816,6 +2816,9 @@ function handleLoco(lc) {
   if( lc.getAttribute('consist') != undefined )
     lcNode.setAttribute('consist', lc.getAttribute('consist'));
 
+  lcNode.setAttribute('scheduleid', lc.getAttribute('scheduleid'));
+  lcNode.setAttribute('scidx', lc.getAttribute('scidx'));
+
   if( modechanged || blockentersidechanged || trainchanged || placingchanged ) {
     var bk = findBlock4Loco(lc.getAttribute('id'));
     if( bk != undefined ) {
@@ -2894,7 +2897,7 @@ function handleFunction(fn) {
 function updateBlockstate( bkid, sgid, lcid, from ) {
   sg = sgMap[sgid];
   lc = lcMap[lcid];
-  if( sg == undefined )
+  if( sg == undefined)
     return;
 
   var div = document.getElementById("sg_"+sgid);
@@ -2903,6 +2906,7 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
   if( lc != undefined ) {
     var mode = lc.getAttribute('mode');
     var modereason = lc.getAttribute('modereason');
+    var scidx = lc.getAttribute('scidx');
     var nodest = false;
     if( modereason != undefined && "nodest" == modereason )
       nodest = true;
@@ -2929,6 +2933,10 @@ function updateBlockstate( bkid, sgid, lcid, from ) {
     else if( mode == "halfauto" ) {
       label = "H";
       color = blueBackground;
+    }
+    
+    if( scidx != undefined && scidx != "-1" ) {
+      label = "<u>"+label+"</u>";
     }
   }
   trace("blockstate: block="+bkid+" signal="+sgid+" loco="+lcid+" from="+from+" label="+label);
