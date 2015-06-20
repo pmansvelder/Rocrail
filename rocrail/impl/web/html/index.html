@@ -185,6 +185,7 @@ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
   <!--<button id="menuDisconnect" data-rel="close" class="ui-btn ui-icon-action ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="Disconnect(true)">Disconnect</button>-->
   <button id="menuZoom" data-rel="close" class="ui-btn ui-icon-eye ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openZoom(true)">Zoom</button>
   <button id="menuHelp" data-rel="close" class="ui-btn ui-icon-search ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openHelp()">Help</button>
+  <button id="menuTrace" data-rel="close" class="ui-btn ui-icon-bullets ui-corner-all ui-btn-icon-left" style="text-align:left;" onclick="openTrace()">Trace</button>
   <select name="levelSelect" id="levelSelect" style="text-align:left;">
   </select>
   <select name="colorSelect" id="colorSelect" style="text-align:left;">
@@ -259,6 +260,8 @@ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
       <label id="labOptionAnalogClock" for="optionAnalogClock">Show loco image</label>
       <input type="checkbox" name="optionSecondHand" id="optionSecondHand" class="custom" onclick="onOptionSecondHand()" />
       <label id="labOptionSecondHand" for="optionSecondHand">Show second hand</label>
+      <input type="checkbox" name="optionMonitor" id="optionMonitor" class="custom" onclick="onOptionMonitor()" />
+      <label id="labOptionMonitor" for="optionMonitor">Trace</label>
     </fieldset>
     </div>
     <div data-role="fieldcontain">
@@ -366,6 +369,15 @@ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
      <label id="textTitle">Text</label>
      <input type="text" name="newText" id="newText" value="" placeholder="new text" data-theme="a">
      <button id="changeText" class="ui-btn ui-corner-all" onclick="onChangeText()">OK</button>
+   </div>
+ </div>
+   
+ <div data-role="popup" id="popupTrace" class="ui-popup" data-theme="a">
+ <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+   <div style="padding:10px 10px;">
+     <label id="traceTitle"><b>Trace</b></label>
+     <textarea id="traceText" rows="20" cols="100" style="font-family: monospace !important;">
+     </textarea>
    </div>
  </div>
    

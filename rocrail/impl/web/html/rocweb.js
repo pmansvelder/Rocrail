@@ -11,6 +11,7 @@ var scale = 1.0;
 var blockPointsize = 12;
 var planloaded = false;
 var ws = null;
+var MonitorSet = false;
 var initWS;
 var worker;
 var tapholdFkey = 0;
@@ -793,6 +794,15 @@ function openHelp() {
     });
 }
 
+function openTrace() {
+  trace("close menu");
+  //$( "#popupMenu" ).popup( "close" );
+  $('#popupMenu').on("panelclose", function(){
+    $('#popupMenu').unbind( "panelclose" );
+    $( "#popupTrace" ).popup( "open" );
+    });
+}
+
 function openZoom(fromMenu) {
   if( fromMenu ) {
     //trace("close menu");
@@ -870,6 +880,8 @@ function openOptions() {
   $('#optionAnalogClock').prop('checked', analogclock=="true"?true:false).checkboxradio('refresh');
   var secondhand = localStorage.getItem("secondhand");
   $('#optionSecondHand').prop('checked', secondhand=="true"?true:false).checkboxradio('refresh');
+  var monitor = localStorage.getItem("monitor");
+  $('#optionMonitor').prop('checked', monitor=="true"?true:false).checkboxradio('refresh');
 
   var category = localStorage.getItem("category");
   
@@ -2077,6 +2089,17 @@ function onOptionSecondHand() {
   var optionSecondHand = document.getElementById("optionSecondHand");
   localStorage.setItem("secondhand", optionSecondHand.checked ? "true":"false");
   trace("option secondhand = "+ optionSecondHand.checked );
+}
+
+function onOptionMonitor() {
+  var optionMonitor = document.getElementById("optionMonitor");
+  localStorage.setItem("monitor", optionMonitor.checked ? "true":"false");
+  trace("option monitor = "+ optionMonitor.checked );
+  if( optionMonitor.checked )
+    sendCommand("<MONITORON/>");
+  else
+    sendCommand("<MONITOROFF/>");
+
 }
 
 function initThrottleStatus() {
@@ -3453,6 +3476,18 @@ function handleState(state) {
     document.getElementById("headerPower").style.backgroundColor= redBackground;
   else 
     document.getElementById("headerPower").style.backgroundColor= '';
+
+  if( !MonitorSet ) {
+    MonitorSet = true;
+    var monitor = localStorage.getItem("monitor");
+    if( monitor == "true" )
+      sendCommand("<MONITORON/>");
+  }
+}
+
+function handleException(exception) {
+  var text = exception.getAttribute('text');
+  document.getElementById("traceText").innerHTML = text + "&#10;" + document.getElementById("traceText").innerHTML.substring(0, 2000);
 }
 
 function handleAuto(auto) {
@@ -3567,6 +3602,8 @@ function evaluateEvent(xmlStr) {
     trace(xmlStr);
     document.getElementById("headerMenu").style.backgroundColor= '';
   }
+  else if( xmlStr.indexOf("<exception") == 0 )
+    handleException(parseString(xmlStr));
   else 
     trace("unhandled XML: "+xmlStr); 
 }

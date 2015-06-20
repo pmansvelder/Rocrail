@@ -2051,6 +2051,7 @@
       <var name="websocketerror" vt="Boolean" remark=""/>
       <var name="websocketrun" vt="Boolean" remark=""/>
       <var name="websocket" vt="Boolean" remark=""/>
+      <var name="websocketmonitor" vt="Boolean" remark=""/>
       <var name="socket" vt="iOSocket" remark="Client socket."/>
       <var name="rcptBuffer" vt="char*" remark="Receipt buffer."/>
       <var name="rcptSize" vt="int" remark="Size of receipt."/>

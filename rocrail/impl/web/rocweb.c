@@ -521,7 +521,7 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
     }
   }
 
-  if( data->socket != NULL && event != NULL && !StrOp.equals( NodeOp.getName(event), wException.name() )) {
+  if( data->socket != NULL && event != NULL && (!StrOp.equals( NodeOp.getName(event), wException.name() ) || data->websocketmonitor) ) {
     char* info = NodeOp.base.toString( event );
     int len = StrOp.len(info);
     char* b = allocMem(20 + len + 1);
