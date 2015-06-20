@@ -31178,4 +31178,7 @@
     <pt_BR txt="Redefinir a colocação e direção"/>
     <sl txt="Ponastavi položaj in smer"/>
   </Msg>
+  <Msg id="savelevelas" dialog="true">
+    <en txt="Save level as" tip="Save track plan level in a separate file."/>
+  </Msg>  
 </Messages>

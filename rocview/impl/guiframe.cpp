@@ -188,6 +188,15 @@
 #include "rocrail/wrapper/public/Weather.h"
 #include "rocrail/wrapper/public/WeatherList.h"
 #include "rocview/wrapper/public/PowerCtrl.h"
+#include "rocrail/wrapper/public/SignalList.h"
+#include "rocrail/wrapper/public/OutputList.h"
+#include "rocrail/wrapper/public/StageList.h"
+#include "rocrail/wrapper/public/TextList.h"
+#include "rocrail/wrapper/public/SelTabList.h"
+#include "rocrail/wrapper/public/LocationList.h"
+#include "rocrail/wrapper/public/ScheduleList.h"
+#include "rocrail/wrapper/public/ActionList.h"
+#include "rocrail/wrapper/public/VariableList.h"
 
 
 #include "rocview/symbols/svg.h"
@@ -266,6 +275,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( ME_AnalyzeExtClean, RocGuiFrame::OnAnalyze)
     EVT_MENU( ME_Save           , RocGuiFrame::OnSave)
     EVT_MENU( ME_SaveAs         , RocGuiFrame::OnSaveAs)
+    EVT_MENU( ME_SaveLevelAs    , RocGuiFrame::OnSaveLevelAs)
     EVT_MENU( ME_Open           , RocGuiFrame::OnOpen)
     EVT_MENU( ME_OpenWorkspace  , RocGuiFrame::OnOpenWorkspace)
     EVT_MENU( ME_OpenWorkspace+1, RocGuiFrame::OnOpenWorkspace)
@@ -2122,6 +2132,7 @@ void RocGuiFrame::initFrame() {
   menuFile->Append(save_menuFile);
 
   menuFile->Append(ME_SaveAs, wxGetApp().getMenu("saveas"), wxGetApp().getTip("saveas") );
+  menuFile->Append(ME_SaveLevelAs, wxGetApp().getMenu("savelevelas"), wxGetApp().getTip("savelevelas") );
 
   menuFile->AppendSeparator();
   wxMenu *menuAnalyze = new wxMenu();
@@ -3171,9 +3182,94 @@ void RocGuiFrame::OnSave( wxCommandEvent& event ) {
   }
 }
 
+
+static void __copyLevel( iONode levelModel, int level, const char* dbname ) {
+  iONode list = NodeOp.findNode( wxGetApp().getModel(), dbname );
+  if( list != NULL ) {
+    iONode db = NodeOp.inst( dbname, levelModel, ELEMENT_NODE );
+    int childs = NodeOp.getChildCnt(list);
+    int i = 0;
+    TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "Adding %d childs to %s for level %d", childs, dbname, level );
+    NodeOp.addChild( levelModel, db );
+    for( i = 0; i < childs; i++ ) {
+      iONode child = NodeOp.getChild( list, i );
+      if( wItem.getz(child) == level ) {
+        iONode clone = (iONode)NodeOp.base.clone(child);
+        wItem.setz(clone, 0);
+        NodeOp.addChild( db, clone );
+      }
+    }
+  }
+}
+
+void RocGuiFrame::OnSaveLevelAs( wxCommandEvent& event ) {
+  const char* l_openpath = wGui.getopenpath( wxGetApp().getIni() );
+  iONode model = wxGetApp().getModel();
+  int pages = m_PlanNotebook->GetPageCount();
+  for( int i = 0; i < pages; i++ ) {
+    BasePanel* p = (BasePanel*)m_PlanNotebook->GetPage(i);
+    if( wZLevel.isactive( p->getZLevel() ) ) {
+      TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "save level %d as in openpath=%s", wZLevel.getz(p->getZLevel()), l_openpath );
+      wxString ms_FileExt = wxGetApp().getMsg("planfiles");
+      wxFileDialog* fdlg = new wxFileDialog(this, wxGetApp().getMenu("saveplanfileas"), wxString(l_openpath,wxConvUTF8), wZLevel.gettitle(p->getZLevel()), ms_FileExt, wxFD_SAVE);
+      if( fdlg->ShowModal() == wxID_OK ) {
+        // Check for existence.
+        char* path = StrOp.dup(fdlg->GetPath().mb_str(wxConvUTF8));
+        if( FileOp.exist(path) ) {
+          int action = wxMessageDialog( this, wxGetApp().getMsg("fileexistwarning"), _T("Rocrail"), wxYES_NO | wxICON_EXCLAMATION ).ShowModal();
+          if( action == wxID_NO ) {
+            fdlg->Destroy();
+            return;
+          }
+        }
+        if( StrOp.find( path, ".xml") == NULL )
+          path = StrOp.cat( path, ".xml" );
+
+
+        iONode model = NodeOp.inst( wPlan.name(), NULL, ELEMENT_NODE );
+        iONode zlevel = (iONode)NodeOp.base.clone(p->getZLevel());
+        wZLevel.setz(zlevel, 0);
+        NodeOp.addChild( model, zlevel );
+        int level = wZLevel.getz(p->getZLevel());
+
+        __copyLevel( model, level, wTrackList.name() );
+        __copyLevel( model, level, wSwitchList.name() );
+        __copyLevel( model, level, wFeedbackList.name() );
+        __copyLevel( model, level, wSignalList.name() );
+        __copyLevel( model, level, wOutputList.name() );
+        __copyLevel( model, level, wBlockList.name() );
+        __copyLevel( model, level, wStageList.name() );
+        __copyLevel( model, level, wTextList.name() );
+        __copyLevel( model, level, wTurntableList.name() );
+        __copyLevel( model, level, wSelTabList.name() );
+        __copyLevel( model, level, wLocationList.name() );
+        __copyLevel( model, level, wScheduleList.name() );
+        __copyLevel( model, level, wActionList.name() );
+        __copyLevel( model, level, wBoosterList.name() );
+        __copyLevel( model, level, wVariableList.name() );
+
+        iOFile f = FileOp.inst( path, OPEN_WRITE );
+        if( f != NULL ) {
+          long size = 0;
+          char* buffer = NULL;
+          char* version = StrOp.fmt( "%d.%d.%d revision %d", wGui.vmajor, wGui.vminor, wGui.patch,  wxGetApp().getRevisionNr() );
+          wPlan.setrocguiversion( model, version );
+          buffer = (char*)NodeOp.toEscString( model );
+          size = StrOp.len( buffer );
+          TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "Saving (%ld bytes) %s...", size, path );
+          FileOp.write( f, buffer, size );
+          FileOp.base.del( f );
+          StrOp.free( buffer );
+        }
+      }
+      break;
+    }
+  }
+}
+
 void RocGuiFrame::OnSaveAs( wxCommandEvent& event ) {
   const char* l_openpath = wGui.getopenpath( wxGetApp().getIni() );
-  TraceOp.trc( "cv", TRCLEVEL_INFO, __LINE__, 9999, "openpath=%s", l_openpath );
+  TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "openpath=%s", l_openpath );
   wxString ms_FileExt = wxGetApp().getMsg("planfiles");
   wxFileDialog* fdlg = new wxFileDialog(this, wxGetApp().getMenu("saveplanfileas"), wxString(l_openpath,wxConvUTF8), m_LocalPlan, ms_FileExt, wxFD_SAVE);
   if( fdlg->ShowModal() == wxID_OK ) {

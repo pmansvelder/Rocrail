@@ -7925,3 +7925,15 @@ msgstr ""
 msgid "Reset placing and direction"
 msgstr ""
 
+#. 
+# id="savelevelas"
+#, c-format
+msgid "Save level as"
+msgstr ""
+
+#. 
+# id="savelevelas"
+#, c-format
+msgid "Save track plan level in a separate file."
+msgstr ""
+

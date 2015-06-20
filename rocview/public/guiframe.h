@@ -112,6 +112,7 @@ public:
   void OnGoOffline(wxCommandEvent& event);
   void OnAnalyze(wxCommandEvent& event);
   void OnSaveAs(wxCommandEvent& event);
+  void OnSaveLevelAs(wxCommandEvent& event);
   void OnOpen(wxCommandEvent& event);
   void OnNew(wxCommandEvent& event);
   void OnUpload(wxCommandEvent& event);
@@ -521,6 +522,7 @@ enum
     ME_AnalyzeExtClean,
     ME_Save,
     ME_SaveAs,
+    ME_SaveLevelAs,
     ME_Upload,
     ME_Open,
     ME_New,
