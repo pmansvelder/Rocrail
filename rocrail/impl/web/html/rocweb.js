@@ -4185,8 +4185,6 @@ function getSwitchImage(sw, div, checkSet) {
 
   
   trace("switch type: " + type + " accnr="+accnr);
-  if( accnr != undefined && parseInt(accnr) > 1 )
-    type = "accessory";
   
   if (type=="right") {
     if (state=="straight")
