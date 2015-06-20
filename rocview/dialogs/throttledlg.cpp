@@ -153,7 +153,7 @@ void ThrottleDlg::modelEvent( iONode evt ) {
   else if( StrOp.equals( wFunCmd.name(), et ) ) {
     setFX(evt);
     setFLabels();
-    if( NodeOp.findAttr(evt, "f0") ) {
+    if( NodeOp.findAttr(evt, "f0")  && wFunCmd.getfnchanged(evt) == 0 ) {
       m_bFn = wFunCmd.isf0(evt )?true:false;
       wLoc.setfn( m_Props, m_bFn?True:False );
       m_F0->setLED(m_bFn);
