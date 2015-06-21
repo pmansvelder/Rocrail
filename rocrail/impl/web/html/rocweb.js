@@ -3479,6 +3479,16 @@ function handleState(state) {
   else 
     document.getElementById("headerPower").style.backgroundColor= '';
 
+  var mvolt = parseInt(state.getAttribute('volt'));
+  var load  = parseInt(state.getAttribute('load'));
+  var temp  = parseInt(state.getAttribute('temp'));
+  if( state.getAttribute('volt') == undefined ) mvolt = 0;
+  if( state.getAttribute('load') == undefined ) load = 0;
+  if( state.getAttribute('temp') == undefined ) temp = 0;
+  mvolt = mvolt / 1000;
+  load = load / 1000;
+  document.getElementById("traceState").innerHTML = "<center><table width='60%'><tr><th width='20%'>"+mvolt.toFixed(1)+"V<th width='20%'>"+load.toFixed(1)+"A<th width='20%'>"+temp+"&deg;C</table></center>";
+  
   if( !MonitorSet ) {
     MonitorSet = true;
     var monitor = localStorage.getItem("monitor");
@@ -3541,7 +3551,7 @@ function getLevelChar( level ) {
 function getLastTraceLines(trace) {
   var traceLines = trace.split("\n");
   var lastTrace = "";
-  for( i = 0; i < 20 && traceLines[i] != undefined; i++) {
+  for( i = 0; i < 20 && i < traceLines.length && traceLines[i] != undefined; i++) {
     lastTrace = lastTrace + traceLines[i] + "&#10;";
   }
   return lastTrace;
