@@ -2851,7 +2851,7 @@ function handleLoco(lc) {
       if( modechanged )
         updateBlockstate(bk.getAttribute('id'), bk.getAttribute('statesignal'), lc.getAttribute('id'), "loco");
       
-      if( blockenterid != undefined && blockenterid.length > 0 && blockenterid == bk.getAttribute('id') ) {
+      if( (blockenterid != undefined && blockenterid.length > 0 && blockenterid == bk.getAttribute('id')) || trainchanged ) {
         if( blockentersidechanged || trainchanged ) {
           var div = document.getElementById("bk_"+bk.getAttribute('id'));
           getBlockLabel(bk, div);
