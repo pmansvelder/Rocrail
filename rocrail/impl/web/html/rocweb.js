@@ -3460,7 +3460,6 @@ function handleRoute(st) {
   }
 }
 
-
 function handleTrack(tk) {
   var div = document.getElementById("tk_"+tk.getAttribute('id'));
   if( div == null )
@@ -3485,9 +3484,65 @@ function handleState(state) {
   }
 }
 
+
+/*
+    <typedef def="enum {TRCLEVEL_EXCEPTION=0x0001,TRCLEVEL_INFO  =0x0002,TRCLEVEL_WARNING=0x0004,TRCLEVEL_DEBUG  =0x0008,
+                        TRCLEVEL_BYTE     =0x0010,TRCLEVEL_METHOD=0x0020,TRCLEVEL_MEMORY =0x0040,TRCLEVEL_PARAM  =0x0080,
+                        TRCLEVEL_PROTOCOL =0x0100,TRCLEVEL_ERROR =0x0200,TRCLEVEL_PARSE  =0x0400,TRCLEVEL_WRAPPER=0x0800,
+                        TRCLEVEL_USER1    =0x1000,TRCLEVEL_USER2 =0x2000,TRCLEVEL_MONITOR=0x4000,TRCLEVEL_XMLH   =0x8000,
+                        TRCLEVEL_USER     =0xF000,TRCLEVEL_CALC  =0x10000,TRCLEVEL_STATUS=0x20000,TRCLEVEL_ALL   =0xFFFFFF} tracelevel" remark="Trace levels."/>
+ */
+function getLevelChar( level ) {
+  var clevel = '?';
+
+  if( level == 0x0001 )
+    clevel = 'E';
+  else if( level == 0x0002 )
+    clevel = 'I';
+  else if( level == 0x0004 )
+    clevel = 'W';
+  else if( level == 0x0008 )
+    clevel = 'D';
+  else if( level == 0x0010 )
+    clevel = 'B';
+  else if( level == 0x0020 )
+    clevel = 'T';
+  else if( level == 0x0040 )
+    clevel = 'M';
+  else if( level == 0x0080 )
+    clevel = 'A';
+  else if( level == 0x0100 )
+    clevel = 'P';
+  else if( level == 0x0200 )
+    clevel = 'R';
+  else if( level == 0x0400 )
+    clevel = 'S';
+  else if( level == 0x0800 )
+    clevel = 'Z';
+  else if( level == 0x1000 )
+    clevel = 'a';
+  else if( level == 0x2000 )
+    clevel = 'b';
+  else if( level == 0x4000 )
+    clevel = 'c';
+  else if( level == 0x8000 )
+    clevel = 'd';
+  else if( level == 0x10000 )
+    clevel = 'v';
+  else if( level == 0x20000 )
+    clevel = 's';
+
+  return clevel;
+}
+
 function handleException(exception) {
-  var text = exception.getAttribute('text');
-  document.getElementById("traceText").innerHTML = text + "&#10;" + document.getElementById("traceText").innerHTML.substring(0, 2000);
+  var text  = exception.getAttribute('text');
+  var level = parseInt(exception.getAttribute('level'));
+  document.getElementById("traceText").innerHTML = "[" + getLevelChar(level) + "] " + text + "&#10;" + document.getElementById("traceText").innerHTML.substring(0, 2000);
+}
+
+function onTraceClear() {
+  document.getElementById("traceText").innerHTML = "&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;";
 }
 
 function handleAuto(auto) {
