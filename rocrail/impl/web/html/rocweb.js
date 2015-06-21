@@ -203,6 +203,7 @@ function langDE() {
   document.getElementById("labClockDivider").innerHTML = "Teiler";
   document.getElementById("labClockHour").innerHTML = "Stunde";
   document.getElementById("labClockMinute").innerHTML = "Minute";
+  document.getElementById("traceClear").innerHTML = "Meldungen löschen";
 
   $('#colorSelect').selectmenu("refresh");
 }
@@ -310,6 +311,7 @@ function langEN() {
   document.getElementById("labClockDivider").innerHTML = "Divider";
   document.getElementById("labClockHour").innerHTML = "Hour";
   document.getElementById("labClockMinute").innerHTML = "Minute";
+  document.getElementById("traceClear").innerHTML = "Clear messages";
 
   $('#colorSelect').selectmenu("refresh");
 }
@@ -417,6 +419,7 @@ function langNL() {
   document.getElementById("labClockDivider").innerHTML = "Deler";
   document.getElementById("labClockHour").innerHTML = "Uren";
   document.getElementById("labClockMinute").innerHTML = "Minuten";
+  document.getElementById("traceClear").innerHTML = "Verwijder meldingen";
 
   $('#colorSelect').selectmenu("refresh");
 }
@@ -3535,10 +3538,19 @@ function getLevelChar( level ) {
   return clevel;
 }
 
+function getLastTraceLines(trace) {
+  var traceLines = trace.split("\n");
+  var lastTrace = "";
+  for( i = 0; i < 20 && traceLines[i] != undefined; i++) {
+    lastTrace = lastTrace + traceLines[i] + "&#10;";
+  }
+  return lastTrace;
+}
+
 function handleException(exception) {
   var text  = exception.getAttribute('text');
   var level = parseInt(exception.getAttribute('level'));
-  document.getElementById("traceText").innerHTML = "[" + getLevelChar(level) + "] " + text + "&#10;" + document.getElementById("traceText").innerHTML.substring(0, 2000);
+  document.getElementById("traceText").innerHTML = "[" + getLevelChar(level) + "] " + text + "&#10;" + getLastTraceLines(document.getElementById("traceText").innerHTML);
 }
 
 function onTraceClear() {
