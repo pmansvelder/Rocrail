@@ -3843,9 +3843,11 @@ function getSignalImage(sg) {
   var pattern = parseInt( sg.getAttribute('usepatterns') );
   var route   = sg.getAttribute('route');
   var occ     = sg.getAttribute('occ');
+  var road    = sg.getAttribute('road');
   var symbolprefix    = sg.getAttribute('symbolprefix');
   var usesymbolprefix = sg.getAttribute('usesymbolprefix');
   var suffix = ""; 
+  var prefix = ""; 
   
   // symbolprefix + 'signalaspect-' + aspect + '.svg'
   var iAspects = parseInt(aspects);
@@ -3858,6 +3860,10 @@ function getSignalImage(sg) {
   else if( occ == "true" )
     suffix = "-occ";
 
+  if( road == "true" ) {
+    prefix = "road-";
+  }
+  
   var greennr  = parseInt( sg.getAttribute('greennr') );;
   var rednr    = parseInt( sg.getAttribute('rednr') );;
   var yellownr = parseInt( sg.getAttribute('yellownr') );;
@@ -3897,22 +3903,22 @@ function getSignalImage(sg) {
   if( state == "white"  ) aspect = "w";
   
   if( signal == "blockstate" ) {
-    return "url('blockstate"+"."+ ori + ".svg')";
+    return "url('"+prefix+"blockstate"+"."+ ori + ".svg')";
   }
   if( usesymbolprefix == "true" ) {
-    return "url('"+symbolprefix+"signalaspect-"+iAspect+"."+ ori + ".svg')";
+    return "url('"+prefix+symbolprefix+"signalaspect-"+iAspect+"."+ ori + ".svg')";
   }
   if( signal == "distant" ) {
-    return "url('"+type+"distant"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
+    return "url('"+prefix+type+"distant"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
   }
   if( signal == "shunting" ) {
     if( state == "red"  )
-      return "url('"+type+"shunting-2-"+"r"+suffix+"."+ ori + ".svg')";
+      return "url('"+prefix+type+"shunting-2-"+"r"+suffix+"."+ ori + ".svg')";
     else
-      return "url('"+type+"shunting-2-"+"w"+suffix+"."+ ori + ".svg')";
+      return "url('"+prefix+type+"shunting-2-"+"w"+suffix+"."+ ori + ".svg')";
   }
 
-  return "url('"+type+"main"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
+  return "url('"+prefix+type+"main"+aspects+"-"+aspect+suffix+"."+ ori + ".svg')";
 }
 
 
@@ -4115,7 +4121,12 @@ function getTrackImage(tk) {
   var type   = tk.getAttribute('type');
   var route  = tk.getAttribute('route');
   var occ    = tk.getAttribute('occ');
+  var road   = tk.getAttribute('road');
   var suffix = ""; 
+  var prefix = "";
+  
+  if( road == "true" )
+    prefix = "road-";
   
   if( route=="1" )
     suffix = "-route";
@@ -4123,7 +4134,7 @@ function getTrackImage(tk) {
     suffix = "-occ";
   
   if( type == "curve" || type == "buffer" || type == "connector" || type == "dcurve" || type == "dir" || type == "dirall" ) {
-    return "url('"+type+suffix+"."+ori+".svg')";
+    return "url('"+prefix+type+suffix+"."+ori+".svg')";
   }
   else if( type == "concurveleft" ) {
     return "url('"+"connector-curve-left"+suffix+"."+ori+".svg')";
@@ -4136,7 +4147,7 @@ function getTrackImage(tk) {
     return "url('track-"+tknr+suffix+"."+ ori + ".svg')";
   }
   else {
-    return "url('straight"+suffix+"."+ ori + ".svg')";
+    return "url('"+prefix+"straight"+suffix+"."+ ori + ".svg')";
   }
 }
 
@@ -4153,15 +4164,22 @@ function getSwitchImage(sw, div, checkSet) {
   var port1  = sw.getAttribute('port1');
   var route  = sw.getAttribute('route');
   var occ    = sw.getAttribute('occ');
+  var road   = sw.getAttribute('road');
   var raster = false;
   var rasterStr = "";
   var suffix    = "-route";
+  var prefix    = "";
   var nomotor   = false;
   
   if( localStorage.getItem("showroutesonswitches") == "true" ) {
     suffix = "";
   }
   
+  if( road == "true" ) {
+    suffix = "";
+    prefix = "road-";
+  }
+
   if( route=="1" )
     suffix = "-route";
   else if( occ == "true" )
@@ -4188,29 +4206,29 @@ function getSwitchImage(sw, div, checkSet) {
   
   if (type=="right") {
     if (state=="straight")
-      return "url('turnoutright"+rasterStr+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"turnoutright"+rasterStr+suffix+"."+ori+".svg')";
     else
-      return "url('turnoutright"+rasterStr+"-t"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"turnoutright"+rasterStr+"-t"+suffix+"."+ori+".svg')";
   }
   else if (type=="left") {
     if (state=="straight")
-      return "url('turnoutleft"+rasterStr+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"turnoutleft"+rasterStr+suffix+"."+ori+".svg')";
     else
-      return "url('turnoutleft"+rasterStr+"-t"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"turnoutleft"+rasterStr+"-t"+suffix+"."+ori+".svg')";
   }
   else if (type=="twoway") {
     if (state=="straight")
-      return "url('twoway"+rasterStr+"-tr"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"twoway"+rasterStr+"-tr"+suffix+"."+ori+".svg')";
     else
-      return "url('twoway"+rasterStr+"-tl"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"twoway"+rasterStr+"-tl"+suffix+"."+ori+".svg')";
   }
   else if (type=="threeway") {
     if (state=="left")
-      return "url('threeway"+rasterStr+"-tl"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"threeway"+rasterStr+"-tl"+suffix+"."+ori+".svg')";
     else if (state=="right")
-      return "url('threeway"+rasterStr+"-tr"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"threeway"+rasterStr+"-tr"+suffix+"."+ori+".svg')";
     else
-      return "url('threeway"+rasterStr+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"threeway"+rasterStr+suffix+"."+ori+".svg')";
   }
   else if (type=="crossing") {
     var nullM = "";
@@ -4227,9 +4245,9 @@ function getSwitchImage(sw, div, checkSet) {
     
     if( rectc == "true") {
       if (state=="straight")
-        return "url('crossing"+rasterStr+nullM+suffix+"."+ori+".svg')";
+        return "url('"+prefix+"crossing"+rasterStr+nullM+suffix+"."+ori+".svg')";
       else
-        return "url('crossing"+rasterStr+"-t"+suffix+"."+ori+".svg')";
+        return "url('"+prefix+"crossing"+rasterStr+"-t"+suffix+"."+ori+".svg')";
     }
     else {
       if( ori == "west" || ori == "east") {
@@ -4242,9 +4260,9 @@ function getSwitchImage(sw, div, checkSet) {
       }
       var direction = (dir == "true" ? "left":"right");
       if (state=="turnout")
-        return "url('crossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
+        return "url('"+prefix+"crossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
       else
-        return "url('crossing"+direction+rasterStr+nullM+suffix+"."+ori+".svg')";
+        return "url('"+prefix+"crossing"+direction+rasterStr+nullM+suffix+"."+ori+".svg')";
     }
   }
   else if (type=="ccrossing") {
@@ -4256,7 +4274,7 @@ function getSwitchImage(sw, div, checkSet) {
       div.style.width    = "32px";
       div.style.height   = "64px";
     }
-    return "url('ccrossing"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"ccrossing"+suffix+"."+ori+".svg')";
   }
   else if (type=="dcrossing") {
     if( ori == "west" || ori == "east") {
@@ -4269,19 +4287,19 @@ function getSwitchImage(sw, div, checkSet) {
     }
     var direction = (dir == "true" ? "left":"right");
     if (state=="left")
-      return "url('dcrossing"+direction+rasterStr+"-tl"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"dcrossing"+direction+rasterStr+"-tl"+suffix+"."+ori+".svg')";
     else if (state=="right")
-      return "url('dcrossing"+direction+rasterStr+"-tr"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"dcrossing"+direction+rasterStr+"-tr"+suffix+"."+ori+".svg')";
     else if (state=="turnout")
-      return "url('dcrossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"dcrossing"+direction+rasterStr+"-t"+suffix+"."+ori+".svg')";
     else
-      return "url('dcrossing"+direction+rasterStr+suffix+"."+ori+".svg')";
+      return "url('"+prefix+"dcrossing"+direction+rasterStr+suffix+"."+ori+".svg')";
   }
   else if (type=="decoupler") {
     if (state=="straight")
-      return "url('decoupler-on"+"."+ori+".svg')";
+      return "url('"+prefix+"decoupler-on"+"."+ori+".svg')";
     else
-      return "url('decoupler"+"."+ori+".svg')";
+      return "url('"+prefix+"decoupler"+"."+ori+".svg')";
   }
   else if (type=="accessory") {
     if( accnr == "40" ) {
@@ -4351,7 +4369,12 @@ function getBlockImage(bk, div) {
   var id    = bk.getAttribute('id');
   var label = bk.getAttribute('locid');
   var small = bk.getAttribute('smallsymbol');
+  var road  = bk.getAttribute('road');
   var suffix = "";
+  var prefix = "";
+  
+  if( road == "true" )
+    prefix = "road-";
 
   if( ori == "north" || ori == "south" ) {
     div.style.width    = "32px";
@@ -4373,19 +4396,19 @@ function getBlockImage(bk, div) {
   }
 
   if( "true" == bk.getAttribute('entering') )
-    return "url('block-ent"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"block-ent"+suffix+"."+ori+".svg')";
   else if( "closed" == bk.getAttribute('state') )
-    return "url('block-closed"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"block-closed"+suffix+"."+ori+".svg')";
   else if( "ghost" == bk.getAttribute('state') )
-    return "url('block-ghost"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"block-ghost"+suffix+"."+ori+".svg')";
   if( "true" == bk.getAttribute('reserved') )
-    return "url('block-res"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"block-res"+suffix+"."+ori+".svg')";
   else if( label != undefined && label != "null" && label.length > 0 ) {
     trace("block " + id + " is locked by ["+label+"]");
-    return "url('block-occ"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"block-occ"+suffix+"."+ori+".svg')";
   }
   else
-    return "url('block"+suffix+"."+ori+".svg')";
+    return "url('"+prefix+"block"+suffix+"."+ori+".svg')";
   
 }
 
