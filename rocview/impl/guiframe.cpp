@@ -3211,7 +3211,8 @@ void RocGuiFrame::OnSaveLevelAs( wxCommandEvent& event ) {
     if( wZLevel.isactive( p->getZLevel() ) ) {
       TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "save level %d as in openpath=%s", wZLevel.getz(p->getZLevel()), l_openpath );
       wxString ms_FileExt = wxGetApp().getMsg("planfiles");
-      wxFileDialog* fdlg = new wxFileDialog(this, wxGetApp().getMenu("saveplanfileas"), wxString(l_openpath,wxConvUTF8), wZLevel.gettitle(p->getZLevel()), ms_FileExt, wxFD_SAVE);
+      wxFileDialog* fdlg = new wxFileDialog(this, wxGetApp().getMenu("saveplanfileas"), wxString(l_openpath,wxConvUTF8),
+          wxString(wZLevel.gettitle(p->getZLevel()),wxConvUTF8), ms_FileExt, wxFD_SAVE);
       if( fdlg->ShowModal() == wxID_OK ) {
         // Check for existence.
         char* path = StrOp.dup(fdlg->GetPath().mb_str(wxConvUTF8));
