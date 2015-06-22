@@ -2288,6 +2288,7 @@
       <var name="action" vt="iONode"/>
       <var name="timerthread" vt="iOThread"/>
       <var name="actionctrl" vt="iONode"/>
+      <var name="timer" vt="int"/>
       <var name="randomsecs" vt="int"/>
       <var name="ticker" vt="int"/>
       <var name="lastacthour" vt="int"/>

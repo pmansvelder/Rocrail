@@ -1754,7 +1754,11 @@ static void __timerThread( void* threadinst ) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "action timer started %s [%dms] ",
       wAction.getid(data->action), wAction.gettimer(data->action) );
 
-  ThreadOp.sleep(wAction.gettimer(data->action));
+  if( data->timer > 0 )
+    ThreadOp.sleep(data->timer);
+  else
+    ThreadOp.sleep(wAction.gettimer(data->action));
+
   __executeAction( action, data->actionctrl );
   data->timerthread = NULL;
   ThreadOp.base.del(th);
@@ -1814,7 +1818,12 @@ static void _exec( struct OAction* inst, iONode actionctrl ) {
     return;
   }
 
-  if( wAction.gettimer(data->action) == 0 ) {
+  if( wActionCtrl.gettimer(actionctrl) > 0 )
+    data->timer = wActionCtrl.gettimer(actionctrl);
+  else
+    data->timer = 0;
+
+  if( wAction.gettimer(data->action) == 0 && data->timer == 0 ) {
     __executeAction( inst, actionctrl );
   }
   else {

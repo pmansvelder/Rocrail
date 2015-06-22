@@ -193,6 +193,8 @@ public:
     wxComboBox* m_SubState;
     wxStaticText* m_labDuration;
     wxSpinCtrl* m_Duration;
+    wxStaticText* m_labTimer;
+    wxSpinCtrl* m_Timer;
     wxStaticText* m_labLocoID;
     wxChoice* m_LocoID;
     wxStaticText* m_labDesc;

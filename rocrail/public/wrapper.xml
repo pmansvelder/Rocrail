@@ -1515,6 +1515,7 @@
     <var name="state" vt="string" defval="" range="*" remark="Activation state, empty is always."/>
     <var name="substate" vt="string" defval="" range="*"/>
     <var name="duration" vt="int" defval="0" range="0-*"/>
+    <var name="timer" vt="int" defval="-1" range="0-*"/>
     <var name="auto" vt="bool" defval="true" remark="Activate in auto mode."/>
     <var name="manual" vt="bool" defval="true" remark="Activate in manual mode."/>
     <var name="atcmd" vt="bool" defval="true" remark="Activate at commands."/>
