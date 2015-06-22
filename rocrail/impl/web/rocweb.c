@@ -813,6 +813,9 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/logo.png" ) ) {
         __getImage( inst, ROCWEB_LOGO, True );
       }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocrail-icon.png" ) ) {
+        __getImage( inst, "rocrail-icon.png", True );
+      }
       else if( StrOp.find( str, "GET" ) && (StrOp.findi( str, ".png" )||StrOp.findi( str, ".gif" )||StrOp.findi( str, ".ico" )) ) {
         char* symbolfile = StrOp.dup( StrOp.find( str, " /" ) + 2 ) ;
         char* p = StrOp.find( symbolfile, "HTTP" );
