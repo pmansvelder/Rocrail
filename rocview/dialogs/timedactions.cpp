@@ -1166,6 +1166,7 @@ void TimedActions::initCommands()
       m_Command->Append(wxString( wAction.output_off, wxConvUTF8));
       m_Command->Append(wxString( wFeedback.reset, wxConvUTF8));
       m_Command->Append(wxString( wFeedback.setcounterval, wxConvUTF8));
+      m_Command->Append(wxString( wOutput.flip, wxConvUTF8));
       break;
     case 13: // stageblock
       m_Command->Append(wxString( wAction.block_unlock, wxConvUTF8));

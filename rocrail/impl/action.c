@@ -965,6 +965,12 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set counter sensor [%s] to %d", id, counter );
         FBackOp.cmd( fb, cmd, True );
       }
+      else if( StrOp.equals(wOutput.flip, cmdStr) ) {
+        Boolean state = FBackOp.getState(fb);
+        wFeedback.setstate( cmd, !state );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "setting sensor [%s] to [%s]", id, state?"off":"on" );
+        FBackOp.event( fb, cmd );
+      }
       else {
         wFeedback.setstate( cmd, StrOp.equals(wOutput.on, cmdStr) ? True:False);
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "setting sensor [%s] to [%s]", id, cmdStr );
