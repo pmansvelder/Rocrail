@@ -931,6 +931,22 @@ static Boolean _allowBBT( iIBlockBase inst ) {
 /**  */
 static obj _hasManualSignal( iIBlockBase inst ,Boolean distant ,Boolean reverse ) {
   iOStageData data = Data(inst);
+  const char* sgId = NULL;
+
+  if( distant )
+    sgId = wStage.getentersignal( data->props );
+  else
+    sgId = wStage.getexitsignal( data->props );
+
+  if( sgId != NULL && StrOp.len( sgId ) > 0 ) {
+    iOModel model = AppOp.getModel(  );
+    iOSignal sg = ModelOp.getSignal( model, sgId );
+    if( sg != NULL && SignalOp.isManualOperated(sg) ) {
+      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999,
+          "staging block [%s] has a manual operated signal [%s] blockside=%s", inst->base.id(inst), sgId, reverse?"+":"-" );
+      return (obj)sg;
+    }
+  }
   return NULL;
 }
 
