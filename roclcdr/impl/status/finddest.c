@@ -134,7 +134,7 @@ void statusFindDest( iILcDriverInt inst ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201, "Setting state for \"%s\" from LC_FINDDEST to LC_INITDEST.", data->loc->getId( data->loc ) );
 
   }
-  else {
+  else if(data->curBlock != NULL) {
     data->state = LC_WAITBLOCK;
     data->prevState = LC_FINDDEST;
     data->loc->setMode(data->loc, wLoc.mode_wait, wLoc.modereason_nodest);
@@ -144,6 +144,17 @@ void statusFindDest( iILcDriverInt inst ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 4101, "No destination found for [%s]; waiting...", data->loc->getId( data->loc ) );
     }
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4201, "Setting state for [%s] from LC_FINDDEST to LC_WAITBLOCK.", data->loc->getId( data->loc ) );
+  }
+  else {
+    if( !data->warningnodestfound ) {
+      data->state = LC_IDLE;
+      data->prevState = LC_FINDDEST;
+      data->run = False;
+      data->warningnodestfound = True;
+      TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 4101,
+          "No destination found for [%s]; current block [%s] not found...",
+          data->loc->getId( data->loc ), data->loc->getCurBlock( data->loc ) == NULL ? "?":data->loc->getCurBlock( data->loc )  );
+    }
   }
 
 }
