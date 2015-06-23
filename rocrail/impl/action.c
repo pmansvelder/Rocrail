@@ -1759,8 +1759,8 @@ static void __timerThread( void* threadinst ) {
   else
     ThreadOp.sleep(wAction.gettimer(data->action));
 
-  __executeAction( action, data->actionctrl );
   data->timerthread = NULL;
+  __executeAction( action, data->actionctrl );
   ThreadOp.base.del(th);
 }
 
