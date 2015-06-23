@@ -1204,6 +1204,8 @@ static Boolean __engine( iOLoc inst, iONode cmd ) {
         wLoc.setdir( cmdFn, wLoc.isplacing(data->props) ? wLoc.isdir(data->props):!wLoc.isdir(data->props) );
         wLoc.setfn( cmdFn, wFunCmd.isf0( cmd ) );
         wFunCmd.setf0(cmdFn, wFunCmd.isf0( cmd ) );
+        data->fn0 = wFunCmd.isf0( cmd );
+        wLoc.setfn( data->props, wFunCmd.isf0( cmd ) );
         wLoc.setfncnt( cmdFn, wLoc.getfncnt( data->props ) );
         wLoc.setid( cmdFn, wLoc.getid(data->props) );
         wLoc.setoid( cmdFn, wLoc.getoid(data->props) );
