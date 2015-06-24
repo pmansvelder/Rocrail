@@ -296,8 +296,9 @@ static Boolean __cpNode2Fn(iOLoc inst, iONode cmd) {
       case 28 : data->fn28 = wFunCmd.isf28(cmd); return data->fn28;
     }
   } else {
-    if( wFunCmd.getgroup(cmd) == 0)
+    if( wFunCmd.getgroup(cmd) == 0 || wFunCmd.getgroup(cmd) == 1 ) {
       data->fn0  = wFunCmd.isf0 ( cmd );
+    }
     if( wFunCmd.getgroup(cmd) == 0 || wFunCmd.getgroup(cmd) == 1 ) {
       if( data->fn1 != wFunCmd.isf1 ( cmd ) ) wFunCmd.setfnchanged(cmd, 1);
       if( data->fn2 != wFunCmd.isf2 ( cmd ) ) wFunCmd.setfnchanged(cmd, 2);
@@ -824,10 +825,11 @@ static void* __event( void* inst, const void* evt ) {
     }
 
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
-        "lc=%s throttleid=%s chfn=%d f0=%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s",
+        "lc=%s throttleid=%s chfn=%d chgr=%d f0=%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s",
         wLoc.getid( data->props ),
         wLoc.getthrottleid( data->props)!=NULL?wLoc.getthrottleid( data->props):"-",
         wFunCmd.getfnchanged( evtNode),
+        wFunCmd.getgroup( evtNode),
         wLoc.isfn(data->props) ? "on":"off",
         data->fn1  ? "01":"--", data->fn2  ? "02":"--", data->fn3  ? "03":"--", data->fn4  ? "04":"--",
         data->fn5  ? "05":"--", data->fn6  ? "06":"--", data->fn7  ? "07":"--", data->fn8  ? "08":"--",

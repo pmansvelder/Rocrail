@@ -3007,7 +3007,7 @@ static void __handleDriveManual(iOBiDiB bidib, int uid, byte* pdata) {
     wLoc.setthrottleid( nodeC, "bidib" );
 
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
-        "loco=%s addr=%d speed=%d dir=%s", slot!=NULL?slot->id:"-", addr, speed, dir?"fwd":"rev" );
+        "loco=%s addr=%d speed=%d dir=%s change=0x%02X", slot!=NULL?slot->id:"-", addr, speed, dir?"fwd":"rev", change );
 
     data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_INFO );
   }
@@ -3031,6 +3031,8 @@ static void __handleDriveManual(iOBiDiB bidib, int uid, byte* pdata) {
       wFunCmd.setf3( nodeD, (fg1 & 0x04) ? True:False );
       wFunCmd.setf4( nodeD, (fg1 & 0x08) ? True:False );
       wFunCmd.setgroup( nodeD, 1 );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
+          "loco=%s addr=%d fgroup=%d fg1=0x%02X", slot!=NULL?slot->id:"-", addr, 1, fg1 );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
     }
 
@@ -3041,6 +3043,8 @@ static void __handleDriveManual(iOBiDiB bidib, int uid, byte* pdata) {
       wFunCmd.setf7( nodeD, (fg2 & 0x04) ? True:False );
       wFunCmd.setf8( nodeD, (fg2 & 0x08) ? True:False );
       wFunCmd.setgroup( nodeD, 2 );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
+          "loco=%s addr=%d fgroup=%d fg2=0x%02X", slot!=NULL?slot->id:"-", addr, 2, fg2 );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
     }
 
@@ -3051,6 +3055,8 @@ static void __handleDriveManual(iOBiDiB bidib, int uid, byte* pdata) {
       wFunCmd.setf11( nodeD, (fg3 & 0x40) ? True:False );
       wFunCmd.setf12( nodeD, (fg3 & 0x80) ? True:False );
       wFunCmd.setgroup( nodeD, 3 );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
+          "loco=%s addr=%d fgroup=%d fg3=0x%02X", slot!=NULL?slot->id:"-", addr, 3, fg3 );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
     }
 
@@ -3065,6 +3071,8 @@ static void __handleDriveManual(iOBiDiB bidib, int uid, byte* pdata) {
       wFunCmd.setf19( nodeD, (fg & 0x40) ? True:False );
       wFunCmd.setf20( nodeD, (fg & 0x80) ? True:False );
       wFunCmd.setgroup( nodeD, 4 );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
+          "loco=%s addr=%d fgroup=4/5 fg4/5=0x%02X", slot!=NULL?slot->id:"-", addr, fg );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
       wFunCmd.setgroup( nodeD, 5 );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
@@ -3081,6 +3089,8 @@ static void __handleDriveManual(iOBiDiB bidib, int uid, byte* pdata) {
       wFunCmd.setf27( nodeD, (fg & 0x40) ? True:False );
       wFunCmd.setf28( nodeD, (fg & 0x80) ? True:False );
       wFunCmd.setgroup( nodeD, 6 );
+      TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999,
+          "loco=%s addr=%d fgroup=6/7 fg6/7=0x%02X", slot!=NULL?slot->id:"-", addr, fg );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
       wFunCmd.setgroup( nodeD, 7 );
       data->listenerFun( data->listenerObj, (iONode)NodeOp.base.clone(nodeD), TRCLEVEL_INFO );
