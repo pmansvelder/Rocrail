@@ -951,6 +951,21 @@ static obj _hasManualSignal( iIBlockBase inst ,Boolean distant ,Boolean reverse 
 }
 
 
+static Boolean __isExitSignalRed( iIBlockBase inst ) {
+  iOStageData data = Data(inst);
+  const char* sgId = wStage.getexitsignal( data->props );
+
+  if( sgId != NULL && StrOp.len( sgId ) > 0 ) {
+    iOModel model = AppOp.getModel(  );
+    iOSignal sg = ModelOp.getSignal( model, sgId );
+    if( sg != NULL && SignalOp.isManualOperated(sg) ) {
+      return SignalOp.isState(sg, wSignal.red);
+    }
+  }
+  return False;
+}
+
+
 /**  */
 static Boolean _hasPre2In( iIBlockBase inst ,const char* fromBlockId ) {
   iOStageData data = Data(inst);
@@ -2038,6 +2053,12 @@ static Boolean _isDepartureAllowed( iIBlockBase inst, const char* id, Boolean fo
   if( StrOp.equals( wStage.getexitstate(data->props), wBlock.closed ) ) {
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
         "departure of loco %s from stage %s is not allowed; stageblock exit is closed", id, data->id );
+    return False;
+  }
+
+  if( __isExitSignalRed(inst) ) {
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+        "departure of loco %s from stage %s is not allowed; stageblock exit signal is manually red", id, data->id );
     return False;
   }
 
