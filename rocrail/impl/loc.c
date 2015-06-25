@@ -846,6 +846,7 @@ static void* __event( void* inst, const void* evt ) {
       wFunCmd.setaddr( node, wLoc.getaddr( data->props ) );
       __cpFn2Node(inst, node, -1, 0);
       wFunCmd.setf0( node, wLoc.isfn(data->props) );
+      wFunCmd.setgroup( node, wFunCmd.getgroup( evtNode)),
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "broadcasting function command %d...", wFunCmd.isf0( node));
       AppOp.broadcastEvent( node );
     }

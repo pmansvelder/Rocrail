@@ -341,7 +341,7 @@ bool LC::updateLoc( iONode node ) {
 
         setFLabels();
 
-        if( NodeOp.findAttr(node, "f0") && wFunCmd.getfnchanged(node) == 0 ) {
+        if( NodeOp.findAttr(node, "f0") && (wFunCmd.getfnchanged(node) == 0 || wFunCmd.getgroup(node) == 1) ) {
           m_bFn = wFunCmd.isf0( node )?true:false;
           wLoc.setfn( m_LocProps, m_bFn?True:False );
           setButtonColor( m_F0, !m_bFn );
