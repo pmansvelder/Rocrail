@@ -224,8 +224,10 @@ static char* __addActionProperties(iOMap map, iONode node) {
     struct tm* ltm = localtime( &l_time );
     NodeOp.setInt(node, "hour", ltm->tm_hour);
     NodeOp.setInt(node, "min", ltm->tm_min);
+    NodeOp.setInt(node, "sec", ltm->tm_sec);
     MapOp.put(map, "hour", (obj)NodeOp.getStr(node, "hour", "0") );
     MapOp.put(map, "min", (obj)NodeOp.getStr(node, "min", "0") );
+    MapOp.put(map, "sec", (obj)NodeOp.getStr(node, "sec", "0") );
   }
   return mvspeedStr;
 }
