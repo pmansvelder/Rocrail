@@ -704,29 +704,34 @@ function initMenu()
   
   levelSelect.selectedIndex = 0;
   
-  var idx = 0;
-  for (var i in zlevelMap){
-    var zlevel = zlevelMap[i];
-    var title  = zlevel.getAttribute('title');
-    var z      = zlevel.getAttribute('z');
-    if( z == undefined )
-      z = "0";
-    zoption = document.createElement( 'option' );
-    zoption.value = z;
-    zoption.innerHTML = title;
-    levelSelect.add( zoption );
-    if( document.getElementById("title").innerHTML.indexOf(title) != -1 ) {
-      levelSelect.selectedIndex = ""+idx;
-      zlevelIdx = idx;
-      trace(document.getElementById("title").innerHTML + " == " + title + " i=" +i + " idx="+idx);
-    }
-    else {
-      trace(document.getElementById("title").innerHTML + " != " + title);
-    }
-    idx++;
+  if( ModPlan ) {
+    $('#levelSelect').selectmenu("refresh");
+    document.getElementById("levelSelect").style.display = 'none';
   }
-  $('#levelSelect').selectmenu("refresh");
-
+  else {
+    var idx = 0;
+    for (var i in zlevelMap){
+      var zlevel = zlevelMap[i];
+      var title  = zlevel.getAttribute('title');
+      var z      = zlevel.getAttribute('z');
+      if( z == undefined )
+        z = "0";
+      zoption = document.createElement( 'option' );
+      zoption.value = z;
+      zoption.innerHTML = title;
+      levelSelect.add( zoption );
+      if( document.getElementById("title").innerHTML.indexOf(title) != -1 ) {
+        levelSelect.selectedIndex = ""+idx;
+        zlevelIdx = idx;
+        trace(document.getElementById("title").innerHTML + " == " + title + " i=" +i + " idx="+idx);
+      }
+      else {
+        trace(document.getElementById("title").innerHTML + " != " + title);
+      }
+      idx++;
+    }
+    $('#levelSelect').selectmenu("refresh");
+  }
   
   var lang = localStorage.lang;
   var sel = document.getElementById('languageSelect');
