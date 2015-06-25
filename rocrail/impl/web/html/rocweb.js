@@ -705,8 +705,12 @@ function initMenu()
   levelSelect.selectedIndex = 0;
   
   if( ModPlan ) {
+    zoption = document.createElement( 'option' );
+    zoption.value = "0";
+    zoption.innerHTML = Title;
+    levelSelect.add( zoption );
     $('#levelSelect').selectmenu("refresh");
-    document.getElementById("levelSelect").style.display = 'none';
+    levelSelect.style.display = 'none';
   }
   else {
     var idx = 0;
@@ -4802,7 +4806,7 @@ function processPlan() {
        }
        
        var analogclock = localStorage.getItem("analogclock");
-       if( analogclock == undefined || analogclock == "true" ) {
+       if( !ModPlan && (analogclock == undefined || analogclock == "true") ) {
          var clocklevel = document.createElement('zlevel');
          clocklevel.setAttribute('id', getString("fastclock"));
          var clockZ = "1000";
