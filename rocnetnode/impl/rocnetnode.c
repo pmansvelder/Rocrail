@@ -212,7 +212,9 @@ static byte* __handleDisplay( iORocNetNode rocnetnode, byte* rn ) {
       const char* text = (const char*)&rn[RN_PACKET_DATA + 2];
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Display %d:%d set to [%s]",
           rn[RN_PACKET_DATA + 0], rn[RN_PACKET_DATA + 1], text );
+      MutexOp.wait( data->i2cmux );
       raspiWriteRegArrayI2C(data->i2cdescriptor, rn[RN_PACKET_DATA + 0], rn[RN_PACKET_DATA + 1], text, StrOp.len(text) );
+      MutexOp.post( data->i2cmux );
     }
     break;
   }

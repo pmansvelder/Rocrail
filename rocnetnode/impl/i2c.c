@@ -63,7 +63,7 @@ int raspiWriteRegArrayI2C(int descriptor, unsigned char dev_addr, unsigned char 
   memcpy(buff+1, data, len);
   messages[0].addr = dev_addr;
   messages[0].flags = 0;
-  messages[0].len = sizeof(1 + len);
+  messages[0].len = 1 + len;
   messages[0].buf = buff;
   packets.msgs = messages;
   packets.nmsgs = 1;
