@@ -11278,7 +11278,7 @@
     <sl txt="Ustavi ob izhodu"/>
     <pt_BR txt="Pare após sair"/>
     <fi txt="Pysäytä poistuttaessa"/>
-    <be txt="Спыніць пры выйсці"/>
+    <be txt="Спыніць пры выйсьці"/>
   </Msg>
   <Msg id="rocguiini" dialog="true">
     <de txt="Rocview Eigenschaften" accel="0" tip="Ändern der Rocview Eigenschaften"/>
@@ -16290,7 +16290,7 @@
     <pt_BR txt="Módulo do diagrama"/>
     <fi txt="Modulisuunnitelma"/>
     <pl txt="Plan modułu"/>
-    <be txt="План модуля"/>
+    <be txt="Плян модуля"/>
   </Msg>
   <Msg id="addmodule">
     <de txt="Module hinzufügen"/>
@@ -31147,6 +31147,7 @@
     <pt_BR txt="Quando liberado"/>
     <sl txt="Ob prostem"/>
     <sr_latin txt="Besplatno"/>
+    <be txt="Bei Freiwerden"/>
   </Msg>
   <Msg id="atcommand">
     <en txt="At command"/>
@@ -31155,6 +31156,7 @@
     <pt_BR txt="Ao comando"/>
     <sl txt="Ob ukazu"/>
     <sr_latin txt="Po komandi"/>
+    <be txt="Beim Befehl"/>
   </Msg>
   <Msg id="atevent">
     <en txt="At event"/>
@@ -31163,6 +31165,7 @@
     <pt_BR txt="Ao evento"/>
     <sl txt="Ob dogodku"/>
     <sr_latin txt="U slučaju"/>
+    <be txt="Beim Ereignis"/>
   </Msg>
   <Msg id="activated">
     <en txt="Activated"/>
@@ -31170,6 +31173,8 @@
     <nl txt="Geactiveerd"/>
     <pt_BR txt="Ativado"/>
     <sl txt="Aktivirano"/>
+    <be txt="Aktiviert"/>
+    <sr_latin txt="Aktiviran"/>
   </Msg>
   <Msg id="resetplacing">
     <en txt="Reset placing and direction"/>
@@ -31177,8 +31182,14 @@
     <nl txt="Plaatsing en richting terug zetten"/>
     <pt_BR txt="Redefinir a colocação e direção"/>
     <sl txt="Ponastavi položaj in smer"/>
+    <be txt="Platzierung und Fahrtrichtung zurücksetzen"/>
+    <sr_latin txt="Poništi postavku i pravac"/>
   </Msg>
   <Msg id="savelevelas" dialog="true">
     <en txt="Save level as" tip="Save track plan level in a separate file."/>
-  </Msg>  
+    <nl txt="Spoorplan nivo opslaan als" tip="Spoorplan nivo in een appart bestand opslaan"/>
+    <pt_BR txt="Salvar nível como" tip="Salvar nível do diagrama de trilhos em arquivo separado."/>
+    <sl txt="Shrani nivo kot" tip="Shrani nivo tirnega načrta v posebno datoteko."/>
+    <sr_latin txt="Snimi nivo kao" tip="Snimi nivo šina u poseban fajl"/>
+  </Msg>
 </Messages>
