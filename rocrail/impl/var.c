@@ -148,7 +148,7 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
     }
   }
 
-  if( tokCnt == 1 && StrOp.len(retVal) > 0) {
+  if( tokCnt == 1 && StrOp.len(retVal) > 0 && separator != ' ') {
     retVal[StrOp.len(retVal)-1] = '\0';
   }
 
