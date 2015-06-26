@@ -92,6 +92,11 @@ static char* _replaceAllSubstitutions( const char* str, iOMap map ) {
           StrOp.fmtb(min, "%02d", atoi((const char*)MapOp.get(map, startV+1)) );
           resolvedStr = StrOp.cat( resolvedStr, min );
         }
+        else if( StrOp.equals("sec", startV+1)) {
+          char sec[8] = {'\0'};
+          StrOp.fmtb(sec, "%02d", atoi((const char*)MapOp.get(map, startV+1)) );
+          resolvedStr = StrOp.cat( resolvedStr, sec );
+        }
         else
           resolvedStr = StrOp.cat( resolvedStr, (const char*)MapOp.get(map, startV+1) );
       }
