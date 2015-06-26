@@ -425,6 +425,115 @@ function langNL() {
 }
 
 
+function langFR() {
+  var donkey = "<br>Rocrail vit d'un travail entièrement volontaire. Néanmoins, Rocrail nécessite aussi une contribution monétaire. Votre contribution continue est vitale pour garder Rocrail disponible. Si vous avez déjà contribué, vous pouvez demander une clé qui désactivera ce message au démarrage : donate@rocrail.net<br>";
+  donkey += "<div id=\"donkeyWarning\"><b>Rocweb interrompra les communications dans 5 minutes !</b></div>";
+  document.getElementById("donkey").innerHTML = donkey;
+
+  document.getElementById("menuInfo").innerHTML = "Informations";
+  document.getElementById("menuSystem").innerHTML = "Système";
+  document.getElementById("menuAuto").innerHTML = "Automatismes";
+  document.getElementById("menuOptions").innerHTML = "Options";
+  document.getElementById("menuGuest").innerHTML = "Loco invitée";
+  //document.getElementById("menuTrains").innerHTML = "Trains";
+  //document.getElementById("menuDisconnect").innerHTML = "Déconnection serveur";
+  document.getElementById("menuHelp").innerHTML = "Aide";
+  document.getElementById("systemTitle").innerHTML = "<b>Système</b>";
+  document.getElementById("autoTitle").innerHTML = "<b>Automatismes</b>";
+  document.getElementById("systemInitField").innerHTML = "Initialisation";
+  document.getElementById("systemQuerySensors").innerHTML = "Début de service !";
+  document.getElementById("systemEmergencyBreak").innerHTML = "Arrêt d'urgence";
+  document.getElementById("systemStartAll").innerHTML = "Démarrer toutes les locs";
+  document.getElementById("systemStopAll").innerHTML = "Arrèter toutes les locs";
+  document.getElementById("systemSoftReset").innerHTML = "Redémarrage logiciel";
+  document.getElementById("systemShutdown").innerHTML = "Arrêt du serveur";
+  document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
+  document.getElementById("labOptionDebug").innerHTML = "Debug";
+  document.getElementById("labOptionSimSensors").innerHTML = "Simulation des détecteurs";
+  document.getElementById("labOptionShowAllSchedules").innerHTML = "Afficher tous les horaires";
+  document.getElementById("labOptionModuleView").innerHTML = "Vue modules";
+  document.getElementById("labOptionShowOcc").innerHTML = "Occupation des blocs";
+  document.getElementById("labOptionShowRoutes").innerHTML = "Afficher routes";
+  document.getElementById("labOptionShowRoutesOnSwitches").innerHTML = "Afficher les routes sur les aiguillaqes";
+  document.getElementById("labOptionAllSpeedSteps").innerHTML = "Utiliser tous les crans de vitesse";
+  document.getElementById("labOptionSpeedButtons").innerHTML = "Boutons pour la vitesse";
+  document.getElementById("labOptionBinState").innerHTML = "BinState control";
+  document.getElementById("labOptionShowBlockID").innerHTML = "Afficher les noms des blocs";
+  document.getElementById("labOptionShowTrainID").innerHTML = "Afficher les noms des trains";
+  document.getElementById("labOptionShowLocoImage").innerHTML = "Montrer la photo des locos dans les blocs";
+  document.getElementById("labOptionAnalogClock").innerHTML = "Horloge rapide";
+  document.getElementById("labOptionSecondHand").innerHTML = "Afficher la trotteuse";
+  document.getElementById("labLocoCatEngine").innerHTML = "Type de traction";
+  document.getElementById("labLocoCatEra").innerHTML = "Epoque";
+  document.getElementById("labLocoCatRoadname").innerHTML = "Compagnie";
+  document.getElementById("labLocoSortID").innerHTML = "Nom";
+  document.getElementById("labLocoSortAddress").innerHTML = "Adresse";
+  document.getElementById("labBlockStart").innerHTML = "Démarrer le train";
+  document.getElementById("labBlockStop").innerHTML = "Arrêter le train";
+  document.getElementById("labBlockManual").innerHTML = "Semi-automatique";
+  document.getElementById("labBlockReset").innerHTML = "Redém. logiciel, Concerv. occup. blocs";
+  document.getElementById("labBlockSwapPlacing").innerHTML = "Changer de direction";
+  document.getElementById("labBlockSwapEnter").innerHTML = "Changer le coté d'entrée";
+  document.getElementById("labBlockClose").innerHTML = "Fermer";
+  document.getElementById("labBlockOpen").innerHTML = "Ouvrir";
+  document.getElementById("labBlockTrain").innerHTML = "Assigner un train";
+  document.getElementById("labTTNext").innerHTML = "Prochaine voie";
+  document.getElementById("labTTPrev").innerHTML = "Voie précédente";
+  document.getElementById("labTTGoto").innerHTML = "Aller à la voie...";
+  document.getElementById("labFYNext").innerHTML = "Prochaine voie";
+  document.getElementById("labFYPrev").innerHTML = "Voie précédente";
+  document.getElementById("labStageClose").innerHTML = "Fermer";
+  document.getElementById("labStageOpen").innerHTML = "Ouvrir";
+  document.getElementById("labStageCloseExit").innerHTML = "Fermer la sortie";
+  document.getElementById("labStageOpenExit").innerHTML = "Ouvrir la sortie";
+  document.getElementById("labStageCompress").innerHTML = "Compresser";
+  document.getElementById("titleGuestLoco").innerHTML = "<b>Loco invitée</b>";
+  document.getElementById("guestAddress").placeholder = "Adresse";
+  document.getElementById("guestShortID").placeholder = "Nom";
+  document.getElementById("guestAdd").innerHTML = "Ajouter";
+  document.getElementById("colorNone").innerHTML = "Transparent";
+  document.getElementById("colorGreen").innerHTML = "Vert";
+  document.getElementById("colorGrey").innerHTML = "Gris";
+  document.getElementById("colorWhite").innerHTML = "Blanc";
+  document.getElementById("colorBlue").innerHTML = "Bleu";
+  document.getElementById("colorUser").innerHTML = "Couleur personnelle";
+  document.getElementById("labUserColor").innerHTML = "Couleur de fond";
+  document.getElementById("labSliderDelta").innerHTML = "Curseur delta";
+  document.getElementById("labControlCode").innerHTML = "Code de contrôle";
+  document.getElementById("labSlaveCode").innerHTML = "Code esclave";
+  document.getElementById("locoSelectTitle").innerHTML = "Locomotives";
+  document.getElementById("helpTitle").innerHTML = "<b>Aide</b>";
+  var help  = "<tr><th>Bouton<th>Action d'un long clic";
+  help += "<tr><td>Image loco<td>Ouvre le menu bloc si la loco est dans un bloc";
+  help += "<tr><td>RE<td>Arrêt général";
+  help += "<tr><td>FG<td>Arrêt d'urgence";
+  help += "<tr><td>F1-F4<td>Throttle selection";
+  help += "<tr><td>F5<td>Ajoute un wagon au train";
+  help += "<tr><td>F6<td>Enlève un wagon du train";
+  help += "<tr><td>F7<td>Charge un wagon du train";
+  help += "<tr><td>F8<td>vide un wagon du train";
+  help += "<tr><td>F9<td>Ajoute une loco à l'U.M.";
+  help += "<tr><td>F10<td>Enlève une loco de l'U.M.";
+  help += "<tr><td>F11<td>Affiche l'Unité Multiple complète avec la loco principale";
+  help += "<tr><td>F13<td>Mode manuel MARCHE/ARRET";
+  help += "<tr><td>F14<td>Manœuvre MARCHE/ARRET";
+  help += "<tr><td>Lights<td>Dispatch"; 
+  help += "<tr><td>Direction<td>Stop (V=0)"; 
+  document.getElementById("helpTable").innerHTML = help;
+  document.getElementById("helpLink").href = "http://www.rocweb.net/doku.php?id=rocweb:rocweb-en";
+  document.getElementById("clockTitle").innerHTML = "<b>Horloge Rapide</b>";
+  document.getElementById("labClockFreeze").innerHTML = "Pause";
+  document.getElementById("labClockResume").innerHTML = "Continuer";
+  document.getElementById("labClockSet").innerHTML = "Régler";
+  document.getElementById("labClockDivider").innerHTML = "Diviseur";
+  document.getElementById("labClockHour").innerHTML = "Heure";
+  document.getElementById("labClockMinute").innerHTML = "Minute";
+
+  $('#colorSelect').selectmenu("refresh");
+}
+
+
+
 /* Info Dialog */
 function openInfo()
 {
@@ -748,6 +857,9 @@ function initMenu()
   }
   else if( lang == "nl" ) {
     sel.selectedIndex = 2;
+  }
+  else if( lang == "fr" ) {
+    sel.selectedIndex = 3;
   }
   $('#languageSelect').selectmenu("refresh");
   
@@ -2465,6 +2577,8 @@ $(document).on("pagecreate",function(){
       langEN();
     else if( this.value == "nl" )
       langNL();
+    else if( this.value == "fr" )
+      langFR();
   } );
 
   $('#levelSelect').change(function() {
@@ -2515,6 +2629,9 @@ function doLang() {
   }
   else if( lang == "nl" ) {
     langNL();
+  }
+  else if( lang == "fr" ) {
+    langFR();
   }
   else {
     // default english
@@ -2597,6 +2714,30 @@ function getString(s) {
     if( s == "trainloadcar" ) return "Wagon beladen";
     if( s == "trainemptycar" ) return "Wagon legen";
     if( s == "fastclock" ) return "Model klok";
+  }
+  else if( lang == "fr" ) {
+    if( s == "block" ) return "Bloc";
+    if( s == "diesel" ) return "Diesel";
+    if( s == "steam" ) return "Vapeur";
+    if( s == "electric" ) return "Electrique";
+    if( s == "car" ) return "Wagon";
+    if( s == "consist" ) return "U.M.";
+    if( s == "version" ) return "Version";
+    if( s == "workspace" ) return "Workspace";
+    if( s == "stageblock" ) return "Bloc de départ";
+    if( s == "fiddleyard" ) return "Pont transbordeur";
+    if( s == "turntable" ) return "Pont tournant";
+    if( s == "text" ) return "Texte";
+    if( s == "schedule" ) return "Horaire";
+    if( s == "train" ) return "Train";
+    if( s == "master" ) return "Loco principale";
+    if( s == "slaves" ) return "Locos secondaires";
+    if( s == "guests" ) return "Invités";
+    if( s == "trainaddcar" ) return "Accrocher un wagon";
+    if( s == "trainleavecar" ) return "Laisser un wagon";
+    if( s == "trainloadcar" ) return "Charger le wagon";
+    if( s == "trainemptycar" ) return "Décharger le wagon";
+    if( s == "fastclock" ) return "Horloge rapide";
   }
 
   return s;
