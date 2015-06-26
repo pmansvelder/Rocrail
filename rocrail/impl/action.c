@@ -1463,12 +1463,31 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
         }
         else if( StrOp.equals(wLoc.go, wAction.getcmd(data->action) ) ) {
           if( wAction.getparam(data->action) != NULL && StrOp.len( wAction.getparam(data->action) ) > 0 ) {
-            iONode tour = ModelOp.getTour(model, wAction.getparam(data->action));
-            iONode schedule = ModelOp.getSchedule(model, wAction.getparam(data->action));
-            iIBlockBase block = ModelOp.getBlock(model, wAction.getparam(data->action));
-            iOLocation location = ModelOp.getLocation(model, wAction.getparam(data->action));
+            const char* destname = wAction.getparam(data->action);
+            char* varval = NULL;
+            iOMap map = MapOp.inst();
+            MapOp.put(map, "lcid", (obj)LocOp.getId(lc));
+            MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
+            MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
+            varval = VarOp.getText(wAction.getparam(data->action), map, ' ');
+            MapOp.base.del(map);
+
+            if( varval != NULL ) {
+              destname = varval;
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco [%s] goto (%s)=[%s]", LocOp.getId(lc), wAction.getparam(data->action), destname);
+            }
+
+            iONode tour = ModelOp.getTour(model, destname);
+            iONode schedule = ModelOp.getSchedule(model, destname);
+            iIBlockBase block = ModelOp.getBlock(model, destname);
+            iOLocation location = ModelOp.getLocation(model, destname);
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "loco [%s] goto [%s] tour=%X schedule=%X block=%X location=%X",
-                LocOp.getId(lc), wAction.getparam(data->action), tour, schedule, block, location );
+                LocOp.getId(lc), destname, tour, schedule, block, location );
+
+            if( varval != NULL ) {
+              StrOp.free(varval);
+            }
+
             if( tour != NULL ) {
               LocOp.useTour( lc, wAction.getparam(data->action));
             }

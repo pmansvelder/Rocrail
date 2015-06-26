@@ -97,6 +97,7 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
   iOModel model = AppOp.getModel();
   char* valStr = NULL;
   char* retVal = NULL;
+  int   tokCnt = 0;
   char sepStr[4];
   sepStr[0] = separator;
   sepStr[1] = '\0';
@@ -110,12 +111,16 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
 
   while( StrTokOp.hasMoreTokens(tok) ) {
     const char* v = StrTokOp.nextToken(tok);
+    tokCnt++;
     if( v[0] == '#' ) { /* variable */
       iONode valVar = ModelOp.getVariable(model, v+1);
       if( valVar != NULL ) {
         char* sV = StrOp.fmt( "%d%c", wVariable.getvalue(valVar), separator );
         retVal = StrOp.cat( retVal, sV );
         StrOp.free(sV);
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "no such variable: [%s]", v+1 );
       }
     }
     else if( v[0] == '@' ) { /* variable */
@@ -124,6 +129,9 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
         char* sV = StrOp.fmt( "%s%c", wVariable.gettext(valVar), separator );
         retVal = StrOp.cat( retVal, sV );
         StrOp.free(sV);
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "no such variable: [%s]", v+1 );
       }
     }
     else if( v[0] == '$' ) { /* text */
@@ -138,6 +146,10 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
       if( StrTokOp.hasMoreTokens(tok) )
         retVal = StrOp.cat( retVal, sepStr );
     }
+  }
+
+  if( tokCnt == 1 && StrOp.len(retVal) > 0) {
+    retVal[StrOp.len(retVal)-1] = '\0';
   }
 
   StrTokOp.base.del(tok);

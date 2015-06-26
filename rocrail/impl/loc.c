@@ -2907,7 +2907,9 @@ static Boolean _go( iOLoc inst ) {
       }
     }
     else {
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "Loco [%s] cannot be started because it is not in a block.", LocOp.getId(inst) );
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999,
+          "Loco [%s] cannot be started because %s.",
+          LocOp.getId(inst), ModelOp.isAuto( AppOp.getModel() )?"it is not in a block":"auto mode is disabled" );
       return False;
     }
   }
