@@ -121,6 +121,7 @@ function langDE() {
   document.getElementById("systemStartAll").innerHTML = "Alle Loks starten";
   document.getElementById("systemStopAll").innerHTML = "Alle Loks anhalten";
   document.getElementById("systemSoftReset").innerHTML = "Zurücksetzen; außer Blockbelegung";
+  document.getElementById("systemHardReset").innerHTML = "Alles zurücksetzen";
   document.getElementById("systemShutdown").innerHTML = "Server herunterfahren";
   document.getElementById("optionsTitle").innerHTML = "<b>Optionen</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -229,6 +230,7 @@ function langEN() {
   document.getElementById("systemStartAll").innerHTML = "Start all locs";
   document.getElementById("systemStopAll").innerHTML = "Stop all locs";
   document.getElementById("systemSoftReset").innerHTML = "Soft reset";
+  document.getElementById("systemHardReset").innerHTML = "Reset all";
   document.getElementById("systemShutdown").innerHTML = "Shutdown server";
   document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -337,6 +339,7 @@ function langNL() {
   document.getElementById("systemStartAll").innerHTML = "Start alle loc's";
   document.getElementById("systemStopAll").innerHTML = "Stop alle loc's";
   document.getElementById("systemSoftReset").innerHTML = "Reset behalve block bezetting";
+  document.getElementById("systemHardReset").innerHTML = "Reset alles";
   document.getElementById("systemShutdown").innerHTML = "Server beëindigen";
   document.getElementById("optionsTitle").innerHTML = "<b>Opties</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -446,6 +449,7 @@ function langFR() {
   document.getElementById("systemStartAll").innerHTML = "Démarrer toutes les locs";
   document.getElementById("systemStopAll").innerHTML = "Arrèter toutes les locs";
   document.getElementById("systemSoftReset").innerHTML = "Redémarrage logiciel";
+  document.getElementById("systemHardReset").innerHTML = "Réinitialiser tout";
   document.getElementById("systemShutdown").innerHTML = "Arrêt du serveur";
   document.getElementById("optionsTitle").innerHTML = "<b>Options</b>";
   document.getElementById("labOptionDebug").innerHTML = "Debug";
@@ -1430,6 +1434,14 @@ function actionSoftReset() {
   $( "#popupAuto" ).popup( "close" );
   var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"softreset\"/>";
   sendCommand(cmd);
+}
+
+function actionHardReset() {
+  $( "#popupAuto" ).popup( "close" );
+  if( confirm(getString("resetallwarning")) ) {
+    var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"reset\"/>";
+    sendCommand(cmd);
+  }
 }
 
 function actionShutdown() {
@@ -2669,6 +2681,7 @@ function getString(s) {
     if( s == "trainloadcar" ) return "Wagen beladen";
     if( s == "trainemptycar" ) return "Wagen leeren";
     if( s == "fastclock" ) return "Modelluhr";
+    if( s == "resetallwarning" ) return "Diese Aktion setzt auch alle Blockbelegungen zurück. Weiter?";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -2693,6 +2706,7 @@ function getString(s) {
     if( s == "trainloadcar" ) return "Load car";
     if( s == "trainemptycar" ) return "Empty car";
     if( s == "fastclock" ) return "Fast clock";
+    if( s == "resetallwarning" ) return "This action also resets all block reservations. Proceed?";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -2717,6 +2731,7 @@ function getString(s) {
     if( s == "trainloadcar" ) return "Wagon beladen";
     if( s == "trainemptycar" ) return "Wagon legen";
     if( s == "fastclock" ) return "Model klok";
+    if( s == "resetallwarning" ) return "Alle blok bezettingen worden gereset. Doorgaan?";
   }
   else if( lang == "fr" ) {
     if( s == "block" ) return "Bloc";
@@ -2741,6 +2756,7 @@ function getString(s) {
     if( s == "trainloadcar" ) return "Charger le wagon";
     if( s == "trainemptycar" ) return "Décharger le wagon";
     if( s == "fastclock" ) return "Horloge rapide";
+    if( s == "resetallwarning" ) return "Cette action effacera toutes les réservations de blocs. Continuer?";
   }
 
   return s;
