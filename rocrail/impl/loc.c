@@ -775,6 +775,9 @@ static void* __event( void* inst, const void* evt ) {
           wLoc.getid(data->props), V, wLoc.getV(data->props) );
       wLoc.setV( data->props, V);
       data->drvSpeed = V;
+      if( StrOp.equals( wLoc.velocity, wLoc.getcmd(evtNode) ) ) {
+        wLoc.setdir( data->props, wLoc.isplacing(data->props) ? wLoc.isdir(evtNode):!wLoc.isdir(evtNode) );
+      }
     }
     else {
       TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "not using the field velocity because loco %s is in auto mode", wLoc.getid(data->props));
