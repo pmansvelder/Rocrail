@@ -1489,16 +1489,16 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
             }
 
             if( tour != NULL ) {
-              LocOp.useTour( lc, wAction.getparam(data->action));
+              LocOp.useTour( lc, destname);
             }
             else if( schedule != NULL ) {
-              LocOp.useSchedule( lc, wAction.getparam(data->action));
+              LocOp.useSchedule( lc, destname);
             }
             else if( block != NULL ) {
-              LocOp.gotoBlock(lc, wAction.getparam(data->action));
+              LocOp.gotoBlock(lc, destname);
             }
             else if( location != NULL ) {
-              LocOp.gotoBlock(lc, wAction.getparam(data->action));
+              LocOp.gotoBlock(lc, destname);
             }
 
           }
