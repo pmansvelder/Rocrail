@@ -1420,8 +1420,10 @@ function actionPower() {
 
 function actionStartAll() {
   $( "#popupAuto" ).popup( "close" );
-  var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"start\"/>";
-  sendCommand(cmd);
+  if( confirm(getString("startallwarning")) ) {
+    var cmd = "<auto controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"start\"/>";
+    sendCommand(cmd);
+  }
 }
 
 function actionStopAll() {
@@ -1446,8 +1448,10 @@ function actionHardReset() {
 
 function actionShutdown() {
   $( "#popupSystem" ).popup( "close" );
-  var cmd = "<sys controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"shutdown\"/>";
-  sendCommand(cmd);
+  if( confirm(getString("shutdownwarning")) ) {
+    var cmd = "<sys controlcode=\""+controlCode+"\" slavecode=\""+slaveCode+"\" cmd=\"shutdown\"/>";
+    sendCommand(cmd);
+  }
 }
 
 function actionLevelSelect(z) {
@@ -2682,6 +2686,8 @@ function getString(s) {
     if( s == "trainemptycar" ) return "Wagen leeren";
     if( s == "fastclock" ) return "Modelluhr";
     if( s == "resetallwarning" ) return "Diese Aktion setzt auch alle Blockbelegungen zurück. Weiter?";
+    if( s == "shutdownwarning" ) return "Der Rocrail Server wird hiermit beendet! Herunterfahren und beenden?";
+    if( s == "startallwarning" ) return "Alle Loks jetzt starten?";
   }
   else if( lang == "en" ) {
     if( s == "block" ) return "Block";
@@ -2707,6 +2713,8 @@ function getString(s) {
     if( s == "trainemptycar" ) return "Empty car";
     if( s == "fastclock" ) return "Fast clock";
     if( s == "resetallwarning" ) return "This action also resets all block reservations. Proceed?";
+    if( s == "shutdownwarning" ) return "This will shutdown the Rocrail server! Shutdown and exit?";
+    if( s == "startallwarning" ) return "Start all locs now?";
   }
   else if( lang == "nl" ) {
     if( s == "block" ) return "Blok";
@@ -2732,6 +2740,8 @@ function getString(s) {
     if( s == "trainemptycar" ) return "Wagon legen";
     if( s == "fastclock" ) return "Model klok";
     if( s == "resetallwarning" ) return "Alle blok bezettingen worden gereset. Doorgaan?";
+    if( s == "shutdownwarning" ) return "De Rocrail server wordt gestopt! Er kunnen nog locs rijden! Rocrail afsluiten?";
+    if( s == "startallwarning" ) return "Alle loc's  starten?";
   }
   else if( lang == "fr" ) {
     if( s == "block" ) return "Bloc";
@@ -2756,7 +2766,9 @@ function getString(s) {
     if( s == "trainloadcar" ) return "Charger le wagon";
     if( s == "trainemptycar" ) return "Décharger le wagon";
     if( s == "fastclock" ) return "Horloge rapide";
-    if( s == "resetallwarning" ) return "Cette action effacera toutes les réservations de blocs. Continuer?";
+    if( s == "resetallwarning" ) return "Cette action effacera toutes les réservations de blocs. Continuer ?";
+    if( s == "shutdownwarning" ) return "Cela arrêtera le serveur Rocrail ! Arrêter et quitter ?";
+    if( s == "startallwarning" ) return "Démarrer toutes les locomotives maintenant ?";
   }
 
   return s;
