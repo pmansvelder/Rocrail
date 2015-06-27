@@ -1451,7 +1451,8 @@ function actionLevelSelect(z) {
   Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
   h.innerHTML = timelabel + Title;
-  
+  document.title = Title;
+
   var idx = 0;
   for (var i in zlevelMap){
     var zlevel = zlevelMap[i];
@@ -1481,6 +1482,7 @@ function actionLevelDown() {
   Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
   h.innerHTML = timelabel + Title;
+  document.title = Title;
 }
 
 function actionLevelUp() {
@@ -1500,6 +1502,7 @@ function actionLevelUp() {
   Title = zlevel.getAttribute('title');
   var h = document.getElementById("title");
   h.innerHTML = timelabel + Title;
+  document.title = Title;
 }
 
 
@@ -3468,6 +3471,7 @@ function handleClock(clock) {
     if( ModPlan )
       title = Title;
     h.innerHTML = timelabel + title;
+    document.title = title;
     
     if( clock.getAttribute('divider') == undefined )
       Divider = 1;
@@ -3909,6 +3913,8 @@ function processResponse() {
           
           trace( "processing plan: " + Title + " key=" + donkey );
           h.innerHTML = Title;
+          document.title = Title;
+
           processPlan();
           planloaded = true;
           locoSelected = localStorage.getItem("locoSelected");
@@ -4980,6 +4986,7 @@ function processPlan() {
        if( !ModPlan ) {
          var h = document.getElementById("title");
          h.innerHTML = title;
+         document.title = title;
        }
      }
      
