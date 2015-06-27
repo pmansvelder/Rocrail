@@ -1469,7 +1469,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
             MapOp.put(map, "lcid", (obj)LocOp.getId(lc));
             MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
             MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
-            varval = VarOp.getText(wAction.getparam(data->action), map, ' ');
+            varval = VarOp.getText(wAction.getparam(data->action), map, '-');
             MapOp.base.del(map);
 
             if( varval != NULL ) {
