@@ -907,6 +907,8 @@ function openSystem() {
 function openAuto() {
   trace("close menu");
   //$( "#popupMenu" ).popup( "close" );
+  document.getElementById("systemStartAll").style.display = (autoMode=="on"?'block':'none');
+
   $('#popupMenu').on("panelclose", function(){
     $('#popupMenu').unbind( "panelclose" );
     $( "#popupAuto" ).popup( "open" );
@@ -2661,6 +2663,8 @@ function doLang() {
 
 function getString(s) {
   var lang = localStorage.lang;
+  if( lang == undefined )
+    lang = "en";
   
   if( lang == "de" ) {
     if( s == "block" ) return "Block";
