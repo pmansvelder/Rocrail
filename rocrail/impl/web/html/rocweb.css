@@ -64,7 +64,10 @@ divborder {
 
 #speedSliderDiv .ui-slider-handle {
     height: 60px;
+    width: 50px;
     top: -8px;
+    margin-left: -25px;
+    background: darkgrey;
 }
 #speedSliderDiv {
     height: 65px;
