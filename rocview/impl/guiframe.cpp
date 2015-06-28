@@ -1651,8 +1651,8 @@ void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
 
   if( StrOp.equals( wFunCmd.name(), NodeOp.getName( node ) ) )
   {
-    TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "FunCmd event: [%s] destblock=[%s]",
-        wLoc.getid( node ), (wLoc.getdestblockid( node ) != NULL ? wLoc.getdestblockid( node ):"-") );
+    TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "FunCmd event: [%s] destblock=[%s] throttleID=%s",
+        wLoc.getid( node ), (wLoc.getdestblockid( node ) != NULL ? wLoc.getdestblockid( node ):"-"), wLoc.getthrottleid(node) );
     for( int i = 0; i < ListOp.size(m_ThrottleList); i++ ) {
       ThrottleDlg* dlg = (ThrottleDlg*)ListOp.get(m_ThrottleList, i);
       dlg->modelEvent(node);
@@ -1663,6 +1663,17 @@ void RocGuiFrame::UpdateActiveLocs( wxCommandEvent& event ) {
       if( loco != NULL )
         m_LC->setFX(loco, node);
     }
+
+    if( StrOp.len(wLoc.getthrottleid( node )) > 0 ) {
+      for( int i = 0; i < m_ActiveLocs->GetNumberRows(); i++ ) {
+        char* locid = StrOp.dup( m_ActiveLocs->GetCellValue( i, 0 ).mb_str(wxConvUTF8) );
+        if( StrOp.equals( wLoc.getid( node ), locid ) ) {
+          m_ActiveLocs->SetCellValue( i, LOC_COL_MODE, wxString(wLoc.getthrottleid( node ), wxConvUTF8) );
+          break;
+        }
+      }
+    }
+
   }
   else if( StrOp.equals( wLoc.name(), NodeOp.getName( node ) ) )
   {
