@@ -2639,6 +2639,11 @@ $(document).on("pagecreate",function(){
 $(document).ready(function(){
   trace("document ready");
   doLang();
+  trace("window width=" + $( window ).width());
+  if( $( window ).width() <= 640 ) {
+    document.getElementById("headerStop").style.display = 'none';
+    document.getElementById("headerZoom").style.display = 'none';
+  }
 })
 
 function doLang() {
