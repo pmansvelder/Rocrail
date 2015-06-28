@@ -3883,7 +3883,7 @@ static void __initBBTmap( iOLoc loc ) {
       keyV = StrOp.fmt("%s-%d", wBBT.getbk(bbt), wBBT.getspeed(bbt));
     }
 
-    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "add BBT record with key [%s] keytype=%d", key, bbtkey);
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "add BBT record with key [%s] keytype=%d", key, bbtkey);
     MapOp.put( data->bbtMap, key, (obj)bbt );
     if( wBBT.getspeed(bbt) > 0 )
       MapOp.put( data->bbtMap, keyV, (obj)bbt );

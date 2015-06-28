@@ -1456,8 +1456,8 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
         }
         else if( StrOp.equals(wLoc.consist, wAction.getcmd(data->action) ) ) {
           iONode cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE);
-          wLoc.setcmd(cmd, wAction.getparam(data->action));
-          wLoc.setconsist(cmd, wLoc.consist);
+          wLoc.setcmd(cmd, wLoc.consist);
+          wLoc.setconsist(cmd, wAction.getparam(data->action));
           LocOp.cmd(lc, cmd);
           ModelOp.initMasterLocMap(model);
         }
