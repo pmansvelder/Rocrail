@@ -858,7 +858,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       }
       else if( StrOp.equals( wVariable.op_random, wAction.getcmd( data->action ) ) ) {
         if( wVariable.getmax(var) > wVariable.getmin(var) ) {
-          int rval = wVariable.getmin(var) + rand()%(wVariable.getmax(var)-wVariable.getmin(var));
+          int rval = wVariable.getmin(var) + (rand() % wVariable.getmax(var) );
           wVariable.setvalue(var, rval);
           TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "variable [%s] cmd=[%s] new random value=%d",
               oid, cmdStr, wVariable.getvalue(var) );
