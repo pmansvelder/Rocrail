@@ -2788,6 +2788,16 @@ static iONode _getDec( iOModel inst, const char* id ) {
   return NULL;
 }
 
+static const char* _getSysVar( iOModel inst, const char* id ) {
+  iOModelData data = Data(inst);
+  char varval[64] = {'\0'};
+  if( StrOp.equals( "time", id ) ) {
+    StrOp.fmtb( varval, "%ld", ControlOp.getTime( AppOp.getControl() ) );
+  }
+  return varval;
+}
+
+
 static iONode _getVariable( iOModel inst, const char* id ) {
   iOModelData data = Data(inst);
   iONode varlist = wPlan.getvrlist( data->model );
