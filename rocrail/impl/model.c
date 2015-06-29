@@ -2788,11 +2788,11 @@ static iONode _getDec( iOModel inst, const char* id ) {
   return NULL;
 }
 
-static const char* _getSysVar( iOModel inst, const char* id ) {
+static char* _getSysVar( iOModel inst, const char* id ) {
   iOModelData data = Data(inst);
-  char varval[64] = {'\0'};
+  char* varval = NULL;
   if( StrOp.equals( "time", id ) ) {
-    StrOp.fmtb( varval, "%ld", ControlOp.getTime( AppOp.getControl() ) );
+    StrOp.fmt( "%ld", ControlOp.getTime( AppOp.getControl() ) );
   }
   return varval;
 }

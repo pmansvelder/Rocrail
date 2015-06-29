@@ -1122,7 +1122,7 @@
       <param name="inst" vt="this" remark="Model instance"/>
       <param name="id" vt="const char*" remark="Variable ID to search for"/>
     </fun>
-    <fun name="getSysVar" vt="const char*">
+    <fun name="getSysVar" vt="char*">
       <param name="inst" vt="this" remark="Model instance"/>
       <param name="id" vt="const char*" remark="Variable ID to search for"/>
     </fun>

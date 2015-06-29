@@ -227,13 +227,16 @@ static int _getValue( const char* p_ValStr, iOMap map ) {
       }
 
       if( v[0] == '&' ) { /* system variable */
-        const char* varval = ModelOp.getSysVar(model, v+1);
-        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "sysvar %s is %d (%s)", v+1, atoi(varval), varval );
-        if( operator == OP_NONE ) retVal  = atoi(varval);
-        if( operator == OP_PLUS ) retVal += atoi(varval);
-        if( operator == OP_MIN  ) retVal -= atoi(varval);
-        if( operator == OP_MULT ) retVal *= atoi(varval);
-        if( operator == OP_DIVI ) retVal /= atoi(varval);
+        char* varval = ModelOp.getSysVar(model, v+1);
+        if( varval != NULL ) {
+          TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "sysvar %s is %d (%s)", v+1, atoi(varval), varval );
+          if( operator == OP_NONE ) retVal  = atoi(varval);
+          if( operator == OP_PLUS ) retVal += atoi(varval);
+          if( operator == OP_MIN  ) retVal -= atoi(varval);
+          if( operator == OP_MULT ) retVal *= atoi(varval);
+          if( operator == OP_DIVI ) retVal /= atoi(varval);
+          StrOp.free(varval);
+        }
         continue;
       }
 
