@@ -506,7 +506,7 @@ static void __updateSpeedDir(iOCBUS cbus, byte* frame) {
   int offset  = (frame[1] == 'S') ? 0:4;
   int session = HEXA2Byte(frame + OFFSET_D1 + offset);
   int speed   = HEXA2Byte(frame + OFFSET_D2 + offset);
-  Boolean dir = (speed & 0x80) ? False:True;
+  Boolean dir = (speed & 0x80) ? True:False;
 
   iOSlot slot = __getSlotBySession(data, session);
 
@@ -647,7 +647,7 @@ static void __updateSlot(iOCBUS cbus, byte* frame) {
   int f5_8    =  HEXA2Byte(frame + OFFSET_D6 + offset);
   int f9_12   =  HEXA2Byte(frame + OFFSET_D7 + offset);
 
-  Boolean dir = (speed & 0x80) ? False:True;
+  Boolean dir = (speed & 0x80) ? True:False;
 
   speed &= speed & 0x7F;
 
