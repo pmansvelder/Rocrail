@@ -47,7 +47,7 @@ static Boolean isCts( obj inst ) {
     return False;
   }
 
-  while( wait4cts < data->ctsretry ) {
+  while( wait4cts < data->ctsretry && data->serial != NULL ) {
     int rc = SerialOp.isCTS( data->serial );
     if( rc == -1 ) {
       TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "device error; switch to dummy mode" );

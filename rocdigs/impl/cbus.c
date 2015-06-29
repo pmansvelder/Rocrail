@@ -1584,7 +1584,7 @@ static void __writer( void* threadinst ) {
             cbusMon(out, __getOPC(out));
         }
 
-        if( data->subWrite((obj)cbus, out, len) ) {
+        if( data->run && data->connOK && data->subWrite((obj)cbus, out, len) ) {
           if( data->commandAck && out[1] == 'S' )
             data->wait4Ack = True;
         }
