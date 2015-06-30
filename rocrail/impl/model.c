@@ -2792,7 +2792,7 @@ static char* _getSysVar( iOModel inst, const char* id ) {
   iOModelData data = Data(inst);
   char* varval = NULL;
   if( StrOp.equals( "time", id ) ) {
-    StrOp.fmt( "%ld", ControlOp.getTime( AppOp.getControl() ) );
+    varval = StrOp.fmt( "%ld", ControlOp.getTime( AppOp.getControl() ) );
   }
   return varval;
 }
