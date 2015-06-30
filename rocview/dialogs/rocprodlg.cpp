@@ -503,6 +503,8 @@ void RocProDlg::event(iONode node) {
       if( m_bSpeedCurve && m_PendingCV >= 67 && m_PendingCV <= 94) {
         if( m_CVoperation == wProgram.get ) {
           if( cv == 0 || cv ==  m_PendingCV ) {
+            m_Nr->SetValue(m_PendingCV-67);
+            setCVVal(value);
             m_Curve[m_PendingCV-67] = value;
             if(m_PendingCV == 94) {
               m_bSpeedCurve = false;
