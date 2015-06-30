@@ -22,9 +22,17 @@
 
 #include "rocrail/public/app.h"
 #include "rocrail/public/model.h"
+#include "rocrail/public/text.h"
+#include "rocrail/public/var.h"
+#include "rocrail/public/loc.h"
+
+#include "rocrail/wrapper/public/Item.h"
+#include "rocrail/wrapper/public/FunCmd.h"
+#include "rocrail/wrapper/public/Loc.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
+#include "rocs/public/node.h"
 
 static int instCnt = 0;
 
@@ -76,21 +84,71 @@ static void* __event( void* inst, const void* evt ) {
 
 
 /**  */
-static const char* ms_Script = "<foreach table=\"lclist\" where=\"#zeit%lcid% < &time\">"
-                                 "<fn f3=\"true\"/>"
-                                 "<var id=\"#zeit%lcid%\" val=\"0\"/>"
-                                 "<lc cmd=\"go\"/>"
-                               "</foreach>";
+
+static Boolean __isWhere(const char* whereRes) {
+  Boolean ok = True;
+  /* ToDo: Check the where clausel. */
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s", whereRes, ok?"true":"false" );
+  return ok;
+}
+
+static void __executeCmd(iONode cmd) {
+  iOModel model = AppOp.getModel();
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s]", NodeOp.getName(cmd) );
+  if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) ) {
+    iOLoc lc = ModelOp.getLoc(model, wItem.getid(cmd), NULL, False);
+    if( lc != NULL )
+      LocOp.cmd(lc, (iONode)NodeOp.base.clone(cmd));
+  }
+}
+
 
 static void __doForEach(iONode nodeScript) {
   iOModel model = AppOp.getModel();
   iONode plan = ModelOp.getModel(model);
   iONode table = NodeOp.findNode(plan, NodeOp.getStr(nodeScript, "table", ""));
   const char* where = NodeOp.getStr(nodeScript, "where", "");
+  if( table != NULL && where != NULL ) {
+    int childs = NodeOp.getChildCnt(table);
+    int i = 0;
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] where [%s]", NodeOp.getName(table), where );
+    for( i = 0; i < childs; i++ ) {
+      iONode child = NodeOp.getChild( table, i);
+      iOMap map = MapOp.inst();
+      const char* oid = wItem.getid(child);
+      MapOp.put(map, "oid", (obj)oid);
+      char* whereRes = TextOp.replaceAllSubstitutions(where, map);
+      MapOp.base.del(map);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] where [%s]", NodeOp.getName(table), whereRes );
+
+      if( __isWhere(whereRes) ) {
+        int cmds = NodeOp.getChildCnt(nodeScript);
+        int n = 0;
+        for( n = 0; n < cmds; n++ ) {
+          iONode cmd = NodeOp.getChild(nodeScript, n);
+          wItem.setid(cmd, oid);
+          __executeCmd(cmd);
+        }
+      }
+
+      StrOp.free(whereRes);
+    }
+
+
+  }
 }
 
+
+/*
+<foreach table="lclist" where="#var2%oid% < &time">
+  <fn f3="true"/>
+  <var id="#var2%oid%" val="0"/>
+  <lc cmd="go"/>
+</foreach>
+ */
 static void _run(const char* script) {
-  iODoc  doc        = DocOp.parse(ms_Script);
+  iODoc  doc        = DocOp.parse(script);
   iONode nodeScript = NULL;
   if( doc != NULL && DocOp.getRootNode(doc) != NULL) {
     nodeScript = DocOp.getRootNode(doc);
