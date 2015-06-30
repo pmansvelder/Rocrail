@@ -141,6 +141,14 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
         retVal = StrOp.cat( retVal, sepStr );
       }
     }
+    else if( v[0] == '&' ) { /* system variable */
+      char* varval = ModelOp.getSysVar(model, v+1);
+      if( varval != NULL ) {
+        retVal = StrOp.cat( retVal, varval );
+        retVal = StrOp.cat( retVal, sepStr );
+        StrOp.free(varval);
+      }
+    }
     else {
       retVal = StrOp.cat( retVal, v );
       if( StrTokOp.hasMoreTokens(tok) )
