@@ -2804,7 +2804,7 @@
     <fun name="recordNode" vt="void">
       <param name="inst" vt="this"/>
       <param name="node" vt="iONode"/>
-      </fun>
+    </fun>
     <fun name="isRecording" vt="Boolean">
       <param name="inst" vt="this"/>
     </fun>
@@ -2898,4 +2898,11 @@
     </data>
   </object>
   
+  <object name="XmlScript" use="node,map" include="htmlint" remark="XmlScript Helper">
+    <fun name="run" vt="void">
+      <param name="xmlscript" vt="const char*"/>
+    </fun>
+  </object>
+
+
 </Project>

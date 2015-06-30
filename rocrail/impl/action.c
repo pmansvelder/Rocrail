@@ -38,6 +38,7 @@
 #include "rocrail/public/var.h"
 #include "rocrail/public/location.h"
 #include "rocrail/public/weather.h"
+#include "rocrail/public/xmlscript.h"
 
 #include "rocs/public/system.h"
 #include "rocs/public/mem.h"
@@ -1031,6 +1032,24 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
         }
         else {
           TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "record file [%s] not found", extaction );
+        }
+      }
+      else if( StrOp.endsWithi(extaction, ".xml") ) {
+        /* xmlscript */
+        if( FileOp.exist(extaction) ) {
+          int size = FileOp.fileSize(extaction);
+          char* xmlscript = allocMem( size + 1);
+          iOFile f = FileOp.inst( extaction, OPEN_READONLY);
+          if( f != NULL ) {
+            FileOp.read( f, xmlscript, size);
+            FileOp.base.del(f);
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run xmlscript file [%s], size=%d", extaction, size );
+            XmlScriptOp.run( xmlscript );
+            freeMem(xmlscript);
+          }
+        }
+        else {
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "xmlscript file [%s] not found", extaction );
         }
       }
       else if( wActionCtrl.getparam(actionctrl) != NULL && StrOp.len(wActionCtrl.getparam(actionctrl)) > 0 ) {
