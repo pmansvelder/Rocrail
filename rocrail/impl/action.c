@@ -1044,8 +1044,13 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
             FileOp.read( f, xmlscript, size);
             FileOp.base.del(f);
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run xmlscript file [%s], size=%d", extaction, size );
-            XmlScriptOp.run( xmlscript );
+            iOMap map = MapOp.inst();
+            MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
+            MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
+            MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
+            XmlScriptOp.run( xmlscript, map );
             freeMem(xmlscript);
+            MapOp.base.del(map);
           }
         }
         else {
