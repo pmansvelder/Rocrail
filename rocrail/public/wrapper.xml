@@ -3280,6 +3280,7 @@
         <var name="desc" vt="string" defval="" range="*" remark="description"/>
         <var name="group" vt="string" defval="" range="*"/>
         <var name="text" vt="string" defval="" range="*"/>
+        <var name="valstr" vt="string" defval="" range="*"/>
         <var name="value" vt="int" defval="0" range="*"/>
         <const name="type_default" vt="int" val="0"/>
         <const name="type_timer" vt="int" val="1"/>

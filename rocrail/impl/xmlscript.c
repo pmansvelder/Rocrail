@@ -29,6 +29,7 @@
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
 #include "rocrail/wrapper/public/Loc.h"
+#include "rocrail/wrapper/public/Variable.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
@@ -96,10 +97,27 @@ static Boolean __isWhere(const char* whereRes) {
 static void __executeCmd(iONode cmd) {
   iOModel model = AppOp.getModel();
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s]", NodeOp.getName(cmd) );
-  if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) ) {
+
+  /* loco */
+  if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) ) {
     iOLoc lc = ModelOp.getLoc(model, wItem.getid(cmd), NULL, False);
     if( lc != NULL )
       LocOp.cmd(lc, (iONode)NodeOp.base.clone(cmd));
+  }
+
+  /* var */
+  else if( StrOp.equals( wVariable.name(), NodeOp.getName(cmd)) ) {
+    iOMap map = MapOp.inst();
+    const char* oid = wItem.getid(cmd);
+    MapOp.put(map, "oid", (obj)oid);
+    char* varRes = TextOp.replaceAllSubstitutions(oid, map);
+    MapOp.base.del(map);
+
+    iONode var = ModelOp.getVariable(model, varRes);
+    if( var != NULL ) {
+      wVariable.setvalue(var, VarOp.getValue(wVariable.getvalstr(cmd), NULL));
+    }
+    StrOp.free( varRes );
   }
 }
 
@@ -143,7 +161,7 @@ static void __doForEach(iONode nodeScript) {
 /*
 <foreach table="lclist" where="#var2%oid% < &time">
   <fn f3="true"/>
-  <var id="#var2%oid%" val="0"/>
+  <var id="var2%oid%" val="0"/>
   <lc cmd="go"/>
 </foreach>
  */
