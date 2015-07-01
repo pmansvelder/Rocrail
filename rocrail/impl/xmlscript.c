@@ -34,6 +34,7 @@
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
 #include "rocs/public/node.h"
+#include "rocs/public/strtok.h"
 
 static int instCnt = 0;
 
@@ -88,7 +89,44 @@ static void* __event( void* inst, const void* evt ) {
 
 static Boolean __isWhere(const char* whereRes) {
   Boolean ok = True;
-  /* ToDo: Check the where clausel. */
+  /* ToDo: Check the where clausel.
+   * "#var2%oid% < &time" */
+  const char* var  = NULL;
+  const char* comparator = NULL;
+  const char* value = NULL;
+  iOStrTok tok = StrTokOp.inst(whereRes, ' ');
+
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    var = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    comparator = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    value = StrTokOp.nextToken(tok);
+  }
+
+  if( var != NULL && comparator != NULL && value != NULL ) {
+    int varValue   = VarOp.getValue(var, NULL);
+    int valueValue = VarOp.getValue(value, NULL);
+    if( comparator[0] == '<' ) {
+      if( varValue >= valueValue )
+        ok = False;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s: %d < %d", whereRes, ok?"true":"false", varValue, valueValue );
+    }
+    else if( comparator[0] == '>' ) {
+      if( varValue <= valueValue )
+        ok = False;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s: %d > %d", whereRes, ok?"true":"false", varValue, valueValue );
+    }
+    else if( comparator[0] == '=' ) {
+      if( varValue != valueValue )
+        ok = False;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s: %d == %d", whereRes, ok?"true":"false", varValue, valueValue );
+    }
+  }
+
+  StrTokOp.base.del(tok);
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s", whereRes, ok?"true":"false" );
   return ok;
@@ -116,6 +154,7 @@ static void __executeCmd(iONode cmd) {
     iONode var = ModelOp.getVariable(model, varRes);
     if( var != NULL ) {
       wVariable.setvalue(var, VarOp.getValue(wVariable.getvalstr(cmd), NULL));
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = %d", varRes, wVariable.getvalue(var) );
     }
     StrOp.free( varRes );
   }
