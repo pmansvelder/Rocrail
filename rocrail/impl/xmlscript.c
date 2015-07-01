@@ -87,14 +87,14 @@ static void* __event( void* inst, const void* evt ) {
 
 /**  */
 
-static Boolean __isWhere(const char* whereRes) {
+static Boolean __isCondition(const char* conditionRes) {
   Boolean ok = True;
-  /* ToDo: Check the where clausel.
+  /* ToDo: Check the condition.
    * "#var2%oid% < &time" */
   const char* var  = NULL;
   const char* comparator = NULL;
   const char* value = NULL;
-  iOStrTok tok = StrTokOp.inst(whereRes, ' ');
+  iOStrTok tok = StrTokOp.inst(conditionRes, ' ');
 
   if( StrTokOp.hasMoreTokens(tok) ) {
     var = StrTokOp.nextToken(tok);
@@ -112,23 +112,23 @@ static Boolean __isWhere(const char* whereRes) {
     if( comparator[0] == '<' ) {
       if( varValue >= valueValue )
         ok = False;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s: %d < %d", whereRes, ok?"true":"false", varValue, valueValue );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d < %d", conditionRes, ok?"true":"false", varValue, valueValue );
     }
     else if( comparator[0] == '>' ) {
       if( varValue <= valueValue )
         ok = False;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s: %d > %d", whereRes, ok?"true":"false", varValue, valueValue );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d > %d", conditionRes, ok?"true":"false", varValue, valueValue );
     }
     else if( comparator[0] == '=' ) {
       if( varValue != valueValue )
         ok = False;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s: %d == %d", whereRes, ok?"true":"false", varValue, valueValue );
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d == %d", conditionRes, ok?"true":"false", varValue, valueValue );
     }
   }
 
   StrTokOp.base.del(tok);
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "where [%s] is %s", whereRes, ok?"true":"false" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s", conditionRes, ok?"true":"false" );
   return ok;
 }
 
@@ -165,21 +165,24 @@ static void __doForEach(iONode nodeScript) {
   iOModel model = AppOp.getModel();
   iONode plan = ModelOp.getModel(model);
   iONode table = NodeOp.findNode(plan, NodeOp.getStr(nodeScript, "table", ""));
-  const char* where = NodeOp.getStr(nodeScript, "where", "");
-  if( table != NULL && where != NULL ) {
+  const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
+  if( table != NULL ) {
     int childs = NodeOp.getChildCnt(table);
     int i = 0;
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] where [%s]", NodeOp.getName(table), where );
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] condition [%s]", NodeOp.getName(table), condition!=NULL?condition:"-" );
     for( i = 0; i < childs; i++ ) {
       iONode child = NodeOp.getChild( table, i);
-      iOMap map = MapOp.inst();
       const char* oid = wItem.getid(child);
-      MapOp.put(map, "oid", (obj)oid);
-      char* whereRes = TextOp.replaceAllSubstitutions(where, map);
-      MapOp.base.del(map);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] where [%s]", NodeOp.getName(table), whereRes );
+      char* conditionRes = NULL;
+      if( condition != NULL ) {
+        iOMap map = MapOp.inst();
+        MapOp.put(map, "oid", (obj)oid);
+        conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+        MapOp.base.del(map);
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] condition [%s]", NodeOp.getName(table), conditionRes );
+      }
 
-      if( __isWhere(whereRes) ) {
+      if( conditionRes == NULL || __isCondition(conditionRes) ) {
         int cmds = NodeOp.getChildCnt(nodeScript);
         int n = 0;
         for( n = 0; n < cmds; n++ ) {
@@ -189,7 +192,7 @@ static void __doForEach(iONode nodeScript) {
         }
       }
 
-      StrOp.free(whereRes);
+      StrOp.free(conditionRes);
     }
 
 
@@ -198,7 +201,7 @@ static void __doForEach(iONode nodeScript) {
 
 
 /*
-<foreach table="lclist" where="#var2%oid% < &time">
+<foreach table="lclist" condition="#var2%oid% < &time">
   <fn f3="true"/>
   <var id="var2%oid%" val="0"/>
   <lc cmd="go"/>
