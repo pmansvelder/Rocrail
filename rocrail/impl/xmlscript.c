@@ -177,7 +177,7 @@ static void __doIf(iONode nodeScript, iOMap map) {
       int n = 0;
       for( n = 0; n < cmds; n++ ) {
         iONode cmd = NodeOp.getChild(thenNode, n);
-        char* id = TextOp.replaceAllSubstitutions(wItem.getid(cmd), map);
+        char* id = VarOp.getText(wItem.getid(cmd), map, ' ');
         wItem.setid(cmd, id);
         __executeCmd(cmd);
         StrOp.free(id);

@@ -115,7 +115,11 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
     if( v[0] == '#' ) { /* variable */
       iONode valVar = ModelOp.getVariable(model, v+1);
       if( valVar != NULL ) {
-        char* sV = StrOp.fmt( "%d%c", wVariable.getvalue(valVar), separator );
+        char* sV = NULL;
+        if( StrTokOp.hasMoreTokens(tok))
+          sV = StrOp.fmt( "%d%c", wVariable.getvalue(valVar), separator );
+        else
+          sV = StrOp.fmt( "%d", wVariable.getvalue(valVar) );
         retVal = StrOp.cat( retVal, sV );
         StrOp.free(sV);
       }
@@ -126,7 +130,11 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
     else if( v[0] == '@' ) { /* variable */
       iONode valVar = ModelOp.getVariable(model, v+1);
       if( valVar != NULL ) {
-        char* sV = StrOp.fmt( "%s%c", wVariable.gettext(valVar), separator );
+        char* sV = NULL;
+        if( StrTokOp.hasMoreTokens(tok))
+          sV = StrOp.fmt( "%s%c", wVariable.gettext(valVar), separator );
+        else
+          sV = StrOp.fmt( "%s", wVariable.gettext(valVar) );
         retVal = StrOp.cat( retVal, sV );
         StrOp.free(sV);
       }
@@ -138,14 +146,16 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
       iOText text = ModelOp.getText(model, v+1);
       if( text != NULL ) {
         retVal = StrOp.cat( retVal, TextOp.getText(text) );
-        retVal = StrOp.cat( retVal, sepStr );
+        if( StrTokOp.hasMoreTokens(tok))
+          retVal = StrOp.cat( retVal, sepStr );
       }
     }
     else if( v[0] == '&' ) { /* system variable */
       char* varval = ModelOp.getSysVar(model, v+1);
       if( varval != NULL ) {
         retVal = StrOp.cat( retVal, varval );
-        retVal = StrOp.cat( retVal, sepStr );
+        if( StrTokOp.hasMoreTokens(tok))
+          retVal = StrOp.cat( retVal, sepStr );
         StrOp.free(varval);
       }
     }
@@ -154,10 +164,6 @@ static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
       if( StrTokOp.hasMoreTokens(tok) )
         retVal = StrOp.cat( retVal, sepStr );
     }
-  }
-
-  if( tokCnt == 1 && StrOp.len(retVal) > 0 && separator != ' ') {
-    retVal[StrOp.len(retVal)-1] = '\0';
   }
 
   StrTokOp.base.del(tok);
