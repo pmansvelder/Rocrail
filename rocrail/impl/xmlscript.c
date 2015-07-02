@@ -25,11 +25,13 @@
 #include "rocrail/public/text.h"
 #include "rocrail/public/var.h"
 #include "rocrail/public/loc.h"
+#include "rocrail/public/signal.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/Variable.h"
+#include "rocrail/wrapper/public/Signal.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
@@ -85,7 +87,47 @@ static void* __event( void* inst, const void* evt ) {
 /** ----- OXmlScript ----- */
 
 
-/**  */
+/* state="sg sem3 = green"  */
+static Boolean __isState(const char* stateRes) {
+  Boolean ok = True;
+  const char* objType    = NULL;
+  const char* objId      = NULL;
+  const char* comparator = NULL;
+  const char* value      = NULL;
+  iOStrTok tok = StrTokOp.inst(stateRes, ' ');
+
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    objType = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    objId = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    comparator = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    value = StrTokOp.nextToken(tok);
+  }
+
+  if( objType != NULL && objId != NULL && comparator != NULL && value != NULL ) {
+    iOModel model = AppOp.getModel();
+    ok = False;
+    if( StrOp.equals(wSignal.name(), objType) ) {
+      iOSignal sg = ModelOp.getSignal(model, objId);
+      if( sg != NULL ) {
+        if( comparator[0] == '=' && SignalOp.isState(sg, value) ) {
+          ok = True;
+        }
+      }
+    }
+  }
+
+  StrTokOp.base.del(tok);
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "state [%s] is %s", stateRes, ok?"true":"false" );
+  return ok;
+}
+
 
 static Boolean __isCondition(const char* conditionRes) {
   Boolean ok = True;
@@ -170,14 +212,29 @@ static void __executeCmd(iONode cmd) {
 
 static void __doIf(iONode nodeScript, iOMap map) {
   const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
-  if( condition == NULL ) {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition is missing in the if statement" );
+  const char* state = NodeOp.getStr(nodeScript, "state", NULL);
+  if( condition == NULL && state == NULL) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition and/or state is missing in the if statement" );
     return;
   }
-  char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if condition [%s]", conditionRes );
 
-  if( __isCondition(conditionRes) ) {
+  char* conditionRes = NULL;
+  char* stateRes = NULL;
+  Boolean conditionOK = True;
+  Boolean stateOK = True;
+
+  if( condition != NULL ) {
+    char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if condition [%s]", conditionRes );
+    conditionOK = __isCondition(conditionRes);
+  }
+  if( state != NULL ) {
+    stateRes = TextOp.replaceAllSubstitutions(state, map);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if state [%s]", stateRes );
+    stateOK = __isState(stateRes);
+  }
+
+  if( conditionOK && stateOK ) {
     iONode thenNode = NodeOp.findNode(nodeScript, "then");
     if( thenNode != NULL ) {
       int cmds = NodeOp.getChildCnt(thenNode);
