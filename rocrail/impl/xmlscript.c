@@ -139,8 +139,15 @@ static void __executeCmd(iONode cmd) {
   /* loco */
   if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) ) {
     iOLoc lc = ModelOp.getLoc(model, wItem.getid(cmd), NULL, False);
-    if( lc != NULL )
+    iIBlockBase bk = NULL;
+    if( lc == NULL && (bk = ModelOp.getBlock(model, wItem.getid(cmd))) != NULL ) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "get loco id from block [%s]", wItem.getid(cmd) );
+      lc = ModelOp.getLoc(model, bk->getLoc(bk), NULL, False);
+    }
+    if( lc != NULL ) {
+      wLoc.setid(cmd, LocOp.getId(lc));
       LocOp.cmd(lc, (iONode)NodeOp.base.clone(cmd));
+    }
   }
 
   /* var */
