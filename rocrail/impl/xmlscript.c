@@ -195,6 +195,11 @@ static Boolean __isCondition(const char* conditionRes) {
         ok = False;
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d == %d", conditionRes, ok?"true":"false", varValue, valueValue );
     }
+    else if( comparator[0] == '#' ) {
+      if( !StrOp.equals(var, value) )
+        ok = False;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %s == %s", conditionRes, ok?"true":"false", var, value );
+    }
   }
 
   StrTokOp.base.del(tok);
@@ -335,6 +340,9 @@ static void __doForEach(iONode nodeScript, iOMap map) {
       char* conditionRes = NULL;
       if( condition != NULL ) {
         MapOp.put(map, "oid", (obj)oid);
+        if( StrOp.equals( wLoc.name(), NodeOp.getName(child) ) ) {
+          MapOp.put(map, "lcclass", (obj)wLoc.getclass(child));
+        }
         conditionRes = TextOp.replaceAllSubstitutions(condition, map);
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] condition [%s]", NodeOp.getName(table), conditionRes );
       }
