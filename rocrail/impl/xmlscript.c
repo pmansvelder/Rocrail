@@ -28,6 +28,7 @@
 #include "rocrail/public/signal.h"
 #include "rocrail/public/switch.h"
 #include "rocrail/public/text.h"
+#include "rocrail/public/fback.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
@@ -36,6 +37,8 @@
 #include "rocrail/wrapper/public/Signal.h"
 #include "rocrail/wrapper/public/Switch.h"
 #include "rocrail/wrapper/public/Text.h"
+#include "rocrail/wrapper/public/Feedback.h"
+
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
@@ -116,6 +119,7 @@ static Boolean __isState(const char* stateRes) {
   if( objType != NULL && objId != NULL && comparator != NULL && value != NULL ) {
     iOModel model = AppOp.getModel();
     ok = False;
+    /* signal */
     if( StrOp.equals(wSignal.name(), objType) ) {
       iOSignal sg = ModelOp.getSignal(model, objId);
       if( sg != NULL ) {
@@ -124,6 +128,27 @@ static Boolean __isState(const char* stateRes) {
         }
       }
     }
+
+    /* switch */
+    else if( StrOp.equals(wSwitch.name(), objType) ) {
+      iOSwitch sw = ModelOp.getSwitch(model, objId);
+      if( sw != NULL ) {
+        if( comparator[0] == '=' && SwitchOp.isState(sw, value) ) {
+          ok = True;
+        }
+      }
+    }
+
+    /* sensor */
+    else if( StrOp.equals(wFeedback.name(), objType) ) {
+      iOFBack fb = ModelOp.getFBack(model, objId);
+      if( fb != NULL ) {
+        if( comparator[0] == '=' && FBackOp.isState(fb, value) ) {
+          ok = True;
+        }
+      }
+    }
+
   }
 
   StrTokOp.base.del(tok);
