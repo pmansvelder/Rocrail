@@ -203,7 +203,7 @@ static Boolean __isCondition(const char* conditionRes) {
   return ok;
 }
 
-static void __executeCmd(iONode cmd) {
+static void __executeCmd(iONode cmd, iOMap map) {
   iOModel model = AppOp.getModel();
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s]", NodeOp.getName(cmd), wItem.getid(cmd) );
 
@@ -245,6 +245,12 @@ static void __executeCmd(iONode cmd) {
     if( text != NULL && wText.getformat(cmd) != NULL ) {
       iONode evt = NodeOp.inst( wText.name(), NULL, ELEMENT_NODE );
       wText.setformat(evt, wText.getformat(cmd));
+      if( map != NULL ) {
+        if( MapOp.haskey(map, "lcid") )
+          wText.setreflcid(evt, (const char*)MapOp.get(map, "lcid"));
+        if( MapOp.haskey(map, "bkid") )
+          wText.setrefbkid(evt, (const char*)MapOp.get(map, "bkid"));
+      }
       TextOp.base.event(text, evt);
     }
     else if( text != NULL && wText.getformat(cmd) == NULL ) {
@@ -288,7 +294,7 @@ static void __doIf(iONode nodeScript, iOMap map) {
         iONode cmd = NodeOp.getChild(thenNode, n);
         char* id = VarOp.getText(wItem.getid(cmd), map, ' ');
         wItem.setid(cmd, id);
-        __executeCmd(cmd);
+        __executeCmd(cmd, map);
         StrOp.free(id);
       }
     }
@@ -304,7 +310,7 @@ static void __doIf(iONode nodeScript, iOMap map) {
         iONode cmd = NodeOp.getChild(elseNode, n);
         char* id = TextOp.replaceAllSubstitutions(wItem.getid(cmd), map);
         wItem.setid(cmd, id);
-        __executeCmd(cmd);
+        __executeCmd(cmd, map);
         StrOp.free(id);
       }
     }
@@ -339,7 +345,7 @@ static void __doForEach(iONode nodeScript, iOMap map) {
         for( n = 0; n < cmds; n++ ) {
           iONode cmd = NodeOp.getChild(nodeScript, n);
           wItem.setid(cmd, oid);
-          __executeCmd(cmd);
+          __executeCmd(cmd, map);
         }
       }
 
