@@ -26,12 +26,16 @@
 #include "rocrail/public/var.h"
 #include "rocrail/public/loc.h"
 #include "rocrail/public/signal.h"
+#include "rocrail/public/switch.h"
+#include "rocrail/public/text.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/Variable.h"
 #include "rocrail/wrapper/public/Signal.h"
+#include "rocrail/wrapper/public/Switch.h"
+#include "rocrail/wrapper/public/Text.h"
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
@@ -207,6 +211,22 @@ static void __executeCmd(iONode cmd) {
     }
     StrOp.free( varRes );
   }
+
+
+  /* text */
+  else if( StrOp.equals( wText.name(), NodeOp.getName(cmd)) ) {
+    const char* oid = wItem.getid(cmd);
+    iOText text = ModelOp.getText( model, oid );
+    if( text != NULL && wText.getformat(cmd) != NULL ) {
+      iONode evt = NodeOp.inst( wText.name(), NULL, ELEMENT_NODE );
+      wText.setformat(evt, wText.getformat(cmd));
+      TextOp.base.event(text, evt);
+    }
+    else if( text != NULL && wText.getformat(cmd) == NULL ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "text [%s] format is missing", oid);
+    }
+  }
+
 }
 
 

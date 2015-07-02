@@ -420,7 +420,7 @@ static void* __event( void* inst, const void* evt ) {
       StrOp.free(speedStr);
       StrOp.free(mvspeedStr);
     }
-    else {
+    else if( wText.getformat(node) != NULL ){
       char* msg = NULL;
       char* mvspeedStr = NULL;
       iOMap map = MapOp.inst();
