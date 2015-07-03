@@ -422,7 +422,7 @@ static struct OHttp* _inst( iONode ini, httpcon_callback pfun, obj callbackObj, 
       char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
 
       if( SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid donation key found: 5 minutes demo time for Rocweb..." );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid support key found: 5 minutes demo time for Rocweb..." );
         data->demoTime = time(NULL);
       }
 

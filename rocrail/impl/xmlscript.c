@@ -45,12 +45,14 @@
 #include "rocrail/wrapper/public/Block.h"
 #include "rocrail/wrapper/public/Route.h"
 #include "rocrail/wrapper/public/Output.h"
+#include "rocrail/wrapper/public/Global.h"
 
 
 #include "rocs/public/mem.h"
 #include "rocs/public/trace.h"
 #include "rocs/public/node.h"
 #include "rocs/public/strtok.h"
+#include "rocs/public/system.h"
 
 static int instCnt = 0;
 
@@ -580,6 +582,15 @@ static void __doForEach(iONode nodeScript, iOMap map) {
 static void _run(const char* script, iOMap map) {
   iODoc  doc        = DocOp.parse(script);
   iONode nodeScript = NULL;
+
+  unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
+  char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
+
+  if( SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid support key found for xmlscript" );
+    return;
+  }
+
   if( doc != NULL && DocOp.getRootNode(doc) != NULL) {
     nodeScript = DocOp.getRootNode(doc);
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "script: [%s]", NodeOp.getName(nodeScript) );
