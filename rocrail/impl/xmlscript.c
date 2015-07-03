@@ -165,13 +165,14 @@ static Boolean __isState(const char* stateRes) {
 }
 
 
-static Boolean __isCondition(const char* conditionRes) {
+static Boolean __isSubCondition(const char* conditionRes) {
   Boolean ok = True;
   /* ToDo: Check the condition.
    * "#var2%oid% < &time" */
   const char* var  = NULL;
   const char* comparator = NULL;
   const char* value = NULL;
+
   iOStrTok tok = StrTokOp.inst(conditionRes, ' ');
 
   if( StrTokOp.hasMoreTokens(tok) ) {
@@ -223,6 +224,26 @@ static Boolean __isCondition(const char* conditionRes) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s", conditionRes, ok?"true":"false" );
   return ok;
 }
+
+
+static Boolean __isCondition(const char* conditionRes, Boolean alltrue) {
+  Boolean ok = False;
+  iOStrTok tok = StrTokOp.inst(conditionRes, '|');
+  while(StrTokOp.hasMoreTokens(tok)) {
+    const char* condition = StrTokOp.nextToken(tok);
+    Boolean isTrue = __isSubCondition(condition);
+    if( isTrue )
+      ok = True;
+    else if( alltrue ) {
+      ok = False;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "not all conditions are true [%s]", conditionRes );
+      break;
+    }
+  }
+  StrTokOp.base.del(tok);
+  return ok;
+}
+
 
 static void __executeCmd(iONode cmd, iOMap map) {
   iOModel model = AppOp.getModel();
@@ -282,6 +303,14 @@ static void __executeCmd(iONode cmd, iOMap map) {
     }
   }
 
+  /* sensor */
+  else if( StrOp.equals( wFeedback.name(), NodeOp.getName(cmd)) ) {
+    iOFBack fb = ModelOp.getFBack(model, wItem.getid(cmd));
+    if( fb != NULL ) {
+      FBackOp.cmd(fb, (iONode)NodeOp.base.clone(cmd), True);
+    }
+  }
+
   /* var */
   else if( StrOp.equals( wVariable.name(), NodeOp.getName(cmd)) ) {
     iOMap map = MapOp.inst();
@@ -338,7 +367,7 @@ static void __doIf(iONode nodeScript, iOMap map) {
   if( condition != NULL ) {
     char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if condition [%s]", conditionRes );
-    conditionOK = __isCondition(conditionRes);
+    conditionOK = __isCondition(conditionRes, NodeOp.getBool(nodeScript, "alltrue", True));
   }
   if( state != NULL ) {
     stateRes = TextOp.replaceAllSubstitutions(state, map);
@@ -407,7 +436,7 @@ static void __doForEach(iONode nodeScript, iOMap map) {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] condition [%s]", NodeOp.getName(table), conditionRes );
       }
 
-      if( conditionRes == NULL || __isCondition(conditionRes) ) {
+      if( conditionRes == NULL || __isCondition(conditionRes, NodeOp.getBool(nodeScript, "alltrue", True)) ) {
         int cmds = NodeOp.getChildCnt(nodeScript);
         int n = 0;
         for( n = 0; n < cmds; n++ ) {
