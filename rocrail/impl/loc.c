@@ -3356,6 +3356,9 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
     else if( StrOp.equals( wLoc.brake, cmd ) ) {
       _brake( inst );
     }
+    else if( StrOp.equals( wLoc.classset, cmd ) ) {
+      LocOp.setClass(inst, wLoc.getclass(cmd));
+    }
     else if( StrOp.equals( wLoc.gotoblock, cmd ) ) {
       const char* blockid = wLoc.getblockid( nodeA );
 

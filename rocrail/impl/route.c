@@ -543,6 +543,9 @@ static Boolean _cmd( iORoute inst, iONode nodeA ) {
   if( StrOp.equals( wRoute.go, cmdStr ) ) {
     ok = _go( inst );
   }
+  else if( StrOp.equals( wRoute.classset, cmdStr ) ) {
+    RouteOp.setClass(inst, wRoute.getclass(nodeA));
+  }
   else if( StrOp.equals( wSwitch.unlock, cmdStr ) ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "reset route %s", RouteOp.getId(inst) );
     RouteOp.reset(inst);

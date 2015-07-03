@@ -196,7 +196,16 @@ static Boolean __isCondition(const char* conditionRes) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d == %d", conditionRes, ok?"true":"false", varValue, valueValue );
     }
     else if( comparator[0] == '#' ) {
-      if( !StrOp.equals(var, value) )
+      if( StrOp.find(var, ",") != NULL || StrOp.find(value, ",") != NULL ) {
+        iOStrTok tokVar = StrTokOp.inst(var, ',');
+        ok = False;
+        while( StrTokOp.hasMoreTokens(tokVar) && !ok) {
+          const char* v = StrTokOp.nextToken(tokVar);
+          ok = StrOp.find(v, value) != NULL ? True:False;
+        }
+        StrTokOp.base.del(tokVar);
+      }
+      else if( !StrOp.equals(var, value) )
         ok = False;
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %s == %s", conditionRes, ok?"true":"false", var, value );
     }

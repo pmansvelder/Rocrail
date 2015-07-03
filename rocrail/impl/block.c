@@ -2573,6 +2573,13 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     return True;
   }
 
+  if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.classset) ) {
+    inst->setClass(inst, wBlock.getclass(nodeA));
+    NodeOp.base.del(nodeA);
+    return True;
+  }
+
+
   if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.resetfifo) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset FiFo list in [%s]", data->id);
     ListOp.clear(data->fifoList);

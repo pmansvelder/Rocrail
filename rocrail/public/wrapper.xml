@@ -2254,6 +2254,7 @@
         <const name="max" vt="string" val="max" remark="Blockspeed is maximal."/>
         <const name="cruise" vt="string" val="cruise" remark="Blockspeed is cruise."/>
         <const name="percent" vt="string" val="percent" remark="Blockspeed is set by percent."/>
+        <const name="classset" vt="string" val="classset"/>
         <var name="speed" vt="string" defval="cruise" range="*" remark="Block speed on arrive."/>
         <var name="speedpercent" vt="int" defval="80" unit="%" range="0-100" remark="Blockspeed in percent."/>
         <var name="exitspeedpercent" vt="int" defval="80" unit="%" range="0-100" remark="Block depart speed in percent."/>
@@ -2481,6 +2482,7 @@
         <const name="go" vt="string" val="go" remark="Switch all switches for this street."/>
         <const name="force" vt="string" val="force" remark="Switch all switches for this street. (Manually)"/>
         <const name="test" vt="string" val="test" remark="Switch all switches for this street without sending the clients updates."/>
+        <const name="classset" vt="string" val="classset"/>
         <var name="cmd" vt="string" defval="NULL" range="*"/>
         <const name="V_none" vt="string" val="none" remark="No V_hint defined."/>
         <var name="speed" vt="string" defval="none" range="none,min,cruise,max" remark="Route speed on departure; overwrites block departure speed if set."/>
@@ -2871,6 +2873,7 @@
         <const name="manualoff" vt="string" val="manualoff"/>
         <const name="pomwrite" vt="string" val="pomwrite"/>
         <const name="pomread" vt="string" val="pomread"/>
+        <const name="classset" vt="string" val="classset"/>
         <var name="cmd" vt="string" defval="NULL" range="*" remark="Loc command."/>
         <var name="cmdDelay" vt="int" defval="0" range="*" remark="Loc command delay."/>
         <var name="tourid" vt="string" defval="NULL" range="*" remark="Current tour ID."/>
