@@ -29,6 +29,10 @@
 #include "rocrail/public/switch.h"
 #include "rocrail/public/text.h"
 #include "rocrail/public/fback.h"
+#include "rocrail/public/switch.h"
+#include "rocrail/public/signal.h"
+#include "rocrail/public/route.h"
+#include "rocrail/public/output.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
@@ -38,6 +42,9 @@
 #include "rocrail/wrapper/public/Switch.h"
 #include "rocrail/wrapper/public/Text.h"
 #include "rocrail/wrapper/public/Feedback.h"
+#include "rocrail/wrapper/public/Block.h"
+#include "rocrail/wrapper/public/Route.h"
+#include "rocrail/wrapper/public/Output.h"
 
 
 #include "rocs/public/mem.h"
@@ -232,6 +239,46 @@ static void __executeCmd(iONode cmd, iOMap map) {
     if( lc != NULL ) {
       wLoc.setid(cmd, LocOp.getId(lc));
       LocOp.cmd(lc, (iONode)NodeOp.base.clone(cmd));
+    }
+  }
+
+  /* block */
+  else if( StrOp.equals( wBlock.name(), NodeOp.getName(cmd)) ) {
+    iIBlockBase bk = ModelOp.getBlock(model, wItem.getid(cmd));
+    if( bk != NULL ) {
+      bk->cmd(bk, (iONode)NodeOp.base.clone(cmd));
+    }
+  }
+
+  /* switch */
+  else if( StrOp.equals( wSwitch.name(), NodeOp.getName(cmd)) ) {
+    iOSwitch sw = ModelOp.getSwitch(model, wItem.getid(cmd));
+    if( sw != NULL ) {
+      SwitchOp.cmd(sw, (iONode)NodeOp.base.clone(cmd), True, 0, NULL, NULL);
+    }
+  }
+
+  /* signal */
+  else if( StrOp.equals( wSignal.name(), NodeOp.getName(cmd)) ) {
+    iOSignal sg = ModelOp.getSignal(model, wItem.getid(cmd));
+    if( sg != NULL ) {
+      SignalOp.cmd(sg, (iONode)NodeOp.base.clone(cmd), True);
+    }
+  }
+
+  /* route */
+  else if( StrOp.equals( wRoute.name(), NodeOp.getName(cmd)) ) {
+    iORoute st = ModelOp.getRoute(model, wItem.getid(cmd));
+    if( st != NULL ) {
+      RouteOp.cmd(st, (iONode)NodeOp.base.clone(cmd));
+    }
+  }
+
+  /* output */
+  else if( StrOp.equals( wOutput.name(), NodeOp.getName(cmd)) ) {
+    iOOutput co = ModelOp.getOutput(model, wItem.getid(cmd));
+    if( co != NULL ) {
+      OutputOp.cmd(co, (iONode)NodeOp.base.clone(cmd), True);
     }
   }
 
