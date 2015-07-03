@@ -2579,6 +2579,30 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     return True;
   }
 
+  if( !slaveBlock && cmd != NULL && StrOp.equals( wBlock.classadd, cmd ) ) {
+    char* newclass = StrOp.fmt("%s,%s", wBlock.getclass(data->props), wBlock.getclass(nodeA));
+    inst->setClass(inst, newclass);
+    StrOp.free(newclass);
+  }
+
+  if( !slaveBlock && cmd != NULL && StrOp.equals( wBlock.classdel, cmd ) ) {
+    char* newclass = NULL;
+    int idx = 0;
+    iOStrTok tok = StrTokOp.inst(wBlock.getclass(data->props), ',');
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* c = StrTokOp.nextToken(tok);
+      if( StrOp.equals(c, wBlock.getclass(nodeA)) )
+        continue;
+      if( idx > 0 )
+        newclass = StrOp.cat(newclass, ",");
+      newclass = StrOp.cat(newclass, c);
+      idx++;
+    }
+    inst->setClass(inst, newclass);
+    StrOp.free(newclass);
+  }
+
+
 
   if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.resetfifo) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset FiFo list in [%s]", data->id);

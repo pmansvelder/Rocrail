@@ -3359,6 +3359,27 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
     else if( StrOp.equals( wLoc.classset, cmd ) ) {
       LocOp.setClass(inst, wLoc.getclass(cmd));
     }
+    else if( StrOp.equals( wLoc.classadd, cmd ) ) {
+      char* newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wLoc.getclass(cmd));
+      LocOp.setClass(inst, newclass);
+      StrOp.free(newclass);
+    }
+    else if( StrOp.equals( wLoc.classdel, cmd ) ) {
+      char* newclass = NULL;
+      int idx = 0;
+      iOStrTok tok = StrTokOp.inst(wLoc.getclass(data->props), ',');
+      while( StrTokOp.hasMoreTokens(tok) ) {
+        const char* c = StrTokOp.nextToken(tok);
+        if( StrOp.equals(c, wLoc.getclass(cmd)) )
+          continue;
+        if( idx > 0 )
+          newclass = StrOp.cat(newclass, ",");
+        newclass = StrOp.cat(newclass, c);
+        idx++;
+      }
+      LocOp.setClass(inst, newclass);
+      StrOp.free(newclass);
+    }
     else if( StrOp.equals( wLoc.gotoblock, cmd ) ) {
       const char* blockid = wLoc.getblockid( nodeA );
 
