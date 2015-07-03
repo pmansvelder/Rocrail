@@ -346,8 +346,14 @@ static void __executeCmd(iONode cmd, iOMap map) {
 
     iONode var = ModelOp.getVariable(model, varRes);
     if( var != NULL ) {
-      wVariable.setvalue(var, VarOp.getValue(wVariable.getvalstr(cmd), NULL));
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = %d", varRes, wVariable.getvalue(var) );
+      if( NodeOp.findAttr(cmd, "valstr") != NULL) {
+        wVariable.setvalstr(var, VarOp.getText(wVariable.getvalstr(cmd), NULL, ' '));
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = [%s]", varRes, wVariable.getvalstr(var) );
+      }
+      if( NodeOp.findAttr(cmd, "value") != NULL ) {
+        wVariable.setvalue(var, VarOp.getValue(NodeOp.getStr(cmd, "value", ""), NULL));
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = %d", varRes, wVariable.getvalue(var) );
+      }
     }
     StrOp.free( varRes );
   }
