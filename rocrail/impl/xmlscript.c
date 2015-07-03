@@ -475,6 +475,13 @@ static void __doForEach(iONode nodeScript, iOMap map) {
           else
             MapOp.put(map, "lcclass", (obj)wLoc.getclass(child));
         }
+        if( StrOp.equals( wBlock.name(), NodeOp.getName(child) ) ) {
+          iIBlockBase bk = ModelOp.getBlock(model, wItem.getid(child));
+          if( bk != NULL )
+            MapOp.put(map, "bkclass", (obj)wBlock.getclass(bk->base.properties(bk)));
+          else
+            MapOp.put(map, "bkclass", (obj)wBlock.getclass(child));
+        }
         conditionRes = TextOp.replaceAllSubstitutions(condition, map);
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] condition [%s]", NodeOp.getName(table), conditionRes );
       }
