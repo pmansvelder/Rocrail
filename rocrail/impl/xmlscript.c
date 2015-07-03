@@ -156,6 +156,26 @@ static Boolean __isState(const char* stateRes) {
       }
     }
 
+    /* output */
+    else if( StrOp.equals(wOutput.name(), objType) ) {
+      iOOutput co = ModelOp.getOutput(model, objId);
+      if( co != NULL ) {
+        if( comparator[0] == '=' && OutputOp.isState(co, value) ) {
+          ok = True;
+        }
+      }
+    }
+
+    /* block */
+    else if( StrOp.equals(wBlock.name(), objType) ) {
+      iIBlockBase bk = ModelOp.getBlock(model, objId);
+      if( bk != NULL ) {
+        if( comparator[0] == '=' && bk->isState(bk, value) ) {
+          ok = True;
+        }
+      }
+    }
+
   }
 
   StrTokOp.base.del(tok);
