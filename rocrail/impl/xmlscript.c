@@ -54,6 +54,11 @@
 
 static int instCnt = 0;
 
+static void __doIf(iONode nodeScript, iOMap map);
+static void __doForEach(iONode nodeScript, iOMap map);
+
+
+
 /** ----- OBase ----- */
 static void __del( void* inst ) {
 }
@@ -366,6 +371,18 @@ static void __executeCmd(iONode cmd, iOMap map) {
     else if( text != NULL && wText.getformat(cmd) == NULL ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "text [%s] format is missing", oid);
     }
+  }
+
+  /* if */
+  else if( StrOp.equals( "if", NodeOp.getName(cmd)) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested if...");
+    __doIf(cmd, map);
+  }
+
+  /* foreach */
+  else if( StrOp.equals( "foreach", NodeOp.getName(cmd)) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested foreach...");
+    __doForEach(cmd, map);
   }
 
 }
