@@ -493,6 +493,17 @@ static void _run(const char* script, iOMap map) {
     else if( StrOp.equals( "if", NodeOp.getName(nodeScript) ) ) {
       __doIf(nodeScript, map);
     }
+    else if( StrOp.equals( "xmlscript", NodeOp.getName(nodeScript) ) ) {
+      int cnt = NodeOp.getChildCnt(nodeScript);
+      int i = 0;
+      for( i = 0; i < cnt; i++ ) {
+        iONode cmd = NodeOp.getChild(nodeScript, i);
+        if( StrOp.equals( "foreach", NodeOp.getName(cmd) ) )
+          __doForEach(cmd, map);
+        else if( StrOp.equals( "if", NodeOp.getName(cmd) ) )
+          __doIf(cmd, map);
+      }
+    }
 
     NodeOp.base.del(nodeScript);
   }
