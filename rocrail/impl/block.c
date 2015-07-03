@@ -3051,6 +3051,14 @@ static void _setMasterID( iIBlockBase inst, const char* masterid ) {
   wBlock.setmasterid(data->props, masterid);
 }
 
+static Boolean _hasClass( iIBlockBase inst, const char* class ) {
+  iOBlockData data = Data(inst);
+  const char* l_class = wBlock.getclass(data->props);
+  return StrOp.find(l_class, class) != NULL ? True:False;
+}
+
+
+
 
 static iOBlock _inst( iONode props ) {
   iOBlock     block = allocMem( sizeof( struct OBlock ) );

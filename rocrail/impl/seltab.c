@@ -1562,6 +1562,11 @@ static void _setTempWait(iIBlockBase inst, Boolean wait) {
 static void _setClass( iIBlockBase inst, const char* p_Class ) {
 }
 
+static Boolean _hasClass( iIBlockBase inst, const char* class ) {
+  return False;
+}
+
+
 static void _setMasterID( iIBlockBase inst, const char* masterid ) {
 }
 

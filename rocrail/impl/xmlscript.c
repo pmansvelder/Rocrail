@@ -105,6 +105,58 @@ static void* __event( void* inst, const void* evt ) {
 
 /** ----- OXmlScript ----- */
 
+/* class="bk b21 = AB"  */
+static Boolean __isClass(const char* classRes) {
+  Boolean ok = True;
+
+  const char* objType    = NULL;
+  const char* objId      = NULL;
+  const char* comparator = NULL;
+  const char* value      = NULL;
+  iOStrTok tok = StrTokOp.inst(classRes, ' ');
+
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    objType = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    objId = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    comparator = StrTokOp.nextToken(tok);
+  }
+  if( StrTokOp.hasMoreTokens(tok) ) {
+    value = StrTokOp.nextToken(tok);
+  }
+
+  if( objType != NULL && objId != NULL && comparator != NULL && value != NULL ) {
+    iOModel model = AppOp.getModel();
+    ok = False;
+
+    /* block */
+    if( StrOp.equals(wBlock.name(), objType) ) {
+      iIBlockBase bk = ModelOp.getBlock(model, objId);
+      if( bk != NULL ) {
+        if( comparator[0] == '=' && bk->hasClass(bk, value) ) {
+          ok = True;
+        }
+      }
+    }
+
+    /* loco */
+    else if( StrOp.equals(wLoc.name(), objType) ) {
+      iOLoc lc = ModelOp.getLoc(model, objId, NULL, False);
+      if( lc != NULL ) {
+        if( comparator[0] == '=' && LocOp.hasClass(lc, value) ) {
+          ok = True;
+        }
+      }
+    }
+
+  }
+
+  return ok;
+}
+
 
 /* state="sg sem3 = green"  */
 static Boolean __isState(const char* stateRes) {
@@ -336,6 +388,11 @@ static void __executeCmd(iONode cmd, iOMap map) {
     }
   }
 
+  /* sleep */
+  else if( StrOp.equals( "sleep", NodeOp.getName(cmd)) ) {
+    ThreadOp.sleep(NodeOp.getInt(cmd, "time", 0));
+  }
+
   /* var */
   else if( StrOp.equals( wVariable.name(), NodeOp.getName(cmd)) ) {
     iOMap map = MapOp.inst();
@@ -397,15 +454,19 @@ static void __executeCmd(iONode cmd, iOMap map) {
 static void __doIf(iONode nodeScript, iOMap map) {
   const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
   const char* state = NodeOp.getStr(nodeScript, "state", NULL);
-  if( condition == NULL && state == NULL) {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition and/or state is missing in the if statement" );
+  const char* class = NodeOp.getStr(nodeScript, "class", NULL);
+
+  if( condition == NULL && state == NULL && class == NULL) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition and/or state and/or class is missing in the if statement" );
     return;
   }
 
   char* conditionRes = NULL;
   char* stateRes = NULL;
+  char* classRes = NULL;
   Boolean conditionOK = True;
   Boolean stateOK = True;
+  Boolean classOK = True;
 
   if( condition != NULL ) {
     char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
@@ -417,8 +478,13 @@ static void __doIf(iONode nodeScript, iOMap map) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if state [%s]", stateRes );
     stateOK = __isState(stateRes);
   }
+  if( class != NULL ) {
+    classRes = TextOp.replaceAllSubstitutions(class, map);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if class [%s]", classRes );
+    classOK = __isClass(classRes);
+  }
 
-  if( conditionOK && stateOK ) {
+  if( conditionOK && stateOK && classOK ) {
     iONode thenNode = NodeOp.findNode(nodeScript, "then");
     if( thenNode != NULL ) {
       int cmds = NodeOp.getChildCnt(thenNode);

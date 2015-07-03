@@ -423,6 +423,10 @@
       <param name="inst" vt="this" remark="Block instance"/>
       <param name="masterid" vt="const char*"/>
     </fun>
+    <fun name="hasClass" vt="Boolean">
+      <param name="inst" vt="this"/>
+      <param name="class" vt="const char*"/>
+    </fun>
   </interface>
 
 </Project>
