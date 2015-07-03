@@ -2637,7 +2637,9 @@ static const char* _getClass( iOLoc inst ) {
   if( wLoc.gettrain( data->props) != NULL && StrOp.len(wLoc.gettrain( data->props)) > 0 ) {
     iOOperator train = ModelOp.getOperator(AppOp.getModel(), wLoc.gettrain( data->props) );
     if( train != NULL ) {
-      l_class = OperatorOp.getClass(train);
+      const char* o_class = OperatorOp.getClass(train);
+      if( o_class != NULL && StrOp.len(o_class) > 0 )
+        l_class = o_class;
     }
   }
   return l_class;
@@ -3357,10 +3359,10 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       _brake( inst );
     }
     else if( StrOp.equals( wLoc.classset, cmd ) ) {
-      LocOp.setClass(inst, wLoc.getclass(cmd));
+      LocOp.setClass(inst, wLoc.getclass(nodeA));
     }
     else if( StrOp.equals( wLoc.classadd, cmd ) ) {
-      char* newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wLoc.getclass(cmd));
+      char* newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wLoc.getclass(nodeA));
       LocOp.setClass(inst, newclass);
       StrOp.free(newclass);
     }
@@ -3370,7 +3372,7 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       iOStrTok tok = StrTokOp.inst(wLoc.getclass(data->props), ',');
       while( StrTokOp.hasMoreTokens(tok) ) {
         const char* c = StrTokOp.nextToken(tok);
-        if( StrOp.equals(c, wLoc.getclass(cmd)) )
+        if( StrOp.equals(c, wLoc.getclass(nodeA)) )
           continue;
         if( idx > 0 )
           newclass = StrOp.cat(newclass, ",");
