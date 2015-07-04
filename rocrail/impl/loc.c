@@ -770,7 +770,7 @@ static void* __event( void* inst, const void* evt ) {
       }
     }
 
-    if( !data->go ) {
+    if( !data->go || data->gomanual ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "lc=%s V=%d(%d)",
           wLoc.getid(data->props), V, wLoc.getV(data->props) );
       wLoc.setV( data->props, V);
@@ -780,7 +780,7 @@ static void* __event( void* inst, const void* evt ) {
       }
     }
     else {
-      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "not using the field velocity because loco %s is in auto mode", wLoc.getid(data->props));
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "not using the field velocity because loco %s is in auto mode", wLoc.getid(data->props));
     }
 
     if( wCtrl.isallowzerothrottleid( AppOp.getIniNode( wCtrl.name() ) ) ||
