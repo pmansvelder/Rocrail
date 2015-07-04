@@ -677,7 +677,8 @@ static void __updateSlot(iOCBUS cbus, byte* frame) {
           "set engine speed steps to %d for loco %s", slot->steps, slot->id );
       ThreadOp.post(data->writer, (obj)frame);
 
-      __broadcastSpeedDir(cbus, session, slot, speed, dir);
+      /*__broadcastSpeedDir(cbus, session, slot, speed, dir);*/
+      /* do not broadcast the speed and dir because it could conflict with the loco settings */
       __fg2fn(cbus, session, slot, 1, f0_4);
       __fg2fn(cbus, session, slot, 2, f5_8);
       __fg2fn(cbus, session, slot, 3, f9_12);
