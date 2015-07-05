@@ -583,6 +583,7 @@ static void _run(const char* script, iOMap map) {
   iODoc  doc        = DocOp.parse(script);
   iONode nodeScript = NULL;
 
+  /*
   unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
   char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
 
@@ -590,6 +591,7 @@ static void _run(const char* script, iOMap map) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "no valid support key found for xmlscript" );
     return;
   }
+  */
 
   if( doc != NULL && DocOp.getRootNode(doc) != NULL) {
     nodeScript = DocOp.getRootNode(doc);
