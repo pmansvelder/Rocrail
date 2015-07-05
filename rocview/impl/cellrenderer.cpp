@@ -91,6 +91,8 @@ void CellRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRe
     if( imageBitmap == NULL ) {
       wxMemoryDC tmpDC;
       m_Renderer->sizeSvgSym( imageName, wItem.west, &cx, &cy );
+      if( imageBitmap != NULL )
+        delete imageBitmap;
       imageBitmap = new wxBitmap();
       imageBitmap->Create(cx * 32 * m_Scale, cy * 32 * m_Scale , -1);
       tmpDC.SelectObject(*imageBitmap);
@@ -155,6 +157,8 @@ void CellRenderer::updateImage(const wxRect& rect) {
 
   if( FileOp.exist(pixpath)) {
     TraceOp.trc( "cellrenderer", TRCLEVEL_INFO, __LINE__, 9999, "picture [%s]", pixpath );
+    if( imageBitmap != NULL )
+      delete imageBitmap;
     wxImage img(wxString(pixpath,wxConvUTF8), bmptype);
     if( img.GetHeight() > rect.height ) {
       int h = img.GetHeight();
