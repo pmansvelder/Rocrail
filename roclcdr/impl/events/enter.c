@@ -58,7 +58,7 @@ void eventEnter( iOLcDriver inst, const char* blockId, iIBlockBase block, Boolea
     newEnterEvent = True;
   }
   else {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 4101,
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4101,
                    "Ignoring enter_block event from %s; it came within %d ticks!", blockId, data->ignevt );
   }
 
