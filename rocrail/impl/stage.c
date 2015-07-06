@@ -192,7 +192,7 @@ static void __checkAction( iOStage inst, const char* state, const char* substate
   iOModel     model  = AppOp.getModel();
   iONode      action = wStage.getactionctrl( data->props );
 
-  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "%s checkaction state [%s] substate %s: lc=[%s]",
+  TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "%s checkaction state [%s] substate %s: lc=[%s]",
       wStage.getid(data->props), state, substate!=NULL?substate:"", lcid!=NULL?lcid:"" );
 
   /* loop over all actions */

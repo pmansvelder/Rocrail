@@ -404,6 +404,9 @@ static void __executeCmd(iONode cmd, iOMap map) {
     MapOp.base.del(map);
 
     iONode var = ModelOp.getVariable(model, varRes);
+    if( var == NULL )
+      var = ModelOp.addVariable( model, varRes );
+
     if( var != NULL ) {
       if( NodeOp.findAttr(cmd, "text") != NULL) {
         wVariable.settext(var, VarOp.getText(wVariable.gettext(cmd), NULL, ' '));
