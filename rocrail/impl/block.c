@@ -2583,6 +2583,8 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     char* newclass = StrOp.fmt("%s,%s", wBlock.getclass(data->props), wBlock.getclass(nodeA));
     inst->setClass(inst, newclass);
     StrOp.free(newclass);
+    NodeOp.base.del(nodeA);
+    return True;
   }
 
   if( !slaveBlock && cmd != NULL && StrOp.equals( wBlock.classdel, cmd ) ) {
@@ -2600,6 +2602,8 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
     }
     inst->setClass(inst, newclass);
     StrOp.free(newclass);
+    NodeOp.base.del(nodeA);
+    return True;
   }
 
 

@@ -405,13 +405,25 @@ static void __executeCmd(iONode cmd, iOMap map) {
 
     iONode var = ModelOp.getVariable(model, varRes);
     if( var != NULL ) {
-      if( NodeOp.findAttr(cmd, "valstr") != NULL) {
-        wVariable.setvalstr(var, VarOp.getText(wVariable.getvalstr(cmd), NULL, ' '));
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = [%s]", varRes, wVariable.getvalstr(var) );
+      if( NodeOp.findAttr(cmd, "text") != NULL) {
+        wVariable.settext(var, VarOp.getText(wVariable.gettext(cmd), NULL, ' '));
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = [%s]", varRes, wVariable.gettext(var) );
       }
       if( NodeOp.findAttr(cmd, "value") != NULL ) {
         wVariable.setvalue(var, VarOp.getValue(NodeOp.getStr(cmd, "value", ""), NULL));
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = %d", varRes, wVariable.getvalue(var) );
+      }
+      /* Broadcast to clients. */
+      {
+        iONode node = NodeOp.inst( wVariable.name(), NULL, ELEMENT_NODE );
+        wVariable.setid( node, wVariable.getid( var ) );
+        wVariable.settext( node, wVariable.gettext( var ) );
+        wVariable.setvalue( node, wVariable.getvalue( var ) );
+        wVariable.setmin( node, wVariable.getmin( var ) );
+        wVariable.setmax( node, wVariable.getmax( var ) );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "broadcast variable %s [%d, \"%s\"]",
+            wVariable.getid(var), wVariable.getvalue(var), wVariable.gettext(var));
+        AppOp.broadcastEvent( node );
       }
     }
     StrOp.free( varRes );
@@ -611,6 +623,8 @@ static void _run(const char* script, iOMap map) {
           __doForEach(cmd, map);
         else if( StrOp.equals( "if", NodeOp.getName(cmd) ) )
           __doIf(cmd, map);
+        else
+          __executeCmd(cmd, map);
       }
     }
 
