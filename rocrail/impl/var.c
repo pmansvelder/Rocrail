@@ -93,6 +93,23 @@ static void* __event( void* inst, const void* evt ) {
 #define OP_DIVI 4
 
 
+static Boolean _setRandom(iONode var) {
+  Boolean ok = False;
+
+  if( wVariable.getmax(var) > wVariable.getmin(var) ) {
+    int rval = wVariable.getmin(var) + (rand() % wVariable.getmax(var) );
+    wVariable.setvalue(var, rval);
+    TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "variable [%s] cmd=[%s] new random value=%d",
+        wVariable.getid(var), wVariable.op_random, wVariable.getvalue(var) );
+    ok = True;
+  }
+  else {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "variable [%s] cmd=[%s] not possible; max. must be greater then min.",
+        wVariable.getid(var), wVariable.op_random );
+  }
+  return ok;
+}
+
 static char* _getText( const char* p_ValStr, iOMap map, char separator ) {
   iOModel model = AppOp.getModel();
   char* valStr = NULL;

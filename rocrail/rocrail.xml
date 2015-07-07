@@ -2855,6 +2855,9 @@
       <param name="valStr" vt="const char*" remark="Value string."/>
       <param name="map" vt="iOMap" remark="Map with replacements. (optional)"/>
     </fun>
+    <fun name="setRandom" vt="Boolean">
+      <param name="var" vt="iONode"/>
+    </fun>
   </object>
 
 

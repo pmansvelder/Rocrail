@@ -278,9 +278,19 @@ static Boolean __isSubCondition(const char* conditionRes) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d > %d", conditionRes, ok?"true":"false", varValue, valueValue );
     }
     else if( comparator[0] == '=' ) {
-      if( varValue != valueValue )
-        ok = False;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d == %d", conditionRes, ok?"true":"false", varValue, valueValue );
+      if( var[0] == '@' ) {
+        char* varText   = VarOp.getText(var, NULL, ' ');
+        char* valueText = VarOp.getText(value, NULL, ' ');
+        ok = StrOp.equals(varText, valueText);
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %s == %s", conditionRes, ok?"true":"false", varText, valueText );
+        StrOp.free(varText);
+        StrOp.free(valueText);
+      }
+      else {
+        if( varValue != valueValue )
+          ok = False;
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "condition [%s] is %s: %d == %d", conditionRes, ok?"true":"false", varValue, valueValue );
+      }
     }
     else if( comparator[0] == '#' ) {
       if( StrOp.find(var, ",") != NULL || StrOp.find(value, ",") != NULL ) {
@@ -415,6 +425,29 @@ static void __executeCmd(iONode cmd, iOMap map) {
       if( NodeOp.findAttr(cmd, "value") != NULL ) {
         wVariable.setvalue(var, VarOp.getValue(NodeOp.getStr(cmd, "value", ""), NULL));
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = %d", varRes, wVariable.getvalue(var) );
+      }
+      if( NodeOp.findAttr(cmd, "min") != NULL ) {
+        wVariable.setmin(var, NodeOp.getInt(cmd, "min", 0));
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] min = %d", varRes, wVariable.getmin(var) );
+      }
+      if( NodeOp.findAttr(cmd, "max") != NULL ) {
+        wVariable.setmax(var, NodeOp.getInt(cmd, "max", 0));
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] max = %d", varRes, wVariable.getmax(var) );
+      }
+      if( NodeOp.findAttr(cmd, "cmd") != NULL ) {
+        if( StrOp.equals(NodeOp.getStr(cmd, "cmd", ""), wVariable.op_random ) ) {
+          VarOp.setRandom(var);
+        }
+        else if( StrOp.equals(NodeOp.getStr(cmd, "cmd", ""), wVariable.op_start ) ) {
+          wVariable.settimer(var, True);
+          TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "variable [%s] cmd=[%s] timer started with value %d",
+              wVariable.getid(var), wVariable.op_start, wVariable.getvalue(var) );
+        }
+        else if( StrOp.equals(NodeOp.getStr(cmd, "cmd", ""), wVariable.op_stop ) ) {
+          wVariable.settimer(var, False);
+          TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "variable [%s] cmd=[%s] timer stopped with value %d",
+              wVariable.getid(var), wVariable.op_stop, wVariable.getvalue(var) );
+        }
       }
       /* Broadcast to clients. */
       {

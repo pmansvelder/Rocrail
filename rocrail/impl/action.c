@@ -858,17 +858,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
             wVariable.getid(var), cmdStr, wAction.getparam(data->action), wVariable.getmax(var) );
       }
       else if( StrOp.equals( wVariable.op_random, wAction.getcmd( data->action ) ) ) {
-        if( wVariable.getmax(var) > wVariable.getmin(var) ) {
-          int rval = wVariable.getmin(var) + (rand() % wVariable.getmax(var) );
-          wVariable.setvalue(var, rval);
-          TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "variable [%s] cmd=[%s] new random value=%d",
-              oid, cmdStr, wVariable.getvalue(var) );
-          checkActions = True;
-        }
-        else {
-          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "variable [%s] cmd=[%s] not possible; max. must be greater then min.",
-              wVariable.getid(var), cmdStr );
-        }
+        checkActions = VarOp.setRandom(var);
       }
       else if( StrOp.equals( wVariable.op_start, wAction.getcmd( data->action ) ) ) {
         int startval = atoi(wAction.getparam(data->action));
