@@ -3362,7 +3362,11 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
       LocOp.setClass(inst, wLoc.getclass(nodeA));
     }
     else if( StrOp.equals( wLoc.classadd, cmd ) ) {
-      char* newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wLoc.getclass(nodeA));
+      char* newclass = NULL;
+      if( StrOp.len(wLoc.getclass(data->props)) > 0 )
+        newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wBlock.getclass(nodeA));
+      else
+        newclass = StrOp.fmt("%s", wLoc.getclass(nodeA));
       LocOp.setClass(inst, newclass);
       StrOp.free(newclass);
     }
