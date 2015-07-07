@@ -3363,12 +3363,26 @@ static Boolean _cmd( iOLoc inst, iONode nodeA ) {
     }
     else if( StrOp.equals( wLoc.classadd, cmd ) ) {
       char* newclass = NULL;
-      if( StrOp.len(wLoc.getclass(data->props)) > 0 )
-        newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wBlock.getclass(nodeA));
-      else
-        newclass = StrOp.fmt("%s", wLoc.getclass(nodeA));
-      LocOp.setClass(inst, newclass);
-      StrOp.free(newclass);
+      Boolean isNew = True;
+
+      iOStrTok tok = StrTokOp.inst(wLoc.getclass(data->props), ',');
+      while( StrTokOp.hasMoreTokens(tok) ) {
+        const char* c = StrTokOp.nextToken(tok);
+        if( StrOp.equals(c, wLoc.getclass(nodeA)) ) {
+          isNew = False;
+          break;
+        }
+      }
+      StrTokOp.base.del(tok);
+
+      if( isNew ) {
+        if( StrOp.len(wLoc.getclass(data->props)) > 0 )
+          newclass = StrOp.fmt("%s,%s", wLoc.getclass(data->props), wBlock.getclass(nodeA));
+        else
+          newclass = StrOp.fmt("%s", wLoc.getclass(nodeA));
+        LocOp.setClass(inst, newclass);
+        StrOp.free(newclass);
+      }
     }
     else if( StrOp.equals( wLoc.classdel, cmd ) ) {
       char* newclass = NULL;

@@ -2581,12 +2581,26 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
 
   if( !slaveBlock && cmd != NULL && StrOp.equals( wBlock.classadd, cmd ) ) {
     char* newclass = NULL;
-    if( StrOp.len(wBlock.getclass(data->props)) > 0 )
-      newclass = StrOp.fmt("%s,%s", wBlock.getclass(data->props), wBlock.getclass(nodeA));
-    else
-      newclass = StrOp.fmt("%s", wBlock.getclass(nodeA));
-    inst->setClass(inst, newclass);
-    StrOp.free(newclass);
+    Boolean isNew = True;
+
+    iOStrTok tok = StrTokOp.inst(wBlock.getclass(data->props), ',');
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* c = StrTokOp.nextToken(tok);
+      if( StrOp.equals(c, wBlock.getclass(nodeA)) ) {
+        isNew = False;
+        break;
+      }
+    }
+    StrTokOp.base.del(tok);
+
+    if( isNew ) {
+      if( StrOp.len(wBlock.getclass(data->props)) > 0 )
+        newclass = StrOp.fmt("%s,%s", wBlock.getclass(data->props), wBlock.getclass(nodeA));
+      else
+        newclass = StrOp.fmt("%s", wBlock.getclass(nodeA));
+      inst->setClass(inst, newclass);
+      StrOp.free(newclass);
+    }
     NodeOp.base.del(nodeA);
     return True;
   }
@@ -2604,6 +2618,7 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
       newclass = StrOp.cat(newclass, c);
       idx++;
     }
+    StrTokOp.base.del(tok);
     inst->setClass(inst, newclass);
     StrOp.free(newclass);
     NodeOp.base.del(nodeA);
