@@ -56,8 +56,8 @@
 
 static int instCnt = 0;
 
-static void __doIf(iONode nodeScript, iOMap map);
-static void __doForEach(iONode nodeScript, iOMap map);
+static Boolean __doIf(iONode nodeScript, iOMap map);
+static Boolean __doForEach(iONode nodeScript, iOMap map);
 
 
 
@@ -334,7 +334,8 @@ static Boolean __isCondition(const char* conditionRes, Boolean alltrue) {
 }
 
 
-static void __executeCmd(iONode cmd, iOMap map, const char* oid) {
+static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid) {
+  Boolean exit = False;
   iOModel model = AppOp.getModel();
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s] oid[%s]", NodeOp.getName(cmd), wItem.getid(cmd), oid!=NULL?oid:"" );
 
@@ -402,12 +403,18 @@ static void __executeCmd(iONode cmd, iOMap map, const char* oid) {
 
   /* sleep */
   else if( StrOp.equals( "sleep", NodeOp.getName(cmd)) ) {
-    int sleep = NodeOp.getInt(cmd, "time", 0);
+    int sleep = VarOp.getValue(NodeOp.getStr(cmd, "time", "0"), NULL );
     if( sleep > 100 ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "a sleep > 100ms, %d, is not permitted; Sleep 100ms...", sleep );
       sleep = 100;
     }
     ThreadOp.sleep(sleep);
+  }
+
+  /* exit */
+  else if( StrOp.equals( "exit", NodeOp.getName(cmd)) ) {
+    exit = True;
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "exit script: %s", NodeOp.getStr(cmd, "cmt", "?") );
   }
 
   /* var */
@@ -494,26 +501,28 @@ static void __executeCmd(iONode cmd, iOMap map, const char* oid) {
   /* if */
   else if( StrOp.equals( "if", NodeOp.getName(cmd)) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested if...");
-    __doIf(cmd, map);
+    exit = __doIf(cmd, map);
   }
 
   /* foreach */
   else if( StrOp.equals( "foreach", NodeOp.getName(cmd)) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested foreach...");
-    __doForEach(cmd, map);
+    exit = __doForEach(cmd, map);
   }
 
+  return exit;
 }
 
 
-static void __doIf(iONode nodeScript, iOMap map) {
+static Boolean __doIf(iONode nodeScript, iOMap map) {
+  Boolean exit = False;
   const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
   const char* state = NodeOp.getStr(nodeScript, "state", NULL);
   const char* class = NodeOp.getStr(nodeScript, "class", NULL);
 
   if( condition == NULL && state == NULL && class == NULL) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition and/or state and/or class is missing in the if statement" );
-    return;
+    return exit;
   }
 
   char* conditionRes = NULL;
@@ -544,11 +553,11 @@ static void __doIf(iONode nodeScript, iOMap map) {
     if( thenNode != NULL ) {
       int cmds = NodeOp.getChildCnt(thenNode);
       int n = 0;
-      for( n = 0; n < cmds; n++ ) {
+      for( n = 0; n < cmds && exit == False; n++ ) {
         iONode cmd = NodeOp.getChild(thenNode, n);
         char* id = VarOp.getText(wItem.getid(cmd), map, ' ');
         wItem.setid(cmd, id);
-        __executeCmd(cmd, map, NULL);
+        exit = __executeCmd(cmd, map, NULL);
         StrOp.free(id);
       }
     }
@@ -560,21 +569,23 @@ static void __doIf(iONode nodeScript, iOMap map) {
     if( elseNode != NULL ) {
       int cmds = NodeOp.getChildCnt(elseNode);
       int n = 0;
-      for( n = 0; n < cmds; n++ ) {
+      for( n = 0; n < cmds && exit == False; n++ ) {
         iONode cmd = NodeOp.getChild(elseNode, n);
         char* id = TextOp.replaceAllSubstitutions(wItem.getid(cmd), map);
         wItem.setid(cmd, id);
-        __executeCmd(cmd, map, NULL);
+        exit = __executeCmd(cmd, map, NULL);
         StrOp.free(id);
       }
     }
   }
 
   StrOp.free(conditionRes);
+  return exit;
 }
 
 
-static void __doForEach(iONode nodeScript, iOMap map) {
+static Boolean __doForEach(iONode nodeScript, iOMap map) {
+  Boolean exit = False;
   iOModel model = AppOp.getModel();
   iONode plan = ModelOp.getModel(model);
   iONode table = NodeOp.findNode(plan, NodeOp.getStr(nodeScript, "table", ""));
@@ -610,7 +621,7 @@ static void __doForEach(iONode nodeScript, iOMap map) {
       if( conditionRes == NULL || __isCondition(conditionRes, NodeOp.getBool(nodeScript, "alltrue", True)) ) {
         int cmds = NodeOp.getChildCnt(nodeScript);
         int n = 0;
-        for( n = 0; n < cmds; n++ ) {
+        for( n = 0; n < cmds && exit == False; n++ ) {
           iONode cmd = NodeOp.getChild(nodeScript, n);
           Boolean emptyId = False;
           /*
@@ -622,7 +633,7 @@ static void __doForEach(iONode nodeScript, iOMap map) {
             wItem.setid(cmd, oid);
             emptyId = True;
           }
-          __executeCmd(cmd, map, oid);
+          exit = __executeCmd(cmd, map, oid);
 
           if( emptyId ) {
             wItem.setid(cmd, "");
@@ -633,9 +644,8 @@ static void __doForEach(iONode nodeScript, iOMap map) {
 
       StrOp.free(conditionRes);
     }
-
-
   }
+  return exit;
 }
 
 
@@ -670,16 +680,17 @@ static void _run(const char* script, iOMap map) {
       __doIf(nodeScript, map);
     }
     else if( StrOp.equals( "xmlscript", NodeOp.getName(nodeScript) ) ) {
+      Boolean exit = False;
       int cnt = NodeOp.getChildCnt(nodeScript);
       int i = 0;
-      for( i = 0; i < cnt; i++ ) {
+      for( i = 0; i < cnt && exit == False; i++ ) {
         iONode cmd = NodeOp.getChild(nodeScript, i);
         if( StrOp.equals( "foreach", NodeOp.getName(cmd) ) )
-          __doForEach(cmd, map);
+          exit = __doForEach(cmd, map);
         else if( StrOp.equals( "if", NodeOp.getName(cmd) ) )
-          __doIf(cmd, map);
+          exit = __doIf(cmd, map);
         else
-          __executeCmd(cmd, map, NULL);
+          exit = __executeCmd(cmd, map, NULL);
       }
     }
 
