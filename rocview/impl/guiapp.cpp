@@ -887,11 +887,10 @@ bool RocGui::OnInit() {
   TraceOp.println( " rrr     ooo ooo ccc    rrr     aaa aaa iii lll   " );
   TraceOp.println( " rrr      ooooo   ccccc rrr      aaaaaa iii  lll  " );
   TraceOp.println( "--------------------------------------------------" );
-  TraceOp.println( " Copyright (c) Rob Versluis"                        );
+  TraceOp.println( " TM and Copyright 2002-2015 Rob Versluis."          );
+  TraceOp.println( " All Rights Reserved."                              );
   TraceOp.println( "   r.j.versluis@rocrail.net"                        );
   TraceOp.println( "   http://www.rocrail.net"                          );
-  TraceOp.println( " License: GNU GPL 3"                                );
-  TraceOp.println( "   http://www.gnu.org/licenses/gpl-3.0-standalone.html" );
   TraceOp.println( "--------------------------------------------------" );
   TraceOp.trc( "app", TRCLEVEL_INFO, __LINE__, 9999," pwd = [%s]", FileOp.pwd() );
   for( int x = 0; x < argc; x++ )

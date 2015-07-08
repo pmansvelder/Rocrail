@@ -429,8 +429,6 @@ static int __logo( void ) {
   TraceOp.println( " All Rights Reserved."                              );
   TraceOp.println( "   r.j.versluis@rocrail.net"                        );
   TraceOp.println( "   http://www.rocrail.net"                          );
-  TraceOp.println( " License: GNU GPL V3"                               );
-  TraceOp.println( "   http://www.gnu.org/licenses/gpl-3.0-standalone.html" );
   TraceOp.println( "--------------------------------------------------" );
   TraceOp.println( " %s %d [%s]", wGlobal.productname, revisionnr, commithash );
 

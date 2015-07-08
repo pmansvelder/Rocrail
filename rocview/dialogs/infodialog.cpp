@@ -86,7 +86,7 @@ InfoDialog::InfoDialog( wxWindow* parent, wxWindowID id, const wxString& caption
 
   m_Home->SetLabel( _T("http://www.rocrail.net") );
   m_Support->SetLabel( _T("TM and Copyright 2002-2015 Rob Versluis.") );
-  m_labLic->SetLabel( _T("All Rights Reserved. License: GNU GPL V3") );
+  m_labLic->SetLabel( _T("All Rights Reserved.") );
   //m_ThanksLine->SetLabel( wxGetApp().getMsg( "license" ) );
   m_ThanksLine->SetLabel( _T("") );
 
@@ -95,20 +95,6 @@ InfoDialog::InfoDialog( wxWindow* parent, wxWindowID id, const wxString& caption
 
   m_Thanks->AppendText( _T("The name Rocrail and the associated logo is our trademark and is officially registered in Germany under number 302008050592 and in the Benelux under number 928454.") );
   m_Thanks->AppendText( _T("\n\n") );
-
-  m_Thanks->AppendText( _T("This program is free software; you can redistribute it and/or ") );
-  m_Thanks->AppendText( _T("modify it under the terms of the GNU General Public License ") );
-  m_Thanks->AppendText( _T("as published by the Free Software Foundation; either version 3 ") );
-  m_Thanks->AppendText( _T("of the License, or (at your option) any later version.\n\n") );
-
-  m_Thanks->AppendText( _T("This program is distributed in the hope that it will be useful, ") );
-  m_Thanks->AppendText( _T("but WITHOUT ANY WARRANTY; without even the implied warranty of ") );
-  m_Thanks->AppendText( _T("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the ") );
-  m_Thanks->AppendText( _T("GNU General Public License for more details.\n\n") );
-
-  m_Thanks->AppendText( _T("You should have received a copy of the GNU General Public License ") );
-  m_Thanks->AppendText( _T("along with this program; if not, write to the Free Software ") );
-  m_Thanks->AppendText( _T("Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.") );
 
   m_Thanks->SetInsertionPoint(0);
   m_Thanks->ShowPosition(0);
