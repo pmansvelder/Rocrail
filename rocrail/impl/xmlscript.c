@@ -417,6 +417,24 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "exit script: %s", NodeOp.getStr(cmd, "cmt", "?") );
   }
 
+  /* sub */
+  else if( StrOp.equals( "sub", NodeOp.getName(cmd)) ) {
+    const char* scriptFile = NodeOp.getStr(cmd, "file", "");
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "sub xmlscript: [%s]", scriptFile );
+    if( FileOp.exist(scriptFile) ) {
+      int size = FileOp.fileSize(scriptFile);
+      char* xmlscript = allocMem( size + 1);
+      iOFile f = FileOp.inst( scriptFile, OPEN_READONLY);
+      if( f != NULL ) {
+        FileOp.read( f, xmlscript, size);
+        FileOp.base.del(f);
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run sub xmlscript file [%s], size=%d", scriptFile, size );
+        XmlScriptOp.run( xmlscript, map );
+        freeMem(xmlscript);
+      }
+    }
+  }
+
   /* var */
   else if( StrOp.equals( wVariable.name(), NodeOp.getName(cmd)) ) {
     iOMap map = MapOp.inst();
