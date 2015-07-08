@@ -420,8 +420,16 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
   /* break */
   else if( StrOp.equals( "break", NodeOp.getName(cmd)) ) {
     if( breakloop != NULL ) {
-      *breakloop = True;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "break: %s", NodeOp.getStr(cmd, "cmt", "?") );
+      const char* condition = NodeOp.getStr(cmd, "condition", NULL);
+      char* conditionRes = NULL;
+      if( condition != NULL ) {
+        conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "break condition [%s]", conditionRes );
+      }
+      if( conditionRes == NULL || __isCondition(conditionRes, NodeOp.getBool(cmd, "alltrue", True)) ) {
+        *breakloop = True;
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "break: %s", NodeOp.getStr(cmd, "cmt", "?") );
+      }
     }
   }
 
