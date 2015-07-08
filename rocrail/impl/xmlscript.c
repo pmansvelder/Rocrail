@@ -402,7 +402,12 @@ static void __executeCmd(iONode cmd, iOMap map, const char* oid) {
 
   /* sleep */
   else if( StrOp.equals( "sleep", NodeOp.getName(cmd)) ) {
-    ThreadOp.sleep(NodeOp.getInt(cmd, "time", 0));
+    int sleep = NodeOp.getInt(cmd, "time", 0);
+    if( sleep > 100 ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "a sleep > 100ms, %d, is not permitted; Sleep 100ms...", sleep );
+      sleep = 100;
+    }
+    ThreadOp.sleep(sleep);
   }
 
   /* var */
