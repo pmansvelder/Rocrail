@@ -2,6 +2,7 @@
  Rocrail - Model Railroad Software
 
  Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
+ All rights reserved.
 
 */
 /* Variables */
@@ -4415,6 +4416,10 @@ function getTrackImage(tk) {
   else if (type == "tracknr" ) {
     var tknr = parseInt(tk.getAttribute('tknr'));
     return "url('track-"+tknr+suffix+"."+ ori + ".svg')";
+  }
+  else if (type == "curvenr" ) {
+    var tknr = parseInt(tk.getAttribute('tknr'));
+    return "url('curve-"+tknr+suffix+"."+ ori + ".svg')";
   }
   else {
     return "url('"+prefix+"straight"+suffix+"."+ ori + ".svg')";
