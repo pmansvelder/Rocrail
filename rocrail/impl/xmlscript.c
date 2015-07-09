@@ -34,6 +34,7 @@
 #include "rocrail/public/route.h"
 #include "rocrail/public/output.h"
 #include "rocrail/public/action.h"
+#include "rocrail/public/operator.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
@@ -48,6 +49,7 @@
 #include "rocrail/wrapper/public/Output.h"
 #include "rocrail/wrapper/public/Global.h"
 #include "rocrail/wrapper/public/ActionCtrl.h"
+#include "rocrail/wrapper/public/Operator.h"
 
 
 #include "rocs/public/mem.h"
@@ -365,6 +367,16 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
         StrOp.free(scidRes);
       }
       LocOp.cmd(lc, clone);
+    }
+    StrOp.free(idRes);
+  }
+
+  /* operator */
+  else if( StrOp.equals( wOperator.name(), NodeOp.getName(cmd)) ) {
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOOperator op = ModelOp.getOperator(model, idRes);
+    if( op != NULL ) {
+      OperatorOp.cmd(op, (iONode)NodeOp.base.clone(cmd));
     }
     StrOp.free(idRes);
   }
