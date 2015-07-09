@@ -33,6 +33,7 @@
 #include "rocrail/public/signal.h"
 #include "rocrail/public/route.h"
 #include "rocrail/public/output.h"
+#include "rocrail/public/action.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
@@ -46,6 +47,7 @@
 #include "rocrail/wrapper/public/Route.h"
 #include "rocrail/wrapper/public/Output.h"
 #include "rocrail/wrapper/public/Global.h"
+#include "rocrail/wrapper/public/ActionCtrl.h"
 
 
 #include "rocs/public/mem.h"
@@ -399,6 +401,16 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     if( fb != NULL ) {
       FBackOp.cmd(fb, (iONode)NodeOp.base.clone(cmd), True);
     }
+  }
+
+  /* actionctrl */
+  else if( StrOp.equals( wActionCtrl.name(), NodeOp.getName(cmd)) ) {
+    iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( cmd ));
+    if( Action != NULL ) {
+      ActionOp.exec(Action, cmd);
+    }
+    else
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "action [%s] not found", wActionCtrl.getid( cmd ) );
   }
 
   /* sleep */
