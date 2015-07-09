@@ -178,6 +178,7 @@ void LEDButton::OnPaint(wxPaintEvent& WXUNUSED(event))
       if( (int)scale != 0 && (bmpW/scale) > 0 && (bmpH/scale) > 0 ) {
         wxImage img = icon->ConvertToImage();
         img = img.Scale( (bmpW/scale), (bmpH/scale), wxIMAGE_QUALITY_HIGH );
+        delete l_icon;
         l_icon = new wxBitmap(img);
       }
 
@@ -282,6 +283,8 @@ void LEDButton::SetLabel(const wxString &text) {
 }
 
 void LEDButton::SetIcon(wxBitmap* icon) {
+  if( this->icon != NULL )
+    delete this->icon;
   this->icon = icon;
   Refresh();
 }
