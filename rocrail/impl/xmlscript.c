@@ -343,64 +343,90 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
 
   /* loco */
   if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) ) {
-    iOLoc lc = ModelOp.getLoc(model, wItem.getid(cmd), NULL, False);
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOLoc lc = ModelOp.getLoc(model, idRes, NULL, False);
     iIBlockBase bk = NULL;
     if( lc == NULL && (bk = ModelOp.getBlock(model, wItem.getid(cmd))) != NULL ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "get loco id from block [%s]", wItem.getid(cmd) );
       lc = ModelOp.getLoc(model, bk->getLoc(bk), NULL, False);
     }
     if( lc != NULL ) {
-      wLoc.setid(cmd, LocOp.getId(lc));
-      LocOp.cmd(lc, (iONode)NodeOp.base.clone(cmd));
+      iONode clone = (iONode)NodeOp.base.clone(cmd);
+      wLoc.setid(clone, LocOp.getId(lc));
+
+      if( wLoc.getblockid(clone) != NULL && StrOp.len(wLoc.getblockid(clone)) > 0 ) {
+        char* bkidRes = VarOp.getText(wLoc.getblockid(clone), map, ' ');
+        wLoc.setblockid(clone, bkidRes);
+        StrOp.free(bkidRes);
+      }
+      if( wLoc.getscheduleid(clone) != NULL && StrOp.len(wLoc.getscheduleid(clone)) > 0 ) {
+        char* scidRes = VarOp.getText(wLoc.getscheduleid(clone), map, ' ');
+        wLoc.setscheduleid(clone, scidRes);
+        StrOp.free(scidRes);
+      }
+      LocOp.cmd(lc, clone);
     }
+    StrOp.free(idRes);
   }
 
   /* block */
   else if( StrOp.equals( wBlock.name(), NodeOp.getName(cmd)) ) {
-    iIBlockBase bk = ModelOp.getBlock(model, wItem.getid(cmd));
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iIBlockBase bk = ModelOp.getBlock(model, idRes);
     if( bk != NULL ) {
       bk->cmd(bk, (iONode)NodeOp.base.clone(cmd));
     }
+    StrOp.free(idRes);
   }
 
   /* switch */
   else if( StrOp.equals( wSwitch.name(), NodeOp.getName(cmd)) ) {
-    iOSwitch sw = ModelOp.getSwitch(model, wItem.getid(cmd));
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOSwitch sw = ModelOp.getSwitch(model, idRes);
     if( sw != NULL ) {
       SwitchOp.cmd(sw, (iONode)NodeOp.base.clone(cmd), True, 0, NULL, NULL);
     }
+    StrOp.free(idRes);
   }
 
   /* signal */
   else if( StrOp.equals( wSignal.name(), NodeOp.getName(cmd)) ) {
-    iOSignal sg = ModelOp.getSignal(model, wItem.getid(cmd));
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOSignal sg = ModelOp.getSignal(model, idRes);
     if( sg != NULL ) {
       SignalOp.cmd(sg, (iONode)NodeOp.base.clone(cmd), True);
     }
+    StrOp.free(idRes);
   }
 
   /* route */
   else if( StrOp.equals( wRoute.name(), NodeOp.getName(cmd)) ) {
-    iORoute st = ModelOp.getRoute(model, wItem.getid(cmd));
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iORoute st = ModelOp.getRoute(model, idRes);
     if( st != NULL ) {
       RouteOp.cmd(st, (iONode)NodeOp.base.clone(cmd));
     }
+    StrOp.free(idRes);
   }
 
   /* output */
   else if( StrOp.equals( wOutput.name(), NodeOp.getName(cmd)) ) {
-    iOOutput co = ModelOp.getOutput(model, wItem.getid(cmd));
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOOutput co = ModelOp.getOutput(model, idRes);
     if( co != NULL ) {
       OutputOp.cmd(co, (iONode)NodeOp.base.clone(cmd), True);
     }
+    StrOp.free(idRes);
   }
 
   /* sensor */
   else if( StrOp.equals( wFeedback.name(), NodeOp.getName(cmd)) ) {
-    iOFBack fb = ModelOp.getFBack(model, wItem.getid(cmd));
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOFBack fb = ModelOp.getFBack(model, idRes);
     if( fb != NULL ) {
       FBackOp.cmd(fb, (iONode)NodeOp.base.clone(cmd), True);
     }
+    StrOp.free(idRes);
   }
 
   /* actionctrl */
