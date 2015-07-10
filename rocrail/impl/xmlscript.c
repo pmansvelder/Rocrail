@@ -357,6 +357,13 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "get loco id from block [%s]", wItem.getid(cmd) );
       lc = ModelOp.getLoc(model, bk->getLoc(bk), NULL, False);
     }
+    if( lc == NULL && NodeOp.getStr(cmd, "bkid", NULL) != NULL ) {
+      char* bkidRes = VarOp.getText(NodeOp.getStr(cmd, "bkid", NULL), map, ' ');
+      bk = ModelOp.getBlock(model, bkidRes);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "get loco id from block [%s]", bkidRes );
+      lc = ModelOp.getLoc(model, bk->getLoc(bk), NULL, False);
+      StrOp.free(bkidRes);
+    }
     if( lc != NULL ) {
       iONode clone = (iONode)NodeOp.base.clone(cmd);
       wLoc.setid(clone, LocOp.getId(lc));
