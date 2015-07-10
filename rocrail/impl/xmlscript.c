@@ -21,6 +21,7 @@
 #include "rocrail/impl/xmlscript_impl.h"
 
 #include "rocrail/public/app.h"
+#include "rocrail/public/control.h"
 #include "rocrail/public/model.h"
 #include "rocrail/public/text.h"
 #include "rocrail/public/var.h"
@@ -35,6 +36,7 @@
 #include "rocrail/public/output.h"
 #include "rocrail/public/action.h"
 #include "rocrail/public/operator.h"
+#include "rocrail/public/car.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
@@ -50,6 +52,8 @@
 #include "rocrail/wrapper/public/Global.h"
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/Operator.h"
+#include "rocrail/wrapper/public/SysCmd.h"
+#include "rocrail/wrapper/public/Car.h"
 
 
 #include "rocs/public/mem.h"
@@ -344,9 +348,10 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s] oid[%s]", NodeOp.getName(cmd), wItem.getid(cmd), oid!=NULL?oid:"" );
 
   /* loco */
-  if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) ) {
+  if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) || StrOp.equals( wCar.name(), NodeOp.getName(cmd)) ) {
     char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
-    iOLoc lc = ModelOp.getLoc(model, idRes, NULL, False);
+    iOLoc lc    = ModelOp.getLoc(model, idRes, NULL, False);
+    iOCar car   = ModelOp.getCar(model, idRes);
     iIBlockBase bk = NULL;
     if( lc == NULL && (bk = ModelOp.getBlock(model, wItem.getid(cmd))) != NULL ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "get loco id from block [%s]", wItem.getid(cmd) );
@@ -367,6 +372,11 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
         StrOp.free(scidRes);
       }
       LocOp.cmd(lc, clone);
+    }
+    if( car != NULL ) {
+      iONode clone = (iONode)NodeOp.base.clone(cmd);
+      wCar.setid(clone, wCar.getid(CarOp.base.properties(car)));
+      CarOp.cmd(car, clone);
     }
     StrOp.free(idRes);
   }
@@ -449,6 +459,12 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     }
     else
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "action [%s] not found", wActionCtrl.getid( cmd ) );
+  }
+
+  /* system */
+  else if( StrOp.equals( wSysCmd.name(), NodeOp.getName(cmd)) ) {
+    int error = 0;
+    ControlOp.cmd( AppOp.getControl(), (iONode)NodeOp.base.clone(cmd), &error );
   }
 
   /* sleep */
