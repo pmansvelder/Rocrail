@@ -1141,9 +1141,9 @@ void RouteDialog::initCommands() {
     m_Commands2->InsertItem( idx, wxString(wSwitchCmd.getid( swcmd ),wxConvUTF8) );
     m_Commands2->SetItem( idx, 1, wxString(wSwitchCmd.getcmd( swcmd ),wxConvUTF8) );
     m_Commands2->SetItem( idx, 2, wxString::Format(wxT("%d"), wSwitchCmd.gettrack(swcmd)) );
-    m_Commands2->SetItem( idx, 3, wxString::Format(wxT("%s"), wSwitchCmd.islock(swcmd)?"X":"") );
-    m_Commands2->SetItem( idx, 4, wxString::Format(wxT("%s"), wSwitchCmd.isreduceV(swcmd)?"X":"") );
-    m_Commands2->SetItem( idx, 5, wxString::Format(wxT("%s"), wSwitchCmd.isatfree(swcmd)?"X":"") );
+    m_Commands2->SetItem( idx, 3, wxString(wSwitchCmd.islock(swcmd)?"X":"",wxConvUTF8) );
+    m_Commands2->SetItem( idx, 4, wxString(wSwitchCmd.isreduceV(swcmd)?"X":"",wxConvUTF8) );
+    m_Commands2->SetItem( idx, 5, wxString(wSwitchCmd.isatfree(swcmd)?"X":"",wxConvUTF8) );
     m_Commands2->SetItemPtrData(idx, (wxUIntPtr)swcmd);
 
     idx++;
