@@ -86,7 +86,7 @@ ThrottleDlg::ThrottleDlg( wxWindow* parent, iOList list, iOMap map, const char* 
     m_Props = wxGetApp().getFrame()->findLoc(locid);
     if( m_Props != NULL ) {
       updateImage();
-      setFLabels();
+      setFLabels(true);
       m_iSpeed1 = wLoc.getV(m_Props);
       m_Speed->SetValue( wxString::Format(wxT("%d"), m_iSpeed1) );
       m_SpeedSlider->SetRange( 0, wLoc.getV_max(m_Props) );
@@ -152,7 +152,7 @@ void ThrottleDlg::modelEvent( iONode evt ) {
 
   else if( StrOp.equals( wFunCmd.name(), et ) ) {
     setFX(evt);
-    setFLabels();
+    setFLabels(false);
     if( NodeOp.findAttr(evt, "f0")  && wFunCmd.getfnchanged(evt) == 0 ) {
       m_bFn = wFunCmd.isf0(evt )?true:false;
       wLoc.setfn( m_Props, m_bFn?True:False );
@@ -301,18 +301,18 @@ iONode ThrottleDlg::getConsistLoco() {
 }
 
 
-void ThrottleDlg::setFLabels() {
+void ThrottleDlg::setFLabels(bool init) {
   if( wLoc.isconsist_syncfun( m_Props ) ) {
     iONode consistloc = getConsistLoco();
-    setFLabels(consistloc, false, wLoc.getconsist_syncfunmap( m_Props ));
-    setFLabels(m_Props, true);
+    setFLabels(consistloc, false, init, wLoc.getconsist_syncfunmap( m_Props ));
+    setFLabels(m_Props, true, init);
   }
   else {
-    setFLabels(m_Props, false);
+    setFLabels(m_Props, false, init);
   }
 }
 
-void ThrottleDlg::setFLabels(iONode p_Props, bool merge, int fmap) {
+void ThrottleDlg::setFLabels(iONode p_Props, bool merge, bool init, int fmap) {
   if( p_Props == NULL )
     return;
 
@@ -320,12 +320,14 @@ void ThrottleDlg::setFLabels(iONode p_Props, bool merge, int fmap) {
 
   TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "setFLabels group=%d", m_iFnGroup );
 
-  if( !merge || m_bSecAddr) {
-    m_F0->SetLabel( _T("lights") );
-    m_F0->SetIcon(NULL);
-    for( int i = 1; i < 15; i++ ) {
-      m_F[i]->SetLabel( wxString::Format(_T("F%d"), i + m_iFnGroup * 14) );
-      m_F[i]->SetIcon(NULL);
+  if( init ) {
+    if( !merge || m_bSecAddr ) {
+      m_F0->SetLabel( _T("lights") );
+      m_F0->SetIcon(NULL);
+      for( int i = 1; i < 15; i++ ) {
+        m_F[i]->SetLabel( wxString::Format(_T("F%d"), i + m_iFnGroup * 14) );
+        m_F[i]->SetIcon(NULL);
+      }
     }
   }
 
@@ -339,44 +341,48 @@ void ThrottleDlg::setFLabels(iONode p_Props, bool merge, int fmap) {
     m_F[i+1]->setLED ((fx & (0x0001 << i) )?true:false );
   }
 
-  iONode fundef = wLoc.getfundef( p_Props );
-  while( fundef != NULL ) {
-    wxString fntxt = wxString(wFunDef.gettext( fundef ),wxConvUTF8);
-    int fn = wFunDef.getfn( fundef );
-    int idx = fn - m_iFnGroup*14;
+  if( init ) {
+    iONode fundef = wLoc.getfundef( p_Props );
+    while( fundef != NULL ) {
+      wxString fntxt = wxString(wFunDef.gettext( fundef ),wxConvUTF8);
+      int fn = wFunDef.getfn( fundef );
+      int idx = fn - m_iFnGroup*14;
 
-    if( fn == 0 ) {
-      if( wxGetApp().getFrame()->isTooltip(true))
-        m_F0->SetToolTip( fntxt );
-      if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-        m_F0->SetIcon(getIcon(wFunDef.geticon(fundef)));
-      }
-      else {
-        m_F0->SetIcon(NULL);
-        m_F0->SetLabel(fntxt);
-      }
-    }
-
-    else if( fn > 0 && (fmap & (1 << (fn-1)) )  ) {
-      if( idx > 0 && idx < 15 ) {
-        TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "funtion[%d] index=%d group=%d", fn, idx, m_iFnGroup );
-        if( wxGetApp().getFrame()->isTooltip(true) )
-          m_F[idx]->SetToolTip( fntxt );
+      if( fn == 0 ) {
+        if( wxGetApp().getFrame()->isTooltip(true))
+          m_F0->SetToolTip( fntxt );
         if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-          m_F[idx]->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          if( init )
+            m_F0->SetIcon(getIcon(wFunDef.geticon(fundef)));
         }
         else {
-          m_F[idx]->SetIcon(NULL);
-          m_F[idx]->SetLabel(fntxt);
+          m_F0->SetIcon(NULL);
+          m_F0->SetLabel(fntxt);
         }
       }
-    }
 
-    else {
-      TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "funtion[%d] index=%d group=%d is not mapped: 0x%02X (0x%02X)",
-          fn, idx, m_iFnGroup, fmap, (1 << (fn-1)) );
+      else if( fn > 0 && (fmap & (1 << (fn-1)) )  ) {
+        if( idx > 0 && idx < 15 ) {
+          TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "funtion[%d] index=%d group=%d", fn, idx, m_iFnGroup );
+          if( wxGetApp().getFrame()->isTooltip(true) )
+            m_F[idx]->SetToolTip( fntxt );
+          if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
+            if( init )
+              m_F[idx]->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          }
+          else {
+            m_F[idx]->SetIcon(NULL);
+            m_F[idx]->SetLabel(fntxt);
+          }
+        }
+      }
+
+      else {
+        TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "funtion[%d] index=%d group=%d is not mapped: 0x%02X (0x%02X)",
+            fn, idx, m_iFnGroup, fmap, (1 << (fn-1)) );
+      }
+      fundef = wLoc.nextfundef( p_Props, fundef );
     }
-    fundef = wLoc.nextfundef( p_Props, fundef );
   }
 
 }
@@ -525,7 +531,7 @@ void ThrottleDlg::onButton(wxCommandEvent& event) {
         TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "mobile=%s", wItem.getid(m_Props) );
         m_iFnGroup = 0;
         updateImage();
-        setFLabels();
+        setFLabels(true);
         m_iSpeed1 = wLoc.getV(m_Props);
         m_Speed->SetValue( wxString::Format(wxT("%d"), m_iSpeed1) );
         m_SpeedSlider->SetRange( 0, wLoc.getV_max(m_Props) );
@@ -583,7 +589,7 @@ void ThrottleDlg::onButton(wxCommandEvent& event) {
     m_iFnGroup++;
     if( m_iFnGroup > 1 )
       m_iFnGroup = 0;
-    setFLabels();
+    setFLabels(true);
   }
   else if ( event.GetEventObject() == m_SwitchAddr ) {
     TraceOp.trc( "throttledlg", TRCLEVEL_INFO, __LINE__, 9999, "Switch Address" );

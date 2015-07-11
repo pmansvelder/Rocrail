@@ -63,8 +63,8 @@ class ThrottleDlg : public ThrottleDlgGen
   void modelEvent( iONode evt );
 
   void updateImage();
-  void setFLabels();
-  void setFLabels(iONode p_Props, bool merge, int fmap=0xFFFFFFFF);
+  void setFLabels(bool init);
+  void setFLabels(iONode p_Props, bool merge, bool init, int fmap=0xFFFFFFFF);
   wxBitmap* getIcon(const char* icon);
   void funCmd(int fidx, bool on);
   void speedCmd(bool sendCmd);

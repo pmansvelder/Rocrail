@@ -126,7 +126,7 @@ void LC::setLocProps( iONode props ) {
     m_F4->SetToolTip( wxString("",wxConvUTF8) );
   }
 
-  setFLabels();
+  setFLabels(true);
 
   if( m_LocProps != NULL ) {
 
@@ -448,48 +448,50 @@ wxBitmap* LC::getIcon(const char* icon) {
   return bitmap;
 }
 
-void LC::setFLabels() {
-  if( m_iFnGroup == 0 ) {
-    m_F1->SetLabel( _T("F1") );
-    m_F2->SetLabel( _T("F2") );
-    m_F3->SetLabel( _T("F3") );
-    m_F4->SetLabel( _T("F4") );
-  }
-  else if( m_iFnGroup == 1 ) {
-    m_F1->SetLabel( _T("F5") );
-    m_F2->SetLabel( _T("F6") );
-    m_F3->SetLabel( _T("F7") );
-    m_F4->SetLabel( _T("F8") );
-  }
-  else if( m_iFnGroup == 2 ) {
-    m_F1->SetLabel( _T("F9") );
-    m_F2->SetLabel( _T("F10") );
-    m_F3->SetLabel( _T("F11") );
-    m_F4->SetLabel( _T("F12") );
-  }
-  else if( m_iFnGroup == 3 ) {
-    m_F1->SetLabel( _T("F13") );
-    m_F2->SetLabel( _T("F14") );
-    m_F3->SetLabel( _T("F15") );
-    m_F4->SetLabel( _T("F16") );
-  }
-  else if( m_iFnGroup == 4 ) {
-    m_F1->SetLabel( _T("F17") );
-    m_F2->SetLabel( _T("F18") );
-    m_F3->SetLabel( _T("F19") );
-    m_F4->SetLabel( _T("F20") );
-  }
-  else if( m_iFnGroup == 5 ) {
-    m_F1->SetLabel( _T("F21") );
-    m_F2->SetLabel( _T("F22") );
-    m_F3->SetLabel( _T("F23") );
-    m_F4->SetLabel( _T("F24") );
-  }
-  else if( m_iFnGroup == 6 ) {
-    m_F1->SetLabel( _T("F25") );
-    m_F2->SetLabel( _T("F26") );
-    m_F3->SetLabel( _T("F27") );
-    m_F4->SetLabel( _T("F28") );
+void LC::setFLabels(bool init) {
+  if( init ) {
+    if( m_iFnGroup == 0 ) {
+      m_F1->SetLabel( _T("F1") );
+      m_F2->SetLabel( _T("F2") );
+      m_F3->SetLabel( _T("F3") );
+      m_F4->SetLabel( _T("F4") );
+    }
+    else if( m_iFnGroup == 1 ) {
+      m_F1->SetLabel( _T("F5") );
+      m_F2->SetLabel( _T("F6") );
+      m_F3->SetLabel( _T("F7") );
+      m_F4->SetLabel( _T("F8") );
+    }
+    else if( m_iFnGroup == 2 ) {
+      m_F1->SetLabel( _T("F9") );
+      m_F2->SetLabel( _T("F10") );
+      m_F3->SetLabel( _T("F11") );
+      m_F4->SetLabel( _T("F12") );
+    }
+    else if( m_iFnGroup == 3 ) {
+      m_F1->SetLabel( _T("F13") );
+      m_F2->SetLabel( _T("F14") );
+      m_F3->SetLabel( _T("F15") );
+      m_F4->SetLabel( _T("F16") );
+    }
+    else if( m_iFnGroup == 4 ) {
+      m_F1->SetLabel( _T("F17") );
+      m_F2->SetLabel( _T("F18") );
+      m_F3->SetLabel( _T("F19") );
+      m_F4->SetLabel( _T("F20") );
+    }
+    else if( m_iFnGroup == 5 ) {
+      m_F1->SetLabel( _T("F21") );
+      m_F2->SetLabel( _T("F22") );
+      m_F3->SetLabel( _T("F23") );
+      m_F4->SetLabel( _T("F24") );
+    }
+    else if( m_iFnGroup == 6 ) {
+      m_F1->SetLabel( _T("F25") );
+      m_F2->SetLabel( _T("F26") );
+      m_F3->SetLabel( _T("F27") );
+      m_F4->SetLabel( _T("F28") );
+    }
   }
 
   if( m_LocProps != NULL ) {
@@ -500,86 +502,88 @@ void LC::setFLabels() {
     m_bFx[2+m_iFnGroup * 4] = setButtonColor( m_F3, (fx & 0x04)?false:true );
     m_bFx[3+m_iFnGroup * 4] = setButtonColor( m_F4, (fx & 0x08)?false:true );
 
-    if( wxGetApp().getFrame()->isTooltip(true)) {
-      m_F0->SetToolTip( wxString::Format(_T("F%d"), 0 ));
-      m_F1->SetToolTip( wxString::Format(_T("F%d"), 1 + (m_iFnGroup * 4 ) ));
-      m_F2->SetToolTip( wxString::Format(_T("F%d"), 2 + (m_iFnGroup * 4 ) ));
-      m_F3->SetToolTip( wxString::Format(_T("F%d"), 3 + (m_iFnGroup * 4 ) ));
-      m_F4->SetToolTip( wxString::Format(_T("F%d"), 4 + (m_iFnGroup * 4 ) ));
-    }
-    else {
-      m_F0->SetToolTip( wxString("",wxConvUTF8) );
-      m_F1->SetToolTip( wxString("",wxConvUTF8) );
-      m_F2->SetToolTip( wxString("",wxConvUTF8) );
-      m_F3->SetToolTip( wxString("",wxConvUTF8) );
-      m_F4->SetToolTip( wxString("",wxConvUTF8) );
-    }
+    if( init ) {
+      if( wxGetApp().getFrame()->isTooltip(true)) {
+        m_F0->SetToolTip( wxString::Format(_T("F%d"), 0 ));
+        m_F1->SetToolTip( wxString::Format(_T("F%d"), 1 + (m_iFnGroup * 4 ) ));
+        m_F2->SetToolTip( wxString::Format(_T("F%d"), 2 + (m_iFnGroup * 4 ) ));
+        m_F3->SetToolTip( wxString::Format(_T("F%d"), 3 + (m_iFnGroup * 4 ) ));
+        m_F4->SetToolTip( wxString::Format(_T("F%d"), 4 + (m_iFnGroup * 4 ) ));
+      }
+      else {
+        m_F0->SetToolTip( wxString("",wxConvUTF8) );
+        m_F1->SetToolTip( wxString("",wxConvUTF8) );
+        m_F2->SetToolTip( wxString("",wxConvUTF8) );
+        m_F3->SetToolTip( wxString("",wxConvUTF8) );
+        m_F4->SetToolTip( wxString("",wxConvUTF8) );
+      }
 
-    m_F0->SetIcon(NULL);
-    m_F1->SetIcon(NULL);
-    m_F2->SetIcon(NULL);
-    m_F3->SetIcon(NULL);
-    m_F4->SetIcon(NULL);
+      m_F0->SetIcon(NULL);
+      m_F1->SetIcon(NULL);
+      m_F2->SetIcon(NULL);
+      m_F3->SetIcon(NULL);
+      m_F4->SetIcon(NULL);
 
-    iONode fundef = wLoc.getfundef( m_LocProps );
-    while( fundef != NULL ) {
-      wxString fntxt = wxString(wFunDef.gettext( fundef ),wxConvUTF8);
-      if( wFunDef.getfn( fundef ) == 0 ) {
-        if( wxGetApp().getFrame()->isTooltip(true))
-          m_F0->SetToolTip( fntxt );
-        if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-          m_F0->SetIcon(getIcon(wFunDef.geticon(fundef)));
+      iONode fundef = wLoc.getfundef( m_LocProps );
+      while( fundef != NULL ) {
+        wxString fntxt = wxString(wFunDef.gettext( fundef ),wxConvUTF8);
+        if( wFunDef.getfn( fundef ) == 0 ) {
+          if( wxGetApp().getFrame()->isTooltip(true))
+            m_F0->SetToolTip( fntxt );
+          if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
+            m_F0->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          }
+          else {
+            m_F0->SetLabel(fntxt);
+            m_F0->SetIcon(NULL);
+          }
         }
-        else {
-          m_F0->SetLabel(fntxt);
-          m_F0->SetIcon(NULL);
+        else if( wFunDef.getfn( fundef ) == 1 + (m_iFnGroup * 4 )) {
+          if( wxGetApp().getFrame()->isTooltip(true))
+            m_F1->SetToolTip( fntxt );
+          if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
+            m_F1->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          }
+          else {
+            m_F1->SetLabel(fntxt);
+            m_F1->SetIcon(NULL);
+          }
         }
+        else if( wFunDef.getfn( fundef ) == 2 + (m_iFnGroup * 4 ) ) {
+          if( wxGetApp().getFrame()->isTooltip(true))
+            m_F2->SetToolTip( fntxt );
+          if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
+            m_F2->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          }
+          else {
+            m_F2->SetLabel(fntxt);
+            m_F2->SetIcon(NULL);
+          }
+        }
+        else if( wFunDef.getfn( fundef ) == 3 + (m_iFnGroup * 4 ) ) {
+          if( wxGetApp().getFrame()->isTooltip(true))
+            m_F3->SetToolTip( fntxt );
+          if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
+            m_F3->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          }
+          else {
+            m_F3->SetLabel(fntxt);
+            m_F3->SetIcon(NULL);
+          }
+        }
+        else if( wFunDef.getfn( fundef ) == 4 + (m_iFnGroup * 4 ) ) {
+          if( wxGetApp().getFrame()->isTooltip(true))
+            m_F4->SetToolTip( fntxt );
+          if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
+            m_F4->SetIcon(getIcon(wFunDef.geticon(fundef)));
+          }
+          else {
+            m_F4->SetLabel(fntxt);
+            m_F4->SetIcon(NULL);
+          }
+        }
+        fundef = wLoc.nextfundef( m_LocProps, fundef );
       }
-      else if( wFunDef.getfn( fundef ) == 1 + (m_iFnGroup * 4 )) {
-        if( wxGetApp().getFrame()->isTooltip(true))
-          m_F1->SetToolTip( fntxt );
-        if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-          m_F1->SetIcon(getIcon(wFunDef.geticon(fundef)));
-        }
-        else {
-          m_F1->SetLabel(fntxt);
-          m_F1->SetIcon(NULL);
-        }
-      }
-      else if( wFunDef.getfn( fundef ) == 2 + (m_iFnGroup * 4 ) ) {
-        if( wxGetApp().getFrame()->isTooltip(true))
-          m_F2->SetToolTip( fntxt );
-        if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-          m_F2->SetIcon(getIcon(wFunDef.geticon(fundef)));
-        }
-        else {
-          m_F2->SetLabel(fntxt);
-          m_F2->SetIcon(NULL);
-        }
-      }
-      else if( wFunDef.getfn( fundef ) == 3 + (m_iFnGroup * 4 ) ) {
-        if( wxGetApp().getFrame()->isTooltip(true))
-          m_F3->SetToolTip( fntxt );
-        if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-          m_F3->SetIcon(getIcon(wFunDef.geticon(fundef)));
-        }
-        else {
-          m_F3->SetLabel(fntxt);
-          m_F3->SetIcon(NULL);
-        }
-      }
-      else if( wFunDef.getfn( fundef ) == 4 + (m_iFnGroup * 4 ) ) {
-        if( wxGetApp().getFrame()->isTooltip(true))
-          m_F4->SetToolTip( fntxt );
-        if( wFunDef.geticon(fundef) != NULL && StrOp.len( wFunDef.geticon(fundef) ) > 0 ) {
-          m_F4->SetIcon(getIcon(wFunDef.geticon(fundef)));
-        }
-        else {
-          m_F4->SetLabel(fntxt);
-          m_F4->SetIcon(NULL);
-        }
-      }
-      fundef = wLoc.nextfundef( m_LocProps, fundef );
     }
   }
 }
@@ -605,7 +609,7 @@ void LC::OnButton(wxCommandEvent& event)
     m_iFnGroup++;
     if( m_iFnGroup > maxgroups )
       m_iFnGroup = 0;
-    setFLabels();
+    setFLabels(true);
   }
   else if ( event.GetEventObject() == m_F0 ) {
     m_bFn = setButtonColor( m_F0, m_bFn );
@@ -1058,7 +1062,7 @@ void LC::showTooltip(bool p_bTooltip) {
     m_V->SetToolTip( wxString("",wxConvUTF8) );
   }
   else {
-    setFLabels();
+    setFLabels(true);
     m_Stop->SetLabel( wxGetApp().getMsg( "stop" ) );
     m_Dir->SetToolTip( m_bDir?wxGetApp().getMsg( "forwards" ):wxGetApp().getMsg( "reverse" ) );
     m_Stop->SetToolTip( wxGetApp().getTip( "stop" ) );

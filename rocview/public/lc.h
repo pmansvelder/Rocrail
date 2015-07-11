@@ -71,7 +71,7 @@ private:
 #endif
     /// Creates the controls and sizers
     void CreateControls();
-    void setFLabels();
+    void setFLabels(bool init=false);
 
     wxPanel* m_Parent;
     iONode m_LocProps;
