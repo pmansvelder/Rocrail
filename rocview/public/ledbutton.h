@@ -39,11 +39,13 @@ class LEDButton : public wxPanel
     int buttonHeight;
 
     wxBitmap* icon;
+    wxBitmap* scaledIcon;
 
 
 public:
     bool ON;
     LEDButton(wxWindow* parent, wxString text, int width, int height, bool useLED=true, bool textOnly=false);
+    ~LEDButton();
 
     void OnPaint(wxPaintEvent& event);
     void OnSize(wxSizeEvent& event);

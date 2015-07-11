@@ -74,7 +74,20 @@ LEDButton::LEDButton(wxWindow* parent, wxString text, int width, int height, boo
   this->useLED = useLED;
   this->textOnly = textOnly;
   this->icon = NULL;
+  this->scaledIcon = NULL;
   SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+}
+
+LEDButton::~LEDButton() {
+  if( this->icon != NULL ) {
+    delete this->icon;
+    this->icon = NULL;
+  }
+
+  if( this->scaledIcon != NULL ) {
+    delete this->scaledIcon;
+    this->scaledIcon = NULL;
+  }
 }
 
 
@@ -159,28 +172,9 @@ void LEDButton::OnPaint(wxPaintEvent& WXUNUSED(event))
     gc->SetFont(font,IsEnabled()?*wxBLACK:*wxLIGHT_GREY);
 
     if( icon != NULL ) {
-      float bmpW = icon->GetWidth();
-      float bmpH = icon->GetHeight();
-      float butW = buttonWidth-4;
-      float butH = buttonHeight-4;
-      float scaleW = bmpW / butW;
-      float scaleH = bmpH / butH;
-      float scale = 0;
-      if( scaleW > scaleH ) {
-        scale = scaleW;
-      }
-      else {
-        scale = scaleH;
-      }
-
       wxBitmap* l_icon = icon;
-
-      if( (int)scale != 0 && (bmpW/scale) > 0 && (bmpH/scale) > 0 ) {
-        wxImage img = icon->ConvertToImage();
-        img = img.Scale( (bmpW/scale), (bmpH/scale), wxIMAGE_QUALITY_HIGH );
-        l_icon = new wxBitmap(img);
-      }
-
+      if( scaledIcon != NULL )
+        l_icon = scaledIcon;
       dc.DrawBitmap(*l_icon, (buttonWidth - l_icon->GetWidth())/2, (buttonHeight - l_icon->GetHeight())/2, true);
     }
     else {
@@ -282,9 +276,40 @@ void LEDButton::SetLabel(const wxString &text) {
 }
 
 void LEDButton::SetIcon(wxBitmap* icon) {
-  if( this->icon != NULL )
+  if( this->icon != NULL ) {
     delete this->icon;
+    this->icon = NULL;
+  }
+
+  if( this->scaledIcon != NULL ) {
+    delete this->scaledIcon;
+    this->scaledIcon = NULL;
+  }
+
   this->icon = icon;
+
+  if( icon != NULL ) {
+    float bmpW = icon->GetWidth();
+    float bmpH = icon->GetHeight();
+    float butW = buttonWidth-4;
+    float butH = buttonHeight-4;
+    float scaleW = bmpW / butW;
+    float scaleH = bmpH / butH;
+    float scale = 0;
+    if( scaleW > scaleH ) {
+      scale = scaleW;
+    }
+    else {
+      scale = scaleH;
+    }
+
+    if( (int)scale != 0 && (bmpW/scale) > 0 && (bmpH/scale) > 0 ) {
+      wxImage img = icon->ConvertToImage();
+      img = img.Scale( (bmpW/scale), (bmpH/scale), wxIMAGE_QUALITY_HIGH );
+      scaledIcon = new wxBitmap(img);
+    }
+  }
+
   Refresh();
 }
 
