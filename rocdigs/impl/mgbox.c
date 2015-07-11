@@ -791,7 +791,10 @@ static int  __getThrottleNr( iOMCS2Data mcs2, byte* in) {
     }
     nr++;
   }
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MS throttle not found!");
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MS2 throttle not found! requested: 0x%4X", hash);
+  for( nr = 0; nr < mcs2->ms2UID ; nr++ ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Stored MS2 throttle: %d, hash 0x%4x", nr, ms2hash[nr]);
+  }
   return(0);
 }
 
@@ -943,7 +946,8 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
     return;
   }
   if( (dlc == 5 && addr1 == 0 && addr2 == 0 && addr3 == 0 && addr4 == 0) || (dlc == 5 && uid == gfpUID) ) {
-    nr = __getThrottleNr( data, in);
+    if( in[1] == 0 )
+        nr = __getThrottleNr( data, in);
     if( nr == 0 && in[1] == 1)
         StrOp.copy( ms2name, "Gleisbox ACK");
     else if( data->ms2UID == 1 )
