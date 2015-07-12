@@ -4172,6 +4172,7 @@ function getSignalImage(sg) {
   if( state == "green"  ) aspect = "g";
   if( state == "yellow" ) aspect = "y";
   if( state == "white"  ) aspect = "w";
+  if( state == "blank"  ) aspect = "b";
   
   if( signal == "blockstate" ) {
     return "url('"+prefix+"blockstate"+"."+ ori + ".svg')";
