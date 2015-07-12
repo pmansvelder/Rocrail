@@ -295,6 +295,7 @@ void OperatorDlg::initLabels() {
   m_OperatorList->InsertColumn(0, wxGetApp().getMsg( "id" ), wxLIST_FORMAT_LEFT );
   m_OperatorList->InsertColumn(1, wxGetApp().getMsg( "place" ), wxLIST_FORMAT_LEFT );
   m_OperatorList->InsertColumn(2, wxGetApp().getMsg( "locomotive" ), wxLIST_FORMAT_LEFT );
+  m_OperatorList->InsertColumn(3, wxGetApp().getMsg( "maxkmh" ), wxLIST_FORMAT_RIGHT );
 
   m_CarList->InsertColumn(0, wxGetApp().getMsg( "id" ), wxLIST_FORMAT_LEFT );
   m_CarList->InsertColumn(1, wxGetApp().getMsg( "waybill" ), wxLIST_FORMAT_LEFT );
@@ -383,6 +384,25 @@ void OperatorDlg::evaluate() {
 }
 
 
+int OperatorDlg::getVMax( iONode props ) {
+  int vmax = wOperator.getV_max(props);
+  iOStrTok tok = StrTokOp.inst(wOperator.getcarids(props), ',');
+  while( StrTokOp.hasMoreTokens(tok) ) {
+    iONode car = wxGetApp().getFrame()->findCar( StrTokOp.nextToken(tok) );
+    if( car != NULL ) {
+      int vmaxcar = wCar.getV_max(car);
+      if( vmaxcar > 0 ) {
+        if( vmax == 0 || vmaxcar < vmax)
+          vmax = vmaxcar;
+      }
+    }
+  }
+  StrTokOp.base.del(tok);
+
+  return vmax;
+}
+
+
 void OperatorDlg::initIndex() {
   TraceOp.trc( "opdlg", TRCLEVEL_INFO, __LINE__, 9999, "initIndex" );
 
@@ -418,6 +438,7 @@ void OperatorDlg::initIndex() {
         m_OperatorList->InsertItem( idx, wxString(id,wxConvUTF8) );
         m_OperatorList->SetItem( idx, 1, wxString(wOperator.getlocation(op), wxConvUTF8) );
         m_OperatorList->SetItem( idx, 2, wxString(wOperator.getlcid(op), wxConvUTF8) );
+        m_OperatorList->SetItem( idx, 3, wxString::Format(wxT("%d"), getVMax(op)) );
         m_OperatorList->SetItemPtrData(idx, (wxUIntPtr)op);
         idx++;
       }
