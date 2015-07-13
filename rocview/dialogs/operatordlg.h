@@ -54,6 +54,7 @@ class OperatorDlg : public operatordlggen
   void addCarToConsistList( int idx, iONode car );
   void resizeConsistColumns();
   int getVMax( iONode props );
+  int getCargoNr(iONode props);
 
 public:
 	/** Constructor */

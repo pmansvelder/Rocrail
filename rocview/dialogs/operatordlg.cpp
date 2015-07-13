@@ -296,11 +296,13 @@ void OperatorDlg::initLabels() {
   m_OperatorList->InsertColumn(1, wxGetApp().getMsg( "place" ), wxLIST_FORMAT_LEFT );
   m_OperatorList->InsertColumn(2, wxGetApp().getMsg( "locomotive" ), wxLIST_FORMAT_LEFT );
   m_OperatorList->InsertColumn(3, wxGetApp().getMsg( "maxkmh" ), wxLIST_FORMAT_RIGHT );
+  m_OperatorList->InsertColumn(4, wxGetApp().getMsg( "cargo" ), wxLIST_FORMAT_LEFT );
 
   m_CarList->InsertColumn(0, wxGetApp().getMsg( "id" ), wxLIST_FORMAT_LEFT );
   m_CarList->InsertColumn(1, wxGetApp().getMsg( "waybill" ), wxLIST_FORMAT_LEFT );
   m_CarList->InsertColumn(2, wxGetApp().getMsg( "place" ), wxLIST_FORMAT_LEFT );
   m_CarList->InsertColumn(3, wxGetApp().getMsg( "destination" ), wxLIST_FORMAT_LEFT );
+  m_CarList->InsertColumn(4, wxGetApp().getMsg( "maxkmh" ), wxLIST_FORMAT_RIGHT );
 
   // Buttons
   m_StdButtonOK->SetLabel( wxGetApp().getMsg( "ok" ) );
@@ -439,6 +441,7 @@ void OperatorDlg::initIndex() {
         m_OperatorList->SetItem( idx, 1, wxString(wOperator.getlocation(op), wxConvUTF8) );
         m_OperatorList->SetItem( idx, 2, wxString(wOperator.getlcid(op), wxConvUTF8) );
         m_OperatorList->SetItem( idx, 3, wxString::Format(wxT("%d"), getVMax(op)) );
+        m_OperatorList->SetItem( idx, 4, m_Cargo->GetString(getCargoNr(op)) );
         m_OperatorList->SetItemPtrData(idx, (wxUIntPtr)op);
         idx++;
       }
@@ -479,6 +482,30 @@ void OperatorDlg::setSelection(const char* ID) {
 
 }
 
+int OperatorDlg::getCargoNr(iONode props) {
+  int cargo = 0;
+  if( StrOp.equals( wLoc.cargo_none, wOperator.getcargo( props ) ) )
+    cargo = 0;
+  else if( StrOp.equals( wLoc.cargo_goods, wOperator.getcargo( props ) ) )
+    cargo = 1;
+  else if( StrOp.equals( wLoc.cargo_person, wOperator.getcargo( props ) ) )
+    cargo = 2;
+  else if( StrOp.equals( wLoc.cargo_mixed, wOperator.getcargo( props ) ) )
+    cargo = 3;
+  else if( StrOp.equals( wLoc.cargo_cleaning, wOperator.getcargo( props ) ) )
+    cargo = 4;
+  else if( StrOp.equals( wLoc.cargo_ice, wOperator.getcargo( props ) ) )
+    cargo = 5;
+  else if( StrOp.equals( wLoc.cargo_post, wOperator.getcargo( props ) ) )
+    cargo = 6;
+  else if( StrOp.equals( wLoc.cargo_light, wOperator.getcargo( props ) ) )
+    cargo = 7;
+  else if( StrOp.equals( wLoc.cargo_lightgoods, wOperator.getcargo( props ) ) )
+    cargo = 8;
+  else if( StrOp.equals( wLoc.cargo_regional, wOperator.getcargo( props ) ) )
+    cargo = 9;
+  return cargo;
+}
 
 void OperatorDlg::initValues() {
   if( m_Props == NULL ) {
@@ -499,27 +526,7 @@ void OperatorDlg::initValues() {
   initLocos();
   initConsist();
 
-  int cargo = 0;
-  if( StrOp.equals( wLoc.cargo_none, wOperator.getcargo( m_Props ) ) )
-    cargo = 0;
-  else if( StrOp.equals( wLoc.cargo_goods, wOperator.getcargo( m_Props ) ) )
-    cargo = 1;
-  else if( StrOp.equals( wLoc.cargo_person, wOperator.getcargo( m_Props ) ) )
-    cargo = 2;
-  else if( StrOp.equals( wLoc.cargo_mixed, wOperator.getcargo( m_Props ) ) )
-    cargo = 3;
-  else if( StrOp.equals( wLoc.cargo_cleaning, wOperator.getcargo( m_Props ) ) )
-    cargo = 4;
-  else if( StrOp.equals( wLoc.cargo_ice, wOperator.getcargo( m_Props ) ) )
-    cargo = 5;
-  else if( StrOp.equals( wLoc.cargo_post, wOperator.getcargo( m_Props ) ) )
-    cargo = 6;
-  else if( StrOp.equals( wLoc.cargo_light, wOperator.getcargo( m_Props ) ) )
-    cargo = 7;
-  else if( StrOp.equals( wLoc.cargo_lightgoods, wOperator.getcargo( m_Props ) ) )
-    cargo = 8;
-  else if( StrOp.equals( wLoc.cargo_regional, wOperator.getcargo( m_Props ) ) )
-    cargo = 9;
+  int cargo = getCargoNr(m_Props);
   m_Cargo->SetSelection( cargo );
   m_Class->SetValue( wxString(wOperator.getclass( m_Props ),wxConvUTF8) );
   m_VMax->SetValue( wOperator.getV_max( m_Props ) );
@@ -799,6 +806,7 @@ void OperatorDlg::addCarToConsistList( int idx, iONode car ) {
   if( waybill != NULL ) {
     m_CarList->SetItem( idx, 3, wxString(wWaybill.getdestination(waybill), wxConvUTF8) );
   }
+  m_CarList->SetItem( idx, 4, wxString::Format(wxT("%d"), wCar.getV_max(car)) );
   m_CarList->SetItemPtrData(idx, (wxUIntPtr)car);
 }
 
