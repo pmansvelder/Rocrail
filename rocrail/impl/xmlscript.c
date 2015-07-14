@@ -405,7 +405,9 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     iIBlockBase bk = ModelOp.getBlock(model, idRes);
     if( bk != NULL ) {
       if( StrOp.equals(wAction.block_reserve, wBlock.getcmd(cmd) ) ) {
-        bk->lock( bk, wActionCtrl.getlcid(cmd), NULL, NULL, False, False, False, 0, NULL, True);
+        char* lcidRes = VarOp.getText(wActionCtrl.getlcid(cmd), map, ' ');
+        bk->lock( bk, lcidRes, NULL, NULL, False, False, False, 0, NULL, True);
+        StrOp.free(lcidRes);
       }
       else {
         bk->cmd(bk, (iONode)NodeOp.base.clone(cmd));
