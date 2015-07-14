@@ -50,6 +50,7 @@
 #include "rocrail/wrapper/public/Route.h"
 #include "rocrail/wrapper/public/Output.h"
 #include "rocrail/wrapper/public/Global.h"
+#include "rocrail/wrapper/public/Action.h"
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/Operator.h"
 #include "rocrail/wrapper/public/SysCmd.h"
@@ -403,7 +404,12 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
     iIBlockBase bk = ModelOp.getBlock(model, idRes);
     if( bk != NULL ) {
-      bk->cmd(bk, (iONode)NodeOp.base.clone(cmd));
+      if( StrOp.equals(wAction.block_reserve, wBlock.getcmd(cmd) ) ) {
+        bk->lock( bk, wActionCtrl.getlcid(cmd), NULL, NULL, False, False, False, 0, NULL, True);
+      }
+      else {
+        bk->cmd(bk, (iONode)NodeOp.base.clone(cmd));
+      }
     }
     StrOp.free(idRes);
   }
