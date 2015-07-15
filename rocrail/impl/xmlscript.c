@@ -465,12 +465,12 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
         Boolean state = FBackOp.getState(fb);
         wFeedback.setstate( cmd, !state );
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "setting sensor [%s] to [%s]", idRes, state?"off":"on" );
-        FBackOp.event( fb, cmd );
+        FBackOp.event( fb, (iONode)NodeOp.base.clone(cmd) );
       }
       else if( StrOp.equals(wOutput.on, wFeedback.getcmd(cmd)) || StrOp.equals(wOutput.off, wFeedback.getcmd(cmd)) ) {
         wFeedback.setstate( cmd, StrOp.equals(wOutput.on, wFeedback.getcmd(cmd)) ? True:False);
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "setting sensor [%s] to [%s]", idRes, wFeedback.getcmd(cmd) );
-        FBackOp.event( fb, cmd );
+        FBackOp.event( fb, (iONode)NodeOp.base.clone(cmd) );
       }
       else {
         FBackOp.cmd(fb, (iONode)NodeOp.base.clone(cmd), True);
