@@ -1,10 +1,7 @@
  /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
-
- 
-
+ Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -49,8 +46,8 @@
 static int instCnt = 0;
 
 /* declarations */
-static void __evaluatePacket(iOMassothData data, byte* in);
-static void __handleSystem(iOMassothData data, byte* in);
+static void __evaluatePacket(iOMassoth inst, byte* in);
+static void __handleSystem(iOMassoth inst, byte* in);
 static void __flush( iOMassoth inst );
 
 
@@ -133,13 +130,14 @@ static Boolean __checkChecksum(byte* in, int len) {
   if( bXor != in[1] ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "checksum error in packet 0x%02X: in[1]=0x%02X bXor=0x%02X", in[0], in[1], bXor );
     TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, len );
-    return True;
+    return False;
   }
   return True;
 }
 
 
-static Boolean __readPacket( iOMassothData data, byte* in ) {
+static Boolean __readPacket( iOMassoth inst, byte* in ) {
+  iOMassothData data = Data(inst);
   Boolean rc = data->dummyio;
 
   if( !data->dummyio ) {
@@ -171,6 +169,7 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
       if( insize > 8 ) {
         TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "invalid packet size=%d", insize );
         TraceOp.dump( name, TRCLEVEL_INFO, (char*)in, offset );
+        __flush(inst);
         return False;
       }
 
@@ -180,6 +179,8 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
           TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "%s packet read:", isInfo ? "info":"command" );
           TraceOp.dump( name, TRCLEVEL_BYTE, (char*)in, insize+offset );
           rc = __checkChecksum(in, totallen);
+          if( !rc )
+            __flush(inst);
         }
         else {
           /* error reading data */
@@ -201,7 +202,8 @@ static Boolean __readPacket( iOMassothData data, byte* in ) {
 }
 
 
-static Boolean __transact( iOMassothData data, byte* out, byte* in, byte id, Boolean *gotid ) {
+static Boolean __transact( iOMassoth inst, byte* out, byte* in, byte id, Boolean *gotid ) {
+  iOMassothData data = Data(inst);
   Boolean rc = data->dummyio;
 
   if( MutexOp.trywait( data->mux, 2500 ) ) {
@@ -216,7 +218,7 @@ static Boolean __transact( iOMassothData data, byte* out, byte* in, byte id, Boo
           int wait = 0;
           do {
             if( SerialOp.available( data->serial ) ) {
-              if( __readPacket( data, in ) ) {
+              if( __readPacket( inst, in ) ) {
                 if( in[0] == id ) {
                   /* id match */
                   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "got wanted id[0x%02X]", id );
@@ -224,7 +226,7 @@ static Boolean __transact( iOMassothData data, byte* out, byte* in, byte id, Boo
                   break;
                 }
                 /* evaluate response */
-                __evaluatePacket(data, in);
+                __evaluatePacket(inst, in);
               }
             }
             else {
@@ -281,7 +283,8 @@ If the command is used, and the loko is occupied from the PC, the vehilce must b
 To recognize the vehilce announcement, the PC can monitor all the reflected commands which sent from the interface to PC.
 
 */
-static iOSlot __configureVehicle(iOMassothData data, iONode node) {
+static iOSlot __configureVehicle(iOMassoth inst, iONode node) {
+  iOMassothData data = Data(inst);
   /* configure vehicle */
   byte cmd[32] = {0};
   iOSlot slot = NULL;
@@ -304,7 +307,7 @@ static iOSlot __configureVehicle(iOMassothData data, iONode node) {
   cmd[4] |= 0x80; /* store */
   cmd[5] = wLoc.getimagenr(node);
 
-  if( __transact( data, cmd, NULL, 0, NULL ) ) {
+  if( __transact( inst, cmd, NULL, 0, NULL ) ) {
     slot = allocMem( sizeof( struct slot) );
     slot->addr = addr;
     slot->steps = __normalizeSteps(steps);
@@ -323,7 +326,8 @@ static iOSlot __configureVehicle(iOMassothData data, iONode node) {
 }
 
 
-static void __releaseSlot(iOMassothData data, iOSlot slot) {
+static void __releaseSlot(iOMassoth inst, iOSlot slot) {
+  iOMassothData data = Data(inst);
   byte cmd[32] = {0};
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "release slot for %s", slot->id );
@@ -339,11 +343,12 @@ static void __releaseSlot(iOMassothData data, iOSlot slot) {
   cmd[3] = slot->addr & 0x00FF;
   cmd[4] = 0x00;
 
-  __transact( data, cmd, NULL, 0, NULL );
+  __transact( inst, cmd, NULL, 0, NULL );
 }
 
 
-static iOSlot __getSlotByAddr(iOMassothData data, int addr) {
+static iOSlot __getSlotByAddr(iOMassoth inst, int addr) {
+  iOMassothData data = Data(inst);
   iOSlot foundSlot = NULL;
 
   if( MutexOp.wait( data->lcmux ) ) {
@@ -362,7 +367,8 @@ static iOSlot __getSlotByAddr(iOMassothData data, int addr) {
 }
 
 
-static iOSlot __getSlot(iOMassothData data, iONode node) {
+static iOSlot __getSlot(iOMassoth inst, iONode node) {
+  iOMassothData data = Data(inst);
   int steps = wLoc.getspcnt(node);
   int addr  = wLoc.getaddr(node);
   int fncnt = wLoc.getfncnt(node);
@@ -386,7 +392,7 @@ static iOSlot __getSlot(iOMassothData data, iONode node) {
   cmd[3] = addr & 0x00FF;
   cmd[4] = 0x90 + (wDigInt.isoverrule(data->ini)?0x40:0x00);
 
-  if( __transact( data, cmd, rsp, 0x40, &gotid ) ) {
+  if( __transact( inst, cmd, rsp, 0x40, &gotid ) ) {
     if( gotid ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "announcement response for addr %d [%s]", addr, wLoc.getid(node) );
 
@@ -394,7 +400,7 @@ static iOSlot __getSlot(iOMassothData data, iONode node) {
         /* 3.110 address unknown */
         int rspAddr = (rsp[4] << 8) + rsp[5];
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "vehicle %d [%s] unknown...", rspAddr, wLoc.getid(node) );
-        slot = __configureVehicle(data, node);
+        slot = __configureVehicle(inst, node);
       }
       else if( rsp[2] == 0x04 && rsp[3] == 0x82 ) {
         /* 3.110 address in use */
@@ -404,8 +410,8 @@ static iOSlot __getSlot(iOMassothData data, iONode node) {
         cmd[1] = 0; /*xor*/
         cmd[2] = addr >> 8;
         cmd[3] = addr & 0x00FF;
-				if( __transact( data, cmd, NULL, 0, NULL ) ) {
-          slot = __configureVehicle(data, node);
+				if( __transact( inst, cmd, NULL, 0, NULL ) ) {
+          slot = __configureVehicle(inst, node);
         }
       }
       else if( rsp[2] == 0x04 ) {
@@ -458,7 +464,7 @@ static iOSlot __getSlot(iOMassothData data, iONode node) {
     }
     else {
       /* configure vehicle */
-      slot = __configureVehicle(data, node);
+      slot = __configureVehicle(inst, node);
     }
   }
 
@@ -504,7 +510,8 @@ static Boolean __getFunState(iONode node) {
 }
 
 
-static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
+static Boolean __translate( iOMassoth inst, iONode node, byte* out ) {
+  iOMassothData data = Data(inst);
   /* System command. */
   if( StrOp.equals( NodeOp.getName( node ), wSysCmd.name() ) ) {
     const char* cmd = wSysCmd.getcmd( node );
@@ -572,9 +579,9 @@ static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
 
   /* Loc release command. */
   else if( StrOp.equals( NodeOp.getName( node ), wLoc.name() ) && StrOp.equals(wLoc.release, wLoc.getcmd(node)) ) {
-    iOSlot slot = __getSlot(data, node );
+    iOSlot slot = __getSlot(inst, node );
     if( slot != NULL ) {
-      __releaseSlot(data, slot );
+      __releaseSlot(inst, slot );
     }
   }
 
@@ -587,7 +594,7 @@ static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
 
     int index = 0;
 
-    iOSlot slot = __getSlot(data, node );
+    iOSlot slot = __getSlot(inst, node );
 
     if( slot == NULL ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "could not get slot for loco %s", wLoc.getid(node) );
@@ -631,7 +638,7 @@ static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
     out[4] |= dir ? 0x80:0x00;
 
     if( slot->lights != fn ) {
-      if( __transact( data, out, NULL, 0, NULL ) ) {
+      if( __transact( inst, out, NULL, 0, NULL ) ) {
         out[0] = 0x62;
         out[1] = 0; /*xor*/
         out[2] = slot->addr >> 8;
@@ -652,7 +659,7 @@ static Boolean __translate( iOMassothData data, iONode node, byte* out ) {
     Boolean fon   = False;
 
     TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "function %d command for %s", fnchanged, wLoc.getid(node) );
-    iOSlot slot = __getSlot(data, node );
+    iOSlot slot = __getSlot(inst, node );
 
     if( slot == NULL ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "could not get slot for loco %s", wLoc.getid(node) );
@@ -734,8 +741,8 @@ static iONode _cmd( obj inst ,const iONode cmd ) {
 
   if( cmd != NULL ) {
     byte opcode = 0;
-    if( __translate( data, cmd, out ) ) {
-      if( __transact( data, out, NULL, 0, NULL ) ) {
+    if( __translate( (iOMassoth)inst, cmd, out ) ) {
+      if( __transact( (iOMassoth)inst, out, NULL, 0, NULL ) ) {
       }
     }
   }
@@ -762,7 +769,7 @@ static void _halt( obj inst, Boolean poweroff, Boolean shutdown ) {
   if( data->serial != NULL && data->serialOK ) {
     if( poweroff ) {
       byte cmd[8] = {0x11};
-      __transact( data, cmd, NULL, 0, NULL );
+      __transact( (iOMassoth)inst, cmd, NULL, 0, NULL );
       ThreadOp.sleep(100);
     }
     SerialOp.close( data->serial );
@@ -805,7 +812,8 @@ static Boolean _supportPT( obj inst ) {
   return True;
 }
 
-static void __handlePT(iOMassothData data, byte* in) {
+static void __handlePT(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   Boolean OK = ((in[3] & 0x1C) == 0x10 );
 
   if( in[2] == 0x02 ) {
@@ -835,7 +843,8 @@ static void __handlePT(iOMassothData data, byte* in) {
 }
 
 
-static void __handleVehicle(iOMassothData data, byte* in) {
+static void __handleVehicle(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   if( in[0] == CS_LC_LOGOUT ) {
     int addr = in[3] * 256 + in[4];
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "vehicle %d logged out from device %d", addr, in[5] );
@@ -861,7 +870,8 @@ static void __handleVehicle(iOMassothData data, byte* in) {
 }
 
 
-static void __handleError(iOMassothData data, byte* in) {
+static void __handleError(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   if( in[2] == CS_ERROR_XOR_DATA1 && in[3] == CS_ERROR_XOR_DATA2 ) {
     /* XOR error in transmission */
     TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "XOR error in transmission" );
@@ -877,7 +887,8 @@ static const char* __getCSString(int cs) {
   return "unknown CS";
 }
 
-static void __handleSystem(iOMassothData data, byte* in) {
+static void __handleSystem(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   if( in[2] == CS_SYSTEM_DATA1 ) {
     data->power = (in[3] & 0x03) == 0x00 ? True:False;
 
@@ -925,7 +936,8 @@ static void __handleSystem(iOMassothData data, byte* in) {
 }
 
 
-static void __handleSwitch(iOMassothData data, byte* in) {
+static void __handleSwitch(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   iONode nodeC = NULL;
   Boolean straight = (in[3] & 0x01) ? True:False;
   int addr = in[2] << 6;
@@ -948,7 +960,8 @@ static void __handleSwitch(iOMassothData data, byte* in) {
   Header     Xor       Data1     Data2
   010 01 011 xxxx xxxx 00ss ssss ssss sssf
  */
-static void __handleSensor(iOMassothData data, byte* in) {
+static void __handleSensor(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   iONode nodeC = NULL;
   Boolean state = in[3] & 0x01 ? False:True;
   int addr = in[2] << 7;
@@ -966,7 +979,8 @@ static void __handleSensor(iOMassothData data, byte* in) {
 }
 
 
-static void __handleContact(iOMassothData data, byte* in) {
+static void __handleContact(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   iONode nodeC = NULL;
   iONode nodeD = NULL;
   Boolean state = in[3] & 0x01 ? True:False;
@@ -990,11 +1004,12 @@ static void __handleContact(iOMassothData data, byte* in) {
 }
 
 
-static void __handleLocoSpeed( iOMassothData data, byte* in) {
+static void __handleLocoSpeed( iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   int     addr  = in[2] * 256 + in[3];
   int     speed = in[4] & 0x7F;
   Boolean dir   = (in[4] & 0x80) ? True:False;
-  iOSlot  slot  = __getSlotByAddr(data, addr);
+  iOSlot  slot  = __getSlotByAddr(inst, addr);
   iONode  nodeC = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
 
   if( slot != NULL ) {
@@ -1022,12 +1037,13 @@ static void __handleLocoSpeed( iOMassothData data, byte* in) {
 }
 
 
-static void __handleLocoFunctions( iOMassothData data, byte* in) {
+static void __handleLocoFunctions( iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   int     addr   = in[2] * 256 + in[3];
   Boolean lights = (in[4] & 0x80) ? True:False;
   int     fn     = (in[4] & 0x18);
   Boolean on     = (in[4] & 0x20) ? True:False;
-  iOSlot  slot  = __getSlotByAddr(data, addr);
+  iOSlot  slot  = __getSlotByAddr(inst, addr);
   iONode  nodeD  = NodeOp.inst( wFunCmd.name(), NULL, ELEMENT_NODE );
 
   int group = fn / 4;
@@ -1057,44 +1073,45 @@ static void __handleLocoFunctions( iOMassothData data, byte* in) {
 }
 
 
-static void __evaluatePacket(iOMassothData data, byte* in) {
+static void __evaluatePacket(iOMassoth inst, byte* in) {
+  iOMassothData data = Data(inst);
   switch( in[0] ) {
   case CS_SYSTEM:
     /* system status */
-    __handleSystem(data, in);
+    __handleSystem(inst, in);
     break;
   case CS_ERROR_XOR:
     /* error */
-    __handleError(data, in);
+    __handleError(inst, in);
     break;
   case SW_COMMAND:
-    __handleSwitch(data, in);
+    __handleSwitch(inst, in);
     break;
   case CS_LC_FREE:
   case CS_LC_LOGOUT:
   case LC_REGISTER:
   case LC_CONFIGURE:
     /* vehicle report */
-    __handleVehicle(data, in);
+    __handleVehicle(inst, in);
     break;
   case LC_SPEEDDATA:
     /* loco speed */
-    __handleLocoSpeed(data, in);
+    __handleLocoSpeed(inst, in);
     break;
   case LC_FUNCTIONDATA:
     /* loco functions */
-    __handleLocoFunctions(data, in);
+    __handleLocoFunctions(inst, in);
     break;
   case FB_EVENT:
     /* sensor report */
     if( data->fbreset)
-      __handleContact(data, in);
+      __handleContact(inst, in);
     else
-      __handleSensor(data, in);
+      __handleSensor(inst, in);
     break;
   case CS_PROG_ACK:
     /* programming report */
-    __handlePT(data, in);
+    __handlePT(inst, in);
     break;
   case EBREAK_SET:
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "emergency break set" );
@@ -1158,7 +1175,7 @@ static void __reader( void* threadinst ) {
 
     if( !data->initialized ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "sending interface configuration..." );
-      data->initialized = __transact( data, out, NULL, 0, NULL );
+      data->initialized = __transact( massoth, out, NULL, 0, NULL );
       if( !data->initialized ) {
         ThreadOp.sleep( 1000 );
         continue;
@@ -1177,7 +1194,7 @@ static void __reader( void* threadinst ) {
         byte in[256];
 
         if( SerialOp.available( data->serial ) ) {
-          evaluate = __readPacket(data, in);
+          evaluate = __readPacket(massoth, in);
           if( !data->serialOK ) {
             SerialOp.base.del(data->serial);
             data->serial = NULL;
@@ -1188,7 +1205,7 @@ static void __reader( void* threadinst ) {
 
         MutexOp.post( data->mux );
         if( evaluate )
-          __evaluatePacket(data, in);
+          __evaluatePacket(massoth, in);
       }
     }
 
@@ -1274,7 +1291,7 @@ static void __purger( void* threadinst ) {
           cmd[3] = slot->addr & 0x00FF;
           cmd[4] = 0x00;
 
-          if( __transact( data, cmd, rsp, 0x60, &gotid ) ) {
+          if( __transact( inst, cmd, rsp, 0x60, &gotid ) ) {
             TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "slot purged for %s speed=%d", slot->id, slot->speed );
             MapOp.remove(data->lcmap, slot->id );
           }
@@ -1321,7 +1338,7 @@ static void __stressRunner( void* threadinst ) {
       out[3] |= 1;
     out[3] |= 0x02; /* port on */
     straight = !straight;
-    __transact( data, out, NULL, 0, NULL );
+    __transact( massoth, out, NULL, 0, NULL );
     ThreadOp.sleep(5);
   };
 

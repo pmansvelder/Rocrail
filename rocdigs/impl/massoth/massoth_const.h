@@ -26,6 +26,9 @@
 #define INTERFACE_REGISTER  0xB8
 
 
+#define CS_MASK          0xE0
+#define CS_ZEROMASK      0x1F
+
 #define CS_SYSTEM        0x00
 #define CS_SYSTEM_DATA1  0x01
 
