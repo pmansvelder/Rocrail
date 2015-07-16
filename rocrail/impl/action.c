@@ -59,6 +59,7 @@
 #include "rocrail/wrapper/public/Route.h"
 #include "rocrail/wrapper/public/DigInt.h"
 #include "rocrail/wrapper/public/AutoCmd.h"
+#include "rocrail/wrapper/public/ModelCmd.h"
 #include "rocrail/wrapper/public/Loc.h"
 #include "rocrail/wrapper/public/FunCmd.h"
 #include "rocrail/wrapper/public/Car.h"
@@ -1393,6 +1394,12 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
       iONode cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
       wAutoCmd.setcmd( cmd, wAutoCmd.off );
+      pfun( (obj)AppOp.getControl(), cmd );
+    }
+    else if( StrOp.equals( wModelCmd.initfield, wAction.getcmd( data->action ) ) ) {
+      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+      iONode cmd = NodeOp.inst( wModelCmd.name(), NULL, ELEMENT_NODE );
+      wModelCmd.setcmd( cmd, wModelCmd.initfield );
       pfun( (obj)AppOp.getControl(), cmd );
     }
     else {
