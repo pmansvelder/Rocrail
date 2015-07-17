@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#    Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+#    Copyright (c) 2002 Robert Jan Versluis, Rocrail.net
 #
 #    Without an official permission commercial use is not permitted.
 #    Forking this project is not permitted.  

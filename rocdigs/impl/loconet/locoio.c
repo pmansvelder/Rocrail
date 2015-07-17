@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
+ Copyright (c) 2002 Robert Jan Versluis, Rocrail.net
 
 */
 #include "rocs/public/rocs.h"

@@ -1,7 +1,7 @@
 /*
  Rocrail - Model Railroad Control System
 
- Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
+ Copyright (c) 2002 Robert Jan Versluis, Rocrail.net
                2014-2015 Bert Havinga
  
 
