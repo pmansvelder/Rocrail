@@ -30895,6 +30895,7 @@
     <ru txt="Мост"/>
     <sv txt="Brygga"/>
     <be txt="Мост"/>
+    <it txt="Ponte"/>
   </Msg>
   <Msg id="mapwhite">
     <en txt="Map white"/>
@@ -30930,6 +30931,7 @@
     <fr txt="déselectionné"/>
     <sv txt="avmarkerad"/>
     <be txt="зьняты"/>
+    <it txt="deselezionato"/>
   </Msg>
   <Msg id="offatshutdown">
     <en txt="Off at shutdown"/>
@@ -30941,6 +30943,7 @@
     <sr_latin txt="Ugasi pri isključenju"/>
     <fr txt="Eteint lors de l'arrêt"/>
     <be txt="Вымк. пры завяршэньні працы"/>
+    <it txt="Off allo spegnimento"/>
   </Msg>
   <Msg id="substate">
     <en txt="Sub state"/>
@@ -30964,6 +30967,7 @@
     <ru txt="При экстренной остановке V=0"/>
     <fr txt="V0 lors d'un arrêt d'urgence"/>
     <be txt="V 0 пры экстраным тармажэнні"/>
+    <it txt="V 0 su frenata emergenza"/>
   </Msg>
   <Msg id="restorechannels">
     <en txt="Restore channels"/>
@@ -30975,6 +30979,7 @@
     <sr_latin txt="Povrati kanale"/>
     <ru txt="Восстановить каналы"/>
     <be txt="Аднавіць каналы"/>
+    <it txt="Ripristinare canali"/>
   </Msg>
   <Msg id="reducespeedatenter">
     <en txt="Reduce speed at enter"/>
@@ -30988,6 +30993,7 @@
     <fr txt="Réduire la vitesse en entrant"/>
     <sv txt="Reducera hastighet vid in"/>
     <be txt="Зменшыць хуткасьць пры enter"/>
+    <it txt="Ridurre velocità all'enter"/>
   </Msg>
   <Msg id="slaveblocks">
     <en txt="Slave blocks"/>
@@ -31000,6 +31006,7 @@
     <fr txt="Blocs esclaves"/>
     <sv txt="slavblock"/>
     <be txt="Падпарадкаваныя блёкі"/>
+    <it txt="Blocchi slave"/>
   </Msg>
   <Msg id="texttable" dialog="true">
     <en txt="Text table" alttxt="Text" tip="Text table"/>
@@ -31023,6 +31030,7 @@
     <sv txt="Deacceleration"/>
     <be txt="Запаволіць"/>
     <en_GB txt="Decelerate"/>
+    <it txt="Decelerare"/>
   </Msg>
   <Msg id="shuntingdiv">
     <en txt="Shunting divider"/>
@@ -31043,6 +31051,7 @@
     <sr_latin txt="Svi uslovi moraju biti istiniti"/>
     <be txt="Усе ўмовы мусяць выконвацца (быць true)"/>
     <en_GB txt="All conditions must be true"/>
+    <it txt="Tutte le condizioni devono essere vere"/>
   </Msg>
   <Msg id="mustbetrue">
     <en txt="Must be true"/>
@@ -31053,6 +31062,7 @@
     <sr_latin txt="Mora biti istinito"/>
     <be txt="Мусяць быць true"/>
     <en_GB txt="Must be true"/>
+    <it txt="Deve essere vero"/>
   </Msg>
   <Msg id="showpending">
     <en txt="Show pending switches" tip="Show pending switches with a red background color."/>
@@ -31094,6 +31104,7 @@
     <sl txt="Proga v tunelu"/>
     <sr_latin txt="Tunel"/>
     <sv txt="Tunnelspår"/>
+    <it txt="Galleria"/>
   </Msg>
   <Msg id="statistic">
     <en txt="Statistic"/>
@@ -31103,6 +31114,7 @@
     <sl txt="Statistika"/>
     <sr_latin txt="Statistički"/>
     <de txt="Statistik"/>
+    <it txt="Statistico"/>
   </Msg>
   <Msg id="signalquality">
     <en txt="Signal quality"/>
@@ -31112,6 +31124,7 @@
     <sl txt="Kvaliteta signala"/>
     <sr_latin txt="Kvalitet signala"/>
     <de txt="Signal-Qualität"/>
+    <it txt="Qualità segnale"/>
   </Msg>
   <Msg id="border">
     <en txt="Border"/>
@@ -31121,6 +31134,7 @@
     <sl txt="Meja"/>
     <sr_latin txt="Granica"/>
     <de txt="Rahmen"/>
+    <it txt="Confine"/>
   </Msg>
   <Msg id="mdate">
     <en txt="M-Date" tip="Last serviced date."/>
@@ -31130,6 +31144,7 @@
     <sl txt="M-Date" tip="Datum zadnje revizije"/>
     <sr_latin txt="M-datum" tip="Datum poslednjeg pregleda."/>
     <be txt="Дата абсл." tip="Апошняя дата абслугоўваньня"/>
+    <it txt="M-Date"/>
   </Msg>
   <Msg id="aspectnames">
     <en txt="Aspect names"/>
@@ -31139,6 +31154,7 @@
     <sl txt="Imena stanj"/>
     <sr_latin txt="Odnos imena"/>
     <be txt="Назвы ліхтароў"/>
+    <it txt="Nomi aspetti"/>
   </Msg>
   <Msg id="atfree">
     <en txt="At free"/>
@@ -31147,7 +31163,7 @@
     <pt_BR txt="Quando liberado"/>
     <sl txt="Ob prostem"/>
     <sr_latin txt="Besplatno"/>
-    <be txt="Bei Freiwerden"/>
+    <be txt="Па звальненьні"/>
   </Msg>
   <Msg id="atcommand">
     <en txt="At command"/>
@@ -31156,7 +31172,7 @@
     <pt_BR txt="Ao comando"/>
     <sl txt="Ob ukazu"/>
     <sr_latin txt="Po komandi"/>
-    <be txt="Beim Befehl"/>
+    <be txt="Па камандзе"/>
   </Msg>
   <Msg id="atevent">
     <en txt="At event"/>
@@ -31165,7 +31181,7 @@
     <pt_BR txt="Ao evento"/>
     <sl txt="Ob dogodku"/>
     <sr_latin txt="U slučaju"/>
-    <be txt="Beim Ereignis"/>
+    <be txt="Па здарэньні"/>
   </Msg>
   <Msg id="activated">
     <en txt="Activated"/>
@@ -31173,8 +31189,9 @@
     <nl txt="Geactiveerd"/>
     <pt_BR txt="Ativado"/>
     <sl txt="Aktivirano"/>
-    <be txt="Aktiviert"/>
+    <be txt="Актывізаваны"/>
     <sr_latin txt="Aktiviran"/>
+    <it txt="Attivato"/>
   </Msg>
   <Msg id="resetplacing">
     <en txt="Reset placing and direction"/>
@@ -31182,7 +31199,7 @@
     <nl txt="Plaatsing en richting terug zetten"/>
     <pt_BR txt="Redefinir a colocação e direção"/>
     <sl txt="Ponastavi položaj in smer"/>
-    <be txt="Platzierung und Fahrtrichtung zurücksetzen"/>
+    <be txt="Скінуць месцаваньне  і напрамак"/>
     <sr_latin txt="Poništi postavku i pravac"/>
   </Msg>
   <Msg id="savelevelas" dialog="true">
@@ -31191,5 +31208,7 @@
     <pt_BR txt="Salvar nível como" tip="Salvar nível do diagrama de trilhos em arquivo separado."/>
     <sl txt="Shrani nivo kot" tip="Shrani nivo tirnega načrta v posebno datoteko."/>
     <sr_latin txt="Snimi nivo kao" tip="Snimi nivo šina u poseban fajl"/>
+    <be txt="Захаваць узровень як" tip="Захаваць узровень рэйкавага пляну ў асобным файле."/>
+    <de txt="Gleisplan-Ebene speichern als" tip="Gleisplan-Ebene in separater Datei speichern"/>
   </Msg>
 </Messages>
