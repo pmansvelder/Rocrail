@@ -335,6 +335,8 @@ void TrackPickerDlg::initSymbols() {
   ListOp.add( m_SymbolList, (obj) symname );
   symname = StrOp.fmt("%s::4:::,%s,%s", wOutput.name(), "button-4-off.svg", "output" );
   ListOp.add( m_SymbolList, (obj) symname );
+  symname = StrOp.fmt("%s::5:::,%s,%s", wOutput.name(), "button-5-off.svg", "output" );
+  ListOp.add( m_SymbolList, (obj) symname );
 
   // Accessory
   symname = StrOp.fmt("%s:::::,%s,%s", wText.name(), "text", "text" );
