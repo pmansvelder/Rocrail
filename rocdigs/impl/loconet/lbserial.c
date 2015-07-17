@@ -21,7 +21,6 @@
 #include "rocdigs/impl/loconet_impl.h"
 
 #include "rocdigs/impl/loconet/lbserial.h"
-#include "rocdigs/impl/loconet/lnmon.h"
 
 #include "rocs/public/trace.h"
 #include "rocs/public/mem.h"

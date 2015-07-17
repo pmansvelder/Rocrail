@@ -66,7 +66,6 @@
 /* loconet opcodes */
 #include "rocdigs/impl/loconet/lnconst.h"
 #include "rocdigs/impl/loconet/lncmdstn.h"
-#include "rocdigs/impl/loconet/lnmon.h"
 #include "rocdigs/impl/loconet/lbserial.h"
 #include "rocdigs/impl/loconet/lbserver.h"
 #include "rocdigs/impl/loconet/lbudp.h"
@@ -306,8 +305,6 @@ static Boolean _transact( iOLocoNet loconet, byte* out, int outsize, byte* in, i
           *insize = data->lnRead( (obj)loconet, in );
           if( *insize > 0 ) {
             data->rcvpkg++;
-            if( data->monitor )
-              traceLocoNet(in, data->GBM16xn);
             TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "*** transact dump:" );
             TraceOp.dump ( name, TRCLEVEL_BYTE, (char*)in, *insize );
             if( waitforOPC_OK > 0 && in[0] == waitforOPC_OK ) {
