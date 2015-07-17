@@ -467,7 +467,7 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
   if( fbevt == NULL ) {
     /* event without description; look up in map */
     if( ident != NULL && StrOp.len(ident) > 0 )
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s reports ident = %s", id, ident!=NULL?ident:"-");
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "%s reports ident=[%s]", id, ident!=NULL?ident:"-");
     fbevt = ModPlanOp.getEvent4Block( NULL, NULL , data->props, data->fromBlockId, id);
   }
 
@@ -630,11 +630,11 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
     {
       /* TODO: Check MU consist */
       if( LocOp.matchIdent(loc, ident, ident2, ident3, ident4) ) {
-        TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "ident matched: block=%s loc(MU)=%s ident=%s",
+        TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "ident matched: block=%s loc(MU)=[%s] ident=[%s]",
             data->id, locident, ident );
       }
       else if (StrOp.len(ident) > 0 && atoi(ident) > 0) {
-        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Loc identifier does not match! block=%s locident=%s ident=%s",
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Loc identifier does not match! block=%s locident=[%s] ident=[%s]",
             data->id, locident, ident );
         /* Power off? */
         if( wCtrl.ispoweroffonidentmismatch( AppOp.getIniNode( wCtrl.name() ) ) ) {
@@ -644,7 +644,7 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
       }
     }
     else if( StrOp.len(ident) > 0 && StrOp.len(locident) > 0 && StrOp.equals(ident, locident) ) {
-      TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "ident matched: block=%s locident=%s ident=%s",
+      TraceOp.trc( name, TRCLEVEL_CALC, __LINE__, 9999, "ident matched: block=%s locident=[%s] ident=[%s]",
           data->id, locident, ident );
     }
 
