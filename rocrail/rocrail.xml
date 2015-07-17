@@ -1593,6 +1593,10 @@
       <param name="inst" vt="this" remark="Route instance"/>
       <param name="class" vt="const char*"/>
     </fun>
+    <fun name="isState" vt="Boolean">
+      <param name="inst" vt="this"/>
+      <param name="state" vt="const char*" remark="State to compare with."/>
+    </fun>
     <data>
       <var name="lockedId" vt="const char*"/>
       <var name="requestId" vt="const char*"/>

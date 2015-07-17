@@ -244,6 +244,16 @@ static Boolean __isState(const char* stateRes) {
       }
     }
 
+    /* route */
+    else if( StrOp.equals(wRoute.name(), objType) ) {
+      iORoute st = ModelOp.getRoute(model, objId);
+      if( st != NULL ) {
+        if( comparator[0] == '=' && RouteOp.isState(st, value) ) {
+          ok = True;
+        }
+      }
+    }
+
   }
 
   StrTokOp.base.del(tok);

@@ -1411,6 +1411,25 @@ static Boolean _isClosed( iORoute inst ) {
 }
 
 
+static Boolean _isState( iORoute inst, const char* state ) {
+  iORouteData data = Data(inst);
+  int l_state = wRoute.getstatus(data->props);
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "route [%s] is %d (%s)",
+      RouteOp.getId(inst), l_state, state );
+  if( l_state == wRoute.status_free && StrOp.equals("free", state ) )
+    return True;
+  if( l_state == wRoute.status_locked && StrOp.equals("locked", state ) )
+    return True;
+  if( l_state == wRoute.status_selected && StrOp.equals("selected", state ) )
+    return True;
+  if( l_state == wRoute.status_deselected && StrOp.equals("deselected", state ) )
+    return True;
+  if( l_state == wRoute.status_closed && StrOp.equals("closed", state ) )
+    return True;
+  return False;
+}
+
+
 static Boolean _isFree( iORoute inst, const char* id ) {
   iORouteData data = Data(inst);
   Boolean isset = False;
