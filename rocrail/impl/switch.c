@@ -59,6 +59,7 @@
 static int instCnt = 0;
 
 static Boolean __unregisterCallback( iOSwitch inst );
+static void __polariseFrogs(iOSwitch inst, const char* state);
 static void __polariseFrog(iOSwitch inst, int frog, Boolean relays1, Boolean relays2);
 static void __testThread( void* threadinst );
 static void __accThread( void* threadinst );
@@ -487,8 +488,7 @@ static void __fbEvent( obj inst, Boolean puls, const char* id, const char* ident
 
   if( isSet ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Switch [%s] polarise frogs by event, state=%s", SwitchOp.getId( (iOSwitch)inst ), strState );
-    __polariseFrog((iOSwitch)inst, 0, StrOp.equals(wSwitch.straight, strState), StrOp.equals(wSwitch.turnout, strState));
-    __polariseFrog((iOSwitch)inst, 1, StrOp.equals(wSwitch.left, strState), StrOp.equals(wSwitch.right, strState));
+    __polariseFrogs((iOSwitch)inst, strState);
   }
 
   {
@@ -829,6 +829,14 @@ static void __flipThread( void* threadinst ) {
   ThreadOp.base.del(th);
 }
 
+static void __polariseFrogs(iOSwitch inst, const char* state) {
+  Boolean f0_0 = StrOp.equals(wSwitch.turnout, state) | StrOp.equals(wSwitch.right, state);
+  Boolean f0_1 = StrOp.equals(wSwitch.straight, state) | StrOp.equals(wSwitch.left, state);
+  Boolean f1_0 = StrOp.equals(wSwitch.straight, state) | StrOp.equals(wSwitch.right, state);
+  Boolean f1_1 = StrOp.equals(wSwitch.turnout, state) | StrOp.equals(wSwitch.left, state);
+  __polariseFrog(inst, 0, f0_0, f0_1);
+  __polariseFrog(inst, 1, f1_0, f1_1);
+}
 
 static void __polariseFrog(iOSwitch inst, int frog, Boolean relays1, Boolean relays2) {
   iOSwitchData data = Data(inst);
@@ -1321,16 +1329,10 @@ static Boolean __doCmd( iOSwitch inst, iONode nodeA, Boolean update, int extra, 
   }
 
   if( wSwitch.getfrogtimer(o->props) > 0 ) {
-    Boolean relays1a = StrOp.equals(wSwitch.straight, state);
-    Boolean relays2a = StrOp.equals(wSwitch.turnout, state);
-    Boolean relays1b = StrOp.equals(wSwitch.left, state);
-    Boolean relays2b = StrOp.equals(wSwitch.right, state);
-
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "polarise Frog [%s] timer=%d state=%s(%s)",
         SwitchOp.getId(inst), wSwitch.getfrogtimer(o->props), state, wSwitch.getstate( o->props) );
     ThreadOp.sleep(wSwitch.getfrogtimer(o->props));
-    __polariseFrog(inst, 0, relays1a, relays2a);
-    __polariseFrog(inst, 1, relays1b, relays2b);
+    __polariseFrogs(inst, state);
   }
 
 
@@ -1743,10 +1745,8 @@ static void _event( iOSwitch inst, iONode nodeC ) {
         wSwitch.setset( nodeD, isSet );
 
         if( isSet ) {
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "polarise Frog [%s] state=%s(%s)",
-              SwitchOp.getId(inst), state, wSwitch.getstate( data->props) );
-          __polariseFrog(inst, 0, StrOp.equals(wSwitch.straight, wSwitch.getstate( data->props)), StrOp.equals(wSwitch.turnout, wSwitch.getstate( data->props)));
-          __polariseFrog(inst, 1, StrOp.equals(wSwitch.left, wSwitch.getstate( data->props)), StrOp.equals(wSwitch.right, wSwitch.getstate( data->props)));
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "polarise Frog [%s] state=%s(%s)", SwitchOp.getId(inst), state, wSwitch.getstate( data->props) );
+          __polariseFrogs(inst, wSwitch.getstate( data->props) );
         }
       }
 
