@@ -1090,8 +1090,6 @@ static void __evaluatePacket(iOLocoNet loconet, byte* rsp, int size ) {
   int port = 0;
 
   data->rcvpkg++;
-  if( data->monitor )
-    traceLocoNet(rsp, data->GBM16xn);
 
   TraceOp.dump ( name, TRCLEVEL_BYTE, (char*)rsp, size );
 
