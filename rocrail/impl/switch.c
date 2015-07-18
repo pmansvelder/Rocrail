@@ -1745,8 +1745,8 @@ static void _event( iOSwitch inst, iONode nodeC ) {
         if( isSet ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "polarise Frog [%s] state=%s(%s)",
               SwitchOp.getId(inst), state, wSwitch.getstate( data->props) );
-          __polariseFrog(inst, 0, StrOp.equals(wSwitch.straight, state), StrOp.equals(wSwitch.turnout, state));
-          __polariseFrog(inst, 1, StrOp.equals(wSwitch.left, state), StrOp.equals(wSwitch.right, state));
+          __polariseFrog(inst, 0, StrOp.equals(wSwitch.straight, wSwitch.getstate( data->props)), StrOp.equals(wSwitch.turnout, wSwitch.getstate( data->props)));
+          __polariseFrog(inst, 1, StrOp.equals(wSwitch.left, wSwitch.getstate( data->props)), StrOp.equals(wSwitch.right, wSwitch.getstate( data->props)));
         }
       }
 
