@@ -17179,7 +17179,7 @@
   </Msg>
   <Msg id="skipsetsw">
     <de txt="Keine Weichenstellung bei richtiger Weichenlage" tip="Weichen einer Fahrstraße nicht setzen, falls sie bereits richtig gestellt sind"/>
-    <en txt="Skip switch commands" alttxt="Skip switch commands if correct" tip="Skip switch commands in routes if already set"/>
+    <en txt="Skip switch commands" alttxt="Skip switch commands if already set" tip="Skip switch commands in routes if already set"/>
     <nl txt="Sla wissel commando's over" tip="Sla wisselcommando's in de rijweg over als de wissels al gezet zijn."/>
     <sv txt="Skippa växelkommandon" tip="Skippa växelkommandon om tågväg redan är satt."/>
     <fr txt="Ne pas exécuter la commande de l'aiguillage" tip="Ne pas exécuter la commande de l'aiguillage s'il est déjà en position pour cet itinéraire"/>
@@ -21447,7 +21447,7 @@
     <be txt="Паўза пры ініцыялізацыі блёку"/>
   </Msg>
   <Msg id="skipsetsg">
-    <en txt="Skip signal commands" tip="Skip signal commands if already set"/>
+    <en txt="Skip signal commands"  alttxt="Skip signal commands if already set" tip="Skip signal commands if already set"/>
     <cs txt="Přeskočit příkazy od signálu" tip="Přeskočit signál příkazů, pokud je již nastaven"/>
     <da txt="Oversping signalkommandoer" tip="Oversping signalkommandoer hvis de allerede er indstillet"/>
     <nl txt="Negeer  sein commando's" tip="Sla sein commando's over als het sein al geset is"/>
