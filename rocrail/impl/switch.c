@@ -486,6 +486,7 @@ static void __fbEvent( obj inst, Boolean puls, const char* id, const char* ident
   Boolean isSet = __isSet(inst, strState);
 
   if( isSet ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Switch [%s] polarise frogs by event, state=%s", SwitchOp.getId( (iOSwitch)inst ), strState );
     __polariseFrog((iOSwitch)inst, 0, StrOp.equals(wSwitch.straight, strState), StrOp.equals(wSwitch.turnout, strState));
     __polariseFrog((iOSwitch)inst, 1, StrOp.equals(wSwitch.left, strState), StrOp.equals(wSwitch.right, strState));
   }
