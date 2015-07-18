@@ -763,10 +763,14 @@ static void* __event( void* inst, const void* evt ) {
           wLoc.getid(data->props), wLoc.isdir(evtNode), wLoc.isfn(evtNode) );
       if( !data->go ) {
         wLoc.setdir( data->props, wLoc.isplacing(data->props) ? wLoc.isdir(evtNode):!wLoc.isdir(evtNode) );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "set loco %s field direction to %s", wLoc.getid(data->props), wLoc.isdir(data->props)?"fwd":"rev");
         if( StrOp.equals( wLoc.dirfun, wLoc.getcmd(evtNode) ) ) {
           wLoc.setfn( data->props, wLoc.isfn(evtNode) );
           data->fn0 = wLoc.isfn(evtNode);
         }
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "not using the field velocity because loco %s is in auto mode", wLoc.getid(data->props));
       }
     }
 
