@@ -1901,6 +1901,7 @@
         <var name="id" vt="string" defval="" range="*" required="true"/>
         <var name="oid" vt="string" defval="" range="*" required="false" remark="object ID"/>
         <var name="blockid" vt="string" defval="NULL" range="*"/>
+        <var name="freeid" vt="string" defval="NULL" range="*" remark="Object must be free to beable to change the signal aspect."/>
         <var name="desc" vt="string" defval="" range="*" remark="description"/>
         <var name="manual" vt="bool" defval="false" remark="operator controlled signal to influence auto mode"/>
         <var name="manualreset" vt="bool" defval="true" remark="operator controlled signal reset automatically to red"/>
