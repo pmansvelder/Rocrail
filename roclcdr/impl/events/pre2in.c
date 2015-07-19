@@ -59,7 +59,7 @@ void eventPre2In( iOLcDriver inst, const char* blockId, Boolean curBlockEvent, B
     newPre2InEvent = True;
   }
   else {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 4101,
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4101,
                    "Ignoring pre2in_block event from %s; it came within %d ticks!", blockId, data->ignevt );
   }
   

@@ -122,7 +122,7 @@ void eventIn( iOLcDriver inst, const char* blockId, iIBlockBase block, Boolean c
     newInEvent = True;
   }
   else {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 4101,
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4101,
                    "Ignoring in_block event from %s; it came within %d ticks!", blockId, data->ignevt );
   }
 
