@@ -268,11 +268,22 @@ bool ToursDlg::isFirst(iONode tour, const char* startblock) {
           if( startblock != NULL ) {
             /* check if the schedule start block matches */
             iONode scentry = wSchedule.getscentry( sc );
-            TraceOp.trc( "tourdlg", TRCLEVEL_INFO, __LINE__, 9999, "check schedule entry: %d of %s", i, id );
+            const char* entryBlock    = "";
+            const char* entryLocation = "";
+
+            if( scentry != NULL && wScheduleEntry.getblock( scentry ) != NULL )
+              entryBlock = wScheduleEntry.getblock( scentry );
+            if( scentry != NULL && wScheduleEntry.getlocation( scentry ) != NULL )
+              entryLocation = wScheduleEntry.getlocation( scentry );
+
+            TraceOp.trc( "tourdlg", TRCLEVEL_INFO, __LINE__, 9999, "check schedule entry: %d of %s (%s%s)=(%s)=(%s)",
+                i, id, entryBlock, entryLocation, startblock, locationID!=NULL?locationID:"-" );
             if( scentry != NULL && StrOp.equals( startblock, wScheduleEntry.getblock( scentry ) ) ) {
+              TraceOp.trc( "tourdlg", TRCLEVEL_INFO, __LINE__, 9999, "schedule start block = %s", startblock );
               isFirst = true;
             }
-            else if( scentry != NULL && locationID != NULL && StrOp.equals( locationID, wScheduleEntry.getblock( scentry ) ) ) {
+            else if( scentry != NULL && locationID != NULL && StrOp.equals( locationID, wScheduleEntry.getlocation( scentry ) ) ) {
+              TraceOp.trc( "tourdlg", TRCLEVEL_INFO, __LINE__, 9999, "schedule start location = %s", locationID );
               isFirst = true;
             }
           }
