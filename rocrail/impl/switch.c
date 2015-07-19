@@ -776,6 +776,9 @@ static Boolean _isSet( iOSwitch inst ) {
   iOSwitchData data  = Data(inst);
   Boolean      isSet = True;
 
+  if( data->pendingSet )
+    return False;
+
   if( (data->hasFbSignal && ModelOp.isEnableSwFb(AppOp.getModel())) || wSwitch.isfbusefield(data->props) ) {
     sw_state stateCmd = SW_STRAIGHT;
 
@@ -796,7 +799,7 @@ static Boolean _isSet( iOSwitch inst ) {
     else {
       /* check fieldstate */
       isSet = StrOp.equals(wSwitch.getwantedstate(data->props), wSwitch.getfieldstate(data->props));
-      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "switch[%s] isSet=%s wanted=%s field=%s",
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch[%s] isSet=%s wanted=%s field=%s",
           SwitchOp.getId( inst ), isSet?"true":"false", wSwitch.getwantedstate(data->props), wSwitch.getfieldstate(data->props) );
     }
   }
@@ -1719,7 +1722,8 @@ static void _event( iOSwitch inst, iONode nodeC ) {
       }
     }
 
-    wSwitch.setfieldstate( data->props, wSwitch.getstate(data->props) );
+    if( !wSwitch.isfbusefield(data->props ) )
+      wSwitch.setfieldstate( data->props, wSwitch.getstate(data->props) );
 
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch [%s] field state=%s(%s) gatevalue=%d inv=%d state=%s",
         SwitchOp.getId(inst), wSwitch.getstate( data->props), wSwitch.getstate(nodeC), wSwitch.getgatevalue(nodeC), inv, state );
@@ -1747,6 +1751,7 @@ static void _event( iOSwitch inst, iONode nodeC ) {
         if( isSet ) {
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "polarise Frog [%s] state=%s(%s)", SwitchOp.getId(inst), state, wSwitch.getstate( data->props) );
           __polariseFrogs(inst, wSwitch.getstate( data->props) );
+          wSwitch.setfieldstate( data->props, wSwitch.getstate(data->props) );
         }
       }
 

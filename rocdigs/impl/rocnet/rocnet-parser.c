@@ -63,14 +63,14 @@ byte* rocnetParseMobile( iOrocNet rocnet, byte* rn ) {
 
   switch( action ) {
   case RN_MOBILE_VELOCITY:
-    TraceOp.trc( myname, TRCLEVEL_INFO, __LINE__, 9999,
+    TraceOp.trc( myname, TRCLEVEL_MONITOR, __LINE__, 9999,
         "mobile RN_MOBILE_VELOCITY addr=%d V=%d prot=%s dir=%s lights=%s",
         addr, rn[RN_PACKET_DATA + 0], rocnetGetProtocolStr(rn[RN_PACKET_DATA + 1]),
         (rn[RN_PACKET_DATA + 1] & RN_MOBILE_DIR_FORWARDS) ? "forwards":"reverse",
         (rn[RN_PACKET_DATA + 1] & RN_MOBILE_LIGHTS_ON) ? "on":"off" );
     break;
   case RN_MOBILE_FUNCTIONS:
-    TraceOp.trc( myname, TRCLEVEL_INFO, __LINE__, 9999,
+    TraceOp.trc( myname, TRCLEVEL_MONITOR, __LINE__, 9999,
         "mobile RN_MOBILE_FUNCTIONS addr=%d prot=%s lights=%s f1=%s f2=%s f3=%s f4=%s f5=%s f6=%s f7=%s f8=%s f9=%s f10=%s f11=%s f12=%s",
         addr, rocnetGetProtocolStr(rn[RN_PACKET_DATA + 2]),
         (rn[RN_PACKET_DATA + 0] & 0x40) ? "on":"off",
@@ -113,7 +113,7 @@ byte* rocnetParseGeneral( iOrocNet rocnet, byte* rn ) {
 
   switch( action ) {
     case RN_CS_NOP:
-      TraceOp.trc( myname, TRCLEVEL_INFO, __LINE__, 9999,
+      TraceOp.trc( myname, TRCLEVEL_MONITOR, __LINE__, 9999,
           "general NOP(%s) action for %d from %d%s, %d data bytes",
           rnActionTypeString(rn), rcpt, sndr, isThis?"(this)":"", rn[RN_PACKET_LEN] );
 
@@ -129,7 +129,7 @@ byte* rocnetParseGeneral( iOrocNet rocnet, byte* rn ) {
       break;
 
     case RN_CS_TRACKPOWER:
-      TraceOp.trc( myname, TRCLEVEL_INFO, __LINE__, 9999,
+      TraceOp.trc( myname, TRCLEVEL_MONITOR, __LINE__, 9999,
           "general TRACKPOWER(%s) action for %d from %d%s, %d data bytes",
           rnActionTypeString(rn), rcpt, sndr, isThis?"(this)":"", rn[RN_PACKET_LEN] );
       break;
@@ -157,13 +157,13 @@ byte* rocnetParseOutput( iOrocNet rocnet, byte* rn ) {
 
   switch( action ) {
   case RN_OUTPUT_SWITCH:
-    TraceOp.trc( myname, TRCLEVEL_INFO, __LINE__, 9999,
+    TraceOp.trc( myname, TRCLEVEL_MONITOR, __LINE__, 9999,
         "output SWITCH(%s %d) addr=%d %s action for %d from %d%s, %d data bytes",
         rnActionTypeString(rn), actionType, port, rn[RN_PACKET_DATA + 0] & RN_OUTPUT_ON ? "on":"off",
         rcpt, sndr, isThis?"(this)":"", rn[RN_PACKET_LEN] );
     break;
   case RN_OUTPUT_SWITCH_MULTI:
-    TraceOp.trc( myname, TRCLEVEL_INFO, __LINE__, 9999,
+    TraceOp.trc( myname, TRCLEVEL_MONITOR, __LINE__, 9999,
         "output SWITCH MULTI(%s) addr=%d %02X:%02X action for %d from %d%s, %d data bytes",
         rnActionTypeString(rn), port, rn[RN_PACKET_DATA + 1], rn[RN_PACKET_DATA + 3],
         rcpt, sndr, isThis?"(this)":"", rn[RN_PACKET_LEN] );

@@ -854,8 +854,10 @@ static Boolean __checkSwitches( iORoute inst, const char* id ) {
     else {
       iOSwitch isw = ModelOp.getSwitch( model, swId );
       if( isw != NULL ) {
-        if( lock && SwitchOp.isLocked( isw, id, False ) )
+        if( lock && SwitchOp.isLocked( isw, id, False ) ) {
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch %s in route %s is locked", swId, wRoute.getid(o->props) );
           return False;
+        }
       }
       else {
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "*PANIC* No switch object found for %s in route %s", swId, wRoute.getid(o->props) );
@@ -915,6 +917,7 @@ static Boolean __lockCrossingBlocks( iORoute inst, const char* id ) {
       if( block != NULL ) {
         if( !block->lock( block, id, "", wRoute.getid(o->props), True, False, False, 0, NULL, False ) ) {
           StrTokOp.base.del(tok);
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "could not lock crossing block [%s] in route [%s]", bk, wRoute.getid(o->props) );
           return False;
         }
       }
@@ -1032,6 +1035,8 @@ static Boolean __lockSwitches( iORoute inst, const char* locId ) {
           if( !SwitchOp.lock( isw, locId, inst ) ) {
             /* Rewind. */
             __unlockSwitches( inst, locId, False );
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999,
+                "could not lock switch [%s] for route [%s]", SwitchOp.getId(isw) , o->routeLockId );
             return False;
           }
         }
