@@ -1394,7 +1394,6 @@ static Boolean _isManual( iORoute inst, Boolean* isset ) {
 
 static Boolean _isLocked( iORoute inst ) {
   iORouteData data = Data(inst);
-
   if( data->lockedId != NULL && StrOp.len(data->lockedId) > 0 ) {
     return True;
   }
@@ -1413,19 +1412,13 @@ static Boolean _isClosed( iORoute inst ) {
 
 static Boolean _isState( iORoute inst, const char* state ) {
   iORouteData data = Data(inst);
-  int l_state = wRoute.getstatus(data->props);
-  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "route [%s] is %d (%s)",
-      RouteOp.getId(inst), l_state, state );
-  if( l_state == wRoute.status_free && StrOp.equals("free", state ) )
-    return True;
-  if( l_state == wRoute.status_locked && StrOp.equals("locked", state ) )
-    return True;
-  if( l_state == wRoute.status_selected && StrOp.equals("selected", state ) )
-    return True;
-  if( l_state == wRoute.status_deselected && StrOp.equals("deselected", state ) )
-    return True;
-  if( l_state == wRoute.status_closed && StrOp.equals("closed", state ) )
-    return True;
+
+  if( StrOp.equals("free", state ) )
+    return RouteOp.isFree(inst, NULL);
+  if( StrOp.equals("locked", state ) )
+    return RouteOp.isLocked(inst);
+  if( StrOp.equals("closed", state ) )
+    return RouteOp.isClosed(inst);
   return False;
 }
 
@@ -1446,7 +1439,7 @@ static Boolean _isFree( iORoute inst, const char* id ) {
     return False;
   }
 
-  if( data->lockedId != NULL && StrOp.equals(data->lockedId, id ) ) {
+  if( data->lockedId != NULL && id != NULL && StrOp.equals(data->lockedId, id ) ) {
     /* it is free for itself */
     return True;
   }
