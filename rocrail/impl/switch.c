@@ -830,10 +830,10 @@ static void __flipThread( void* threadinst ) {
 }
 
 static void __polariseFrogs(iOSwitch inst, const char* state) {
-  Boolean f0_0 = StrOp.equals(wSwitch.straight, state) | StrOp.equals(wSwitch.left, state);
-  Boolean f0_1 = StrOp.equals(wSwitch.turnout, state) | StrOp.equals(wSwitch.right, state);
-  Boolean f1_0 = StrOp.equals(wSwitch.straight, state) | StrOp.equals(wSwitch.right, state);
-  Boolean f1_1 = StrOp.equals(wSwitch.turnout, state) | StrOp.equals(wSwitch.left, state);
+  Boolean f0_0 = StrOp.equals(wSwitch.straight, state) | StrOp.equals(wSwitch.right, state);
+  Boolean f0_1 = StrOp.equals(wSwitch.turnout, state) | StrOp.equals(wSwitch.left, state);
+  Boolean f1_0 = StrOp.equals(wSwitch.straight, state) | StrOp.equals(wSwitch.left, state);
+  Boolean f1_1 = StrOp.equals(wSwitch.turnout, state) | StrOp.equals(wSwitch.right, state);
   __polariseFrog(inst, 0, f0_0, f0_1);
   __polariseFrog(inst, 1, f1_0, f1_1);
 }
