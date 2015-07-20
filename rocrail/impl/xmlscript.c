@@ -67,6 +67,7 @@ static int instCnt = 0;
 
 static Boolean __doIf(iONode nodeScript, iOMap map);
 static Boolean __doForEach(iONode nodeScript, iOMap map);
+static Boolean __isSubState(const char* stateRes);
 
 
 
@@ -169,8 +170,27 @@ static Boolean __isClass(const char* classRes) {
 }
 
 
+static Boolean __isState(const char* stateRes, Boolean alltrue) {
+  Boolean ok = False;
+  iOStrTok tok = StrTokOp.inst(stateRes, '|');
+  while(StrTokOp.hasMoreTokens(tok)) {
+    const char* state = StrTokOp.nextToken(tok);
+    Boolean isTrue = __isSubState(state);
+    if( isTrue )
+      ok = True;
+    else if( alltrue ) {
+      ok = False;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "not all states are true [%s]", stateRes );
+      break;
+    }
+  }
+  StrTokOp.base.del(tok);
+  return ok;
+
+}
+
 /* state="sg sem3 = green"  */
-static Boolean __isState(const char* stateRes) {
+static Boolean __isSubState(const char* stateRes) {
   Boolean ok = True;
   const char* objType    = NULL;
   const char* objId      = NULL;
@@ -678,7 +698,7 @@ static Boolean __doIf(iONode nodeScript, iOMap map) {
   if( state != NULL ) {
     stateRes = TextOp.replaceAllSubstitutions(state, map);
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if state [%s]", stateRes );
-    stateOK = __isState(stateRes);
+    stateOK = __isState(stateRes, NodeOp.getBool(nodeScript, "alltrue", True));
   }
   if( class != NULL ) {
     classRes = TextOp.replaceAllSubstitutions(class, map);
