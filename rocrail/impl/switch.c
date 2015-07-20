@@ -776,7 +776,7 @@ static Boolean _isSet( iOSwitch inst ) {
   iOSwitchData data  = Data(inst);
   Boolean      isSet = True;
 
-  if( data->pendingSet )
+  if( wSwitch.isfbusefield(data->props) && data->pendingSet )
     return False;
 
   if( (data->hasFbSignal && ModelOp.isEnableSwFb(AppOp.getModel())) || wSwitch.isfbusefield(data->props) ) {
@@ -1399,6 +1399,7 @@ static void __doCmdThread( void* threadinst ) {
       ThreadOp.sleep(wSwitch.getpause(nodeA));
     }
     __doCmd(sw, nodeA, update, extra, &error, lcid);
+    data->pendingSet = False;
     if( wSwitch.issyncdelay(data->props) ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch[%s] sync. delay %dms", data->id, wSwitch.getdelay(data->props) );
       ThreadOp.sleep(wSwitch.getdelay(data->props));
