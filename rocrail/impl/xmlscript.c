@@ -55,6 +55,7 @@
 #include "rocrail/wrapper/public/Operator.h"
 #include "rocrail/wrapper/public/SysCmd.h"
 #include "rocrail/wrapper/public/Car.h"
+#include "rocrail/wrapper/public/AutoCmd.h"
 
 
 #include "rocs/public/mem.h"
@@ -522,7 +523,21 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
   /* system */
   else if( StrOp.equals( wSysCmd.name(), NodeOp.getName(cmd)) ) {
     int error = 0;
-    ControlOp.cmd( AppOp.getControl(), (iONode)NodeOp.base.clone(cmd), &error );
+    if( StrOp.equals( wAutoCmd.on, wAutoCmd.getcmd( cmd ) ) ) {
+      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+      iONode cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( cmd, wAutoCmd.on );
+      pfun( (obj)AppOp.getControl(), cmd );
+    }
+    else if( StrOp.equals( wAutoCmd.off, wAutoCmd.getcmd( cmd ) ) ) {
+      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+      iONode cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( cmd, wAutoCmd.off );
+      pfun( (obj)AppOp.getControl(), cmd );
+    }
+    else {
+      ControlOp.cmd( AppOp.getControl(), (iONode)NodeOp.base.clone(cmd), &error );
+    }
   }
 
   /* sleep */
