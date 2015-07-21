@@ -2909,6 +2909,7 @@
     <fun name="run" vt="void">
       <param name="xmlscript" vt="const char*"/>
       <param name="map" vt="iOMap"/>
+      <param name="function" vt="const char*"/>
     </fun>
   </object>
 

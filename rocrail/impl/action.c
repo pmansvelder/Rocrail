@@ -1039,7 +1039,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
             MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
             MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
             MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
-            XmlScriptOp.run( xmlscript, map );
+            XmlScriptOp.run( xmlscript, map, wAction.getparam( data->action ) );
             freeMem(xmlscript);
             MapOp.base.del(map);
           }

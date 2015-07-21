@@ -71,7 +71,7 @@ static Boolean __doForEach(iONode nodeScript, iOMap map, iONode script);
 static Boolean __doSwitch(iONode nodeScript, iOMap map, iONode script);
 static Boolean __doCall(iONode nodeScript, iOMap map, iONode script);
 static Boolean __isSubState(const char* stateRes);
-static Boolean __runScript(iONode nodeScript, iOMap map, iONode script );
+static Boolean __runScript(iONode nodeScript, iOMap map, iONode script, const char* function );
 
 
 
@@ -583,7 +583,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
         FileOp.read( f, xmlscript, size);
         FileOp.base.del(f);
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run sub xmlscript file [%s], size=%d", scriptFile, size );
-        XmlScriptOp.run( xmlscript, map );
+        XmlScriptOp.run( xmlscript, map, wItem.getid(cmd) );
         freeMem(xmlscript);
       }
     }
@@ -701,6 +701,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
 static Boolean __doCall(iONode nodeScript, iOMap map, iONode script) {
   Boolean exit = False;
   const char* functionID = NodeOp.getStr(nodeScript, "id", NULL);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "try to call function [%s]", functionID );
   if( script != NULL && functionID != NULL ) {
     /* lookup the function */
     int cmds = NodeOp.getChildCnt(script);
@@ -710,7 +711,7 @@ static Boolean __doCall(iONode nodeScript, iOMap map, iONode script) {
       if( StrOp.equals("function", NodeOp.getName(cmd) ) && StrOp.equals(functionID, wItem.getid(cmd) ) ) {
         /* do the function */
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "call function [%s]", functionID );
-        exit = __runScript(cmd, map, script);
+        exit = __runScript(cmd, map, script, NULL);
       }
     }
   }
@@ -896,12 +897,32 @@ static Boolean __doForEach(iONode nodeScript, iOMap map, iONode script) {
 }
 
 
-static Boolean __runScript(iONode nodeScript, iOMap map, iONode script) {
+static Boolean __runScript(iONode nodeScript, iOMap map, iONode script, const char* function) {
   Boolean exit = False;
   int cnt = NodeOp.getChildCnt(nodeScript);
   int i = 0;
+
+  if( function != NULL )
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run script function [%s]", function );
+
   for( i = 0; i < cnt && exit == False; i++ ) {
     iONode cmd = NodeOp.getChild(nodeScript, i);
+
+    if( function != NULL && StrOp.len(function) > 0 ) {
+      if( !StrOp.equals( "function", NodeOp.getName(cmd) ) )
+        continue;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "script function [%s]=[%s]", function, wItem.getid(cmd) );
+      if( StrOp.equals( function, wItem.getid(cmd) ) ) {
+        iONode node = NodeOp.inst( "call", NULL, ELEMENT_NODE );
+        wItem.setid(node, function);
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "do script function [%s]", wItem.getid(cmd) );
+        exit = __doCall(node, map, script);
+        NodeOp.base.del(node);
+        return exit;
+      }
+      continue;
+    }
+
     if( StrOp.equals( "foreach", NodeOp.getName(cmd) ) )
       exit = __doForEach(cmd, map, script);
     else if( StrOp.equals( "if", NodeOp.getName(cmd) ) )
@@ -923,7 +944,7 @@ static Boolean __runScript(iONode nodeScript, iOMap map, iONode script) {
   <lc cmd="go"/>
 </foreach>
  */
-static void _run(const char* script, iOMap map) {
+static void _run(const char* script, iOMap map, const char* function) {
   iODoc  doc        = DocOp.parse(script);
   iONode nodeScript = NULL;
 
@@ -951,7 +972,7 @@ static void _run(const char* script, iOMap map) {
     }
     else if( StrOp.equals( "xmlscript", NodeOp.getName(nodeScript) ) ) {
       Boolean exit = False;
-      exit = __runScript(nodeScript, map, nodeScript);
+      exit = __runScript(nodeScript, map, nodeScript, function);
     }
 
     NodeOp.base.del(nodeScript);
