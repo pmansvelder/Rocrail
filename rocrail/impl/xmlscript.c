@@ -525,15 +525,28 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     int error = 0;
     if( StrOp.equals( wAutoCmd.on, wAutoCmd.getcmd( cmd ) ) ) {
       clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
-      iONode cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
-      wAutoCmd.setcmd( cmd, wAutoCmd.on );
-      pfun( (obj)AppOp.getControl(), cmd );
+      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( l_cmd, wAutoCmd.on );
+      pfun( (obj)AppOp.getControl(), l_cmd );
     }
     else if( StrOp.equals( wAutoCmd.off, wAutoCmd.getcmd( cmd ) ) ) {
       clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
-      iONode cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
-      wAutoCmd.setcmd( cmd, wAutoCmd.off );
-      pfun( (obj)AppOp.getControl(), cmd );
+      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( l_cmd, wAutoCmd.off );
+      pfun( (obj)AppOp.getControl(), l_cmd );
+    }
+    else if( StrOp.equals( wAutoCmd.resume, wAutoCmd.getcmd( cmd ) ) ) {
+      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( l_cmd, wAutoCmd.resume );
+      pfun( (obj)AppOp.getControl(), l_cmd );
+    }
+    else if( StrOp.equals( wSysCmd.stoplocs, wAction.getcmd( cmd ) ) ) {
+      /* re-map syscmd stoplocs to autocmd stop: */
+      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
+      wAutoCmd.setcmd( l_cmd, wAutoCmd.stop );
+      pfun( (obj)AppOp.getControl(), l_cmd );
     }
     else {
       ControlOp.cmd( AppOp.getControl(), (iONode)NodeOp.base.clone(cmd), &error );
