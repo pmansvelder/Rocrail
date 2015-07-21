@@ -676,6 +676,12 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     exit = __doForEach(cmd, map);
   }
 
+  /* switch */
+  else if( StrOp.equals( "switch", NodeOp.getName(cmd)) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested switch...");
+    exit = __doSwitch(cmd, map);
+  }
+
   return exit;
 }
 
