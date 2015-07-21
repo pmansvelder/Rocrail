@@ -520,37 +520,16 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "action [%s] not found", wActionCtrl.getid( cmd ) );
   }
 
+  /* auto */
+  else if( StrOp.equals( wAutoCmd.name(), NodeOp.getName(cmd)) ) {
+    clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
+    pfun( (obj)AppOp.getControl(), (iONode)NodeOp.base.clone(cmd) );
+  }
+
   /* system */
   else if( StrOp.equals( wSysCmd.name(), NodeOp.getName(cmd)) ) {
     int error = 0;
-    if( StrOp.equals( wAutoCmd.on, wAutoCmd.getcmd( cmd ) ) ) {
-      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
-      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
-      wAutoCmd.setcmd( l_cmd, wAutoCmd.on );
-      pfun( (obj)AppOp.getControl(), l_cmd );
-    }
-    else if( StrOp.equals( wAutoCmd.off, wAutoCmd.getcmd( cmd ) ) ) {
-      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
-      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
-      wAutoCmd.setcmd( l_cmd, wAutoCmd.off );
-      pfun( (obj)AppOp.getControl(), l_cmd );
-    }
-    else if( StrOp.equals( wAutoCmd.resume, wAutoCmd.getcmd( cmd ) ) ) {
-      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
-      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
-      wAutoCmd.setcmd( l_cmd, wAutoCmd.resume );
-      pfun( (obj)AppOp.getControl(), l_cmd );
-    }
-    else if( StrOp.equals( wSysCmd.stoplocs, wAction.getcmd( cmd ) ) ) {
-      /* re-map syscmd stoplocs to autocmd stop: */
-      clntcon_callback pfun = ControlOp.getCallback(AppOp.getControl());
-      iONode l_cmd = NodeOp.inst( wAutoCmd.name(), NULL, ELEMENT_NODE );
-      wAutoCmd.setcmd( l_cmd, wAutoCmd.stop );
-      pfun( (obj)AppOp.getControl(), l_cmd );
-    }
-    else {
-      ControlOp.cmd( AppOp.getControl(), (iONode)NodeOp.base.clone(cmd), &error );
-    }
+    ControlOp.cmd( AppOp.getControl(), (iONode)NodeOp.base.clone(cmd), &error );
   }
 
   /* sleep */
