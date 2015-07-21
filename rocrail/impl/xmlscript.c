@@ -68,6 +68,7 @@ static int instCnt = 0;
 
 static Boolean __doIf(iONode nodeScript, iOMap map);
 static Boolean __doForEach(iONode nodeScript, iOMap map);
+static Boolean __doSwitch(iONode nodeScript, iOMap map);
 static Boolean __isSubState(const char* stateRes);
 
 
@@ -679,6 +680,48 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
 }
 
 
+static Boolean __doSwitch(iONode nodeScript, iOMap map) {
+  Boolean exit = False;
+  const char* var = NodeOp.getStr(nodeScript, "var", NULL);
+  char*    varRes = TextOp.replaceAllSubstitutions(var, map);
+  int    varValue = VarOp.getValue(varRes, NULL);
+
+  int cases = NodeOp.getChildCnt(nodeScript);
+  int i = 0;
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch [%s]=%d", varRes, varValue );
+
+  for( i = 0; i < cases && exit == False; i++ ) {
+    iONode l_case = NodeOp.getChild(nodeScript, i);
+    if( StrOp.equals("case", NodeOp.getName(l_case)) && varValue == NodeOp.getInt(l_case, "val", -1)) {
+      int cmds = NodeOp.getChildCnt(l_case);
+      int n = 0;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch:case [%s]=%d", varRes, varValue );
+      for( n = 0; n < cmds && exit == False; n++ ) {
+        iONode cmd = NodeOp.getChild(l_case, n);
+        exit = __executeCmd(cmd, map, NULL, NULL);
+      }
+      return exit;
+    }
+  }
+
+  if( !exit ) {
+    iONode l_default = NodeOp.findNode(nodeScript, "default");
+    if( l_default != NULL ) {
+      int cmds = NodeOp.getChildCnt(l_default);
+      int n = 0;
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch:default", varRes, varValue );
+      for( n = 0; n < cmds && exit == False; n++ ) {
+        iONode cmd = NodeOp.getChild(l_default, n);
+        exit = __executeCmd(cmd, map, NULL, NULL);
+      }
+    }
+  }
+
+  return exit;
+}
+
+
 static Boolean __doIf(iONode nodeScript, iOMap map) {
   Boolean exit = False;
   const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
@@ -845,6 +888,9 @@ static void _run(const char* script, iOMap map) {
     else if( StrOp.equals( "if", NodeOp.getName(nodeScript) ) ) {
       __doIf(nodeScript, map);
     }
+    else if( StrOp.equals( "switch", NodeOp.getName(nodeScript) ) ) {
+      __doSwitch(nodeScript, map);
+    }
     else if( StrOp.equals( "xmlscript", NodeOp.getName(nodeScript) ) ) {
       Boolean exit = False;
       int cnt = NodeOp.getChildCnt(nodeScript);
@@ -855,6 +901,8 @@ static void _run(const char* script, iOMap map) {
           exit = __doForEach(cmd, map);
         else if( StrOp.equals( "if", NodeOp.getName(cmd) ) )
           exit = __doIf(cmd, map);
+        else if( StrOp.equals( "switch", NodeOp.getName(cmd) ) )
+          exit = __doSwitch(cmd, map);
         else
           exit = __executeCmd(cmd, map, NULL, NULL);
       }
