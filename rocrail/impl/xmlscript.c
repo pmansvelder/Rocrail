@@ -37,6 +37,8 @@
 #include "rocrail/public/action.h"
 #include "rocrail/public/operator.h"
 #include "rocrail/public/car.h"
+#include "rocrail/public/stage.h"
+#include "rocrail/public/seltab.h"
 
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
@@ -56,6 +58,8 @@
 #include "rocrail/wrapper/public/SysCmd.h"
 #include "rocrail/wrapper/public/Car.h"
 #include "rocrail/wrapper/public/AutoCmd.h"
+#include "rocrail/wrapper/public/Stage.h"
+#include "rocrail/wrapper/public/SelTab.h"
 
 
 #include "rocs/public/mem.h"
@@ -450,6 +454,26 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
       else {
         bk->cmd(bk, (iONode)NodeOp.base.clone(cmd));
       }
+    }
+    StrOp.free(idRes);
+  }
+
+  /* stage */
+  else if( StrOp.equals( wStage.name(), NodeOp.getName(cmd)) ) {
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOStage stage = ModelOp.getStage(model, idRes);
+    if( stage != NULL ) {
+      StageOp.cmd( (iIBlockBase)stage, (iONode)NodeOp.base.clone(cmd));
+    }
+    StrOp.free(idRes);
+  }
+
+  /* seltab */
+  else if( StrOp.equals( wSelTab.name(), NodeOp.getName(cmd)) ) {
+    char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
+    iOSelTab seltab = ModelOp.getSelectiontable(model, idRes);
+    if( seltab != NULL ) {
+      SelTabOp.cmd( (iIBlockBase)seltab, (iONode)NodeOp.base.clone(cmd));
     }
     StrOp.free(idRes);
   }
