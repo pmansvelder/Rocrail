@@ -185,7 +185,9 @@ BEGIN_EVENT_TABLE(PlanPanel, wxScrolledWindow)
   EVT_MENU( ME_PlanProps , PlanPanel::OnPanelProps )
   EVT_MENU( ME_PanelHelp , PlanPanel::OnPanelHelp )
   EVT_MENU( ME_PlanColor , PlanPanel::OnBackColor )
-  EVT_MENU( ME_ModProps , PlanPanel::OnModProps )
+  EVT_MENU( ME_TabLeft   , PlanPanel::onTabLeft )
+  EVT_MENU( ME_TabRight  , PlanPanel::onTabRight )
+  EVT_MENU( ME_ModProps  , PlanPanel::OnModProps )
   EVT_MENU( ME_AddPlan   , PlanPanel::OnAddPanel )
   EVT_MENU( ME_PanelSelect    , PlanPanel::OnSelect )
   EVT_MENU( ME_Paste    , PlanPanel::OnPaste )
@@ -1272,6 +1274,10 @@ void PlanPanel::OnPopup(wxMouseEvent& event) {
         menu.Append( ME_ModProps, wxGetApp().getMenu("modproperties") );
         menu.AppendSeparator();
       }
+      else {
+        menu.Append( ME_TabLeft, wxGetApp().getMenu("left") );
+        menu.Append( ME_TabRight, wxGetApp().getMenu("right") );
+      }
       menu.Append( ME_PlanColor, wxGetApp().getMenu("panelcolor") );
       menu.Append( ME_PlanProps, wxGetApp().getMenu("properties") );
       menu.Append( ME_PanelHelp, wxGetApp().getMenu("help") );
@@ -1293,6 +1299,27 @@ void PlanPanel::OnTimer(wxTimerEvent& event) {
 }
 
 
+void PlanPanel::onTabLeft( wxCommandEvent& event ) {
+  wxNotebook* parent = (wxNotebook*)m_Parent;
+  int idx = parent->FindPage(this);
+  if( idx != wxNOT_FOUND && idx > 0 ) {
+    parent->RemovePage(idx);
+    parent->InsertPage(idx-1, this, wxString(wZLevel.gettitle( m_zLevel ),wxConvUTF8));
+    parent->SetSelection(idx-1);
+  }
+}
+
+
+void PlanPanel::onTabRight( wxCommandEvent& event ) {
+  wxNotebook* parent = (wxNotebook*)m_Parent;
+  int idx = parent->FindPage(this);
+  int cnt = parent->GetPageCount();
+  if( idx != wxNOT_FOUND && (idx+1) < cnt ) {
+    parent->RemovePage(idx);
+    parent->InsertPage(idx+1, this, wxString(wZLevel.gettitle( m_zLevel ),wxConvUTF8));
+    parent->SetSelection(idx+1);
+  }
+}
 
 
 void PlanPanel::OnBackColor( wxCommandEvent& event ) {

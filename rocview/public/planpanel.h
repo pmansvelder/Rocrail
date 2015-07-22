@@ -80,6 +80,8 @@ public:
   void* GetItem( const char* key );
 
   void OnBackColor( wxCommandEvent& event );
+  void onTabLeft( wxCommandEvent& event );
+  void onTabRight( wxCommandEvent& event );
   void addItemAttr( iONode node );
   void modelEvent( iONode node );
   void reScale( double scale );
@@ -228,7 +230,9 @@ enum {
   ME_ModuleSouth,
   ME_ModuleWest,
   ME_PlanColor,
-  ME_TimerAlt
+  ME_TimerAlt,
+  ME_TabLeft,
+  ME_TabRight
 };
 
 
