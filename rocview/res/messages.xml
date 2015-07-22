@@ -31279,4 +31279,7 @@
     <it txt="Salva livello con nome" tip="Salvare livello in file separato"/>
     <ru txt="Сохранить уровень как..." tip="Сохранить уровень плана пути отдельным файлом"/>
   </Msg>
+  <Msg id="tabidx">
+    <en txt="Tab index"/>
+  </Msg>
 </Messages>
