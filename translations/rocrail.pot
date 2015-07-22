@@ -7937,3 +7937,9 @@ msgstr ""
 msgid "Save track plan level in a separate file."
 msgstr ""
 
+#. 
+# id="tabidx"
+#, c-format
+msgid "Tab index"
+msgstr ""
+
