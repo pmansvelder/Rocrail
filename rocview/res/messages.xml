@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
  Rocrail - Model Railroad Software
-
- Copyright (C) 2002-2015 Rob Versluis, Rocrail.net
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ Copyright (C) 2002 Robert Jan Versluis, Rocrail.net
+ All rights reserved
 -->
 <Messages>
   <Msg id="lang_nl">
@@ -7987,7 +7973,7 @@
     <bg txt="Мин. блок - влак Дължина (см)"/>
     <el txt="Ελάχ. μπλοκ - μήκος αμαξοστοιχίας (cm)"/>
     <hu txt="Min.térköz - vonat hossza (cm)"/>
-    <ru txt="Мин.значение превышения длины Блока над длиной Поезда"/>
+    <ru txt="Мин.значение превышения длины Блока над длиной Поезда(см)"/>
     <pt txt="Bloqueio minimo - comprimento comboio (cm)"/>
     <cs txt="Min. blok - délka vlaku (cm)"/>
     <ca txt="Longitud mínima del bloc - Tren (cm)"/>
@@ -12505,7 +12491,7 @@
     <bg txt="Deny Loco"/>
     <el txt="Απαγορ. Loco"/>
     <hu txt="Kizárt mozdonyok"/>
-    <ru txt="Запретить Loc"/>
+    <ru txt="Exclude"/>
     <pt txt="Negar locomotiva"/>
     <nb txt="Avslå lok"/>
     <ca txt="Rebutja la locomotora"/>
@@ -12535,7 +12521,7 @@
     <bg txt="Разреши Loco"/>
     <el txt="Επιτρέψτε Loco"/>
     <hu txt="Megengedett mozdonyok"/>
-    <ru txt="Разрешить Loc"/>
+    <ru txt="Include"/>
     <pt txt="Permitir locomotiva"/>
     <nb txt="Tillat lok"/>
     <ca txt="Permet la locomotora"/>
@@ -17781,7 +17767,7 @@
     <it txt="Operatore  composizione" tip="Finestra per il controllo operatore"/>
     <nl txt="Bestuurder" tip="Dialoog voor verkeersleider"/>
     <pt txt="Operador"/>
-    <ru txt="Оператор"/>
+    <ru txt="Оператор" tip="Dialog for operator control"/>
     <bs txt="Operator"/>
     <ca txt="Operador"/>
     <da txt="Operatør" tip="Dialog for operatør kontrol"/>
@@ -21447,7 +21433,7 @@
     <be txt="Паўза пры ініцыялізацыі блёку"/>
   </Msg>
   <Msg id="skipsetsg">
-    <en txt="Skip signal commands"  alttxt="Skip signal commands if already set" tip="Skip signal commands if already set"/>
+    <en txt="Skip signal commands" alttxt="Skip signal commands if already set" tip="Skip signal commands if already set"/>
     <cs txt="Přeskočit příkazy od signálu" tip="Přeskočit signál příkazů, pokud je již nastaven"/>
     <da txt="Oversping signalkommandoer" tip="Oversping signalkommandoer hvis de allerede er indstillet"/>
     <nl txt="Negeer  sein commando's" tip="Sla sein commando's over als het sein al geset is"/>
@@ -22252,7 +22238,7 @@
     <sr_latin txt="Dozvoli nastavak" tip="Dozvoli u kritičnim delovima nastavak u istom pravcu."/>
     <zh_CN txt="允许跟进" tip="允许在同一方向在危险区间进行跟进"/>
     <sl txt="Dovoli spremljanje" tip="Dovoli spremljanje kritičnega odseka v isti destinaciji."/>
-    <ru txt="Allow follow up" tip="Allow critical section follow up in same direction."/>
+    <ru txt="Разрешить следовать далее" tip="Allow critical section follow up in same direction."/>
     <da txt="Tillad opfølgning" tip="Tillad kritisk sektion opfølgning i samme retning"/>
     <pt_BR txt="Permitir acompanhamento" tip="Permitir acompanhamento de seção crítica na mesma direção."/>
     <sv txt="Tillåt uppföljning"/>
@@ -22640,7 +22626,7 @@
     <em_GB txt="Analyze" tip="Analyze track plan for generating routes."/>
     <em_AU txt="Analyze" tip="Analyze track plan for generating routes."/>
     <pt txt="Analisar"/>
-    <ru txt="Анализ плана" tip="Провести анализ плана пути, для генерирования маршрутов"/>
+    <ru txt="Анализ плана" tip="Анализировать план пути для создания маршрутов"/>
     <en_AU txt="Analyse" tip="Analyse track plan for generating routes."/>
     <es txt="Analizar" tip="Analizar mapa de vias para generar rutas"/>
     <it txt="Analyser" tip="Analizzare il tracciato per generare itinerari."/>
@@ -23722,7 +23708,7 @@
     <cs txt="Učit se"/>
     <zh_CN txt="学习"/>
     <sl txt="Nauči"/>
-    <ru txt="Learn"/>
+    <ru txt="Обучить"/>
     <da txt="Lær"/>
     <pt_BR txt="Aprender"/>
     <sv txt="Inlärning"/>
@@ -23745,7 +23731,7 @@
     <cs txt="Ukončit učení"/>
     <zh_CN txt="非学习"/>
     <sl txt="Pozabi"/>
-    <ru txt="Unlearn"/>
+    <ru txt="Отучить"/>
     <da txt="Aflær"/>
     <pt_BR txt="Desaprender"/>
     <en_GB txt="Unlearn"/>
@@ -25878,7 +25864,7 @@
     <sv txt="Analog."/>
     <zh_CN txt="模拟"/>
     <sl txt="Analogno"/>
-    <ru txt="Analog"/>
+    <ru txt="Аналог"/>
     <da txt="Analog"/>
     <pt_BR txt="Analógico"/>
     <en_GB txt="Analogue"/>
@@ -25923,7 +25909,7 @@
     <pl txt="Czujnik mocy"/>
     <zh_CN txt="电源传感器"/>
     <sl txt="Tipalo napajanja"/>
-    <ru txt="Power sensor"/>
+    <ru txt="Датчик питания"/>
     <pt_BR txt="Sensor de energia"/>
     <en_GB txt="Power sensor"/>
     <fi txt="Virta-anturi"/>
@@ -25968,7 +25954,7 @@
     <sv txt="Unikt ID."/>
     <zh_CN txt="惟一标识(ID)"/>
     <sl txt="UniqueID"/>
-    <ru txt="UniqueID"/>
+    <ru txt="Уникальный ID"/>
     <pt_BR txt="Identificador único"/>
     <en_GB txt="UniqueID"/>
     <fi txt="Yksilöllinen ID"/>
@@ -26490,7 +26476,7 @@
     <sr_latin txt="Karakteristike"/>
     <zh_CN txt="特点"/>
     <sl txt="Možnosti"/>
-    <ru txt="Features"/>
+    <ru txt="Функции"/>
     <es txt="Características"/>
     <pt_BR txt="Características"/>
     <sv txt="Funktioner"/>
@@ -26513,7 +26499,7 @@
     <sv txt="Portinställningar."/>
     <zh_CN txt="端口设置"/>
     <sl txt="Nastavitve vrat"/>
-    <ru txt="Port setup"/>
+    <ru txt="Настройка портов"/>
     <pt_BR txt="Configuração de porta"/>
     <en_GB txt="Port setup"/>
     <fi txt="Portin asetukset"/>
@@ -26535,7 +26521,7 @@
     <sv txt="Anslutningskurva Höger."/>
     <zh_CN txt="连接右曲线"/>
     <sl txt="Desni spojnik zavoja"/>
-    <ru txt="Connector curve right"/>
+    <ru txt="Соединитель вправо"/>
     <pt_BR txt="Conector de curva para direita"/>
     <en_GB txt="Connector curve right"/>
     <fi txt="Kaartuva yhdistin oikealle"/>
@@ -26555,7 +26541,7 @@
     <sv txt="Anslutningskurva Vänster."/>
     <zh_CN txt="连接左曲线"/>
     <sl txt="Levi spojnik zavoja"/>
-    <ru txt="Connector curve left"/>
+    <ru txt="Соединитель влево"/>
     <pt_BR txt="Conector de curva para esquerda"/>
     <en_GB txt="Connector curve left"/>
     <fi txt="Kaartuva yhdistin vasemmalle"/>
@@ -26691,7 +26677,7 @@
     <nl txt="Start tour"/>
     <zh_CN txt="开始教程"/>
     <sl txt="Začetna tura"/>
-    <ru txt="Startup tour"/>
+    <ru txt="Запуск тура"/>
     <pt_BR txt="Viagem de inicialização"/>
     <sv txt="Startrutt"/>
     <en_GB txt="Startup tour"/>
@@ -26749,7 +26735,7 @@
     <de txt="Nothalt bei Geisterzug"/>
     <nl txt="Noodstop bij spook detectie"/>
     <sl txt="EBreak v primeru navideznega vlaka"/>
-    <ru txt="EBreak at ghost train"/>
+    <ru txt="Экстренная остановка при призраке поезда"/>
     <pt_BR txt="Parada de emergência se houver trem desgovernado"/>
     <sv txt="Nödstopp vid spöktåg"/>
     <en_GB txt="EBreak at ghost train"/>
@@ -26981,7 +26967,7 @@
     <zh_CN txt="加入传感器"/>
     <sl txt="Vhodno tipalo"/>
     <sr_latin txt="Ulazni sensor"/>
-    <ru txt="Enter sensor"/>
+    <ru txt="Входной датчик"/>
     <pt_BR txt="Entrar sensor"/>
     <en_GB txt="Enter sensor"/>
     <fi txt="Enter-anturi"/>
@@ -27001,7 +26987,7 @@
     <sl txt="Vhodni signal"/>
     <zh_CN txt="投入信号"/>
     <sr_latin txt="Ulazni signal"/>
-    <ru txt="Enter signal"/>
+    <ru txt="Входной сигнал"/>
     <pt_BR txt="Sinal de entrada"/>
     <en_GB txt="Enter signal"/>
     <fi txt="Tulo-opastin"/>
@@ -27020,7 +27006,7 @@
     <sl txt="Izhodni signal"/>
     <zh_CN txt="退出信号"/>
     <sr_latin txt="Izlazni signal"/>
-    <ru txt="Exit signal"/>
+    <ru txt="Выходной сигнал"/>
     <pt_BR txt="Sinal de saída"/>
     <en_GB txt="Exit signal"/>
     <fi txt="Lähtöopastin"/>
@@ -27097,7 +27083,7 @@
     <zh_CN txt="打开车辆文件"/>
     <sl txt="Odpri datoteko lokomotive"/>
     <sr_latin txt="Otvori dokument lokomotive"/>
-    <ru txt="Open locomotive file"/>
+    <ru txt="Открыть файл локомотивов"/>
     <pt_BR txt="Abrir arquivo da locomotiva"/>
     <en_GB txt="Open locomotive file"/>
     <fi txt="Avaa veturitiedosto"/>
@@ -27116,7 +27102,7 @@
     <zh_CN txt="打开占用文件"/>
     <sl txt="Odpri datoteka zasedenosti"/>
     <sr_latin txt="Otvori dokument zauzeća"/>
-    <ru txt="Open occupancy file"/>
+    <ru txt="Открыть файл занятости"/>
     <pt_BR txt="Abrir arquivo de ocupação"/>
     <en_GB txt="Open occupancy file"/>
     <sv txt="Öppna beläggningsfil"/>
@@ -27174,7 +27160,7 @@
     <zh_CN txt="指令记录"/>
     <sl txt="Snemalnik ukazov"/>
     <sr_latin txt="Snimač komandi"/>
-    <ru txt="Command recorder"/>
+    <ru txt="Рекордер команд"/>
     <pt_BR txt="Gravador de comandos"/>
     <en_GB txt="Command recorder"/>
     <sv txt="Kommandoinspelare"/>
@@ -27270,7 +27256,7 @@
     <zh_CN txt="执行区间事件"/>
     <sl txt="Obdelaj dogodke odseka"/>
     <sr_latin txt="Obraditi događaje u bloku"/>
-    <ru txt="Process block events"/>
+    <ru txt="Обработка событий блока"/>
     <pt_BR txt="Processar eventos do bloco"/>
     <sv txt="Behandla blockhändelser"/>
     <en_GB txt="Process block events"/>
@@ -27289,7 +27275,7 @@
     <zh_CN txt="执行线路事件"/>
     <sl txt="Obdelaj dogodke poti"/>
     <sr_latin txt="Obraditi događaje rute"/>
-    <ru txt="Process route events"/>
+    <ru txt="Обработка событий маршрута"/>
     <pt_BR txt="Processar eventos da rota"/>
     <sv txt="Behandla rutthändelser"/>
     <en_GB txt="Process route events"/>
@@ -27446,7 +27432,7 @@
     <it txt="Questa azione libererà tutte le sezioni riservate. Continuare?"/>
     <sl txt="To dejanje bo sprostilo vse rezervacije odsekov. Nadaljujem?"/>
     <sr_latin txt="Ova akcija će osloboditi sve rezervacije sekcija. Izvrši?"/>
-    <ru txt="Это действие освободит все резервированные секции. Продолжить?"/>
+    <ru txt="Это действие освободит все зарезервированные секции. Продолжить?"/>
     <pt_BR txt="Esta ação vai liberar todas as reservas da seção. Prosseguir?"/>
     <en_GB txt="This action will free all section reservations. Proceed?"/>
     <sv txt="Denna åtgärd kommer att frigöra alla sektionsreservationer. Vill du fortsätta?"/>
@@ -27523,7 +27509,7 @@
     <nl txt="Fabrikant"/>
     <sr_latin txt="Proizvođač"/>
     <sl txt="Prodajalec"/>
-    <ru txt="Vendor"/>
+    <ru txt="Производитель"/>
     <pt_BR txt="Fornecedor"/>
     <en_GB txt="Vendor"/>
     <sv txt="Tillverkare"/>
@@ -27562,7 +27548,7 @@
     <nl txt="Klasse"/>
     <sr_latin txt="Razred"/>
     <sl txt="Razred"/>
-    <ru txt="Class"/>
+    <ru txt="Класс"/>
     <es txt="Clase"/>
     <sv txt="Klass"/>
     <pt_BR txt="Classe"/>
@@ -27641,7 +27627,7 @@
     <nl txt="Macro overzicht"/>
     <sr_latin txt="Makro mapa"/>
     <sl txt="Karta makrov"/>
-    <ru txt="Macro Map"/>
+    <ru txt="Карта Макросов"/>
     <pt_BR txt="Mapa Macro"/>
     <en_GB txt="Macro Map"/>
     <fi txt="Makrokartta"/>
@@ -27753,7 +27739,7 @@
     <de txt="Rückmelder-Monitor"/>
     <it txt="Controllo sensori"/>
     <sl txt="Spremljanje tipal"/>
-    <ru txt="Мониторинг датчикрв"/>
+    <ru txt="Мониторинг датчиков"/>
     <es txt="Control del sensor"/>
     <pt_BR txt="Monitor de sensores"/>
     <en_GB txt="Sensor monitor"/>
@@ -27811,7 +27797,7 @@
     <de txt="gezählte Wagen"/>
     <it txt="Carri contati"/>
     <sl txt="Prešteta tirna vozila"/>
-    <ru txt="Counted cars"/>
+    <ru txt="Посчитанные вагоны"/>
     <pt_BR txt="Vagões contabilizados"/>
     <sv txt="Räknade vagnar"/>
     <en_GB txt="Counted cars"/>
@@ -28407,7 +28393,7 @@
     <it txt="Mappa nodo"/>
     <nl txt="Knooppunten"/>
     <pt_BR txt="Mapa de nós"/>
-    <ru txt="Nodemap"/>
+    <ru txt="Карта узлов"/>
     <sl txt="Karta vozlišč"/>
     <sr_latin txt="Mapa čvorišta"/>
     <de txt="Knoten-Baum"/>
@@ -28694,6 +28680,7 @@
     <pl txt="Wykryj"/>
     <fr txt="Découvrir"/>
     <be txt="Знайсьці"/>
+    <ru txt="Discover"/>
   </Msg>
   <Msg id="bind">
     <en txt="Bind"/>
@@ -28710,6 +28697,7 @@
     <en_CA txt="Bind"/>
     <fr txt="Bind"/>
     <be txt="Зьвязаць"/>
+    <ru txt="Bind"/>
   </Msg>
   <Msg id="uidname">
     <en txt="UID-Name"/>
@@ -28743,6 +28731,7 @@
     <pl txt="Wykrywanie I2C"/>
     <fr txt="I2C détection"/>
     <be txt="Выяўленьне I2C"/>
+    <ru txt="I2C Detect"/>
   </Msg>
   <Msg id="udpports">
     <en txt="UDP Ports"/>
@@ -28937,6 +28926,7 @@
     <fi txt="LataaSyöte"/>
     <fr txt="Charger"/>
     <be txt="Загрузіць"/>
+    <ru txt="Load"/>
   </Msg>
   <Msg id="input">
     <en txt="Input"/>
@@ -29028,6 +29018,7 @@
     <fr txt="Sujet"/>
     <sv txt="Ämne"/>
     <be txt="Тэма"/>
+    <ru txt="Subject"/>
   </Msg>
   <Msg id="nrcars">
     <en txt="Nr. of cars"/>
@@ -29083,6 +29074,7 @@
     <fr txt="Limites des détecteurs"/>
     <sv txt="Sensoravstånd"/>
     <be txt="Дыяпазон чуйніка"/>
+    <ru txt="Sensor range"/>
   </Msg>
   <Msg id="gridfontsizeadjust">
     <en txt="Grid fontsize adjust"/>
@@ -29132,6 +29124,7 @@
     <zh_CN txt="状况报告"/>
     <fi txt="Raportoi tila"/>
     <be txt="Паведаміць стан"/>
+    <ru txt="Report state"/>
   </Msg>
   <Msg id="digital">
     <en txt="Digital"/>
@@ -29148,6 +29141,7 @@
     <fi txt="Digitaalinen"/>
     <pl txt="Cyfrowy"/>
     <be txt="Лічбавы"/>
+    <ru txt="Цифра"/>
   </Msg>
   <Msg id="stopatin4gomanual">
     <en txt="Stop at IN for half automatic mode"/>
@@ -29211,6 +29205,7 @@
     <fi txt="Käytä identifieriä asettaaksesi raideosuudelle"/>
     <sv txt="Använd identifierare till block"/>
     <be txt="Ужываць ідэнтыфікатар для прызначэньня ў блёку"/>
+    <ru txt="Использовать Идентификатор для установки в блоке"/>
   </Msg>
   <Msg id="stagetable" dialog="true">
     <en txt="Staging block table" alttxt="Staging Blocks" tip="Staging block table"/>
@@ -29241,6 +29236,7 @@
     <fi txt="Muut"/>
     <sv txt="Övriga"/>
     <be txt="Іншыя"/>
+    <ru txt="Другое"/>
   </Msg>
   <Msg id="nrtracefiles">
     <en txt="Number of trace files"/>
@@ -29402,6 +29398,7 @@
     <fr txt="Bus %d long"/>
     <fi txt="Väylän %d pituus"/>
     <be txt="Даўжыня шыны %d"/>
+    <ru txt="Длина %d шины"/>
   </Msg>
   <Msg id="speedometer">
     <en txt="Speedometer"/>
@@ -29444,6 +29441,7 @@
     <fr txt="Battement de coeur"/>
     <fi txt="Tilasyke"/>
     <be txt="Тактавы імпульс"/>
+    <ru txt="Heartbeat"/>
   </Msg>
   <Msg id="tolerance">
     <en txt="Tolerance"/>
@@ -29506,6 +29504,7 @@
     <en_GB txt="Enable communication"/>
     <fi txt="Laita kommunikointi päälle"/>
     <be txt="Дазволіць перадачу дадзеных"/>
+    <ru txt="Разрешить соединение с контроллером"/>
   </Msg>
   <Msg id="saveplan">
     <en txt="The changes will be saved."/>
@@ -29563,6 +29562,7 @@
     <sr_latin txt="Set./Reset BinState-a sa Enter/Alt+Enter"/>
     <fi txt="Aseta/Resetoi BinTila painamalla Enter/Alt+Enter"/>
     <be txt="Задаць/Скінуць BinState націскам Enter/Alt+Enter."/>
+    <ru txt="Установить/Сбросить BinState при вводе Enter/Alt+Enter."/>
   </Msg>
   <Msg id="track_straight">
     <en txt="Straight track"/>
@@ -30162,6 +30162,7 @@
     <fi txt="Modulin numero"/>
     <sv txt="Modulnummer"/>
     <be txt="Нумар модуля"/>
+    <ru txt="Количество модулей"/>
   </Msg>
   <Msg id="newaddress">
     <en txt="New address"/>
@@ -30234,6 +30235,7 @@
     <en_GB txt="Alt"/>
     <sv txt="Alt"/>
     <be txt="Alt"/>
+    <ru txt="Alt"/>
   </Msg>
   <Msg id="ctrl">
     <en txt="Ctrl"/>
@@ -30248,6 +30250,7 @@
     <en_GB txt="Ctrl"/>
     <sv txt="Ctrl"/>
     <be txt="Ctrl"/>
+    <ru txt="Ctrl"/>
   </Msg>
   <Msg id="keycode">
     <en txt="Key code"/>
@@ -30261,6 +30264,7 @@
     <fi txt="Avainkoodi"/>
     <en_GB txt="Key code"/>
     <be txt="Код клявішы"/>
+    <ru txt="Key code"/>
   </Msg>
   <Msg id="modifier">
     <en txt="Modifier"/>
@@ -30290,6 +30294,7 @@
     <fi txt="Näytä kulkutiet vaihteissa"/>
     <sv txt="Visa rutter i växlar"/>
     <be txt="Паказваць маршруты на стрэлках"/>
+    <ru txt="Show routes on switches"/>
   </Msg>
   <Msg id="userandomrate">
     <en txt="Use random block rate"/>
@@ -30303,6 +30308,7 @@
     <sr_latin txt="Koristi slučajni izbor bloka"/>
     <fi txt="Käytä satunnaista kulkuteiden tasoa"/>
     <be txt="Ужываць ступені выпадковасьці блёкаў"/>
+    <ru txt="Использовать случайный рейтинг блока"/>
   </Msg>
   <Msg id="randomrate">
     <en txt="Random rate"/>
@@ -30316,6 +30322,7 @@
     <sr_latin txt="Slučajni izbor"/>
     <fi txt="Satunnainen taso"/>
     <be txt="Ступень выпадковасьці"/>
+    <ru txt="Случайный рейтинг"/>
   </Msg>
   <Msg id="variabletable" dialog="true">
     <en txt="Variable table" alttxt="Variables" tip="Variable table"/>
@@ -30343,6 +30350,7 @@
     <fr txt="Sous-identifiant"/>
     <fi txt="Alitunniste (ID)"/>
     <be txt="Пад-ID"/>
+    <ru txt="Sub-ID"/>
   </Msg>
   <Msg id="binary">
     <en txt="Binary"/>
@@ -30357,6 +30365,7 @@
     <fi txt="Binääri"/>
     <sv txt="Binär"/>
     <be txt="Бiнарнае"/>
+    <ru txt="Binary"/>
   </Msg>
   <Msg id="group">
     <en txt="Group"/>
@@ -30383,6 +30392,7 @@
     <en_GB txt="Input field"/>
     <fi txt="Syöte"/>
     <be txt="Поле ўводу"/>
+    <ru txt="Input field"/>
   </Msg>
   <Msg id="place">
     <en txt="Location"/>
@@ -30411,6 +30421,7 @@
     <fi txt="V0 vaihtaessa"/>
     <fr txt="V0 lors du changement de sens"/>
     <be txt="V0 пры зьмене кірунку"/>
+    <ru txt="Обнулить скорость при перестановке"/>
   </Msg>
   <Msg id="swapstraight">
     <en txt="Swap straight"/>
@@ -30422,6 +30433,7 @@
     <sr_latin txt="Zameni pravo"/>
     <fi txt="Vaihda suoraan"/>
     <be txt="Інвэртаваць наўпрост"/>
+    <ru txt="Swap straight"/>
   </Msg>
   <Msg id="freeblocks">
     <en txt="Free blocks"/>
@@ -30435,6 +30447,7 @@
     <fi txt="Vapaat raideosuudet"/>
     <sv txt="Lediga block"/>
     <be txt="Свабодныя блёкі"/>
+    <ru txt="Освободить блоки"/>
   </Msg>
   <Msg id="modroutes">
     <en txt="Module routes"/>
@@ -30448,6 +30461,7 @@
     <it txt="Itinerari modulo"/>
     <fr txt="Itinéraires du module"/>
     <be txt="Маршруты для модуляў"/>
+    <ru txt="Модульные маршруты"/>
   </Msg>
   <Msg id="savemodules">
     <en txt="Save modules"/>
@@ -30461,6 +30475,7 @@
     <it txt="Salvare moduli"/>
     <fr txt="Enregistrer les modules"/>
     <be txt="Захаваць модулі"/>
+    <ru txt="Сохранить модули"/>
   </Msg>
   <Msg id="stopclockatpoweroff">
     <en txt="Stop clock at power off"/>
@@ -30474,6 +30489,7 @@
     <sv txt="Stanna klockan vid strömlöst"/>
     <fr txt="Arrêter l’horloge lorsque l'alimentation est coupée"/>
     <be txt="Спыніць гадзіньнік пры вымкнутым сілкаваньні"/>
+    <ru txt="Остановить время при выключении"/>
   </Msg>
   <Msg id="showtrainidinblock">
     <en txt="Show train ID in block"/>
@@ -30487,6 +30503,7 @@
     <sv txt="Visa tåg-ID i block"/>
     <fr txt="Afficher l'ID du train dans le bloc"/>
     <be txt="Паказваць ID цягніка ў блёку"/>
+    <ru txt="Показывать ID поезда в блоке"/>
   </Msg>
   <Msg id="sensormonitorauto">
     <en txt="Sensor monitor in automatic mode"/>
@@ -30522,7 +30539,7 @@
     <it txt="Meteo" tip="Impostare meteo"/>
     <nl txt="Weer" tip="Weer instellingen"/>
     <sr_latin txt="Vremenske prilike" tip="Podešavanje vremenskih prilika"/>
-    <ru txt="Погода"/>
+    <ru txt="Время суток" tip="Настройка времени суток"/>
     <sl txt="Vreme" tip="Nastavitev vremena"/>
     <sv txt="Väder" tip="Väderinställningar"/>
     <pt_BR txt="Condições do tempo" tip="Configuração das condições do tempo"/>
@@ -30609,6 +30626,7 @@
     <sl txt="Nadzor vozlišč"/>
     <pt_BR txt="Monitorar nós"/>
     <be txt="Назіраць за вузламі"/>
+    <ru txt="Watch nodes"/>
   </Msg>
   <Msg id="night">
     <en txt="Night"/>
@@ -30650,6 +30668,7 @@
     <pt_BR txt="Cores (RGB)"/>
     <fr txt="RVB"/>
     <be txt="RGB"/>
+    <ru txt="RGB"/>
   </Msg>
   <Msg id="slidingdaylight">
     <en txt="Sliding daylight"/>
@@ -30662,6 +30681,7 @@
     <pt_BR txt="Regulagem de cores do dia"/>
     <fr txt="Glissement de la lumière du jour"/>
     <be txt="Зьмена сьвятла з цягам дня"/>
+    <ru txt="Sliding daylight"/>
   </Msg>
   <Msg id="colorsliding">
     <en txt="Color sliding"/>
@@ -30673,6 +30693,7 @@
     <sr_latin txt="Podešavanje boje"/>
     <pt_BR txt="Regulagem de cores"/>
     <be txt="Пераход у/з поўдзень/ню"/>
+    <ru txt="Color sliding"/>
   </Msg>
   <Msg id="noon">
     <en txt="Noon"/>
@@ -30686,6 +30707,7 @@
     <pt_BR txt="Meio-dia"/>
     <fr txt="Midi"/>
     <be txt="Поўдзень"/>
+    <ru txt="Полдень"/>
   </Msg>
   <Msg id="blue">
     <en txt="blue"/>
@@ -30699,6 +30721,7 @@
     <pt_BR txt="azul"/>
     <fr txt="bleu"/>
     <be txt="сіні"/>
+    <ru txt="blue"/>
   </Msg>
   <Msg id="dim">
     <en txt="Dim"/>
@@ -30711,6 +30734,7 @@
     <sv txt="Dimmra"/>
     <pt_BR txt="Diminuir"/>
     <be txt="Зацямненьне"/>
+    <ru txt="Dim"/>
   </Msg>
   <Msg id="redirecttomaster">
     <en txt="Redirect slave commands to the master loco"/>
@@ -30722,6 +30746,7 @@
     <it txt="Reindirizza i comandi slave alla loco principale"/>
     <pt_BR txt="Redirecionar comandos secundários para locomotiva principal"/>
     <be txt="Перанакіроўваць каманды для падпарадкаваных вядучаму лякаматыву"/>
+    <ru txt="Перенаправлять Slave-команды на основной лок в составе"/>
   </Msg>
   <Msg id="nightsliding">
     <en txt="Night sliding"/>
@@ -30733,6 +30758,7 @@
     <sr_latin txt="Podešavanje noći"/>
     <pt_BR txt="Regulagem de cores da noite"/>
     <be txt="Пераход у ноч"/>
+    <ru txt="Night sliding"/>
   </Msg>
   <Msg id="search">
     <en txt="Search"/>
@@ -30746,6 +30772,7 @@
     <pt_BR txt="Pesquisar"/>
     <fr txt="Chercher"/>
     <be txt="Шукаць"/>
+    <ru txt="Поиск"/>
   </Msg>
   <Msg id="shutdownonexit">
     <en txt="Shutdown on exit"/>
@@ -30759,6 +30786,7 @@
     <fr txt="Eteindre lors de la sortie"/>
     <be txt="Завяршэньне працы пры выйсьці"/>
     <it txt="Spegnere all'uscita"/>
+    <ru txt="Выключать при выходе"/>
   </Msg>
   <Msg id="milliseconds">
     <en txt="ms"/>
@@ -30772,6 +30800,7 @@
     <fr txt="ms"/>
     <sv txt="ms"/>
     <be txt="мс"/>
+    <ru txt="ms"/>
   </Msg>
   <Msg id="devicechannels">
     <en txt="Device channels"/>
@@ -30783,6 +30812,7 @@
     <en_GB txt="Device channels"/>
     <it txt="Canali dispositivo"/>
     <be txt="Каналы прылады"/>
+    <ru txt="Device channels"/>
   </Msg>
   <Msg id="generatein">
     <en txt="Generate IN event"/>
@@ -30809,6 +30839,7 @@
     <sr_latin txt="Učestalost prikaza"/>
     <be txt="Чашчыня абнаўленьня"/>
     <sv txt="Bildfrekvens"/>
+    <ru txt="Frame rate"/>
   </Msg>
   <Msg id="blockstate_signal">
     <en txt="Block state"/>
@@ -30845,6 +30876,7 @@
     <sl txt="Odboj"/>
     <sr_latin txt="Skok"/>
     <be txt="Адскок"/>
+    <ru txt="Bounce"/>
   </Msg>
   <Msg id="colortable">
     <en txt="Color table"/>
@@ -30858,6 +30890,7 @@
     <fr txt="Table des couleurs"/>
     <sv txt="Färgtabell"/>
     <be txt="Табліца колераў"/>
+    <ru txt="Цвета"/>
   </Msg>
   <Msg id="saturation">
     <en txt="Saturation"/>
@@ -30870,6 +30903,7 @@
     <it txt="Saturazione"/>
     <fr txt="Saturation"/>
     <be txt="Насычанасьць"/>
+    <ru txt="Насыщенность"/>
   </Msg>
   <Msg id="available">
     <en txt="Available"/>
@@ -30883,6 +30917,7 @@
     <fr txt="Disponible"/>
     <sv txt="Tillgänglig"/>
     <be txt="Даступны"/>
+    <ru txt="Available"/>
   </Msg>
   <Msg id="bridge">
     <en txt="Bridge"/>
@@ -30906,6 +30941,7 @@
     <en_GB txt="Map white"/>
     <sr_latin txt="Karta bele boje"/>
     <be txt="Пераўтвараць белы ў RGB"/>
+    <ru txt="Map white"/>
   </Msg>
   <Msg id="selected">
     <en txt="selected"/>
@@ -30919,6 +30955,7 @@
     <sv txt="vald"/>
     <be txt="вылучаны"/>
     <it txt="selezionato"/>
+    <ru txt="selected"/>
   </Msg>
   <Msg id="deselected">
     <en txt="deselected"/>
@@ -30932,6 +30969,7 @@
     <sv txt="avmarkerad"/>
     <be txt="зьняты"/>
     <it txt="deselezionato"/>
+    <ru txt="deselected"/>
   </Msg>
   <Msg id="offatshutdown">
     <en txt="Off at shutdown"/>
@@ -30944,6 +30982,7 @@
     <fr txt="Eteint lors de l'arrêt"/>
     <be txt="Вымк. пры завяршэньні працы"/>
     <it txt="Off allo spegnimento"/>
+    <ru txt="Off at shutdown"/>
   </Msg>
   <Msg id="substate">
     <en txt="Sub state"/>
@@ -30955,6 +30994,7 @@
     <sr_latin txt="Niži nivo"/>
     <fr txt="Sous-état"/>
     <be txt="Падстан"/>
+    <ru txt="Sub state"/>
   </Msg>
   <Msg id="v0onebreak">
     <en txt="V 0 on emergency break"/>
@@ -31007,6 +31047,7 @@
     <sv txt="slavblock"/>
     <be txt="Падпарадкаваныя блёкі"/>
     <it txt="Blocchi slave"/>
+    <ru txt="Slave-блоки"/>
   </Msg>
   <Msg id="texttable" dialog="true">
     <en txt="Text table" alttxt="Text" tip="Text table"/>
@@ -31018,6 +31059,8 @@
     <sr_latin txt="Tabela teksta"/>
     <sv txt="Texttabell"/>
     <be txt="Тэксты"/>
+    <it txt="Testo"/>
+    <ru txt="Текст"/>
   </Msg>
   <Msg id="decelerate">
     <en txt="Decelerate"/>
@@ -31031,6 +31074,7 @@
     <be txt="Запаволіць"/>
     <en_GB txt="Decelerate"/>
     <it txt="Decelerare"/>
+    <ru txt="Замедление"/>
   </Msg>
   <Msg id="shuntingdiv">
     <en txt="Shunting divider"/>
@@ -31041,6 +31085,7 @@
     <sr_latin txt="Ranžirni razdelnik"/>
     <be txt="Манеўровы дзельнік"/>
     <en_GB txt="Shunting divider"/>
+    <ru txt="Маневровый делитель"/>
   </Msg>
   <Msg id="allconditions">
     <en txt="All conditions must be true"/>
@@ -31052,6 +31097,7 @@
     <be txt="Усе ўмовы мусяць выконвацца (быць true)"/>
     <en_GB txt="All conditions must be true"/>
     <it txt="Tutte le condizioni devono essere vere"/>
+    <ru txt="Все условия должны быть истинными"/>
   </Msg>
   <Msg id="mustbetrue">
     <en txt="Must be true"/>
@@ -31063,6 +31109,7 @@
     <be txt="Мусяць быць true"/>
     <en_GB txt="Must be true"/>
     <it txt="Deve essere vero"/>
+    <ru txt="Должно быть истинным"/>
   </Msg>
   <Msg id="showpending">
     <en txt="Show pending switches" tip="Show pending switches with a red background color."/>
@@ -31073,6 +31120,8 @@
     <pt_BR txt="Exibir desvios pendentes" tip="Exibir desvios pendentes com a cor de fundo vermelha."/>
     <sl txt="Prikaži stikala v teku" tip="Prikaži stikala v teku z rdečim ozadjem"/>
     <sr_latin txt="Prikaz nerešenih skretnica" tip="Prikaz nerešenih skretnica sa crvenom pozadinom"/>
+    <it txt="Mostrare deviatoi in attesa" tip="Mostrare deviatoi con sfondo rosso"/>
+    <ru txt="Показать ожидающие стрелки" tip="Показать ожидающие стрелки на красном фоне."/>
   </Msg>
   <Msg id="track_dcurve">
     <en txt="Double curved track"/>
@@ -31083,6 +31132,7 @@
     <pt_BR txt="Trilho duplo em curva"/>
     <sl txt="Dvojno zavita proga"/>
     <sr_latin txt="Dupla kriva šina"/>
+    <ru txt="Двойной радиусный путь"/>
   </Msg>
   <Msg id="road_dcurve">
     <en txt="Double curved road"/>
@@ -31093,6 +31143,7 @@
     <pt_BR txt="Estrada dupla em curva"/>
     <sl txt="Dvojno zavita cesta"/>
     <sr_latin txt="Dupla krivina puta"/>
+    <ru txt="Двойная радиусная дорога"/>
   </Msg>
   <Msg id="track_tunnel">
     <en txt="Tunnel track"/>
@@ -31105,6 +31156,7 @@
     <sr_latin txt="Tunel"/>
     <sv txt="Tunnelspår"/>
     <it txt="Galleria"/>
+    <ru txt="Тоннель"/>
   </Msg>
   <Msg id="statistic">
     <en txt="Statistic"/>
@@ -31115,6 +31167,7 @@
     <sr_latin txt="Statistički"/>
     <de txt="Statistik"/>
     <it txt="Statistico"/>
+    <ru txt="Statistic"/>
   </Msg>
   <Msg id="signalquality">
     <en txt="Signal quality"/>
@@ -31125,6 +31178,7 @@
     <sr_latin txt="Kvalitet signala"/>
     <de txt="Signal-Qualität"/>
     <it txt="Qualità segnale"/>
+    <ru txt="Signal quality"/>
   </Msg>
   <Msg id="border">
     <en txt="Border"/>
@@ -31135,6 +31189,7 @@
     <sr_latin txt="Granica"/>
     <de txt="Rahmen"/>
     <it txt="Confine"/>
+    <ru txt="Border"/>
   </Msg>
   <Msg id="mdate">
     <en txt="M-Date" tip="Last serviced date."/>
@@ -31145,6 +31200,7 @@
     <sr_latin txt="M-datum" tip="Datum poslednjeg pregleda."/>
     <be txt="Дата абсл." tip="Апошняя дата абслугоўваньня"/>
     <it txt="M-Date"/>
+    <ru txt="M-Date" tip="Последняя дата обслуживания"/>
   </Msg>
   <Msg id="aspectnames">
     <en txt="Aspect names"/>
@@ -31155,6 +31211,7 @@
     <sr_latin txt="Odnos imena"/>
     <be txt="Назвы ліхтароў"/>
     <it txt="Nomi aspetti"/>
+    <ru txt="Название аспекта"/>
   </Msg>
   <Msg id="atfree">
     <en txt="At free"/>
@@ -31164,6 +31221,8 @@
     <sl txt="Ob prostem"/>
     <sr_latin txt="Besplatno"/>
     <be txt="Па звальненьні"/>
+    <it txt="Al free"/>
+    <ru txt="At free"/>
   </Msg>
   <Msg id="atcommand">
     <en txt="At command"/>
@@ -31173,6 +31232,8 @@
     <sl txt="Ob ukazu"/>
     <sr_latin txt="Po komandi"/>
     <be txt="Па камандзе"/>
+    <it txt="Al comando"/>
+    <ru txt="At command"/>
   </Msg>
   <Msg id="atevent">
     <en txt="At event"/>
@@ -31182,6 +31243,8 @@
     <sl txt="Ob dogodku"/>
     <sr_latin txt="U slučaju"/>
     <be txt="Па здарэньні"/>
+    <it txt="All'evento"/>
+    <ru txt="At event"/>
   </Msg>
   <Msg id="activated">
     <en txt="Activated"/>
@@ -31192,6 +31255,7 @@
     <be txt="Актывізаваны"/>
     <sr_latin txt="Aktiviran"/>
     <it txt="Attivato"/>
+    <ru txt="Activated"/>
   </Msg>
   <Msg id="resetplacing">
     <en txt="Reset placing and direction"/>
@@ -31201,6 +31265,8 @@
     <sl txt="Ponastavi položaj in smer"/>
     <be txt="Скінуць месцаваньне  і напрамак"/>
     <sr_latin txt="Poništi postavku i pravac"/>
+    <it txt="Resettare orientamento e direzione"/>
+    <ru txt="Сброс размещения и направления"/>
   </Msg>
   <Msg id="savelevelas" dialog="true">
     <en txt="Save level as" tip="Save track plan level in a separate file."/>
@@ -31210,5 +31276,7 @@
     <sr_latin txt="Snimi nivo kao" tip="Snimi nivo šina u poseban fajl"/>
     <be txt="Захаваць узровень як" tip="Захаваць узровень рэйкавага пляну ў асобным файле."/>
     <de txt="Gleisplan-Ebene speichern als" tip="Gleisplan-Ebene in separater Datei speichern"/>
+    <it txt="Salva livello con nome" tip="Salvare livello in file separato"/>
+    <ru txt="Сохранить уровень как..." tip="Сохранить уровень плана пути отдельным файлом"/>
   </Msg>
 </Messages>
