@@ -1299,13 +1299,44 @@ void PlanPanel::OnTimer(wxTimerEvent& event) {
 }
 
 
+void PlanPanel::onModifyTabIdx() {
+  wxNotebook* parent = (wxNotebook*)m_Parent;
+  int idx = parent->FindPage(this);
+  wZLevel.settabidx( m_zLevel, idx );
+  if( !wxGetApp().isStayOffline() ) {
+    /* Notify RocRail. */
+    iONode cmd = NodeOp.inst( wModelCmd.name(), NULL, ELEMENT_NODE );
+    wModelCmd.setcmd( cmd, wModelCmd.modify );
+    wZLevel.settabidx(m_zLevel, idx);
+    NodeOp.addChild( cmd, (iONode)NodeOp.base.clone( m_zLevel ) );
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+  }
+}
+
+void PlanPanel::moveToTabIdx() {
+  wxNotebook* parent = (wxNotebook*)m_Parent;
+  int idx = parent->FindPage(this);
+  if( wZLevel.gettabidx(m_zLevel) != idx && wZLevel.gettabidx(m_zLevel) != -1 ) {
+    parent->RemovePage(idx);
+    parent->InsertPage(wZLevel.gettabidx(m_zLevel), this, wxString(wZLevel.gettitle( m_zLevel ),wxConvUTF8));
+  }
+}
+
+
 void PlanPanel::onTabLeft( wxCommandEvent& event ) {
   wxNotebook* parent = (wxNotebook*)m_Parent;
   int idx = parent->FindPage(this);
+  int cnt = parent->GetPageCount();
   if( idx != wxNOT_FOUND && idx > 0 ) {
     parent->RemovePage(idx);
     parent->InsertPage(idx-1, this, wxString(wZLevel.gettitle( m_zLevel ),wxConvUTF8));
     parent->SetSelection(idx-1);
+
+    for( int i = 0; i < cnt; i++ ) {
+      PlanPanel* p = (PlanPanel*)parent->GetPage(i);
+      p->onModifyTabIdx();
+    }
   }
 }
 
@@ -1318,6 +1349,11 @@ void PlanPanel::onTabRight( wxCommandEvent& event ) {
     parent->RemovePage(idx);
     parent->InsertPage(idx+1, this, wxString(wZLevel.gettitle( m_zLevel ),wxConvUTF8));
     parent->SetSelection(idx+1);
+
+    for( int i = 0; i < cnt; i++ ) {
+      PlanPanel* p = (PlanPanel*)parent->GetPage(i);
+      p->onModifyTabIdx();
+    }
   }
 }
 

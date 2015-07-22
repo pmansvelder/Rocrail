@@ -998,6 +998,14 @@ void RocGuiFrame::OnInitNotebook( wxCommandEvent& event ) {
     idx++;
   };
 
+  if( !wxGetApp().isModView() ) {
+    int cnt = m_PlanNotebook->GetPageCount();
+    for( int i = 0; i < cnt; i++ ) {
+      PlanPanel* p = (PlanPanel*)m_PlanNotebook->GetPage(i);
+      p->moveToTabIdx();
+    }
+  }
+
   // Set selection:
   if( wxGetApp().getTabSel() != -1 ) {
     int tabsel = wxGetApp().getTabSel();

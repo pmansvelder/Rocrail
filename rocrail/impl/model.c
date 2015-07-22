@@ -1528,6 +1528,8 @@ static Boolean _modifyItem( iOModel inst, iONode item ) {
     while( zlevel != NULL ) {
       if( wZLevel.getz( zlevel ) == wZLevel.getz( item ) ) {
         wZLevel.settitle( zlevel, wZLevel.gettitle( item ) );
+        wZLevel.settabidx( zlevel, wZLevel.gettabidx( item ) );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "zlevel %d [%s] %d", wZLevel.getz( zlevel ), wZLevel.gettitle( zlevel ), wZLevel.gettabidx( zlevel ) );
         break;
       }
       zlevel = wPlan.nextzlevel( data->model, zlevel );

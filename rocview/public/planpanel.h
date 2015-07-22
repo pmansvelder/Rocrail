@@ -82,6 +82,8 @@ public:
   void OnBackColor( wxCommandEvent& event );
   void onTabLeft( wxCommandEvent& event );
   void onTabRight( wxCommandEvent& event );
+  void onModifyTabIdx();
+  void moveToTabIdx();
   void addItemAttr( iONode node );
   void modelEvent( iONode node );
   void reScale( double scale );

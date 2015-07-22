@@ -1680,6 +1680,7 @@
     <zlevel cardinality="n" remark="Z-Level description" wrappername="ZLevel">
       <var name="title" vt="string" defval="" range="*"/>
       <var name="z" vt="int" defval="0" range="0-9"/>
+      <var name="tabidx" vt="int" defval="-1"/>
       <var name="active" vt="bool" defval="false" remark="active notebook page"/>
       <var name="modid" vt="string" defval="" range="*" remark="module ID"/>
       <var name="modnr" vt="int" defval="0" range="0-*" remark="module number"/>
