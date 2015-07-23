@@ -887,7 +887,7 @@ bool RocGui::OnInit() {
   TraceOp.println( " rrr     ooo ooo ccc    rrr     aaa aaa iii lll   " );
   TraceOp.println( " rrr      ooooo   ccccc rrr      aaaaaa iii  lll  " );
   TraceOp.println( "--------------------------------------------------" );
-  TraceOp.println( " TM and Copyright 2002-2015 Rob Versluis."          );
+  TraceOp.println( " TM and Copyright 2002-2015 Robert Jan Versluis."   );
   TraceOp.println( " All Rights Reserved."                              );
   TraceOp.println( "   r.j.versluis@rocrail.net"                        );
   TraceOp.println( "   http://www.rocrail.net"                          );
