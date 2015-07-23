@@ -84,6 +84,7 @@ public:
   void onTabRight( wxCommandEvent& event );
   void onModifyTabIdx();
   void moveToTabIdx();
+  int getTabIndex();
   void addItemAttr( iONode node );
   void modelEvent( iONode node );
   void reScale( double scale );

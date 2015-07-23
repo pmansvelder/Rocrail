@@ -1299,9 +1299,24 @@ void PlanPanel::OnTimer(wxTimerEvent& event) {
 }
 
 
+int PlanPanel::getTabIndex() {
+  wxNotebook* parent = (wxNotebook*)m_Parent;
+  int cnt = parent->GetPageCount();
+  for( int i = 0; i < cnt; i++ ) {
+    PlanPanel* p = (PlanPanel*)parent->GetPage(i);
+    if( p == this ) {
+      return i;
+    }
+  }
+  return wxNOT_FOUND;
+}
+
 void PlanPanel::onModifyTabIdx() {
   wxNotebook* parent = (wxNotebook*)m_Parent;
-  int idx = parent->FindPage(this);
+  int idx = getTabIndex();
+  if( idx == wxNOT_FOUND )
+    return;
+
   wZLevel.settabidx( m_zLevel, idx );
   if( !wxGetApp().isStayOffline() ) {
     /* Notify RocRail. */
@@ -1316,8 +1331,8 @@ void PlanPanel::onModifyTabIdx() {
 
 void PlanPanel::moveToTabIdx() {
   wxNotebook* parent = (wxNotebook*)m_Parent;
-  int idx = parent->FindPage(this);
-  if( wZLevel.gettabidx(m_zLevel) != idx && wZLevel.gettabidx(m_zLevel) != -1 ) {
+  int idx = getTabIndex();
+  if( idx != wxNOT_FOUND && wZLevel.gettabidx(m_zLevel) != idx && wZLevel.gettabidx(m_zLevel) != -1 ) {
     parent->RemovePage(idx);
     parent->InsertPage(wZLevel.gettabidx(m_zLevel), this, wxString(wZLevel.gettitle( m_zLevel ),wxConvUTF8));
   }
@@ -1326,7 +1341,7 @@ void PlanPanel::moveToTabIdx() {
 
 void PlanPanel::onTabLeft( wxCommandEvent& event ) {
   wxNotebook* parent = (wxNotebook*)m_Parent;
-  int idx = parent->FindPage(this);
+  int idx = getTabIndex();
   int cnt = parent->GetPageCount();
   if( idx != wxNOT_FOUND && idx > 0 ) {
     parent->RemovePage(idx);
@@ -1343,7 +1358,7 @@ void PlanPanel::onTabLeft( wxCommandEvent& event ) {
 
 void PlanPanel::onTabRight( wxCommandEvent& event ) {
   wxNotebook* parent = (wxNotebook*)m_Parent;
-  int idx = parent->FindPage(this);
+  int idx = getTabIndex();
   int cnt = parent->GetPageCount();
   if( idx != wxNOT_FOUND && (idx+1) < cnt ) {
     parent->RemovePage(idx);
