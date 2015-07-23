@@ -57,9 +57,9 @@
  -webkit-transform: rotate(90deg); 
  -moz-transform: rotate(90deg);
 }
-.
-divborder {
- border: 1px solid #000; 
+
+.divborder {
+ border: 1px solid #CCCCCC; 
  text-align: left; 
  padding: 10px;
 }

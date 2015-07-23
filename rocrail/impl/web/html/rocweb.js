@@ -3946,7 +3946,7 @@ function processResponse() {
           }
 
           var serverInfo = document.getElementById("serverInfo");
-          serverInfo.innerHTML = "<table><tr><td>"+getString("version")+":<td>" + rocrailversion + "<tr><td>" + getString("workspace")+":<td>" + rocrailpwd;
+          serverInfo.innerHTML = "<table><tr><td>"+getString("version")+"<td>" + rocrailversion + "<tr><td>" + getString("workspace")+"<td>" + rocrailpwd;
           
           
           trace( "processing plan: " + Title + " key=" + donkey );
