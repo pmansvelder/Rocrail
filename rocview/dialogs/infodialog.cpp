@@ -85,7 +85,7 @@ InfoDialog::InfoDialog( wxWindow* parent, wxWindowID id, const wxString& caption
   StrOp.free( str );
 
   m_Home->SetLabel( _T("http://www.rocrail.net") );
-  m_Support->SetLabel( _T("TM and Copyright 2002-2015 Rob Versluis.") );
+  m_Support->SetLabel( _T("TM and Copyright 2002-2015 Robert Jan Versluis.\nP.O.Box 1122\nD-67369 Dudenhofen") );
   m_labLic->SetLabel( _T("All Rights Reserved.") );
   //m_ThanksLine->SetLabel( wxGetApp().getMsg( "license" ) );
   m_ThanksLine->SetLabel( _T("") );
@@ -164,8 +164,8 @@ void InfoDialog::CreateControls()
     itemFlexGridSizer3->Add(m_Splash, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_Build = new wxStaticText( itemDialog1, wxID_STATIC_INFO_BUILD, _("build"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-    m_Build->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, false, wxT("Ubuntu")));
-    itemFlexGridSizer3->Add(m_Build, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_Build->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Ubuntu")));
+    itemFlexGridSizer3->Add(m_Build, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxStaticBox* itemStaticBoxSizer6Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Server"));
     wxStaticBoxSizer* itemStaticBoxSizer6 = new wxStaticBoxSizer(itemStaticBoxSizer6Static, wxVERTICAL);
@@ -177,17 +177,17 @@ void InfoDialog::CreateControls()
     m_RocrailPwd = new wxStaticText( itemDialog1, wxID_ANY, _("."), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticBoxSizer6->Add(m_RocrailPwd, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
-    m_Home = new wxStaticText( itemDialog1, wxID_STATIC_INFO_HOME, _("home"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-    itemFlexGridSizer3->Add(m_Home, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    m_Home = new wxStaticText( itemDialog1, wxID_STATIC_INFO_HOME, _("home"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+    itemFlexGridSizer3->Add(m_Home, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
-    m_Support = new wxStaticText( itemDialog1, wxID_STATIC_INFO_SUPPORT, _("support"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-    itemFlexGridSizer3->Add(m_Support, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    m_Support = new wxStaticText( itemDialog1, wxID_STATIC_INFO_SUPPORT, _("support"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+    itemFlexGridSizer3->Add(m_Support, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
-    m_labLic = new wxStaticText( itemDialog1, wxID_ANY, _("License"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer3->Add(m_labLic, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_labLic = new wxStaticText( itemDialog1, wxID_ANY, _("License"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+    itemFlexGridSizer3->Add(m_labLic, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_ThanksLine = new wxStaticText( itemDialog1, WX_STATICTEXT_INFO_THANKS, _("Special Thanks to:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer3->Add(m_ThanksLine, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    itemFlexGridSizer3->Add(m_ThanksLine, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     m_Thanks = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_INFO_THANKS, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY );
     itemFlexGridSizer3->Add(m_Thanks, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
