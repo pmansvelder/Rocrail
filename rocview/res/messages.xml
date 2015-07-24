@@ -31282,4 +31282,7 @@
   <Msg id="tabidx">
     <en txt="Tab index"/>
   </Msg>
+  <Msg id="validate">
+    <en txt="Validate"/>
+  </Msg>
 </Messages>
