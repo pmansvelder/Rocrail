@@ -1201,7 +1201,7 @@ static Boolean __doCmd( iOSignal inst, iONode nodeA, Boolean update ) {
     return False;
   }
 
-  if( freeid != NULL && StrOp.len(freeid) > 0 ) {
+  if( freeid != NULL && StrOp.len(freeid) > 0 && !StrOp.equals( wSignal.red, state ) ) {
     iOOutput    co = ModelOp.getOutput( AppOp.getModel(), freeid );
     iOFBack     fb = ModelOp.getFBack( AppOp.getModel(), freeid );
     iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), freeid );
