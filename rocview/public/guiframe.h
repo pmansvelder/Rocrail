@@ -64,6 +64,7 @@
 #include "rocview/dialogs/sensorevents.h"
 #include "rocview/dialogs/trackpickerdlg.h"
 #include "rocview/dialogs/tracedlg.h"
+#include "rocview/dialogs/timedactions.h"
 
 #include <wx/splitter.h>
 #include <wx/textctrl.h>
@@ -347,6 +348,7 @@ public:
   void OnSlider(wxScrollEvent& event);
 
   void ServerTrace(wxCommandEvent& event);
+  void ServerReadXmlScript(wxCommandEvent& event);
   void UpdateActiveLocs(wxCommandEvent& event);
   void CVevent(wxCommandEvent& event);
   void UpdateLocImage(wxCommandEvent& event);
@@ -454,6 +456,7 @@ private:
   TrackPickerDlg* m_TrackPickerDlg;
   iOMutex m_muxInitActiveLocs;
   TraceDlg* m_TraceDlg;
+  TimedActions* m_TimedActions;
 
   const char* m_ThemePath;
   const char* m_ServerPath;
@@ -616,6 +619,7 @@ enum
     UPDATE_ACTIVELOCS_EVENT,
     UPDATE_LOC_IMAGE_EVENT,
     SERVER_TRACE_EVENT,
+    SERVER_READXMLSCRIPT_EVENT,
     CV_EVENT,
     ME_PanelProps,
     ME_AddItem,

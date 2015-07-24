@@ -613,6 +613,42 @@ static void __analyse( void* threadinst ) {
   ThreadOp.base.del(th);
 }
 
+static void __writeFile( iOControl inst, const char* fileName, const char* text ) {
+  iOControlData data = Data(inst);
+  iOFile file = FileOp.inst( fileName, OPEN_WRITE );
+  if( file != NULL ) {
+    FileOp.write( file, text, StrOp.len(text) );
+    FileOp.base.del(file);
+  }
+}
+
+
+static char* __readFile( iOControl inst, const char* fileName ) {
+  iOControlData data = Data(inst);
+  char*     text     = NULL;
+
+  if( FileOp.exist(fileName) ) {
+    iOFile file = FileOp.inst( fileName, OPEN_READONLY );
+    if( file != NULL ) {
+      if( FileOp.size( file ) > 110 * 1024 ) {
+        TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "file [%s] exeeds the 100KB limit; size=%ld", fileName, FileOp.size( file ) );
+        text = allocMem( 1024 );
+        StrOp.fmtb(text, "file [%s] exeeds the 100KB limit; size=%ld", fileName, FileOp.size( file ));
+      }
+      else {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "read file [%s] size=%ld", fileName, FileOp.size( file ) );
+        text = allocMem( FileOp.size( file ) + 1 );
+        FileOp.read( file, text, FileOp.size( file ) );
+      }
+
+      FileOp.close( file );
+      FileOp.base.del( file );
+    }
+  }
+  return text;
+}
+
+
 static char* __getTrcFile( iOControl inst, const char* fileName ) {
   iOControlData data = Data(inst);
   char*     protpath = FileOp.getPath( TraceOp.getFilename(NULL) );
@@ -1001,6 +1037,29 @@ static void __callback( obj inst, iONode nodeA ) {
       if( direntry != NULL ) {
         NodeOp.addChild( nodeA, direntry);
         ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+      }
+      return;
+    }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.readxmlscript ) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "DataReq read xmlscript filename=[%s]", wDataReq.getfilename(nodeA)!=NULL?wDataReq.getfilename(nodeA):"-" );
+      if(wDataReq.getfilename(nodeA) != NULL &&  StrOp.len(wDataReq.getfilename(nodeA)) > 0 ) {
+        char* text = __readFile((iOControl)inst, wDataReq.getfilename(nodeA));
+        if( text != NULL ) {
+          wDataReq.setdata( nodeA, text );
+          freeMem( text );
+          ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+        }
+        else {
+          wDataReq.setdata( nodeA, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xmlscript>\n\n</xmlscript>\n" );
+          ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+        }
+      }
+      return;
+    }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.writexmlscript ) {
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "DataReq write xmlscript filename=[%s]", wDataReq.getfilename(nodeA)!=NULL?wDataReq.getfilename(nodeA):"-" );
+      if(wDataReq.getfilename(nodeA) != NULL &&  StrOp.len(wDataReq.getfilename(nodeA)) > 0 ) {
+        __writeFile((iOControl)inst, wDataReq.getfilename(nodeA), wDataReq.getdata(nodeA));
       }
       return;
     }

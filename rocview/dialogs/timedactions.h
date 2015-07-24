@@ -54,6 +54,7 @@ class wxSpinCtrl;
 #define ID_ACTIONS_TYPE 10195
 #define ID_COMBOBOX 10371
 #define ID_ACTIONS_EXEC_CMD 10245
+#define ID_BUTTON_XML_EDIT 10000
 #define ID_ACTION_RANDOM 10441
 #define ID_USEPANEL 10405
 #define ID_USELIST 10406
@@ -89,6 +90,8 @@ public:
     /// Constructors
     TimedActions();
     TimedActions( wxWindow* parent );
+
+    void xmlscriptReadEvent(iONode node);
 
     /// Creation
     bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TIMEDACTIONS_IDNAME, const wxString& caption = SYMBOL_TIMEDACTIONS_TITLE, const wxPoint& pos = SYMBOL_TIMEDACTIONS_POSITION, const wxSize& size = SYMBOL_TIMEDACTIONS_SIZE, long style = SYMBOL_TIMEDACTIONS_STYLE );
@@ -133,6 +136,9 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_ACTIONS_EXEC_CMD
     void OnActionsExecCmdClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_XML_EDIT
+    void OnButtonXmlEditClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_ACTION_RANDOM
     void OnActionRandomClick( wxCommandEvent& event );
@@ -190,6 +196,7 @@ public:
     wxComboBox* m_Command;
     wxButton* m_ExecCmd;
     wxCheckBox* m_DoubleQuote;
+    wxButton* m_EditXmlScript;
     wxStaticText* m_labParam;
     wxTextCtrl* m_Parameter;
     wxStaticText* m_labDuration;

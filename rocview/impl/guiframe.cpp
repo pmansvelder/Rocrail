@@ -263,6 +263,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( INIT_NOTEBOOK, RocGuiFrame::OnInitNotebook)
     EVT_MENU( UPDATE_ACTIVELOCS_EVENT, RocGuiFrame::UpdateActiveLocs)
     EVT_MENU( SERVER_TRACE_EVENT, RocGuiFrame::ServerTrace)
+    EVT_MENU( SERVER_READXMLSCRIPT_EVENT, RocGuiFrame::ServerReadXmlScript)
     EVT_MENU( UPDATE_LOC_IMAGE_EVENT, RocGuiFrame::UpdateLocImage)
     EVT_MENU( CV_EVENT, RocGuiFrame::CVevent)
     EVT_MENU( ME_PowerEvent, RocGuiFrame::OnPowerEvent)
@@ -1596,6 +1597,15 @@ void RocGuiFrame::ServerTrace( wxCommandEvent& event ) {
   NodeOp.base.del(node);
 }
 
+void RocGuiFrame::ServerReadXmlScript( wxCommandEvent& event ) {
+  iONode node = (iONode)event.GetClientData();
+  TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "server readfile [%s] cmd=%d",
+      wDataReq.getfilename(node)!=NULL?wDataReq.getfilename(node):"-", wDataReq.getcmd(node));
+  if( m_TimedActions != NULL )
+    m_TimedActions->xmlscriptReadEvent(node);
+  NodeOp.base.del(node);
+}
+
 Symbol* RocGuiFrame::GetItem( const char* key ) {
   if( m_ModPanel != NULL) {
     return (Symbol*)m_ModPanel->GetItem( key );
@@ -1979,6 +1989,7 @@ RocGuiFrame::RocGuiFrame(const wxString& title, const wxPoint& pos, const wxSize
   m_CBusNodeDlg        = NULL;
   m_BidibIdentDlg      = NULL;
   m_TraceDlg           = NULL;
+  m_TimedActions       = NULL;
   m_RocnetNodeDlg      = NULL;
   m_HueConfDlg         = NULL;
   m_MGV141             = NULL;
@@ -4171,11 +4182,12 @@ void RocGuiFrame::OnEditMVTrack( wxCommandEvent& event ) {
 }
 
 void RocGuiFrame::OnEditTimedActions( wxCommandEvent& event ) {
-  TimedActions*  dlg = new TimedActions(this );
-  if( wxID_OK == dlg->ShowModal() ) {
+  m_TimedActions = new TimedActions(this );
+  if( wxID_OK == m_TimedActions->ShowModal() ) {
     /* Notify RocRail. */
   }
-  dlg->Destroy();
+  m_TimedActions->Destroy();
+  m_TimedActions = NULL;
 }
 
 void RocGuiFrame::OnEditBoosters( wxCommandEvent& event ) {

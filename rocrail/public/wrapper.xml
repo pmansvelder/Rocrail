@@ -991,6 +991,8 @@
     <const name="get" vt="int" val="0"/>
     <const name="gettracedir" vt="int" val="1"/>
     <const name="gettracefile" vt="int" val="2"/>
+    <const name="readxmlscript" vt="int" val="3"/>
+    <const name="writexmlscript" vt="int" val="4"/>
     <var name="cmd" vt="int" defval="0" range="0-*"/>
     <const name="image" vt="int" val="0"/>
     <const name="smallimage" vt="int" val="1"/>
