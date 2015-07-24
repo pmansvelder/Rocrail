@@ -1187,12 +1187,12 @@ static Boolean __doCmd( iOSignal inst, iONode nodeA, Boolean update ) {
   Boolean ok = True;
 
   const char* state      = wSignal.getcmd( nodeA );
-  int          aspectnr   = -1;
+  int         aspectnr   = -1;
   const char* iid        = wSignal.getiid( o->props );
   const char* savedState = wSignal.getstate( o->props );
   const char* freeid     = wSignal.getfreeid( o->props );
-  Boolean     inv         = wSignal.isinv( o->props );
-  Boolean     chgState    = True;
+  Boolean     inv        = wSignal.isinv( o->props );
+  Boolean     chgState   = True;
 
 
   if( control == NULL ) {
@@ -1206,15 +1206,15 @@ static Boolean __doCmd( iOSignal inst, iONode nodeA, Boolean update ) {
     iOFBack     fb = ModelOp.getFBack( AppOp.getModel(), freeid );
     iIBlockBase bk = ModelOp.getBlock( AppOp.getModel(), freeid );
     if( co != NULL && OutputOp.isState(co, wOutput.on) ) {
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "output [%s] is not off", freeid );
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "signal [%s] output [%s] is not off; ignore cmd=%s", wSignal.getid(o->props), freeid, state );
       return False;
     }
     if( fb != NULL && FBackOp.isState(fb, "true") ) {
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "sensor [%s] is not free", freeid );
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "signal [%s] sensor [%s] is not off; ignore cmd=%s", wSignal.getid(o->props), freeid, state );
       return False;
     }
     if( bk != NULL && !bk->isState(bk, "free") ) {
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "block [%s] is not free", freeid );
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "signal [%s] block [%s] is not off; ignore cmd=%s", wSignal.getid(o->props), freeid, state );
       return False;
     }
   }
