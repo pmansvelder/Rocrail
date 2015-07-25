@@ -1156,7 +1156,8 @@ bool BlockDialog::evaluate() {
       }
     }
 
-    if( !hasRoute ) {
+    const char* from = wFeedbackEvent.getfrom(fb);
+    if( !hasRoute && !StrOp.equals("all", from) && !StrOp.equals("all-reverse", from) ) {
       char* msg = StrOp.fmt( wxGetApp().getMsg("unusedfbevent").mb_str(wxConvUTF8), wFeedbackEvent.getbyroute( fb ) );
 
       int rc = wxMessageDialog( this, wxString(msg,wxConvUTF8),
