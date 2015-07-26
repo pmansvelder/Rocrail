@@ -615,14 +615,18 @@ Boolean rocWebSocket( iOPClient inst, iONode event, char** cmd ) {
       if( payload == 126 ) {
         ok = SocketOp.read( data->socket, b, 2 );
         if(ok) {
-          payload = b[0]*256 + b[1];
-          TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: payload=%d", payload );
+          payload = (b[0]&0xFF)*256 + (b[1]&0xFF);
+          TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: payload=%d (%X, %X)", payload, (int)(b[0]&0xFF), (int)(b[1]&0xFF) );
         }
       }
-      if( payload == 127 ) {
+      else if( payload == 127 ) {
         ok = SocketOp.read( data->socket, b, 4 );
         if(ok) {
-          payload = (b[0]<<24) + (b[1]<<16) + (b[2]<<8) + b[3] ;
+          int b0 = (b[0]&0xFF);
+          int b1 = (b[1]&0xFF);
+          int b2 = (b[2]&0xFF);
+          int b3 = (b[3]&0xFF);
+          payload = (b0<<24) + (b1<<16) + (b2<<8) + b3 ;
           TraceOp.trc( name, TRCLEVEL_USER2, __LINE__, 9999, "websocket: payload=%d", payload );
         }
       }

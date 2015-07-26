@@ -385,7 +385,7 @@
 		      <var name="binstate" vt="bool" defval="false"/>
 		      <var name="category" vt="string" defval="engine"/>
 		      <var name="color" vt="string" defval="none"/>
-		      <var name="debug" vt="bool" defval="flase"/>
+		      <var name="debug" vt="bool" defval="false"/>
 		      <var name="lang" vt="string" defval="en"/>
 		      <var name="locoSelected" vt="string" defval=""/>
 		      <var name="locoSelected0" vt="string" defval=""/>

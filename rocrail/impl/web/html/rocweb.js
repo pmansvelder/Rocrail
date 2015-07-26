@@ -4066,7 +4066,34 @@ function setLocalOption(option, val, defval) {
 function onSaveOptions() {
   trace("save options");
   $( "#popupOptions" ).popup( "close" );
-  var cmd = "<rocweb binstate=\""+getLocalOption('binstate', 'false')+"\"/>";
+  var cmd = "<rocweb" +
+  " allspeedsteps=\"" +  getLocalOption('allspeedsteps', 'false') + "\"" +
+  " binstate=\"" +  getLocalOption('binstate', 'false') + "\"" +
+  " category=\"" +  getLocalOption('category', 'engine') + "\"" +
+  " color=\"" +  getLocalOption('color', 'none') + "\"" +
+  " debug=\"" +  getLocalOption('debug', 'false') + "\"" +
+  " lang=\"" +  getLocalOption('lang', 'en') + "\"" +
+  " locoSelected=\"" +  getLocalOption('locoSelected', '') + "\"" +
+  " locoSelected0=\"" +  getLocalOption('locoSelected0', '') + "\"" +
+  " locoSelected1=\"" +  getLocalOption('locoSelected1', '') + "\"" +
+  " locoSelected2=\"" +  getLocalOption('locoSelected2', '') + "\"" +
+  " locoSelected3=\"" +  getLocalOption('locoSelected3', '') + "\"" +
+  " moduleview=\"" +  getLocalOption('moduleview', 'true') + "\"" +
+  " monitor=\"" +  getLocalOption('monitor', 'false') + "\"" +
+  " scale=\"" +  getLocalOption('scale', '1') + "\"" +
+  " secondhand=\"" +  getLocalOption('secondhand', 'false') + "\"" +
+  " showblockid=\"" +  getLocalOption('showblockid', 'false') + "\"" +
+  " showlocoimage=\"" +  getLocalOption('showlocoimage', 'false') + "\"" +
+  " showocc=\"" +  getLocalOption('showocc', 'false') + "\"" +
+  " showroutes=\"" +  getLocalOption('showroutes', 'false') + "\"" +
+  " showtrainid=\"" +  getLocalOption('showtrainid', 'false') + "\"" +
+  " simsensors=\"" +  getLocalOption('simsensors', 'false') + "\"" +
+  " slavecode=\"" +  getLocalOption('slavecode', '') + "\"" +
+  " sliderdelta=\"" +  getLocalOption('sliderdelta', '5') + "\"" +
+  " speedbuttons=\"" +  getLocalOption('speedbuttons', 'false') + "\"" +
+  "/>";
+  console.log("options: "+ cmd);
+
   sendCommand(cmd);
 }
 
@@ -4078,7 +4105,31 @@ function processOptions() {
       optionlist = xmlDoc.getElementsByTagName("rocweb")
       
       if( optionlist.length > 0 ) {
-        setLocalOption("binstate", optionlist[0].getAttribute('binstate'), false);
+        setLocalOption("allspeedsteps", optionlist[0].getAttribute('allspeedsteps'), "false");
+        setLocalOption("binstate", optionlist[0].getAttribute('binstate'), "false");
+        setLocalOption("category", optionlist[0].getAttribute('category'), "engine");
+        setLocalOption("color", optionlist[0].getAttribute('color'), "none");
+        setLocalOption("debug", optionlist[0].getAttribute('debug'), "false");
+        setLocalOption("lang", optionlist[0].getAttribute('lang'), "en");
+        setLocalOption("locoSelected", optionlist[0].getAttribute('locoSelected'), "");
+        setLocalOption("locoSelected0", optionlist[0].getAttribute('locoSelected0'), "");
+        setLocalOption("locoSelected1", optionlist[0].getAttribute('locoSelected1'), "");
+        setLocalOption("locoSelected2", optionlist[0].getAttribute('locoSelected2'), "");
+        setLocalOption("locoSelected3", optionlist[0].getAttribute('locoSelected3'), "");
+        setLocalOption("locosort", optionlist[0].getAttribute('locosort'), "id");
+        setLocalOption("moduleview", optionlist[0].getAttribute('moduleview'), "true");
+        setLocalOption("monitor", optionlist[0].getAttribute('monitor'), "false");
+        setLocalOption("scale", optionlist[0].getAttribute('scale'), "1");
+        setLocalOption("secondhand", optionlist[0].getAttribute('secondhand'), "false");
+        setLocalOption("showblockid", optionlist[0].getAttribute('showblockid'), "false");
+        setLocalOption("showlocoimage", optionlist[0].getAttribute('showlocoimage'), "false");
+        setLocalOption("showocc", optionlist[0].getAttribute('showocc'), "false");
+        setLocalOption("showroutes", optionlist[0].getAttribute('showroutes'), "false");
+        setLocalOption("showtrainid", optionlist[0].getAttribute('showtrainid'), "false");
+        setLocalOption("simsensors", optionlist[0].getAttribute('simsensors'), "false");
+        setLocalOption("slavecode", optionlist[0].getAttribute('slavecode'), "");
+        setLocalOption("sliderdelta", optionlist[0].getAttribute('sliderdelta'), "5");
+        setLocalOption("speedbuttons", optionlist[0].getAttribute('speedbuttons'), "false");
       }
     }    
     loadPlan();

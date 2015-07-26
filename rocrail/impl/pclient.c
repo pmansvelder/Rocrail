@@ -151,7 +151,7 @@ static Boolean _work( struct OPClient* inst, iONode event, char** command ) {
       *command = cmd;
       if( cmd != NULL ) {
         /* Parse command and send it over the callback function to the control. */
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "command received: %.120s", cmd );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "command received: %.256s", cmd );
         if( StrOp.equals("<MONITORON/>", cmd) )
           data->websocketmonitor = True;
         if( StrOp.equals("<MONITOROFF/>", cmd) )
