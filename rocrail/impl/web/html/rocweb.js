@@ -4131,7 +4131,8 @@ function processOptions() {
         setLocalOption("sliderdelta", optionlist[0].getAttribute('sliderdelta'), "5");
         setLocalOption("speedbuttons", optionlist[0].getAttribute('speedbuttons'), "false");
       }
-    }    
+    } 
+    doLang();
     loadPlan();
   }
 }
