@@ -27,7 +27,7 @@ All rights reserved.
   <link rel="icon" sizes="128x128" href="rocrail-icon.png">
 </head>
 
-<body id="planpanel" onload="loadPlan()" style="overflow-x: scroll !important;">
+<body id="planpanel" onload="loadOptions()" style="overflow-x: scroll !important;">
 
 
   <div id="header" data-role="header" data-position="fixed" style="overflow:hidden;">
@@ -313,6 +313,8 @@ All rights reserved.
     <tr>
     <td><label id="labSlaveCode" for="slaveCode">Control code</label>    
     <td><input data-clear-btn="false" name="slaveCode" id="slaveCode" value="">
+    </table>
+    <div><a href="#" class="ui-shadow ui-btn ui-corner-all" id="SaveOptions" onclick="onSaveOptions()">Save options on server</a></div>
   </div>
   </div>
 

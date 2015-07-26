@@ -89,6 +89,9 @@
 #include "rocrail/wrapper/public/DirEntry.h"
 #include "rocrail/wrapper/public/FileEntry.h"
 #include "rocrail/wrapper/public/Trace.h"
+#include "rocrail/wrapper/public/Rocweb.h"
+#include "rocrail/wrapper/public/WebClient.h"
+#include "rocrail/wrapper/public/HttpService.h"
 
 #include "rocutils/public/devices.h"
 #include "rocutils/public/fileutils.h"
@@ -456,6 +459,17 @@ static void  __grouplink( obj inst, iONode link ) {
 }
 
 
+static void __handleRocweb(obj inst, iONode node) {
+  iOControlData data    = Data(inst);
+  iONode options = wWebClient.getrocweb(wHttpService.getwebclient(wRocRail.gethttp(AppOp.getIni())));
+  if( options != NULL )
+    NodeOp.mergeNode(options, node, True, False, False);
+  else
+    NodeOp.addChild( wHttpService.getwebclient(wRocRail.gethttp(AppOp.getIni())), (iONode)NodeOp.base.clone(node) );
+
+}
+
+
 static void __handleIssue(obj inst, iONode node) {
   iOControlData data    = Data(inst);
   const char* issuePath = wRocRail.getissuepath( AppOp.getIni() );
@@ -770,6 +784,11 @@ static void __callback( obj inst, iONode nodeA ) {
   if( StrOp.equals( wBooster.name(), nodeName ) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "modify booster %s", wBooster.getid(nodeA) );
     ModelOp.cmd( AppOp.getModel(), nodeA );
+  }
+  else if( StrOp.equals( wRocweb.name(), nodeName ) ) {
+    __handleRocweb(inst, nodeA);
+    NodeOp.base.del( nodeA );
+    return;
   }
   else if( StrOp.equals( wIssue.name(), nodeName ) ) {
     __handleIssue(inst, nodeA);

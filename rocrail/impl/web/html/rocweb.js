@@ -6,6 +6,7 @@
 
 */
 /* Variables */
+var localOptions = false;
 var req;
 var yoffset = 48;
 var scale = 1.0;
@@ -140,6 +141,7 @@ function langDE() {
   document.getElementById("labOptionShowLocoImage").innerHTML = "Zeige Lok-Bild im Block";
   document.getElementById("labOptionAnalogClock").innerHTML = "Modelluhr";
   document.getElementById("labOptionSecondHand").innerHTML = "Sekundenzeiger anzeigen";
+  document.getElementById("SaveOptions").innerHTML = "Speicher Optionen auf der Server";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
@@ -249,6 +251,7 @@ function langEN() {
   document.getElementById("labOptionShowLocoImage").innerHTML = "Show loco image in block";
   document.getElementById("labOptionAnalogClock").innerHTML = "Fast clock";
   document.getElementById("labOptionSecondHand").innerHTML = "Show second hand";
+  document.getElementById("SaveOptions").innerHTML = "Save options on server";
   document.getElementById("labLocoCatEngine").innerHTML = "Engine";
   document.getElementById("labLocoCatEra").innerHTML = "Era";
   document.getElementById("labLocoCatRoadname").innerHTML = "Roadname";
@@ -358,6 +361,7 @@ function langIT() {
   document.getElementById("labOptionShowLocoImage").innerHTML = "Show loco image in block";
   document.getElementById("labOptionAnalogClock").innerHTML = "Velocizza orologio";
   document.getElementById("labOptionSecondHand").innerHTML = "Mostrare vecchio orologio";
+  document.getElementById("SaveOptions").innerHTML = "Save options on server";
   document.getElementById("labLocoCatEngine").innerHTML = "Motorizzazione";
   document.getElementById("labLocoCatEra").innerHTML = "Epoca";
   document.getElementById("labLocoCatRoadname").innerHTML = "Compagnia";
@@ -467,6 +471,7 @@ function langNL() {
   document.getElementById("labOptionShowLocoImage").innerHTML = "Toon lok afbeelding in het blok";
   document.getElementById("labOptionAnalogClock").innerHTML = "Model klok";
   document.getElementById("labOptionSecondHand").innerHTML = "Laat secondenwijzer zien";
+  document.getElementById("SaveOptions").innerHTML = "Bewaar opties op de server";
   document.getElementById("labLocoCatEngine").innerHTML = "Aandrijving";
   document.getElementById("labLocoCatEra").innerHTML = "Periode";
   document.getElementById("labLocoCatRoadname").innerHTML = "Maatschappij";
@@ -577,6 +582,7 @@ function langFR() {
   document.getElementById("labOptionShowLocoImage").innerHTML = "Montrer la photo des locos dans les blocs";
   document.getElementById("labOptionAnalogClock").innerHTML = "Horloge rapide";
   document.getElementById("labOptionSecondHand").innerHTML = "Afficher la trotteuse";
+  document.getElementById("SaveOptions").innerHTML = "Save options on server";
   document.getElementById("labLocoCatEngine").innerHTML = "Type de traction";
   document.getElementById("labLocoCatEra").innerHTML = "Epoque";
   document.getElementById("labLocoCatRoadname").innerHTML = "Compagnie";
@@ -2943,6 +2949,27 @@ function loadPlan() {
 }
 
 
+function loadOptions() {
+  // check if we have the options in the local storage:
+  if( localStorage.getItem("hasLocalStorage") != undefined ) {
+    localOptions = true;
+    loadPlan();
+    return;
+  }
+
+  // send an XMLHttpRequest
+  try {
+    req = new XMLHttpRequest();
+    req.onreadystatechange = processOptions;
+    req.open("GET", "options.xml", true);
+    req.send("");
+  } 
+  catch(e) {
+    console.log("exception: " + e.stack);
+  }
+ }
+
+
 /* Utilities */
 function xml2string(node) {
   if (typeof(XMLSerializer) !== 'undefined') {
@@ -4021,6 +4048,44 @@ function evaluateEvent(xmlStr) {
     trace("unhandled XML: "+xmlStr); 
 }
 
+
+function getLocalOption(option, defval) {
+  if( localStorage.getItem(option) != undefined )
+    return localStorage.getItem(option);
+  else
+    return defval
+}
+
+function setLocalOption(option, val, defval) {
+  if( val != undefined )
+    localStorage.setItem(option, val);
+  else
+    localStorage.setItem(option, defval);
+}
+
+function onSaveOptions() {
+  trace("save options");
+  $( "#popupOptions" ).popup( "close" );
+  var cmd = "<rocweb binstate=\""+getLocalOption('binstate', 'false')+"\"/>";
+  sendCommand(cmd);
+}
+
+function processOptions() {
+  trace("readyState="+req.readyState+" status="+req.status);
+  if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
+    xmlDoc = req.responseXML;
+    if( xmlDoc != null ) {
+      optionlist = xmlDoc.getElementsByTagName("rocweb")
+      
+      if( optionlist.length > 0 ) {
+        setLocalOption("binstate", optionlist[0].getAttribute('binstate'), false);
+      }
+    }    
+    loadPlan();
+  }
+}
+
+
 function processResponse() {
   trace("readyState="+req.readyState+" status="+req.status);
   if (req.readyState == 4 && (req.status == 0 || req.status == 200)) {
@@ -4028,6 +4093,8 @@ function processResponse() {
     try {
       xmlDoc = req.responseXML;
       if( xmlDoc != null ) {
+        localStorage.setItem("hasLocalStorage", "true");
+        
         scale = parseFloat(localStorage.getItem("scale"));
         if( scale == undefined || isNaN(scale) || scale == "1")
           scale = 1.0;

@@ -380,7 +380,34 @@
 	      <var name="svgpath5" vt="string" defval="." remark="scan this path for svg symbols"/>
         <var name="imgpath" vt="string" defval="images" range="*" remark="Location of (loco)images."/>
         <var name="webpath" vt="string" defval="web" range="*" remark="Location of the web files."/>
-	    </webclient>
+		    <rocweb cardinality="1" wrappername="Rocweb">
+		      <var name="allspeedsteps" vt="bool" defval="false"/>
+		      <var name="binstate" vt="bool" defval="false"/>
+		      <var name="category" vt="string" defval="engine"/>
+		      <var name="color" vt="string" defval="none"/>
+		      <var name="debug" vt="bool" defval="flase"/>
+		      <var name="lang" vt="string" defval="en"/>
+		      <var name="locoSelected" vt="string" defval=""/>
+		      <var name="locoSelected0" vt="string" defval=""/>
+		      <var name="locoSelected1" vt="string" defval=""/>
+          <var name="locoSelected2" vt="string" defval=""/>
+		      <var name="locoSelected3" vt="string" defval=""/>
+          <var name="locosort" vt="string" defval="id"/>
+		      <var name="moduleview" vt="bool" defval="true"/>
+		      <var name="monitor" vt="bool" defval="false"/>
+		      <var name="scale" vt="int" defval="1"/>
+		      <var name="secondhand" vt="bool" defval="false"/>
+		      <var name="showblockid" vt="bool" defval="false"/>
+          <var name="showlocoimage" vt="bool" defval="false"/>
+          <var name="showocc" vt="bool" defval="false"/>
+          <var name="showroutes" vt="bool" defval="false"/>
+          <var name="showtrainid" vt="bool" defval="false"/>
+          <var name="simsensors" vt="bool" defval="false"/>
+          <var name="slavecode" vt="string" defval=""/>
+          <var name="sliderdelta" vt="int" defval="5"/>
+          <var name="speedbuttons" vt="bool" defval="false"/>
+		    </rocweb>
+      </webclient>
     </http>
     <service wrappername="Service" cardinality="1" remark="Service for remote Rocrail to negotiate about a loc destination.">
       <var name="sname" vt="string" defval="" range="*" remark="Servicer name to use in NetReq and NetRsp."/>

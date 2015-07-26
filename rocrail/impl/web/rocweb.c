@@ -32,6 +32,8 @@
 #include "rocrail/wrapper/public/RocRail.h"
 #include "rocrail/wrapper/public/State.h"
 #include "rocrail/wrapper/public/WebClient.h"
+#include "rocrail/wrapper/public/HttpService.h"
+#include "rocrail/wrapper/public/Rocweb.h"
 #include "rocrail/wrapper/public/Exception.h"
 
 #include "rocs/public/str.h"
@@ -350,6 +352,26 @@ static void __getImage(iOPClient inst, const char* fname, Boolean webPath) {
   }
   StrOp.free(png);
   StrOp.free(cleanFname);
+}
+
+static void __getOptions(iOPClient inst) {
+  iOPClientData data = Data(inst);
+  Boolean ok = True;
+  iONode options = wWebClient.getrocweb(wHttpService.getwebclient(wRocRail.gethttp(AppOp.getIni())));
+  char* xml = NULL;
+  int size = 0;
+  if( options == NULL ) {
+    options = NodeOp.inst( wRocweb.name(), wHttpService.getwebclient(wRocRail.gethttp(AppOp.getIni())), ELEMENT_NODE );
+    NodeOp.addChild( wHttpService.getwebclient(wRocRail.gethttp(AppOp.getIni())), options);
+  }
+  xml = NodeOp.base.toString( options );
+  size = StrOp.len(xml);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "write options %d", size );
+  if(ok) ok=SocketOp.fmt( data->socket, "HTTP/1.1 0 OK\r\n" );
+  if(ok) ok=SocketOp.fmt( data->socket, "Connection: close\r\n" );
+  if(ok) ok=SocketOp.fmt( data->socket, "Content-type: application/xml\r\n\r\n" );
+  if(ok) ok=SocketOp.write( data->socket, xml, size );
+  StrOp.free(xml);
 }
 
 static void __getModel(iOPClient inst, Boolean modplan) {
@@ -773,6 +795,10 @@ Boolean rocWeb( iOPClient inst, const char* str ) {
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/modplan.xml" ) ) {
         Boolean ok = True;
         __getModel( inst, True );
+      }
+      else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/options.xml" ) ) {
+        Boolean ok = True;
+        __getOptions( inst );
       }
       else if( StrOp.find( str, "GET" ) && StrOp.find( str, "/rocweb.xml?" ) ) {
         Boolean ok = True;
