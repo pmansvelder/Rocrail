@@ -17,32 +17,6 @@
  *
 */
 
-// NOTE: To display this file with everything correctly lined up set your editor or IDE tab stop to 4
-
-//   This program is free software: you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation, version 3 of the License, as set out
-//   at <http://www.gnu.org/licenses/>.
-//
-//   This program is distributed in the hope that it will be useful,
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-//   See the GNU General Public License for more details.
-//
-//   As set out in the GNU General Public License, you must retain and acknowledge
-//   the statements above relating to copyright and licensing. You must also
-//   state clearly any modifications made.  Please therefore retain this header
-//   and add documentation of any changes you make. If you distribute a changed
-//   version, you must make those changes publicly available.
-//
-//   The GNU license requires that if you distribute this software, changed or
-//   unchanged, or software which includes code from this software, including
-//   the supply of hardware that incorporates this software, you MUST either
-//   include the source code or a link to a location where you make the source
-//   publicly available. The best way to make your changes publicly available is
-//   via the MERG online resources.  See <www.merg.co.uk> 
-
-
 // Manufacturers
 
 #define MANU_MERG		165	// http://www.merg.co.uk

@@ -1,15 +1,8 @@
 /*
--------------------------------------------------------------------
- Project     Rocrail - Model Railroad Software
--------------------------------------------------------------------
- File name   rocdigs/impl/loconet/lncv.h
--------------------------------------------------------------------
- Author      Rob Versluis
--------------------------------------------------------------------
- License:    This piece of code is part of the Rocrail
-             project (http://www.rocrail.net) and therefore
-             published under the terms of the GNU General Public
-             Licence (http://www.gnu.org/licenses/gpl.html).
+ Rocrail - Model Railroad Software
+ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
+ All rights reserved.
+
 -------------------------------------------------------------------
  Note:       The messages that are parsed by this code are owned
              by Uhlenbrock. Contact Uhlenbrock, if you want to

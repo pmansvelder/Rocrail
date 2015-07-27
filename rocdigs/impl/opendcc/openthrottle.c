@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002 Robert Jan Versluis, Rocrail.net
+Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 
  */
 #include "openthrottle.h"
