@@ -141,7 +141,7 @@ function langDE() {
   document.getElementById("labOptionShowLocoImage").innerHTML = "Zeige Lok-Bild im Block";
   document.getElementById("labOptionAnalogClock").innerHTML = "Modelluhr";
   document.getElementById("labOptionSecondHand").innerHTML = "Sekundenzeiger anzeigen";
-  document.getElementById("SaveOptions").innerHTML = "Speicher Optionen auf der Server";
+  document.getElementById("SaveOptions").innerHTML = "Optionen auf dem Server speichern";
   document.getElementById("labLocoCatEngine").innerHTML = "Antriebsart";
   document.getElementById("labLocoCatEra").innerHTML = "Epoche";
   document.getElementById("labLocoCatRoadname").innerHTML = "Gesellschaft";
