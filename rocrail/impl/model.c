@@ -280,16 +280,22 @@ static Boolean _modify( iOModel inst, iONode model ) {
 
 static void __cleanupBackupDir( void ) {
   int maxBackup = wRocRail.getmaxbackup(AppOp.getIni());
+  iOList listdir = NULL;
 
   if( !FileOp.exist(wRocRail.getbackuppath(AppOp.getIni())) )
     return;
 
-  iOList listdir = DirOp.listdir( wRocRail.getbackuppath(AppOp.getIni()), NULL, SORT_NEWEST );
+  if( maxBackup < 10 ) {
+    maxBackup = 10;
+    wRocRail.setmaxbackup(AppOp.getIni(), maxBackup);
+  }
+
+  listdir = DirOp.listdir( wRocRail.getbackuppath(AppOp.getIni()), NULL, SORT_NEWEST );
   if( listdir != NULL ) {
     int listsize = ListOp.size(listdir);
     if( listsize > maxBackup ) {
       int i = 0;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "remove %d backup files", listsize - maxBackup);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "remove %d backup files of %d", listsize - maxBackup, listsize);
       for( i = maxBackup; i < listsize; i++) {
         iDirEntry dir = (iDirEntry)ListOp.get( listdir, i );
         char* filepath = StrOp.fmt("%s%c%s", wRocRail.getbackuppath(AppOp.getIni()), SystemOp.getFileSeparator(), dir->name);
