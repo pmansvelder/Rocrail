@@ -157,7 +157,7 @@ int main( int argc, char* argv[] ) {
       { NULL             , NULL                  } 
     }; 
 
-    iOCmdLn arg = CmdLnOp.inst( argc, argv );
+    iOCmdLn arg = CmdLnOp.inst( argc, (const char**)argv );
 
     if( CmdLnOp.hasKey( arg, wCmdline.service ) && !CmdLnOp.hasKey( arg, wCmdline.doc ) ) {
     

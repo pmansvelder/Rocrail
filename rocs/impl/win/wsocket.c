@@ -412,7 +412,7 @@ Boolean rocs_socket_bind( iOSocketData o ) {
 
 
   if( o->udp && o->multicast ) {
-    int loop = 1;
+    char loop = 1;
     TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "allow all processes to use this port..." );
     setsockopt ( o->sh, SOL_SOCKET, SO_REUSEADDR, &loop, sizeof (loop));
   }
