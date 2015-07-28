@@ -258,6 +258,7 @@
     <var name="occupancy" vt="string" defval="occ.xml" range="*" remark="File name of block occupancy."/>
     <var name="createmodplan" vt="bool" defval="false" remark="Create a modplan if the planfile does not jet exist."/>
     <var name="backup" vt="bool" defval="true" remark="Activate backup for plan files."/>
+    <var name="maxbackup" vt="int" defval="100" remark="Max. number of plan backup files."/>
     <var name="backuppath" vt="string" defval="backup" range="*" remark="Location of the plan file backups."/>
     <var name="keypath" vt="string" defval="lic.dat" range="*" remark="Location of the donation key file."/>
     <var name="libpath" vt="string" defval="." range="*" remark="Location of the rocrail libraries."/>

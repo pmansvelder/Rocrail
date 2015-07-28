@@ -246,6 +246,8 @@ public:
     wxRadioBox* m_PlanType;
     wxCheckBox* m_Backup;
     wxTextCtrl* m_BackupPath;
+    wxStaticText* m_labMaxBackup;
+    wxSpinCtrl* m_MaxBackup;
     wxStaticText* m_labKeyPath;
     wxTextCtrl* m_KeyPath;
     wxStaticText* m_LabelLibPath;
