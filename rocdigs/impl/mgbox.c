@@ -1,11 +1,7 @@
 /*
  Rocrail - Model Railroad Control System
-
-Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
+ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
                2014-2015 Bert Havinga
- 
-
-
  All rights reserved.
 */
 
@@ -61,7 +57,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 static int instCnt = 0;
 static int rrUID = 0;
 static int rrHash = 0x2F20;
-static char idname[17] = { '\0' }; /* mfx loc readable name */
+static char idname[32] = { '\0' }; /* mfx loc readable name */
 static Boolean firstview = True;
 static byte reportstatechannel[3] = {1,3,4};
 static byte devconfig[48] = { 0 };
@@ -681,6 +677,7 @@ static Boolean _supportPT( obj inst ) {
 
 
 static void __genHash() {
+  srand (time(NULL));
   rrUID = rand() % 0x8000 + 0x2000;
   rrHash = rrUID & 0xFF7F;
   rrHash |= 0x0300;
@@ -902,6 +899,20 @@ static void __reportState(iOMCS2Data data) {
   }
 }
 
+static void __reportSystemInfo(iOMCS2Data data) {
+  if( wDigInt.issysteminfo(data->ini) && data->listenerFun != NULL && data->listenerObj != NULL ) {
+    iONode node = NodeOp.inst( wState.name(), NULL, ELEMENT_NODE );
+
+    if( data->iid != NULL )
+      wState.setiid( node, data->iid );
+
+    wState.setload( node, data->load );
+    wState.setvolt( node, data->volt );
+    wState.settemp( node, data->temp );
+    data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
+  }
+}
+
 
 static void __setSwitchtime( iOMCS2Data data ) {
   byte* out = allocMem(32);
@@ -956,7 +967,7 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Overload on UID: 0x%08X on interface: %s", uid, data->iid );
     __reportState(data);
   }
-  if( cmd == CMD_SYSSUB_STATUS && in[4] == 8 && wDigInt.isreportstate(data->ini) ) {
+  if( cmd == CMD_SYSSUB_STATUS && in[4] == 8 && wDigInt.issysteminfo(data->ini) ) {
     switch (in[10]){
     case 1:
       /* Current in mA */
@@ -1001,7 +1012,7 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
       }
     break;
     }
-    __reportState(data);
+    __reportSystemInfo(data);
   }
 }
 
@@ -1307,8 +1318,8 @@ static iONode __getBySID(iOMCS2Data data, int sid) {
 
 
 static byte __getnewSID(iOMCS2Data data) {
-  if( data->sid < 3 )
-    data->sid = 3;
+  if( data->sid < 4 )
+    data->sid = 4;
   while( __findSidinLocList(data) || __findSidinProductList(data) ) {
     data->sid++;
   }
@@ -1337,7 +1348,7 @@ static Boolean __checkForValidName(iOMCS2Data data) {
   TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "checking for valid name: %s", idname);
   if( StrOp.len(idname) > 0 ) {
     for( i=0 ; i < StrOp.len(idname) ; i++ ) {
-      if( idname[i] < ' '  || idname[i] > '~' || i == 17) {
+      if( idname[i] < ' '  || idname[i] > '~' || i == 32) {
         StrOp.fmtb( adaptname, "mfx-%d", data->sid);
         StrOp.copy( idname, adaptname );
         TraceOp.trc(name, TRCLEVEL_ERROR, __LINE__, 9999, "Invalid name, adapting loconame to: %s", idname);
@@ -1354,6 +1365,50 @@ static Boolean __checkForValidName(iOMCS2Data data) {
   return True;
 }
 
+static Boolean __checkForDuplicateNameId(iOMCS2Data data, Boolean prevent) {
+  char sidnr[5] =  "\0";
+  iONode loProps;
+  char*  adaptname   = allocMem(32);
+  if( data->locolist != NULL ) {
+    loProps = wLocList.getlc( data->locolist );
+    while ( loProps != NULL ) {
+      const char *loName = wLoc.getid( loProps );
+      if( loName != NULL ) {
+        if( StrOp.equals( data->id, loName ) && data->sid != wLoc.getaddr(loProps) ) {
+          if( prevent ) {
+            StrOp.fmtb( sidnr, " (%d)", data->sid);
+            StrOp.copy( adaptname, idname);
+            adaptname = StrOp.cat( adaptname, sidnr);
+            StrOp.copy( idname, adaptname);
+            TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "discovered loco %s has dupicate id in locolist, new loco renamed to: %s", loName, data->id);
+          }
+          return True;
+        }
+      }
+      loProps = wLocList.nextlc(data->locolist, loProps);
+    }
+  }
+
+  loProps = wMCS2.getproduct(data->mcs2ini);
+  while( loProps != NULL ) {
+    const char *loName =wProduct.getdesc(loProps);
+    if( loName != NULL ) {
+      if( StrOp.equals( data->id, loName ) && data->sid != wProduct.getsid(loProps) ) {
+        if( prevent ) {
+          StrOp.fmtb( sidnr, " (%d)", data->sid);
+          StrOp.copy( adaptname, idname);
+          adaptname = StrOp.cat( adaptname, sidnr);
+          StrOp.copy( idname, adaptname);
+          TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "discovered loco %s has dupicate id in productlist, new loco renamed to: %s", loName, data->id);
+        }
+        return True;
+      }
+    }
+    loProps = wMCS2.nextproduct(data->mcs2ini, loProps);
+  }
+
+  return False;
+}
 
 static void __reqFullName(iOMCS2Data data, byte* in) {
   byte buffer[32];
@@ -1393,11 +1448,12 @@ static void __registerMCS2DetectedMfxLoco(iOMCS2Data data) {
       return;
     }
   }
+/* check here for unique name id */
+  if( __checkForDuplicateNameId(data, True) )
+      wProduct.setdesc(loco, data->id);
   if( !__findLocinList(data) ) {
-    StrOp.copy( idname, wProduct.getdesc(loco) );            
-
+    StrOp.copy( idname, wProduct.getdesc(loco) );
     TraceOp.trc(name, TRCLEVEL_MONITOR, __LINE__, 9999, "Registering request id: %s, sid: %d, UID: 0x%08X,  controllerpath: %s", data->id, data->sid, data->uid, data->iid);
-
     if( loco == NULL ) {
       loco = NodeOp.inst(wProduct.name(), data->mcs2ini, ELEMENT_NODE);
       NodeOp.addChild(data->mcs2ini, loco);
@@ -1459,8 +1515,9 @@ static void __evaluateMCS2ReadConfig(iOMCS2Data data, byte* in) {
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "catched sid: %d, product sid: %d, UID: 0x%08X, name: %s, iid: %s", addr, wProduct.getsid(loco), wProduct.getpid(loco), data->id, data->iid);
   	/* in case of a xS2 controlled procedure, the sid adress changed from 1 to x in the end of the registering procedure */ 
         if( addr > 1 ) {   
-          if( !__checkForValidName(data) )
-              wProduct.setdesc(loco, data->id);
+          if( !__checkForValidName(data) ) {
+            wProduct.setdesc(loco, data->id);
+          }
           TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "register from readconfig name sid: %d, UID: 0x%08X, name: %s, iid: %s", addr, wProduct.getpid(loco), data->id, data->iid);
           data->uid = wProduct.getpid(loco);
           __registerMCS2DetectedMfxLoco(data);
@@ -1594,7 +1651,7 @@ static void __evaluateMCS2Verify( iOMCS2Data mcs2, byte* in ) {
       }
     }
     else {
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Verify failed for UID=0x%08X", mcs2->uid);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Verify failed for UID=0x%08X; loco %s", mcs2->uid , mcs2->id );
       __clearRegMfxVar(mcs2);
     }
   }
@@ -1613,14 +1670,14 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
     mcs2->mfxDetectInProgress = True;
     iONode loco = __getUID(mcs2);
     if( loco == NULL ) {
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X creating product registered to address %d", mcs2->uid, mcs2->sid);
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X creating product, assigneded to address %d", mcs2->uid, mcs2->sid);
       loco = NodeOp.inst(wProduct.name(), mcs2->mcs2ini, ELEMENT_NODE);
       NodeOp.addChild(mcs2->mcs2ini, loco);
       wProduct.setpid(loco, mcs2->uid);
       wProduct.setsid(loco, mcs2->sid);
     }  
     else {
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X (%s) product already registered to address %d", wProduct.getpid(loco), wProduct.getdesc(loco), wProduct.getsid(loco));
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X (%s) product already assigned to address %d", wProduct.getpid(loco), wProduct.getdesc(loco), wProduct.getsid(loco));
       if( wProduct.getdesc(loco) != NULL ) { 
         StrOp.copy( idname, wProduct.getdesc(loco) );
       }
@@ -1707,9 +1764,9 @@ static void __evaluateMCS2Discovery( iOMCS2Data mcs2, byte* in ) {
     if( wMCS2.isdiscovery(mcs2->mcs2ini) || mcs2->mcs2gfpUID != 0 || mcs2->gbUID != 0 ) {
       mcs2->mfxDetectInProgress = True;
       iONode loco = __getUID(mcs2);
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Registration status for UID=0x%08X (%s) %d", mcs2->uid, wProduct.getdesc(loco), wProduct.getcid(loco));
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Registration status for UID=0x%08X (%s) is %s", mcs2->uid, wProduct.getdesc(loco), wProduct.getcid(loco) ? "registered" : "not registered");
       if ( loco != NULL ) {
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Discovery UID=0x%08X (%s) already registered to address %d", mcs2->uid, wProduct.getdesc(loco), wProduct.getsid(loco));
+        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Discovery UID=0x%08X (%s) already assigned to address %d", mcs2->uid, wProduct.getdesc(loco), wProduct.getsid(loco));
         mcs2->sid = wProduct.getsid(loco);
         if( wProduct.getdesc(loco) != NULL ) { 
           StrOp.copy( idname, wProduct.getdesc(loco) );
@@ -2293,6 +2350,7 @@ static void __binder( iOMCS2Data data) {
   iONode loco = wMCS2.getproduct(data->mcs2ini);
   while( loco != NULL ) {
     wProduct.setcid(loco, 0);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Clearing registration for product: %s, product marked as %s", wProduct.getdesc(loco), wProduct.getcid(loco) ? "registered" : "not registered" );
     loco = wMCS2.nextproduct(data->mcs2ini, loco);
   }
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "binder recognized devices:");
@@ -2328,11 +2386,11 @@ static void __binder( iOMCS2Data data) {
           if( idname[0] == 0) {
             TraceOp.trc( name, TRCLEVEL_ERROR, __LINE__, 9999, "No id in rocrail.ini for UID: %08X, sid: %d", wProduct.getpid(loco), wProduct.getsid(loco) );
           }
-          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Binder: registered status for loco %s is: %d", idname, wProduct.getcid(loco) );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Binder: registered status for loco %s is %s", idname, wProduct.getcid(loco) ? "registered" : "not registered" );
           if( (data->mcs2gfpUID != 0 || data->gbUID != 0) && wProduct.getcid(loco) == 0 ) {
             if( __findLocinList(data) && __checkForValidName(data) ) {
               wProduct.setcid(loco, 1);
-              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Binder found product in locolist, product marked as registered; loco %s is: %d", wProduct.getdesc(loco), wProduct.getcid(loco) );
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Binder found product in locolist, loco %s product marked as registered", wProduct.getdesc(loco) );
             }
             buffer[0]  = (data->uid & 0xFF000000) >> 24;
             buffer[1]  = (data->uid & 0x00FF0000) >> 16;
@@ -2408,27 +2466,27 @@ static void __binder( iOMCS2Data data) {
           switch(  wLoc.getspcnt( loProps ) ) {
             case 14:
               buffer[5] = LOCO_PROT_DCC_14;
-              StrOp.copy(prot,"dcc-14");
+              StrOp.copy(prot,"DCC-14");
             break;
             case 126:
             case 128:
               buffer[5] = LOCO_PROT_DCC_128;
-              StrOp.copy(prot,"dcc-128");
+              StrOp.copy(prot,"DCC-128");
             break;
             default:
               buffer[5] = LOCO_PROT_DCC_28;
-              StrOp.copy(prot,"dcc-28 (default)");
+              StrOp.copy(prot,"DCC-28 (default)");
             break;
           }
         }
         if( StrOp.equals( wLoc.getprot( loProps ), wLoc.prot_L ) ) {
           if( wLoc.getspcnt( loProps ) > 28) { 
             buffer[5] = LOCO_PROT_DCC_L_128;
-            StrOp.copy(prot,"dcc-128 long address");
+            StrOp.copy(prot,"DCC-128 long address");
           }
           else {
             buffer[5] = LOCO_PROT_DCC_L_28;
-            StrOp.copy(prot,"dcc-28 long address");
+            StrOp.copy(prot,"DCC-28 long address");
           }
         }
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "locolist sid: %d, name: %s configured for %s using %d steps.", wLoc.getaddr(loProps), loName, prot, wLoc.getspcnt( loProps ));
@@ -2448,6 +2506,7 @@ static void __xS2Svc( void* threadinst ) {
   int i = 0;
   byte buffer[32];
   int GFP;
+
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CAN device detection started on interface: %s.", data->iid );
   if( !data->power ) {
       TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Request CAN configuration by ping" );
@@ -2466,7 +2525,10 @@ static void __xS2Svc( void* threadinst ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Start configuring Gleisbox");
       buffer[4]  = CMD_SYSSUB_NEWREGNR;
       if( wMCS2.isdiscovery(data->mcs2ini) ) {
-        buffer[6]  = rand() % 22;
+        buffer[6]  = rand() % 23;
+        if( buffer[6]  < 4 ) {
+          buffer[6]  += 4;
+        }
       }
       else {
         buffer[6] = __getnewSID(data);
@@ -2510,7 +2572,7 @@ static void __xS2Svc( void* threadinst ) {
     ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_LOCO_DISCOVERY, False, 1, buffer) );
   }
 
-  if( wDigInt.isreportstate(data->ini) ) {
+  if( wDigInt.issysteminfo(data->ini) ) {
     ThreadOp.sleep(500);
     while( data->mfxDetectInProgress ) {
       ThreadOp.sleep(250);
@@ -2569,6 +2631,7 @@ static void __xS2Svc( void* threadinst ) {
     }
   }
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Boot helper and CS2/Gleisbox Channel Reporter ended on interface: %s.", data->iid );
+  
 }
 
 static void __writer( void* threadinst ) {
@@ -2647,13 +2710,11 @@ static struct OMCS2* _inst( const iONode ini ,const iOTrace trc ) {
   int portRX = 15730;
   char procnr[2];
   char procname[17];
+  srand (time(NULL));
 
   /* Initialize data->xxx members... */
   TraceOp.set( trc );
   
-  /* initialize random seed: */
-  srand (time(NULL));
-
   rrUID = ('R' << 24) + ('c' << 16) + ('r' << 8) + 'L';
   rrHash = ( 'R' ^ 'r') + (('c' ^ 'L') << 8);
   rrHash &= 0xFF7F;
@@ -2678,6 +2739,8 @@ static struct OMCS2* _inst( const iONode ini ,const iOTrace trc ) {
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  command pause    [%d]ms", data->cmdpause );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  sensor range     [%d-%d]", data->sensorbegin, data->sensorend );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  hash             [0x%04X]", rrHash );
+
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  system info      [%s]", wDigInt.issysteminfo(data->mcs2ini)?"yes":"no" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  discovery        [%s]", wMCS2.isdiscovery(data->mcs2ini)?"yes":"no" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  bind             [%s]", wMCS2.isbind(data->mcs2ini)?"yes":"no" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  report state     [%s]", wDigInt.isreportstate(data->ini)?"yes":"no" );
