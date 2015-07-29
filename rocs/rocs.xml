@@ -171,6 +171,10 @@
     <fun name="parse" vt="this" remark="Parses given buffer.">
       <param name="xml" vt="const char*" remark="XML buffer to parse."/>
     </fun>
+    <fun name="parseErr" vt="this" remark="Parses given buffer.">
+      <param name="xml" vt="const char*" remark="XML buffer to parse."/>
+      <param name="erroffset" vt="int*" remark="Error offset."/>
+    </fun>
     <fun name="getDocNode" vt="iONode" remark="Document node keeps all 1st level nodes.">
       <param name="inst" vt="this" remark="Doc instance."/>
     </fun>

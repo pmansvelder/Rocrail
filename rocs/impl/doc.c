@@ -457,7 +457,7 @@ static iOAttr __parseAttribute( const char* s, int* pIdx, iODoc doc ) {
 /**
  *
  */
-static iONode __parse( const char* s, int* pIdx, int level, iONode parent, int* pErr, iODoc doc ) {
+static iONode __parse( const char* s, int* pIdx, int level, iONode parent, int* pErr, iODoc doc, int* erroffset ) {
   iONode thisNode = NULL;
   int  idx      = 0;
   int idxLoop   = 0;
@@ -486,6 +486,8 @@ static iONode __parse( const char* s, int* pIdx, int level, iONode parent, int* 
     /* skip whitespace */
     if( !__skip( s, &idx ) ) {
       TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Parser error at %d: unexpected eof!", idx );
+      if( erroffset != NULL )
+        *erroffset = idx;
       *pErr = 1;
       return NULL;
     }
@@ -507,7 +509,7 @@ static iONode __parse( const char* s, int* pIdx, int level, iONode parent, int* 
           TraceOp.trc( name, TRCLEVEL_PARSE, __LINE__, 9999, "idxTest(%d) == idx(%d)", idxTest, idx );
           return NULL;
         }
-        child = __parse( s, &idx, level + 1, thisNode, pErr, doc );
+        child = __parse( s, &idx, level + 1, thisNode, pErr, doc, erroffset );
         if( child == NULL || *pErr != 0 )
           return NULL;
         NodeOp.addChild( thisNode, child );
@@ -541,6 +543,8 @@ static iONode __parse( const char* s, int* pIdx, int level, iONode parent, int* 
     /* skip whitespace */
     if( !__skip( s, &idx ) ) {
       TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Parser error at %d: unexpected eof!", idx );
+      if( erroffset != NULL )
+        *erroffset = idx;
       *pErr = 1;
       return NULL;
     }
@@ -560,6 +564,8 @@ static iONode __parse( const char* s, int* pIdx, int level, iONode parent, int* 
 
   /* Error? */
   TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Parser error at position [%d]!", idx );
+  if( erroffset != NULL )
+    *erroffset = idx;
   *pErr = 1;
   if( pIdx != NULL )
     *pIdx = idx;
@@ -625,6 +631,10 @@ static Boolean _getBool(iODoc inst,const char* nodeName,const char* attrName, Bo
  *
  */
 static iODoc _parse( const char* xml ) {
+  return DocOp.parseErr(xml, NULL);
+}
+
+static iODoc _parseErr( const char* xml, int* erroffset ) {
   int i = 0;
   iODoc     doc  = allocIDMem( sizeof( struct ODoc ), RocsDocID );
   iODocData data = allocIDMem( sizeof( struct ODocData ), RocsDocID );
@@ -648,7 +658,7 @@ static iODoc _parse( const char* xml ) {
   TraceOp.trc( name, TRCLEVEL_PARSE, __LINE__, 9999, "Parsing started, input: %-20.20s...", xml );
 
   do {
-    childNode = __parse( xml, &i, 1, NULL, &Err, doc );
+    childNode = __parse( xml, &i, 1, NULL, &Err, doc, erroffset );
     if( childNode != NULL ) {
       if( NodeOp.getType( childNode ) == ELEMENT_NODE && rootNode == NULL ) {
         TraceOp.trc( name, TRCLEVEL_PARSE, __LINE__, 9999, "Found rootnode [%s].",

@@ -1,12 +1,9 @@
 /*
  Rocrail - Model Railroad Software
 
- Copyright (C) 2002-2014 Rob Versluis <r.j.versluis@rocrail.net>,
+ Copyright (C) 2002-2015 Robert Jan Versluis <r.j.versluis@rocrail.net>,
                          Jean-Michel Fischer <jmf@polygonpunkt.de>,
                          Lothar Roth <lothar.roth@lothar-roth.de>
-
- 
-
 
  All rights reserved.
 */
