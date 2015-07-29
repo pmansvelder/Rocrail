@@ -59,13 +59,20 @@ bool XmlScriptDlg::validateXML(bool okmessage) {
         (int)erroffset, (int)scriptlen, (int)textsize ), wxT("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
 
     m_XML->Clear();
+    bool backRed = false;
     for( int i = 0; i < scriptlen; i++ ) {
-      if( i == erroffset )
+      if( i == erroffset ) {
         m_XML->SetDefaultStyle(wxTextAttr(*wxBLACK, Base::getRed()));
+        backRed = true;
+      }
       char str[2];
       str[0] = xml[i];
       str[1] = '\0';
       m_XML->AppendText(wxString(str,wxConvUTF8));
+      if( backRed && xml[i] == '\n' ) {
+        m_XML->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+        backRed = false;
+      }
     }
 
     StrOp.free(xml);
