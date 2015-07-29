@@ -68,17 +68,24 @@ bool XmlScriptDlg::validateXML(bool okmessage) {
       m_XML->AppendText(wxString(str,wxConvUTF8));
     }
 
+    StrOp.free(xml);
     return false;
   }
   iONode root = DocOp.getRootNode(doc);
   if( root == NULL ) {
     DocOp.base.del(doc);
     wxMessageDialog( this, wxT("Root node is missing."), wxT("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    StrOp.free(xml);
     return false;
   }
   NodeOp.base.del(root);
   if( okmessage )
     wxMessageDialog( this, wxT("XMLScript is well formed."), wxT("Rocrail"), wxOK ).ShowModal();
+
+  m_XML->Clear();
+  m_XML->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+  m_XML->SetValue( wxString(xml,wxConvUTF8) );
+  StrOp.free(xml);
   return true;
 }
 
