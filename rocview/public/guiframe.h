@@ -75,6 +75,7 @@ class RocGuiFrame : public wxFrame
 public:
   iONode m_Ini;
   const char* m_ControlCode;
+  const char* m_SlaveCode;
   CmdRecorder* m_CmdRecorder;
 
   RocGuiFrame(const wxString& title, const wxPoint& pos, const wxSize& size, iONode ini, const char* theme, const char* sp, const char* tp);

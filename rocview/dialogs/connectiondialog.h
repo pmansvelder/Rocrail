@@ -86,6 +86,7 @@ public:
     wxString getHostname();
     int getPort();
     wxString getControlCode();
+    wxString getSlaveCode();
 
 ////@begin ConnectionDialog event handler declarations
 
@@ -128,6 +129,8 @@ public:
     wxTextCtrl* m_Port;
     wxStaticText* m_labControlCode;
     wxTextCtrl* m_ControlCode;
+    wxStaticText* m_labSlaveCode;
+    wxTextCtrl* m_SlaveCode;
     wxButton* m_OK;
     wxButton* m_Cancel;
     iONode m_Props;

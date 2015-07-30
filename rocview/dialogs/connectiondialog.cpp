@@ -83,6 +83,7 @@ void ConnectionDialog::initLabels() {
   m_LabelHost->SetLabel( wxGetApp().getMsg( "host" ) );
   m_LabelPort->SetLabel( wxGetApp().getMsg( "port" ) );
   m_labControlCode->SetLabel( wxGetApp().getMsg( "controlcode" ) );
+  m_labSlaveCode->SetLabel( wxGetApp().getMsg( "slavecode" ) );
 
   // Buttons
   m_OK->SetLabel( wxGetApp().getMsg( "ok" ) );
@@ -114,6 +115,9 @@ int ConnectionDialog::getPort() {
 wxString ConnectionDialog::getControlCode() {
   return m_ControlCode->GetValue();
 }
+wxString ConnectionDialog::getSlaveCode() {
+  return m_SlaveCode->GetValue();
+}
 
 void ConnectionDialog::evaluate() {
   bool exist = false;
@@ -125,6 +129,7 @@ void ConnectionDialog::evaluate() {
       wGui.sethost( m_Props, hostname );
       wRRCon.setport( rrcon, atoi( m_Port->GetValue().mb_str(wxConvUTF8) ) );
       wRRCon.setcontrolcode( rrcon, m_ControlCode->GetValue().mb_str(wxConvUTF8) );
+      wRRCon.setslavecode( rrcon, m_SlaveCode->GetValue().mb_str(wxConvUTF8) );
       exist = true;
       break;
     }
@@ -152,6 +157,8 @@ bool ConnectionDialog::Create( wxWindow* parent, wxWindowID id, const wxString& 
     m_Port = NULL;
     m_labControlCode = NULL;
     m_ControlCode = NULL;
+    m_labSlaveCode = NULL;
+    m_SlaveCode = NULL;
     m_OK = NULL;
     m_Cancel = NULL;
 ////@end ConnectionDialog member initialisation
@@ -206,22 +213,28 @@ void ConnectionDialog::CreateControls()
     m_ControlCode = new wxTextCtrl( itemDialog1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer3->Add(m_ControlCode, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+    m_labSlaveCode = new wxStaticText( itemDialog1, wxID_ANY, _("Slave code"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(m_labSlaveCode, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_SlaveCode = new wxTextCtrl( itemDialog1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(m_SlaveCode, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
     itemFlexGridSizer3->AddGrowableCol(1);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer10 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer12 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer10, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer12, 0, wxGROW|wxALL, 5);
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     m_OK->SetDefault();
-    itemStdDialogButtonSizer10->AddButton(m_OK);
+    itemStdDialogButtonSizer12->AddButton(m_OK);
 
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer10->AddButton(m_Cancel);
+    itemStdDialogButtonSizer12->AddButton(m_Cancel);
 
-    wxButton* itemButton13 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer10->AddButton(itemButton13);
+    wxButton* itemButton15 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer12->AddButton(itemButton15);
 
-    itemStdDialogButtonSizer10->Realize();
+    itemStdDialogButtonSizer12->Realize();
 
 ////@end ConnectionDialog content construction
 }

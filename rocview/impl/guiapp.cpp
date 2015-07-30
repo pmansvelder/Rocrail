@@ -1709,6 +1709,10 @@ void RocGui::cleanupOldModel() {
 
 
 void RocGui::sendToRocrail( iONode cmd, bool disconnect ) {
+  if( m_Frame != NULL ) {
+    wModelCmd.setcontrolcode( cmd, m_Frame->m_ControlCode );
+    wModelCmd.setslavecode( cmd, m_Frame->m_SlaveCode );
+  }
   char* strCmd = NodeOp.base.toString( cmd );
   sendToRocrail( strCmd, false, disconnect, false );
   StrOp.free( strCmd );

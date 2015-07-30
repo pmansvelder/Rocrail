@@ -2015,6 +2015,8 @@ RocGuiFrame::RocGuiFrame(const wxString& title, const wxPoint& pos, const wxSize
   m_bLocoImageColumn   = wGui.islocoimagecolumn(m_Ini)?true:false;
   m_TrackPickerDlg     = NULL;
   m_bPendingOpenWorkspace = false;
+  m_ControlCode        = NULL;
+  m_SlaveCode          = NULL;
 
 
   m_bExpired = SystemOp.isExpired(SystemOp.decode(StrOp.strToByte(wxGetApp().m_donkey),
@@ -3050,6 +3052,7 @@ void RocGuiFrame::OnConnect( wxCommandEvent& event ) {
     wxGetApp().setModel(NULL);
     wxGetApp().setStayOffline(false);
     m_ControlCode = StrOp.dup( dlg->getControlCode().mb_str(wxConvUTF8) );
+    m_SlaveCode = StrOp.dup( dlg->getSlaveCode().mb_str(wxConvUTF8) );
     Connect(StrOp.dup( dlg->getHostname().mb_str(wxConvUTF8) ), dlg->getPort());
 	}
   dlg->Destroy();
@@ -3072,7 +3075,8 @@ bool RocGuiFrame::Connect( const char* host, int port, bool wait4rr, bool showpo
     cmd = NodeOp.inst( wModelCmd.name(), NULL, ELEMENT_NODE );
     wModelCmd.setcmd( cmd, wModelCmd.plan );
     wModelCmd.setcontrolcode( cmd, m_ControlCode );
-    TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999,"control code %s", m_ControlCode );
+    wModelCmd.setslavecode( cmd, m_SlaveCode );
+    TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999,"control code %s, slave code %s", m_ControlCode, m_SlaveCode );
     wModelCmd.setdisablemonitor(cmd, wGui.ismonitoring(wxGetApp().getIni()) ? False:True);
     TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "monitoring is %s", wModelCmd.isdisablemonitor(cmd)?"off":"on" );
     wxGetApp().sendToRocrail( cmd );
