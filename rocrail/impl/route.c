@@ -534,6 +534,14 @@ static Boolean _cmd( iORoute inst, iONode nodeA ) {
   else if( StrOp.equals( wRoute.classset, cmdStr ) ) {
     RouteOp.setClass(inst, wRoute.getclass(nodeA));
   }
+  else if( StrOp.equals( wRoute.lock, cmdStr ) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "lock route %s with locid [%s]", RouteOp.getId(inst), wRoute.getlocid(nodeA) );
+    RouteOp.lock(inst, wRoute.getlocid(nodeA), False, True);
+  }
+  else if( StrOp.equals( wRoute.free, cmdStr ) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "unlock route %s with locid [%s]", RouteOp.getId(inst), wRoute.getlocid(nodeA) );
+    RouteOp.unLock(inst, wRoute.getlocid(nodeA), NULL, True, False);
+  }
   else if( StrOp.equals( wSwitch.unlock, cmdStr ) ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "reset route %s", RouteOp.getId(inst) );
     RouteOp.reset(inst);

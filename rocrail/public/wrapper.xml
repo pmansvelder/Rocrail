@@ -2515,6 +2515,8 @@
           <var name="atfree" vt="bool" defval="false" remark="command should be fired at a free event"/>
         </swcmd>
         <const name="go" vt="string" val="go" remark="Switch all switches for this street."/>
+        <const name="lock" vt="string" val="lock" remark="Lock this route."/>
+        <const name="free" vt="string" val="free" remark="Free this route."/>
         <const name="force" vt="string" val="force" remark="Switch all switches for this street. (Manually)"/>
         <const name="test" vt="string" val="test" remark="Switch all switches for this street without sending the clients updates."/>
         <const name="classset" vt="string" val="classset"/>
