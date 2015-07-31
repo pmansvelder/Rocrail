@@ -1547,6 +1547,10 @@
     <fun name="isSwapPost" vt="Boolean">
       <param name="inst" vt="this" remark="Route instance"/>
     </fun>
+    <fun name="hasClass" vt="Boolean">
+      <param name="inst" vt="this" remark="Route instance"/>
+      <param name="class" vt="const char*"/>
+    </fun>
     <fun name="hasThrownSwitch" vt="Boolean">
       <param name="inst" vt="this" remark="Route instance"/>
     </fun>

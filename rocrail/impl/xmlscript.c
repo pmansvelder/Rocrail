@@ -164,6 +164,16 @@ static Boolean __isClass(const char* classRes) {
       }
     }
 
+    /* route */
+    else if( StrOp.equals(wRoute.name(), objType) ) {
+      iORoute st = ModelOp.getRoute(model, objId);
+      if( st != NULL ) {
+        if( comparator[0] == '=' && RouteOp.hasClass(st, value) ) {
+          ok = True;
+        }
+      }
+    }
+
   }
 
   return ok;

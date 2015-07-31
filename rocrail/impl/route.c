@@ -1144,6 +1144,13 @@ static Boolean __checkClass(iORoute inst, const char* classStr,  iOLoc loc) {
   return True;
 }
 
+static Boolean _hasClass( iORoute inst, const char* class ) {
+  iORouteData data = Data(inst);
+  const char* l_class = wRoute.getclass(data->props);
+  return StrOp.find(l_class, class) != NULL ? True:False;
+}
+
+
 static Boolean _hasPermission( iORoute inst, iOLoc loc, const char* prevBlockID, Boolean mustChDir ) {
   iORouteData data = Data(inst);
 
