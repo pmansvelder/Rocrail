@@ -323,6 +323,7 @@ static Boolean __transact( iOMttmFccData data, byte* out, int outsize, byte* in,
       ThreadOp.sleep(1000);
       */
     }
+    ThreadOp.sleep(10);
     MutexOp.post( data->mux );
   }
   return rc;
@@ -886,7 +887,7 @@ static void __evaluateFB( iOMttmFccData data ) {
     data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
   }
 
-  TraceOp.trc( name, data->dummyio ? TRCLEVEL_INFO:TRCLEVEL_DEBUG, __LINE__, 9999, "evaluate sensors (initial=%d)...", data->fbInited );
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "evaluate sensors (initial=%d)...", data->fbInited );
 
   for( bus = 0; bus < 2; bus++ ) {
     if( data->fbmodcnt[bus] == 0 )
@@ -955,7 +956,7 @@ static void __evaluateFB( iOMttmFccData data ) {
   
 
   /* Check switches */
-  TraceOp.trc( name, data->dummyio ? TRCLEVEL_INFO:TRCLEVEL_DEBUG, __LINE__, 9999, "evaluate switches (initial=%d)...", data->swInited );
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "evaluate switches (initial=%d)...", data->swInited );
   if( MutexOp.wait( data->pointmux ) ) {
     iOPoint point = (iOPoint)MapOp.first( data->pointmap );
     while( point != NULL ) {
