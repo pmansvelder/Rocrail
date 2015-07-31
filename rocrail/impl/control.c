@@ -1455,6 +1455,7 @@ static iONode _getState( iOControl inst ) {
   wState.setsensorbus( node, data->sensorbus );
   wState.setaccessorybus( node, data->accessorybus );
   wState.sethealthy( node, ModelOp.isHealthy(model) );
+  wState.setautomode( node, ModelOp.isAuto(model) );
   wState.setneedkey4loconet( node, data->needkey4loconet );
   return node;
 }

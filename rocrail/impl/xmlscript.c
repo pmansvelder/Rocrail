@@ -50,7 +50,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocrail/wrapper/public/Stage.h"
 #include "rocrail/wrapper/public/SelTab.h"
 #include "rocrail/wrapper/public/Location.h"
-#include "rocrail/wrapper/public/SysCmd.h"
+#include "rocrail/wrapper/public/AutoCmd.h"
 #include "rocrail/wrapper/public/State.h"
 
 
@@ -285,6 +285,16 @@ static Boolean __isSubState(const char* stateRes) {
       NodeOp.base.del(state);
     }
 
+    /* Auto */
+    else if( StrOp.equals( wAutoCmd.name(), objType ) ) {
+      iONode state = ControlOp.getState(AppOp.getControl());
+      if( comparator[0] == '=' && wState.isautomode(state) && StrOp.equalsi( wAutoCmd.on, value ) )
+        ok = True;
+      if( comparator[0] == '=' && !wState.isautomode(state) && StrOp.equalsi( wAutoCmd.off, value ) )
+        ok = True;
+      /* clean up */
+      NodeOp.base.del(state);
+    }
 
   }
 
