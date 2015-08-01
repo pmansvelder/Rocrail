@@ -97,6 +97,7 @@ void TraceDlg::initLabels() {
   m_ObjectType->Append(wxT("OText"));
   m_ObjectType->Append(wxT("OTT"));
   m_ObjectType->Append(wxT("OWeather"));
+  m_ObjectType->Append(wxT("OXmlScript"));
 
 
   m_labID->SetLabel( wxGetApp().getMsg( "id" ) + wxT(":") );
@@ -261,7 +262,7 @@ void TraceDlg::addLine(const char* buffer) {
       return;
   }
   if( m_ObjectType->GetSelection() > 0 ) {
-    if( StrOp.find(buffer, m_ObjectType->GetStringSelection().mb_str(wxConvUTF8) ) == NULL )
+    if( StrOp.find(buffer, m_ObjectType->GetStringSelection().SubString(0, 7).mb_str(wxConvUTF8) ) == NULL )
       return;
   }
   if( m_Level->GetSelection() > 0 ) {
