@@ -64,6 +64,7 @@ static int instCnt = 0;
 
 static Boolean __doIf(iONode nodeScript, iOMap map, iONode script);
 static Boolean __doForEach(iONode nodeScript, iOMap map, iONode script);
+static Boolean __doWhile(iONode nodeScript, iOMap map, iONode script);
 static Boolean __doSwitch(iONode nodeScript, iOMap map, iONode script);
 static Boolean __doCall(iONode nodeScript, iOMap map, iONode script);
 static Boolean __isSubState(const char* stateRes);
@@ -740,6 +741,12 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     exit = __doForEach(cmd, map, script);
   }
 
+  /* while */
+  else if( StrOp.equals( "while", NodeOp.getName(cmd)) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested while...");
+    exit = __doWhile(cmd, map, script);
+  }
+
   /* switch */
   else if( StrOp.equals( "switch", NodeOp.getName(cmd)) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "nested switch...");
@@ -889,6 +896,65 @@ static Boolean __doIf(iONode nodeScript, iOMap map, iONode script) {
 }
 
 
+static Boolean __doWhile(iONode nodeScript, iOMap map, iONode script) {
+  Boolean exit = False;
+  Boolean breakloop = False;
+  const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
+  const char* state = NodeOp.getStr(nodeScript, "state", NULL);
+  const char* class = NodeOp.getStr(nodeScript, "class", NULL);
+
+  if( condition == NULL && state == NULL && class == NULL) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition and/or state and/or class is missing in the while statement" );
+    return exit;
+  }
+
+  char* conditionRes = NULL;
+  char* stateRes = NULL;
+  char* classRes = NULL;
+  Boolean conditionOK = True;
+  Boolean stateOK = True;
+  Boolean classOK = True;
+
+  do {
+    conditionOK = True;
+    stateOK = True;
+    classOK = True;
+
+    if( condition != NULL ) {
+      char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "while condition [%s]", conditionRes );
+      conditionOK = __isCondition(conditionRes, NodeOp.getBool(nodeScript, "alltrue", True));
+    }
+    if( state != NULL ) {
+      stateRes = TextOp.replaceAllSubstitutions(state, map);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "while state [%s]", stateRes );
+      stateOK = __isState(stateRes, NodeOp.getBool(nodeScript, "alltrue", True));
+    }
+    if( class != NULL ) {
+      classRes = TextOp.replaceAllSubstitutions(class, map);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "while class [%s]", classRes );
+      classOK = __isClass(classRes);
+    }
+
+    if( conditionOK && stateOK && classOK ) {
+      int cmds = NodeOp.getChildCnt(nodeScript);
+      int n = 0;
+      for( n = 0; n < cmds && exit == False; n++ ) {
+        iONode cmd = NodeOp.getChild(nodeScript, n);
+        char* id = VarOp.getText(wItem.getid(cmd), map, ' ');
+        wItem.setid(cmd, id);
+        exit = __executeCmd(cmd, map, NULL, NULL, script);
+        StrOp.free(id);
+      }
+    }
+    else {
+      break;
+    }
+  } while( conditionOK && stateOK && classOK && !exit);
+  return exit;
+}
+
+
 static Boolean __doForEach(iONode nodeScript, iOMap map, iONode script) {
   Boolean exit = False;
   Boolean breakloop = False;
@@ -983,6 +1049,8 @@ static Boolean __runScript(iONode nodeScript, iOMap map, iONode script, const ch
 
     if( StrOp.equals( "foreach", NodeOp.getName(cmd) ) )
       exit = __doForEach(cmd, map, script);
+    else if( StrOp.equals( "while", NodeOp.getName(cmd) ) )
+      exit = __doWhile(cmd, map, script);
     else if( StrOp.equals( "if", NodeOp.getName(cmd) ) )
       exit = __doIf(cmd, map, script);
     else if( StrOp.equals( "switch", NodeOp.getName(cmd) ) )
@@ -1021,6 +1089,9 @@ static void _run(const char* script, iOMap map, const char* function) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "script: [%s]", NodeOp.getName(nodeScript) );
     if( StrOp.equals( "foreach", NodeOp.getName(nodeScript) ) ) {
       __doForEach(nodeScript, map, NULL);
+    }
+    else if( StrOp.equals( "while", NodeOp.getName(nodeScript) ) ) {
+      __doWhile(nodeScript, map, NULL);
     }
     else if( StrOp.equals( "if", NodeOp.getName(nodeScript) ) ) {
       __doIf(nodeScript, map, NULL);
