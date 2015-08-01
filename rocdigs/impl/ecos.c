@@ -1441,23 +1441,35 @@ static void __processSwitchSet( iOECoS inst, iONode node ) {
            data->dccSwitchStates[switchAddress-1] &= ~0x01;
         }
 
-        /* clear event red, inform listener: Node */
-        iONode eventRed = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
-        wFeedback.setfbtype( eventRed, wFeedback.fbtype_railcom );
-        wFeedback.setaddr( eventRed, switchAddress * 2 );
-        if ( data->iid != NULL )
-          wFeedback.setiid( eventRed, data->iid );
-        wFeedback.setstate( eventRed, False );
-        data->listenerFun( data->listenerObj, eventRed, TRCLEVEL_MONITOR );
+        if( wDigInt.getprotver(data->ini) == 1 ) {
+          iONode nodeC = NodeOp.inst( wSwitch.name(), NULL, ELEMENT_NODE );
+          wSwitch.setaddr1( nodeC, switchAddress / 4 + 1);
+          wSwitch.setport1( nodeC, switchAddress % 4);
+          if( data->iid != NULL )
+            wSwitch.setiid( nodeC, data->iid );
+          wSwitch.setstate( nodeC, switchPosition == 'r' ? "turnout":"straight" );
+          data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_MONITOR );
+        }
+        else {
+          /* clear event red, inform listener: Node */
+          iONode eventRed = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+          wFeedback.setfbtype( eventRed, wFeedback.fbtype_railcom );
+          wFeedback.setaddr( eventRed, switchAddress * 2 );
+          if ( data->iid != NULL )
+            wFeedback.setiid( eventRed, data->iid );
+          wFeedback.setstate( eventRed, False );
+          data->listenerFun( data->listenerObj, eventRed, TRCLEVEL_MONITOR );
 
-        /* clear event green, inform listener: Node */
-        iONode eventGreen = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
-        wFeedback.setfbtype( eventGreen, wFeedback.fbtype_railcom );
-        wFeedback.setaddr( eventGreen, ( switchAddress * 2 ) - 1);
-        if ( data->iid != NULL )
-          wFeedback.setiid( eventGreen, data->iid );
-        wFeedback.setstate( eventGreen, False );
-        data->listenerFun( data->listenerObj, eventGreen, TRCLEVEL_MONITOR );
+          /* clear event green, inform listener: Node */
+          iONode eventGreen = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+          wFeedback.setfbtype( eventGreen, wFeedback.fbtype_railcom );
+          wFeedback.setaddr( eventGreen, ( switchAddress * 2 ) - 1);
+          if ( data->iid != NULL )
+            wFeedback.setiid( eventGreen, data->iid );
+          wFeedback.setstate( eventGreen, False );
+          data->listenerFun( data->listenerObj, eventGreen, TRCLEVEL_MONITOR );
+        }
+
       }
     }
   }
@@ -1735,46 +1747,62 @@ static void __processSwitchEvents( iOECoS inst, iONode node ) {
           if ( data->dccSwitchStates[switchAddress-1] & 0x03) {
 
             if ( positionOk) {
+              if( wDigInt.getprotver(data->ini) == 1 ) {
+                iONode nodeC = NodeOp.inst( wSwitch.name(), NULL, ELEMENT_NODE );
+                wSwitch.setaddr1( nodeC, switchAddress / 4 + 1);
+                wSwitch.setport1( nodeC, switchAddress % 4);
+                if( data->iid != NULL )
+                  wSwitch.setiid( nodeC, data->iid );
+                wSwitch.setstate( nodeC, ( data->dccSwitchStates[switchAddress-1] & 0x01) ? "turnout":"straight" );
+                data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_MONITOR );
+              }
+              else {
+                /* event red, inform listener: Node */
+                iONode eventRed = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+                wFeedback.setfbtype( eventRed, wFeedback.fbtype_railcom );
+                wFeedback.setaddr( eventRed, switchAddress * 2 );
+                if ( data->iid != NULL )
+                  wFeedback.setiid( eventRed, data->iid );
+                wFeedback.setstate( eventRed, ( data->dccSwitchStates[switchAddress-1] & 0x01) ? True : False );
+                data->listenerFun( data->listenerObj, eventRed, TRCLEVEL_MONITOR );
 
-              /* event red, inform listener: Node */
-              iONode eventRed = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
-              wFeedback.setfbtype( eventRed, wFeedback.fbtype_railcom );
-              wFeedback.setaddr( eventRed, switchAddress * 2 );
-              if ( data->iid != NULL )
-                wFeedback.setiid( eventRed, data->iid );
-              wFeedback.setstate( eventRed, ( data->dccSwitchStates[switchAddress-1] & 0x01) ? True : False );
-              data->listenerFun( data->listenerObj, eventRed, TRCLEVEL_MONITOR );
-
-              /* event green, inform listener: Node */
-              iONode eventGreen = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
-              wFeedback.setfbtype( eventGreen, wFeedback.fbtype_railcom );
-              wFeedback.setaddr( eventGreen, ( switchAddress * 2 ) - 1);
-              if ( data->iid != NULL )
-                wFeedback.setiid( eventGreen, data->iid );
-              wFeedback.setstate( eventGreen, ( data->dccSwitchStates[switchAddress-1] & 0x02) ? True : False );
-              data->listenerFun( data->listenerObj, eventGreen, TRCLEVEL_MONITOR );
+                /* event green, inform listener: Node */
+                iONode eventGreen = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+                wFeedback.setfbtype( eventGreen, wFeedback.fbtype_railcom );
+                wFeedback.setaddr( eventGreen, ( switchAddress * 2 ) - 1);
+                if ( data->iid != NULL )
+                  wFeedback.setiid( eventGreen, data->iid );
+                wFeedback.setstate( eventGreen, ( data->dccSwitchStates[switchAddress-1] & 0x02) ? True : False );
+                data->listenerFun( data->listenerObj, eventGreen, TRCLEVEL_MONITOR );
+              }
 
               /* clear switch requests */
               data->dccSwitchStates[switchAddress-1] &= ~0x03;
-            } else {
+            }
+            else {
 
-              /* clear event red, inform listener: Node */
-              iONode eventRed = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
-              wFeedback.setfbtype( eventRed, wFeedback.fbtype_railcom );
-              wFeedback.setaddr( eventRed, switchAddress * 2 );
-              if ( data->iid != NULL )
-                wFeedback.setiid( eventRed, data->iid );
-              wFeedback.setstate( eventRed, False );
-              data->listenerFun( data->listenerObj, eventRed, TRCLEVEL_MONITOR );
+              if( wDigInt.getprotver(data->ini) == 1 ) {
 
-              /* clear event green, inform listener: Node */
-              iONode eventGreen = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
-              wFeedback.setfbtype( eventGreen, wFeedback.fbtype_railcom );
-              wFeedback.setaddr( eventGreen, ( switchAddress * 2 ) - 1);
-              if ( data->iid != NULL )
-                wFeedback.setiid( eventGreen, data->iid );
-              wFeedback.setstate( eventGreen, False );
-              data->listenerFun( data->listenerObj, eventGreen, TRCLEVEL_MONITOR );
+              }
+              else {
+                /* clear event red, inform listener: Node */
+                iONode eventRed = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+                wFeedback.setfbtype( eventRed, wFeedback.fbtype_railcom );
+                wFeedback.setaddr( eventRed, switchAddress * 2 );
+                if ( data->iid != NULL )
+                  wFeedback.setiid( eventRed, data->iid );
+                wFeedback.setstate( eventRed, False );
+                data->listenerFun( data->listenerObj, eventRed, TRCLEVEL_MONITOR );
+
+                /* clear event green, inform listener: Node */
+                iONode eventGreen = NodeOp.inst( wFeedback.name(), NULL, ELEMENT_NODE );
+                wFeedback.setfbtype( eventGreen, wFeedback.fbtype_railcom );
+                wFeedback.setaddr( eventGreen, ( switchAddress * 2 ) - 1);
+                if ( data->iid != NULL )
+                  wFeedback.setiid( eventGreen, data->iid );
+                wFeedback.setstate( eventGreen, False );
+                data->listenerFun( data->listenerObj, eventGreen, TRCLEVEL_MONITOR );
+              }
             }
           }
         }
@@ -2125,7 +2153,9 @@ static struct OECoS* _inst( const iONode ini, const iOTrace trace ) {
 
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "----------------------------------------" );
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "ECoS %d.%d.%d", vmajor, vminor, patch );
-  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "\"Started in Zeeland, finished in New York\"" );
+  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "  host: %s", data->host );
+  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "  port: %d", data->port );
+  TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "  ver.: %d", wDigInt.getprotver(data->ini) );
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "----------------------------------------" );
   TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "iOECoS[%s] %s:%d",
                 wDigInt.getiid( ini ) != NULL ? wDigInt.getiid( ini ) : "",
