@@ -477,6 +477,7 @@ static void __fbEvent( obj inst, Boolean puls, const char* id, const char* ident
   if( isSet ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Switch [%s] polarise frogs by event, state=%s", SwitchOp.getId( (iOSwitch)inst ), strState );
     __polariseFrogs((iOSwitch)inst, strState);
+    wSwitch.setstate( data->props, strState);
   }
 
   {
