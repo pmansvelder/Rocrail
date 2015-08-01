@@ -902,6 +902,8 @@ static Boolean __doWhile(iONode nodeScript, iOMap map, iONode script) {
   const char* condition = NodeOp.getStr(nodeScript, "condition", NULL);
   const char* state = NodeOp.getStr(nodeScript, "state", NULL);
   const char* class = NodeOp.getStr(nodeScript, "class", NULL);
+  int max = NodeOp.getInt(nodeScript, "max", 100);
+  int loops = 0;
 
   if( condition == NULL && state == NULL && class == NULL) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "skip: condition and/or state and/or class is missing in the while statement" );
@@ -950,7 +952,8 @@ static Boolean __doWhile(iONode nodeScript, iOMap map, iONode script) {
     else {
       break;
     }
-  } while( conditionOK && stateOK && classOK && !exit);
+    loops++;
+  } while( conditionOK && stateOK && classOK && !exit && loops < max);
   return exit;
 }
 
