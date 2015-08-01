@@ -1602,7 +1602,7 @@
       <param name="state" vt="const char*" remark="State to compare with."/>
     </fun>
     <data>
-      <var name="lockedId" vt="const char*"/>
+      <var name="lockedId" vt="char*"/>
       <var name="requestId" vt="const char*"/>
       <var name="props" vt="iONode"/>
       <var name="reverse" vt="Boolean"/>

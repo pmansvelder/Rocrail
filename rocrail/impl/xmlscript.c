@@ -413,7 +413,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "skip function [%s]", wItem.getid(cmd));
     return exit;
   }
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s] oid[%s]", NodeOp.getName(cmd), wItem.getid(cmd), oid!=NULL?oid:"" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s] cmd[%s] oid[%s]", NodeOp.getName(cmd), wItem.getid(cmd), NodeOp.getStr(cmd, "cmd", "-"), oid!=NULL?oid:"" );
 
   /* loco */
   if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) || StrOp.equals( wCar.name(), NodeOp.getName(cmd)) ) {

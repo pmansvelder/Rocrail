@@ -1492,6 +1492,7 @@ static Boolean _lock( iORoute inst, const char* id, Boolean reverse, Boolean loc
 
   if( o->lockedId != NULL && StrOp.equals(o->lockedId, RouteOp.getId(inst) ) && RouteOp.isManual(inst, &isset) ) {
     if( isset ) {
+      StrOp.free(o->lockedId);
       o->lockedId = NULL;
     }
   }
@@ -1517,7 +1518,7 @@ static Boolean _lock( iORoute inst, const char* id, Boolean reverse, Boolean loc
       return False;
     }
 
-    o->lockedId = id;
+    o->lockedId = StrOp.dup(id);
     __checkAction(inst, "lock");
 
     __broadcast(inst);
@@ -1581,6 +1582,8 @@ static Boolean _unLock( iORoute inst, const char* lcid, const char** resblocks, 
       __unlockSwitches( inst, lcid, force );
 
     __unlockCrossingBlocks( inst, lcid, resblocks, force );
+    if(o->lockedId != NULL)
+      StrOp.free(o->lockedId);
     o->lockedId = NULL;
     o->requestId = NULL;
     __broadcast(inst);
@@ -1591,7 +1594,7 @@ static Boolean _unLock( iORoute inst, const char* lcid, const char** resblocks, 
     return True;
   }
   else {
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "cannot unlock with %s; route %s already locked by %s",
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "cannot unlock with [%s]; route [%s] already locked by [%s]",
         lcid, RouteOp.getId(inst), o->lockedId );
   }
   return False;
