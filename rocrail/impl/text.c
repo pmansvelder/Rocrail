@@ -121,6 +121,9 @@ static void __checkAction( iOText inst, const char* msg ) {
   while( action != NULL ) {
     int counter = atoi(wActionCtrl.getstate( action ));
 
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(action, wText.getid(data->props) );
+
     {
       iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));
       if( Action != NULL ) {
@@ -205,6 +208,7 @@ static char* __addActionProperties(iOMap map, iONode node) {
   MapOp.put(map, "carcount", (obj)NodeOp.getStr(node, "carcount", "0") );
   MapOp.put(map, "countedcars", (obj)NodeOp.getStr(node, "countedcars", "0") );
   MapOp.put(map, "wheelcount", (obj)NodeOp.getStr(node, "wheelcount", "0") );
+  MapOp.put(map, "callerid", (obj)NodeOp.getStr(node, "refcallerid", "-") );
 
   MapOp.put(map, "load", (obj)NodeOp.getStr(node, "load", "0"));
   MapOp.put(map, "volt", (obj)NodeOp.getStr(node, "volt", "0"));

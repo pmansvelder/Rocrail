@@ -118,6 +118,9 @@ static void __checkAction( iOTT inst, const char* cmd ) {
   iONode   ttaction = wTurntable.getactionctrl( data->props );
 
   while( ttaction != NULL) {
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(ttaction, wTurntable.getid(data->props) );
+
     if( StrOp.len( wActionCtrl.getstate(ttaction) ) == 0 ||
         StrOp.equals(wActionCtrl.getstate(ttaction), cmd ) )
     {

@@ -1,22 +1,8 @@
 <!--
  Rocrail - Model Railroad Software
-
- Copyright (C) 2002-2014 Rob Versluis, Rocrail.net
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
--->
+ Copyright (C) 2002-2015 Robert Jan Versluis, Rocrail.net
+ All rights reserved.
+ -->
 <Wrappers modulename="rocrail" title="RocRail">
 
   <Cmdline title="Commandline options:" createwrapper="true" remark="Commands are listed in column --Default--.">
@@ -1553,6 +1539,7 @@
     <var name="atcmd" vt="bool" defval="true" remark="Activate at commands."/>
     <var name="atevt" vt="bool" defval="false" remark="Activate at events."/>
     <var name="deact" vt="string" defval="none" range="none,enter,in" remark="Deactivation event."/>
+    <var name="callerid" vt="string" defval="" range="*" remark="ID of the caller object."/>
     <var name="lcid" vt="string" defval="" range="*"/>
     <var name="lcclass" vt="string" defval="" range="*"/>
     <var name="bkid" vt="string" defval="" range="*"/>
@@ -3144,6 +3131,7 @@
         <var name="pointsize" vt="int" defval="0" range="0-*" remark=""/>
         <var name="cmd" vt="string" defval="NULL" range="*" remark="update"/>
         <var name="format" vt="string" defval="NULL" range="*" remark="Format string."/>
+        <var name="refcallerid" vt="string" defval="" range="*" remark="Reference ID."/>
         <var name="reflcid" vt="string" defval="" range="*" remark="Reference ID."/>
         <var name="refbkid" vt="string" defval="" range="*" remark="Reference ID."/>
         <var name="counter" vt="int" defval="0" range="0-*"/>

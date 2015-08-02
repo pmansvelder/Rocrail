@@ -165,6 +165,9 @@ static void __checkAction( iOBlock inst, const char* state ) {
   while( action != NULL ) {
     int counter = atoi(wActionCtrl.getstate( action ));
 
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(action, wBlock.getid(data->props) );
+
     if( StrOp.len(wActionCtrl.getstate( action )) == 0 || StrOp.equals(state, wActionCtrl.getstate( action )) )
     {
 

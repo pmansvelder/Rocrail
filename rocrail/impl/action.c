@@ -687,11 +687,11 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
   iOActionData data = Data(inst);
   iOModel model = AppOp.getModel();
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Action execution %s [%s-%s:%s] ",
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Action execution %s [%s-%s:%s] called by [%s]",
       wAction.getid(data->action),
       wAction.gettype(data->action),
       wAction.getoid(data->action),
-      wAction.getcmd(data->action) );
+      wAction.getcmd(data->action), wActionCtrl.getcallerid(actionctrl) );
 
   /* output action */
   if( StrOp.equals( wOutput.name(), wAction.gettype( data->action ) ) ) {
@@ -968,6 +968,7 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       const char* cmdStr = wAction.getcmd( data->action );
       wText.setcmd( cmd, cmdStr );
       wText.setformat(cmd, wAction.getparam(data->action));
+      wText.setrefcallerid(cmd, wActionCtrl.getcallerid(actionctrl));
       wText.setreflcid(cmd, wActionCtrl.getlcid(actionctrl));
       wText.setrefbkid(cmd, wActionCtrl.getbkid(actionctrl));
       wText.setcounter(cmd, wActionCtrl.getcounter(actionctrl));
@@ -1022,8 +1023,9 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
           if( f != NULL ) {
             FileOp.read( f, xmlscript, size);
             FileOp.base.del(f);
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run xmlscript file [%s], size=%d", extaction, size );
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run xmlscript file [%s], size=%d called by [%s]", extaction, size, wActionCtrl.getcallerid(actionctrl) );
             iOMap map = MapOp.inst();
+            MapOp.put(map, "callerid", (obj)wActionCtrl.getcallerid(actionctrl));
             MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
             MapOp.put(map, "lcclass", (obj)wActionCtrl.getlcclass(actionctrl));
             MapOp.put(map, "bkid", (obj)wActionCtrl.getbkid(actionctrl));
@@ -1814,11 +1816,11 @@ static void _exec( struct OAction* inst, iONode actionctrl ) {
   iOActionData data = Data(inst);
   iOModel model = AppOp.getModel();
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Action %s [%s-%s:%s] ",
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Action %s [%s-%s:%s] called by [%s]",
       wAction.getid(data->action),
       wAction.gettype(data->action),
       wAction.getoid(data->action),
-      wAction.getcmd(data->action) );
+      wAction.getcmd(data->action), wActionCtrl.getcallerid(actionctrl) );
 
   if( levelCnt > 9 ) {
     TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "nested action level 10 detected" );

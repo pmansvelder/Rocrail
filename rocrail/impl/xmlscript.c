@@ -413,7 +413,8 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "skip function [%s]", wItem.getid(cmd));
     return exit;
   }
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s] cmd[%s] oid[%s]", NodeOp.getName(cmd), wItem.getid(cmd), NodeOp.getStr(cmd, "cmd", "-"), oid!=NULL?oid:"" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "execute [%s] id[%s] cmd[%s] oid[%s] callerid[%s]",
+      NodeOp.getName(cmd), wItem.getid(cmd), NodeOp.getStr(cmd, "cmd", "-"), oid!=NULL?oid:"", map != NULL ? (const char*)MapOp.get(map, "callerid"):"-" );
 
   /* loco */
   if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) || StrOp.equals( wLoc.name(), NodeOp.getName(cmd)) || StrOp.equals( wCar.name(), NodeOp.getName(cmd)) ) {
@@ -721,6 +722,8 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
           wText.setreflcid(evt, (const char*)MapOp.get(map, "lcid"));
         if( MapOp.haskey(map, "bkid") )
           wText.setrefbkid(evt, (const char*)MapOp.get(map, "bkid"));
+        if( MapOp.haskey(map, "callerid") )
+          wText.setrefcallerid(evt, (const char*)MapOp.get(map, "callerid"));
       }
       TextOp.base.event(text, evt);
     }

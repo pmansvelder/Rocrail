@@ -187,6 +187,9 @@ static void __checkAction( iOStage inst, const char* state, const char* substate
   while( action != NULL ) {
     int counter = atoi(wActionCtrl.getstate( action ));
 
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(action, wStage.getid(data->props) );
+
     TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "action [%s] state[%s](%s) substate[%s](%s)",
         wActionCtrl.getid(action),  wActionCtrl.getstate(action), state, wActionCtrl.getsubstate(action), substate );
 

@@ -80,6 +80,9 @@ static void __checkAction( iOLoc inst, const char* state, const char* substate )
   iONode    lcaction = wLoc.getactionctrl( data->props );
 
   while( lcaction != NULL) {
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(lcaction, wLoc.getid(data->props) );
+
       if( StrOp.equals(wActionCtrl.getstate(lcaction), state ) && StrOp.equals(wActionCtrl.getsubstate(lcaction), substate ) )
       {
 

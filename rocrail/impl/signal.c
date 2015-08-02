@@ -1134,6 +1134,9 @@ static void __checkAction( iOSignal inst, Boolean event ) {
     Boolean atcmd = wActionCtrl.isatcmd(sgaction);
     Boolean atevt = wActionCtrl.isatevt(sgaction);
 
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(sgaction, wSignal.getid(data->props) );
+
     if( (!event && atcmd) || (event && atevt) ) {
       if( StrOp.len( wActionCtrl.getstate(sgaction) ) == 0 || StrOp.equals(wActionCtrl.getstate(sgaction), wSignal.getstate(data->props) ) )
       {

@@ -301,6 +301,9 @@ static void __checkAction( iOSwitch inst, Boolean event ) {
     Boolean atcmd = wActionCtrl.isatcmd(swaction);
     Boolean atevt = wActionCtrl.isatevt(swaction);
 
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(swaction, wSwitch.getid(data->props) );
+
     if( (!event && atcmd) || (event && atevt) ) {
       if( StrOp.len( wActionCtrl.getstate(swaction) ) == 0 || StrOp.equals(wActionCtrl.getstate(swaction), wSwitch.getstate(data->props) ) )
       {

@@ -137,6 +137,9 @@ static void __checkAction( iOWeather inst, const char* state ) {
 
   /* loop over all actions */
   while( action != NULL ) {
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(action, wWeather.getid(data->props) );
+
     if( StrOp.len(wActionCtrl.getstate( action )) == 0 || StrOp.equals(state, wActionCtrl.getstate( action )) )
     {
       iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));

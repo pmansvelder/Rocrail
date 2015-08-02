@@ -139,6 +139,9 @@ static void __checkActions(iOOutput inst, const char* cmd) {
 
 
   while( coaction != NULL ) {
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(coaction, wOutput.getid(data->props) );
+
     if( (StrOp.equals(wOutput.on, wOutput.getstate(data->props)) && StrOp.len( wActionCtrl.getstate(coaction) ) == 0) ||
         StrOp.equals(wActionCtrl.getstate(coaction), wOutput.getstate(data->props) ) )
     {

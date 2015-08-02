@@ -143,6 +143,9 @@ static void __checkAction( iOFBack inst ) {
       counter = -1;
     }
 
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(fbaction, wFeedback.getid(data->props) );
+
     if( StrOp.equals( data->state?"on":"off"    , wActionCtrl.getstate( fbaction ) ) ||
         StrOp.equals( data->state?"true":"false", wActionCtrl.getstate( fbaction ) ) ||
         (data->state && StrOp.len(wActionCtrl.getstate( fbaction )) == 0) ||

@@ -284,6 +284,8 @@ static void __checkAction( iORoute inst, const char* state ) {
 
   /* loop over all actions */
   while( action != NULL ) {
+    /* Set the callerID. */
+    wActionCtrl.setcallerid(action, wRoute.getid(data->props) );
 
     if( StrOp.len(wActionCtrl.getstate( action )) == 0 ||
         StrOp.equals(state, wActionCtrl.getstate( action )) )
