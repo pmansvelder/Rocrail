@@ -1844,7 +1844,7 @@ static void __BBT(iOLoc loc) {
     if( data->bbtInterval == 0 )
       data->bbtInterval = 10;
 
-    if( data->drvSpeed > 0 && !data->bbtAtMinSpeed && data->bbtCycleSpeed >= 0 && (data->bbtCycleSpeed % data->bbtInterval) == 0 ) {
+    if( data->drvSpeed > 0 && data->bbtIn == 0 && !data->bbtAtMinSpeed && data->bbtCycleSpeed >= 0 && (data->bbtCycleSpeed % data->bbtInterval) == 0 ) {
       iONode cmd = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
       int V_min = wLoc.getV_min( data->props );
       int speed = 0;
@@ -1857,8 +1857,8 @@ static void __BBT(iOLoc loc) {
         data->bbtAtMin = SystemOp.getTick();
         wLoc.setV_hint( data->props, wLoc.min );
       }
-      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "BBT-SPEED V=%d id=%s mode=%s atminspeed=%d",
-          speed, wLoc.getid(data->props), wLoc.getmode(data->props), data->bbtAtMinSpeed  );
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "BBT-SPEED V=%d(%d) id=%s mode=%s atminspeed=%d bbtIn=%ld",
+          speed, data->drvSpeed, wLoc.getid(data->props), wLoc.getmode(data->props), data->bbtAtMinSpeed, data->bbtIn );
 
       data->curSpeed = speed;
       wLoc.setV( cmd, speed );
@@ -2421,7 +2421,8 @@ static void _event( iOLoc inst, obj emitter, int evt, int timer, Boolean forcewa
       data->bbtIn = SystemOp.getTick();
       TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "BBT pre2in=%ld block=%s", data->bbtIn, data->bbtInBlock );
     }
-    else if( (evt == in_event || (evt == shortin_event && wLoc.isshortin(data->props) ) ) && data->bbtIn == 0 && data->bbtEnter > 0 && StrOp.equals(blockid, data->bbtEnterBlock) ) {
+    else if( (evt == in_event || (evt == shortin_event && wLoc.isshortin(data->props) ) ) && data->bbtIn == 0 && data->bbtEnter > 0 && StrOp.equals(blockid, data->bbtEnterBlock) )
+    {
       if( timer == 0 ) {
         data->bbtInBlock = blockid;
         data->bbtIn = SystemOp.getTick();
@@ -2432,6 +2433,10 @@ static void _event( iOLoc inst, obj emitter, int evt, int timer, Boolean forcewa
         if( data->bbtInTimer == 0 )
           data->bbtInTimer++;
       }
+    }
+    else {
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "BBT unhandled event %d from %s: bbtEnter=%ld bbtEnterBlock=%s bbtIn=%ld bbtInTimer=%d",
+          evt, blockid, data->bbtEnter, data->bbtEnterBlock, data->bbtIn, data->bbtInTimer );
     }
   }
   else if(evt == enter_event && block != NULL && !block->allowBBT(block) ) {
