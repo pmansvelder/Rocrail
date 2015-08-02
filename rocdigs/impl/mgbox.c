@@ -887,28 +887,14 @@ static void __reportState(iOMCS2Data data) {
     if( data->iid != NULL )
       wState.setiid( node, data->iid );
 
+    wState.setload( node, data->load );
+    wState.setvolt( node, data->volt );
+    wState.settemp( node, data->temp );
     wState.setpower( node, data->power );
     wState.settrackbus( node, data->power );
     wState.setsensorbus( node, data->sensor );
     wState.setaccessorybus( node, True );
-    wState.setload( node, data->load );
-    wState.setvolt( node, data->volt );
-    wState.settemp( node, data->temp );
     wState.setshortcut(node, data->overload);
-    data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
-  }
-}
-
-static void __reportSystemInfo(iOMCS2Data data) {
-  if( wDigInt.issysteminfo(data->ini) && data->listenerFun != NULL && data->listenerObj != NULL ) {
-    iONode node = NodeOp.inst( wState.name(), NULL, ELEMENT_NODE );
-
-    if( data->iid != NULL )
-      wState.setiid( node, data->iid );
-
-    wState.setload( node, data->load );
-    wState.setvolt( node, data->volt );
-    wState.settemp( node, data->temp );
     data->listenerFun( data->listenerObj, node, TRCLEVEL_INFO );
   }
 }
@@ -967,7 +953,7 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
     TraceOp.trc( name, TRCLEVEL_MONITOR, __LINE__, 9999, "Overload on UID: 0x%08X on interface: %s", uid, data->iid );
     __reportState(data);
   }
-  if( cmd == CMD_SYSSUB_STATUS && in[4] == 8 && wDigInt.issysteminfo(data->ini) ) {
+  if( cmd == CMD_SYSSUB_STATUS && in[4] == 8 && wDigInt.isreportstate(data->ini) ) {
     switch (in[10]){
     case 1:
       /* Current in mA */
@@ -1012,7 +998,7 @@ static void __evaluateMCS2System( iOMCS2Data data, byte* in ) {
       }
     break;
     }
-    __reportSystemInfo(data);
+    __reportState(data);
   }
 }
 
@@ -1523,11 +1509,15 @@ static void __evaluateMCS2ReadConfig(iOMCS2Data data, byte* in) {
           __registerMCS2DetectedMfxLoco(data);
         }
         if( data->ms2UID == 0 && data->mcs2guiUID == 0 && (wProduct.getsid(loco) == 1 || data->sid == 1) ) {
-          if( __findLocinList(data)) {
-            wProduct.setsid(loco, data->sid);
-          } 
+          if( data->sid == 1 )
+              wProduct.setsid(loco, __getnewSID( data));
           else {
-            wProduct.setsid(loco, __getnewSID( data));
+            if( __findLocinList(data)) {
+              wProduct.setsid(loco, data->sid);
+            } 
+            else {
+              wProduct.setsid(loco, __getnewSID( data));
+            }
           }
           byte  buffer[32];
           buffer[0]  = (wProduct.getpid(loco) & 0xFF000000) >> 24;;
@@ -1614,49 +1604,40 @@ static void __evaluateMCS2Verify( iOMCS2Data mcs2, byte* in ) {
 /* 00064711 6 FF FA 8C 43 00 05 */
   mcs2->sid  = (in[9] << 8) + in[10];
   mcs2->uid =  (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-/* in case of a CS2 we verify also at a bind, a direct bind generates an error in the CS2 GUI */
-  if( wMCS2.isdiscovery(mcs2->mcs2ini)  || (wMCS2.isbind(mcs2->mcs2ini) && mcs2->mcs2guiUID != 0) || (mcs2->ms2UID == 0 && mcs2->mcs2guiUID == 0) ) {
-    if( mcs2->sid > 0 ) {
-      
-      iONode loco = __getUID(mcs2);
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind verified succesfull for UID=0x%08X to address %d", mcs2->uid, mcs2->sid);
+  if( mcs2->sid > 0 ) {
+    iONode loco = __getUID(mcs2);
+    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind  succesfull verified for UID=0x%08X to address %d", mcs2->uid, mcs2->sid);
 
-      if( mcs2->ms2UID == 0 && mcs2->mcs2guiUID == 0 && mcs2->sid == 1 && wProduct.getcid(loco) == 0 ) {
-        __reqFullName(mcs2, in);
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "full name requested for sid: %d", mcs2->sid);
-      }
-      /* sid 1 is used during registering */
-      if( (mcs2->sid > 1)  && wProduct.getcid(loco) == 0 ){
-        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Registering by verify UID=0x%08X, address %d", mcs2->uid, mcs2->sid);
+    if( mcs2->ms2UID == 0 && mcs2->mcs2guiUID == 0 && mcs2->sid == 1 && wProduct.getcid(loco) == 0 ) {
+      __reqFullName(mcs2, in);
+      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "full name requested for sid: %d", mcs2->sid);
+    }
+    /* sid 1 is used during registering */
+    if( (mcs2->sid > 1)  && wProduct.getcid(loco) == 0 ){
+      if( wProduct.getdesc(loco) != NULL ) {
         StrOp.copy( idname, wProduct.getdesc(loco) );            
-        if( !__checkForValidName(mcs2) && mcs2->gbUID != 0 ) {
-          __reqFullName(mcs2, in);
-        }
-        else {
-          wProduct.setdesc(loco, mcs2->id);
-          __registerMCS2DetectedMfxLoco(mcs2);
-        }
+        wProduct.setdesc(loco, mcs2->id);
+        __checkForValidName(mcs2);
+        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Registering by verify UID=0x%08X, address %d", mcs2->uid, mcs2->sid);
+        __registerMCS2DetectedMfxLoco(mcs2);
       }
       else {
-        if( wProduct.getcid(loco) == 1 ){
-          if( mcs2->sid > 1 ) {
-            TraceOp.trc(name, TRCLEVEL_MONITOR, __LINE__, 9999, "ID: %s, sid: %d,  UID: %08X already handled or created", wProduct.getdesc(loco), mcs2->sid, mcs2->uid);
-          }
-          else {
-            TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "ID: %s, sid: %d,  UID: %08X already handled or created", wProduct.getdesc(loco), mcs2->sid, mcs2->uid);
-          }
-        }
-        if( mcs2->sid > 1 )
-            __clearRegMfxVar(mcs2);
+        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Name is missing, full name requested for sid: %d", mcs2->sid);
+        __reqFullName(mcs2, in);
       }
     }
     else {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Verify failed for UID=0x%08X; loco %s", mcs2->uid , mcs2->id );
+      if( wProduct.getcid(loco) == 1 ){
+        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "ID: %s, sid: %d,  UID: %08X already handled or created", wProduct.getdesc(loco), mcs2->sid, mcs2->uid);
+      }
+    }
+    if( mcs2->sid > 1 ) {
       __clearRegMfxVar(mcs2);
     }
   }
   else {
-    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Verify for UID=0x%08X discarded (Verify is not activated by Discovery option)", mcs2->uid);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Verify failed for UID=0x%08X; loco %s", mcs2->uid , mcs2->id );
+    __clearRegMfxVar(mcs2);
   }
 }
 
@@ -1669,6 +1650,7 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
     TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "mfx bind invoked for UID=0x%08X, for sid: %d", mcs2->uid, mcs2->sid);
     mcs2->mfxDetectInProgress = True;
     iONode loco = __getUID(mcs2);
+
     if( loco == NULL ) {
       TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X creating product, assigneded to address %d", mcs2->uid, mcs2->sid);
       loco = NodeOp.inst(wProduct.name(), mcs2->mcs2ini, ELEMENT_NODE);
@@ -1677,9 +1659,12 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
       wProduct.setsid(loco, mcs2->sid);
     }  
     else {
-      TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X (%s) product already assigned to address %d", wProduct.getpid(loco), wProduct.getdesc(loco), wProduct.getsid(loco));
       if( wProduct.getdesc(loco) != NULL ) { 
         StrOp.copy( idname, wProduct.getdesc(loco) );
+      }
+      if( mcs2->sid > 1 ) {
+        __checkForValidName(mcs2);
+        TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X (%s) product already assigned to address %d", wProduct.getpid(loco), wProduct.getdesc(loco), wProduct.getsid(loco));
       }
     }       
 
@@ -1687,7 +1672,8 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
       TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind UID=0x%08X modifying changed sid %d to new sid %d", wProduct.getpid(loco), wProduct.getsid(loco), mcs2->sid);
       wProduct.setsid(loco, mcs2->sid);
     }
-    if( wMCS2.isdiscovery(mcs2->mcs2ini) || (mcs2->ms2UID != 0 && wMCS2.isdiscovery(mcs2->mcs2ini)) || mcs2->mcs2guiUID != 0 ) {    
+
+    if( wMCS2.isdiscovery(mcs2->mcs2ini) || (mcs2->ms2UID != 0 ) || mcs2->mcs2guiUID != 0 ) {    
       if( (mcs2->ms2UID == 0) && (mcs2->mcs2guiUID == 0) ) {
         TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind acknowledged, requesting Verify UID=0x%08X on sid: %d", mcs2->uid, mcs2->sid);
         byte  buffer[32];
@@ -1706,9 +1692,10 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
     else {
       TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind only enabled, ending Bind for UID=0x%08X (discovery is not activated)", mcs2->uid);
       if( !__findSidinLocList(mcs2) ) {
-        if( __checkForValidName(mcs2) ) {
+        if( __checkForValidName(mcs2) && (mcs2->sid > 1) ) {
           iONode loco = __getBySID(mcs2, mcs2->sid);
           wProduct.setdesc(loco, mcs2->id);
+          TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Registering by Bind UID=0x%08X, address %d", mcs2->uid, mcs2->sid);
           __registerMCS2DetectedMfxLoco(mcs2);
         }
         else {
@@ -1725,7 +1712,7 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
             TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "New product UID=0x%08X found, no GUI detected, continuing registering procedure", mcs2->uid);
 	  }
 	  else {
-            TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Product UID=0x%08X not added due to invalid (incomplete) name", mcs2->uid);
+            TraceOp.trc(name, TRCLEVEL_ERROR, __LINE__, 9999, "Product UID=0x%08X not added due to invalid (incomplete) name", mcs2->uid);
             __clearRegMfxVar(mcs2);
           }
         }
@@ -1737,7 +1724,7 @@ static void __evaluateMCS2Bind( iOMCS2Data mcs2, byte* in ) {
     }
   }
   else {
-    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind for UID=0x%08X discarded (bind & discovery is not activated)", mcs2->uid);
+    TraceOp.trc(name, TRCLEVEL_INFO, __LINE__, 9999, "Bind for UID=0x%08X discarded (bind and/or discovery is not activated)", mcs2->uid);
   }
 }
 
@@ -2572,7 +2559,7 @@ static void __xS2Svc( void* threadinst ) {
     ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_LOCO_DISCOVERY, False, 1, buffer) );
   }
 
-  if( wDigInt.issysteminfo(data->ini) ) {
+  if( wDigInt.isreportstate(data->ini) ) {
     ThreadOp.sleep(500);
     while( data->mfxDetectInProgress ) {
       ThreadOp.sleep(250);
