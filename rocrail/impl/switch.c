@@ -650,7 +650,7 @@ static Boolean _lock( iOSwitch inst, const char* id, iORoute route ) {
   }
 
   if( data->lockedId == NULL || (StrOp.equals( id, data->lockedId ) && (route != NULL ? (data->route == route):True )) ) {
-    data->lockedId = id;
+    data->lockedId = StrOp.dup(id);
     data->route = route;
     /* Broadcast to clients. Node6 */
     {
@@ -674,6 +674,8 @@ static Boolean _lock( iOSwitch inst, const char* id, iORoute route ) {
 static Boolean _unLock( iOSwitch inst, const char* id, iORoute route, Boolean force ) {
   iOSwitchData data = Data(inst);
   if( force || (data->lockedId == NULL && id == NULL) || (StrOp.equals( id, data->lockedId ) && (route != NULL ? (data->route == route):True )) ) {
+    if( data->lockedId != NULL )
+      StrOp.free(data->lockedId);
     data->lockedId = NULL;
     data->route    = NULL;
     data->savepostimer = wCtrl.getsavepostime( wRocRail.getctrl( AppOp.getIni(  ) ) ) * 10;

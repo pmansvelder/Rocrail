@@ -1713,7 +1713,7 @@
     </fun>
     <data include="fback">
       <var name="id" vt="const char*"/>
-      <var name="lockedId" vt="const char*"/>
+      <var name="lockedId" vt="char*"/>
       <var name="route" vt="iORoute"/>
       <var name="savepostimer" vt="int"/>
       <var name="props" vt="iONode"/>
