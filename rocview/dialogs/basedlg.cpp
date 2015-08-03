@@ -31,21 +31,21 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 
 wxString __getAddrStr(iONode Item, bool* longaddr) {
   if( StrOp.equals( wOutput.name(), NodeOp.getName(Item) ) )
-    return wxString::Format(_T("%d-%d"), wOutput.getaddr(Item), wOutput.getport(Item));
+    return wxString::Format(_T("%d:%d-%d"), wOutput.getbus(Item), wOutput.getaddr(Item), wOutput.getport(Item));
   else if( StrOp.equals( wSwitch.name(), NodeOp.getName(Item) ) ) {
     if( wSwitch.getaddr2(Item) > 0 || wSwitch.getport2(Item) > 0 ) {
       *longaddr = true;
-      return wxString::Format(_T("%d-%d/%d-%d"), wSwitch.getaddr1(Item), wSwitch.getport1(Item), wSwitch.getaddr2(Item), wSwitch.getport2(Item));
+      return wxString::Format(_T("%d:%d-%d/%d-%d"), wSwitch.getbus(Item), wSwitch.getaddr1(Item), wSwitch.getport1(Item), wSwitch.getaddr2(Item), wSwitch.getport2(Item));
     }
     else
-      return wxString::Format(_T("%d-%d"), wSwitch.getaddr1(Item), wSwitch.getport1(Item));
+      return wxString::Format(_T("%d:%d-%d"), wSwitch.getbus(Item), wSwitch.getaddr1(Item), wSwitch.getport1(Item));
   }
   else if( StrOp.equals( wSignal.name(), NodeOp.getName(Item) ) )
-    return wxString::Format(_T("%d-%d"), wSignal.getaddr(Item), wSignal.getport1(Item));
+    return wxString::Format(_T("%d:%d-%d"), wSignal.getbus(Item), wSignal.getaddr(Item), wSignal.getport1(Item));
   else if( StrOp.equals( wBlock.name(), NodeOp.getName(Item) ) )
     return wxString::Format(_T("%d-%d"), wBlock.getaddr(Item), wBlock.getport(Item));
   else
-    return wxString::Format(_T("%d"), wItem.getaddr(Item));
+    return wxString::Format(_T("%d:%d"), wItem.getbus(Item), wItem.getaddr(Item));
 }
 
 
@@ -473,7 +473,7 @@ void BaseDialog::appendItem( iONode Item) {
     m_ItemList->SetItem( index, m_colIID, wxString( wItem.getiid(Item), wxConvUTF8));
     m_ItemList->SetItem( index, m_colAddr, __getAddrStr(Item, &m_longaddr));
     m_ItemList->SetColumnWidth(m_colIID, wxLIST_AUTOSIZE_USEHEADER);
-    m_ItemList->SetColumnWidth(m_colAddr, m_longaddr ? wxLIST_AUTOSIZE:wxLIST_AUTOSIZE_USEHEADER);
+    m_ItemList->SetColumnWidth(m_colAddr, wxLIST_AUTOSIZE);
   }
   if( StrOp.equals( NodeOp.getName(Item), wSwitch.name() ) )
     m_ItemList->SetItem( index, m_colDesc, wxString( wItem.getdesc(Item), wxConvUTF8) + wxT("(") + wxString::Format( wxT("%d"), wSwitch.getswitched(Item)) + wxT(")") );
