@@ -409,38 +409,47 @@ static const char* __checkFbState( iOSwitch inst ) {
   }
 
   if( StrOp.equals( wSwitch.gettype( data->props ), wSwitch.threeway ) ) {
-    if( !fbR && fbG && !fb2R && fb2G )
+    if( !fbR && fbG && !fb2R && fb2G ) {
       data->fbstate = SW_STRAIGHT;
-    else if( fbR && !fbG && !fb2R && fb2G )
+      currentState = wSwitch.straight;
+    }
+    else if( fbR && !fbG && !fb2R && fb2G ) {
       data->fbstate = SW_LEFT;
-    else if( !fbR && fbG && fb2R && !fb2G )
+      currentState = wSwitch.left;
+    }
+    else if( !fbR && fbG && fb2R && !fb2G ) {
       data->fbstate = SW_RIGHT;
+      currentState = wSwitch.right;
+    }
   }
   else if( StrOp.equals( wSwitch.gettype( data->props ), wSwitch.dcrossing ) ) {
-    if( !fbR && fbG && !fb2R && fb2G )
+    if( !fbR && fbG && !fb2R && fb2G ) {
       data->fbstate = SW_STRAIGHT;
-    else if( fbR && !fbG && !fb2R && fb2G )
+      currentState = wSwitch.straight;
+    }
+    else if( fbR && !fbG && !fb2R && fb2G ) {
       data->fbstate = SW_LEFT;
-    else if( !fbR && fbG && fb2R && !fb2G )
+      currentState = wSwitch.left;
+    }
+    else if( !fbR && fbG && fb2R && !fb2G ) {
       data->fbstate = SW_RIGHT;
-    else if( fbR && !fbG && fb2R && !fb2G )
+      currentState = wSwitch.right;
+    }
+    else if( fbR && !fbG && fb2R && !fb2G ) {
       data->fbstate = SW_TURNOUT;
+      currentState = wSwitch.turnout;
+    }
   }
   else {
-    if( !fbR && fbG )
+    if( !fbR && fbG ) {
       data->fbstate = SW_STRAIGHT;
-    else if( fbR && !fbG )
+      currentState = wSwitch.straight;
+    }
+    else if( fbR && !fbG ) {
       data->fbstate = SW_TURNOUT;
+      currentState = wSwitch.turnout;
+    }
   }
-
-  if( data->fbstate == SW_STRAIGHT )
-    currentState = wSwitch.straight;
-  else if( data->fbstate == SW_TURNOUT )
-    currentState = wSwitch.turnout;
-  else if( data->fbstate == SW_LEFT )
-    currentState = wSwitch.left;
-  else if( data->fbstate == SW_RIGHT )
-    currentState = wSwitch.right;
 
   /* report */
   TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999,
@@ -483,7 +492,7 @@ static void __fbEvent( obj inst, Boolean puls, const char* id, const char* ident
     wSwitch.setstate( data->props, strState);
   }
 
-  {
+  if( strState[0] != '-' ) {
     iONode nodeF = NodeOp.inst( wSwitch.name(), NULL, ELEMENT_NODE );
     wSwitch.setid( nodeF, SwitchOp.getId( (iOSwitch)inst ) );
     wSwitch.setset( nodeF, isSet );
