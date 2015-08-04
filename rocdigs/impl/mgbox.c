@@ -785,19 +785,17 @@ static void __evaluateMCS2Loc( iOMCS2Data mcs2, byte* in ) {
   /* mask left nibble of high byte because this is protocol dependent 0x0 for MM, 0x4 for MFX, 0xC for DCC */
   int speed = (in[9] << 8) + in[10];
   int dir   = in[9];
-  int nr = 0;
   char ms2name[] = "MS2-XXX";
   iONode nodeC = NodeOp.inst( wLoc.name(), NULL, ELEMENT_NODE );
   if( mcs2->iid != NULL )
     wLoc.setiid( nodeC, mcs2->iid );
   wLoc.setaddr( nodeC, addr );
-  nr = __getThrottleNr( mcs2, in);
-  if( nr > 0 ) {
+  if( mcs2->ms2UID > 0 ) {
     if( mcs2->ms2UID == 1 )
       StrOp.copy( ms2name, "MS2");
-    else if( mcs2->ms2UID > 1 )
-      StrOp.fmtb( ms2name, "MS2-%d", nr);
-  }
+    else
+      StrOp.fmtb( ms2name, "MS2-%d", __getThrottleNr( mcs2, in));
+  } 
   wLoc.setthrottleid( nodeC, ( mcs2->mcs2guiUID ? "CS2" : ms2name ) );
   if( in[1] == 0x0A ) {
     /* loc command was a direction command.
@@ -824,7 +822,6 @@ static void __evaluateMCS2Function( iOMCS2Data mcs2, byte* in ) {
   int addr     = 0;
   int function = in[9];
   int state    = in[10];
-  int nr = 0;
   char ms2name[] = "MS2-XXX";
   addr = ( ( in[7] & 0x0F ) << 8 ) + in[8];
   /* mask left nibble of high byte because this is protocol dependent 0x0 for MM, 0x4 for MFX, 0xC for DCC */
@@ -834,13 +831,12 @@ static void __evaluateMCS2Function( iOMCS2Data mcs2, byte* in ) {
     if( mcs2->iid != NULL )
       wLoc.setiid( nodeC, mcs2->iid );
     wFunCmd.setaddr( nodeC, addr);
-    nr = __getThrottleNr( mcs2, in);
-    if( nr > 0 ) {
+    if( mcs2->ms2UID > 0 ) {
       if( mcs2->ms2UID == 1 )
         StrOp.copy( ms2name, "MS2");
-      else if( mcs2->ms2UID > 1 )
-        StrOp.fmtb( ms2name, "MS2-%d", nr);
-    }
+      else
+        StrOp.fmtb( ms2name, "MS2-%d", __getThrottleNr( mcs2, in));
+    } 
     wLoc.setthrottleid( nodeC, ( mcs2->mcs2guiUID ? "CS2" : ms2name ) );
     wFunCmd.setfnchanged( nodeC, function);
     wLoc.setcmd( nodeC, wLoc.function );
@@ -1023,11 +1019,11 @@ static int __calculateGfpHash( iOMCS2Data data, byte* in ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "CAN Bootloader Service hash calculation requested" );
   }
   int cmd = (in[1] | 1);
-  if( cmd == 1 && in[9] == 0x0B) {
+  if( (cmd == 1 && in[9] == 0x0B) || (cmd == 0x3B) ) {
     StrOp.copy( devtype, data->gbUID ? "Gleisbox" : "CS2");
   }  
   if( !(cmd == 1 && in[9] == 0x0B) || ctrlhash != ((in[2] << 8) + in[3]) ) 
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "calculated hash for %s 0x%04X", devtype, ctrlhash );
+      TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "calculated hash for %s 0x%04X", devtype, ctrlhash );
   return(ctrlhash);
 }
 
@@ -1038,7 +1034,7 @@ static int __calculateGuiHash( byte* in ) {
   ctrlhash |= (in[6] ^ in[8]);
   ctrlhash &= 0xFF7F;
   ctrlhash |= 0x0300;
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "calculated hash gui 0x%04X", ctrlhash );
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "calculated hash gui 0x%04X", ctrlhash );
   return(ctrlhash);
 }
 
@@ -1877,7 +1873,6 @@ static void __evaluateChannel( iOMCS2Data data ) {
   int endRange = 0;
   float startRange = 0.0;
   float fullRange = 0.0;
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Evaluating channel: %d", data->lstChn );
   if( data->lstChn == devconfig[0] ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "databuffer meets status data configuration channel config: %d", data->lstChn );
     data->idxcnt = 16; 
@@ -1923,8 +1918,15 @@ handled Index */
   int i = 0;
   int x = 0;
   char artno[8] = { '\0' };
-  if( in[2] == 0x03 )
+  if( in[2] == 0x03 ) {
+      if( data->lastseqnr > in[3]) {
+        TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Sequence ERROR while reading CS2 config, restart reading config");
+        data->lstChn = -1;
+        data->lastseqnr = 0;
+        return;
+      }
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Receive config status data for channel: %d, packet no: %d", data->lstChn, in[3]);
+  }
   if( in[2] == 0x03 && data->lstChn == 0 ) {
     data->lastseqnr = in[3];
     switch( in[3] ) {
@@ -1975,8 +1977,8 @@ handled Index */
   }
 
   int rcvuid =  (in[5] << 24) + (in[6] << 16) + (in[7] << 8) + in[8];
-/* the condition (in[10] == 0 || in[10] == data->lastseqnr)  is a fix for the marklin bug omitting the number of send packets in[10] == data->lastseqnr */ 
-  if( rcvuid == data->mcs2gfpUID && in[4] == 5 &&  data->lstChn == in[9] && (in[10] == 0 || in[10] == data->lastseqnr) ) {
+/* the conditions  (in[10] == 0 || in[10] == data->lastseqnr)  is a fix for the marklin bug omitting the number of send packets in[10] == data->lastseqnr */ 
+  if( rcvuid == data->mcs2gfpUID &&  data->lstChn == in[9] && (((in[4] == 6) && (in[10] == 0 || in[10] == data->lastseqnr)) || (in[4] == 5)) ) {
     if( data->lstChn > 0 )
         __evaluateChannel(data);
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "End of status data configuration transfer for channel: %d", data->lstChn );
@@ -2241,7 +2243,7 @@ static void __reader( void* threadinst ) {
       ctrlHash = __calculateGuiHash( in );
     }
     else {
-      if( (cmd == 1 && in[9] == 0x0B) || (cmd == 0x31 && in[4] > 0) || cmd == 0x37 || cmd == 0x3B ) {
+      if( ((cmd == 1 && in[9] == 0x0B) || (cmd == 0x31 && in[4] > 0) || cmd == 0x37 || cmd == 0x3B) && (((in[2] << 8) + in[3]) >= 0x2000) ) {
         ctrlHash = __calculateGfpHash( data, in );
       }
     }
@@ -2324,6 +2326,7 @@ static void __reader( void* threadinst ) {
   } while( data->readerrun );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "MGBOX reader stopped on interface: %s", data->iid );
 }
+
 
 static void __binder( iOMCS2Data data) {
   byte  buffer[32];
@@ -2490,7 +2493,7 @@ static void __xS2Svc( void* threadinst ) {
   iOThread th = (iOThread)threadinst;
   iOMCS2 mcs2 = (iOMCS2)ThreadOp.getParm( th );
   iOMCS2Data data = Data(mcs2);
-  int i = 0;
+  int i,sc = 0;
   byte buffer[32];
   int GFP;
 
@@ -2589,6 +2592,11 @@ static void __xS2Svc( void* threadinst ) {
         while( data->lastseqnr != 0 || i == 20) {
           ThreadOp.sleep (20);
           i++;
+          if( i == 20) {
+            data->lstChn = -1;
+            data->lastseqnr = 0; 
+            TraceOp.trc( name, TRCLEVEL_EXCEPTION, __LINE__, 9999, "Timeout while reading status data configuration, retrying... ");
+          }
         }
         data->lstChn++;
       }
@@ -2603,22 +2611,28 @@ static void __xS2Svc( void* threadinst ) {
       buffer[2]  = (GFP & 0x0000FF00) >> 8;
       buffer[3]  = (GFP & 0x000000FF);
       buffer[4] = CMD_SYSSUB_STATUS;
-      buffer[5] = reportstatechannel[i]; /* 1= current 3= voltage 4= temp */
+      buffer[5] = reportstatechannel[i]; /* array content pos0->load=1 pos 1->voltage=3 pos2->temp=4 */
       if( !data->mfxDetectInProgress )
           ThreadOp.post( data->writer, (obj)__makeMsg(0, CMD_SYSTEM, False, 6, buffer) );
       i++;
       if( firstview )
         ThreadOp.sleep (50);
-      else
-        ThreadOp.sleep (500);
+      else {
+        if( i == 1 && sc < 4 ) {
+          i--;
+          sc++;
+          ThreadOp.sleep (200);
+        }
+        ThreadOp.sleep (200);
+      }
       if( i == 3 ) {
         i = 0;
+        sc = 0;
         firstview = False;
       }
     }
   }
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Boot helper and CS2/Gleisbox Channel Reporter ended on interface: %s.", data->iid );
-  
 }
 
 static void __writer( void* threadinst ) {
@@ -2774,6 +2788,9 @@ static struct OMCS2* _inst( const iONode ini ,const iOTrace trc ) {
   data->mcs2guiUID = 0;
   data->mcs2gfpUID = 0;
   data->sid = 0;
+  data->voltStepRate = 17000.0 / 659.0;
+  data->loadStepRate = 3300.0 / 396.0;
+  data->tempStepRate = 80.0 / 193.0;
 
   __clearRegMfxVar(data);
   
@@ -2806,7 +2823,6 @@ static struct OMCS2* _inst( const iONode ini ,const iOTrace trc ) {
 
   data->mgboxsvc = ThreadOp.inst( mgboxsvcthreadname, &__xS2Svc, __MCS2 );
   ThreadOp.start( data->mgboxsvc );
-
   instCnt++;
   return __MCS2;
 }
