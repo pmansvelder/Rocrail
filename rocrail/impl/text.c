@@ -209,6 +209,8 @@ static char* __addActionProperties(iOMap map, iONode node) {
   MapOp.put(map, "countedcars", (obj)NodeOp.getStr(node, "countedcars", "0") );
   MapOp.put(map, "wheelcount", (obj)NodeOp.getStr(node, "wheelcount", "0") );
   MapOp.put(map, "callerid", (obj)NodeOp.getStr(node, "refcallerid", "-") );
+  MapOp.put(map, "state", (obj)NodeOp.getStr(node, "state", "") );
+  MapOp.put(map, "substate", (obj)NodeOp.getStr(node, "substate", "") );
 
   MapOp.put(map, "load", (obj)NodeOp.getStr(node, "load", "0"));
   MapOp.put(map, "volt", (obj)NodeOp.getStr(node, "volt", "0"));

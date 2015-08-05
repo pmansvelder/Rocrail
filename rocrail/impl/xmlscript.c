@@ -741,6 +741,10 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
           wText.setrefbkid(evt, (const char*)MapOp.get(map, "bkid"));
         if( MapOp.haskey(map, "callerid") )
           wText.setrefcallerid(evt, (const char*)MapOp.get(map, "callerid"));
+        if( MapOp.haskey(map, "state") )
+          NodeOp.setStr(evt, "state", (const char*)MapOp.get(map, "state"));
+        if( MapOp.haskey(map, "substate") )
+          NodeOp.setStr(evt, "substate", (const char*)MapOp.get(map, "substate"));
       }
       TextOp.base.event(text, evt);
     }
