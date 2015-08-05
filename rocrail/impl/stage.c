@@ -194,7 +194,7 @@ static void __checkAction( iOStage inst, const char* state, const char* substate
         wActionCtrl.getid(action),  wActionCtrl.getstate(action), state, wActionCtrl.getsubstate(action), substate );
 
     if( substate != NULL && StrOp.equals(state, wActionCtrl.getstate( action )) ) {
-      if( StrOp.equals(substate, wActionCtrl.getsubstate( action )) ) {
+      if( StrOp.equals(substate, wActionCtrl.getsubstate( action )) || StrOp.equals("*", wActionCtrl.getsubstate(action)) ) {
         iOAction Action = ModelOp.getAction(model, wActionCtrl.getid( action ));
         if( Action != NULL ) {
           wActionCtrl.setbkid(action, "");
@@ -205,8 +205,11 @@ static void __checkAction( iOStage inst, const char* state, const char* substate
               wActionCtrl.setlcclass(action, LocOp.getClass(lc));
             }
           }
-
+          char* saveSubState = StrOp.dup(wActionCtrl.getsubstate(action));
+          wActionCtrl.setsubstate(action, substate);
           ActionOp.exec(Action, action);
+          wActionCtrl.setsubstate(action, saveSubState);
+          StrOp.free(saveSubState);
         }
       }
     }
