@@ -15113,7 +15113,7 @@
   </Msg>
   <Msg id="savepos">
     <de txt="Sichere Weichenlage"/>
-    <en txt="Save position"/>
+    <en txt="Save position" alttxt="Safe switch position"/>
     <nl txt="Terugstel positie"/>
     <sv txt="Spara position"/>
     <fr txt="Sauver la position"/>
@@ -15142,7 +15142,7 @@
   </Msg>
   <Msg id="savepostime">
     <de txt="Zeit nach der Weichen in Vorzugslage zurückschalten"/>
-    <en txt="Save position timer"/>
+    <en txt="Save position timer" alttxt="Switch safe position timer"/>
     <nl txt="Wissel terugsteltijd"/>
     <sv txt="Spara position timer"/>
     <fr txt="Minuterie des états gardés en mémoire"/>
