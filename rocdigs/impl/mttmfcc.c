@@ -323,7 +323,6 @@ static Boolean __transact( iOMttmFccData data, byte* out, int outsize, byte* in,
       ThreadOp.sleep(1000);
       */
     }
-    ThreadOp.sleep(10);
     MutexOp.post( data->mux );
   }
   return rc;
@@ -808,11 +807,10 @@ static int __translate( iOMttmFccData data, iONode node, byte* out, int *insize 
       out[2] = slot->index;
       out[3] = (f1 << 0 | f2 << 1 | f3 << 2 | f4 << 3 | f5 << 4 | f6 << 5 | f7 << 6 | f8 << 7);
       out[4] = (f9 << 0 | f10 << 1 | f11 << 2 | f12 << 3 | f13 << 4 | f14 << 5 | f15 << 6 | f16 << 7);
-      out[5] = 0x00;
       slot->f1_8  = out[3];
       slot->f9_16 = out[4];
       *insize = 1;
-      return 6;
+      return 5;
     }
     
   }
