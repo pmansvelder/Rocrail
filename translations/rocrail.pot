@@ -7949,3 +7949,9 @@ msgstr ""
 msgid "Validate"
 msgstr ""
 
+#. 
+# id="regularstop"
+#, c-format
+msgid "Regular stop"
+msgstr ""
+

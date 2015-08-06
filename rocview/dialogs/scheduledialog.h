@@ -272,6 +272,7 @@ public:
     wxStaticText* m_labMinute;
     wxSpinCtrl* m_Hour;
     wxSpinCtrl* m_Minute;
+    wxCheckBox* m_RegularStop;
     wxStaticBox* m_EntryDetails;
     wxCheckBox* m_EntrySwap;
     wxCheckBox* m_Free2Go;

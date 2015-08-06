@@ -2183,6 +2183,7 @@
           <var name="block" vt="string" defval="NULL" range="*" required="false" remark="Block from the blocklist"/>
           <var name="hour" vt="int" defval="0" remark="Departure hour"/>
           <var name="minute" vt="int" defval="0" remark="Departure minute"/>
+          <var name="regularstop" vt="bool" defval="true" remark="If not set the depart time will be ignored."/>
           <actionctrl cardinality="n"/>
           <var name="free2go" vt="bool" defval="false" remark="Block or location must be free before the schedule can start."/>
           <var name="swap" vt="bool" defval="false" remark="swap the loc placing before traveling to this destination"/>

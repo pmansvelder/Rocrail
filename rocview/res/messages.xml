@@ -31648,4 +31648,7 @@
     <es txt="Validar"/>
     <nl txt="Validatie"/>
   </Msg>
+  <Msg id="regularstop">
+    <en txt="Regular stop"/>
+  </Msg>
 </Messages>

@@ -218,66 +218,71 @@ Boolean checkScheduleTime( iILcDriverInt inst, const char* scheduleID, int sched
         int mins  = 0;
         int hours = 0;
 
-        if( timeprocessing == wSchedule.time_relative ) {
-          modeltime = modeltime - data->scheduletime;
-          modelminutes = modeltime / 60;
-          mins  = modelminutes % 60;
-          hours = modelminutes / 60;
-          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "using relative time: modeltime=%d", modeltime );
+        if( !wScheduleEntry.isregularstop(entry) ) {
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "no regular stop in schedule entry %d: GO", scheduleIdx );
+          go = True;
         }
         else {
-          ltm = localtime( &modeltime );
-          hours = ltm->tm_hour;
-          mins  = ltm->tm_min;
-          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "using real time: modeltime=%d", modeltime );
-        }
-
-        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "modeltime %02d:%02d (%ld)",
-            hours, mins, modeltime );
-
-        scheduleminutes = wScheduleEntry.gethour(entry) * 60 + wScheduleEntry.getminute(entry);
-
-        if(timeprocessing == wSchedule.time_hourly ) {
-          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "using hourly timing" );
-          /* processing hourly timing */
-          modelminutes = mins;
-          if( hours < fromhour || tohour < hours ) {
-            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
-                "current hour, %d, is not in the hourly range from %d to %d",
-                hours, fromhour, tohour );
-            scheduleminutes += 60;
+          if( timeprocessing == wSchedule.time_relative ) {
+            modeltime = modeltime - data->scheduletime;
+            modelminutes = modeltime / 60;
+            mins  = modelminutes % 60;
+            hours = modelminutes / 60;
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "using relative time: modeltime=%d", modeltime );
           }
-          else if( modelminutes > scheduleminutes && modelminutes - scheduleminutes > timeframe ) {
-            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
-                "diff between schedule[%d] and model[%d] time is bigger then the allowed frame of %d; force wait for next hour...",
-                scheduleminutes, modelminutes, timeframe );
-            scheduleminutes += 60;
+          else {
+            ltm = localtime( &modeltime );
+            hours = ltm->tm_hour;
+            mins  = ltm->tm_min;
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "using real time: modeltime=%d", modeltime );
           }
-        }
-        else {
-          modelminutes = hours * 60 + mins;
-        }
+
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "modeltime %02d:%02d (%ld)",
+              hours, mins, modeltime );
+
+          scheduleminutes = wScheduleEntry.gethour(entry) * 60 + wScheduleEntry.getminute(entry);
+
+          if(timeprocessing == wSchedule.time_hourly ) {
+            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203, "using hourly timing" );
+            /* processing hourly timing */
+            modelminutes = mins;
+            if( hours < fromhour || tohour < hours ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
+                  "current hour, %d, is not in the hourly range from %d to %d", hours, fromhour, tohour );
+              scheduleminutes += 60;
+            }
+            else if( modelminutes > scheduleminutes && modelminutes - scheduleminutes > timeframe ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
+                  "diff between schedule[%d] and model[%d] time is bigger then the allowed frame of %d; force wait for next hour...",
+                  scheduleminutes, modelminutes, timeframe );
+              scheduleminutes += 60;
+            }
+          }
+          else {
+            modelminutes = hours * 60 + mins;
+          }
 
 
-        TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
-            "check departure time schedule=%d model=%d index=%d",
-            scheduleminutes, modelminutes, scheduleIdx );
+          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
+              "check departure time schedule=%d model=%d index=%d", scheduleminutes, modelminutes, scheduleIdx );
 
-        /* compare clock with departure time */
-        if( scheduleminutes <= modelminutes ) {
-          if( (modelminutes - scheduleminutes) <= maxdelay ) {
-            TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
-                "train must leave now %d <= %d and is delayed by %d minutes", scheduleminutes, modelminutes, modelminutes - scheduleminutes );
-            go = True;
+          /* compare clock with departure time */
+          if( scheduleminutes <= modelminutes ) {
+            if( (modelminutes - scheduleminutes) <= maxdelay ) {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
+                  "train must leave now %d <= %d and is delayed by %d minutes", scheduleminutes, modelminutes, modelminutes - scheduleminutes );
+              go = True;
+            }
+            else {
+              TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
+                  "train exceeded the max.(%d) delay time: %d", maxdelay, modelminutes - scheduleminutes );
+            }
           }
           else {
             TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
-                "train exceeded the max.(%d) delay time: %d", maxdelay, modelminutes - scheduleminutes );
+                "train must wait %d > %d", scheduleminutes, modelminutes );
           }
-        }
-        else {
-          TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4203,
-              "train must wait %d > %d", scheduleminutes, modelminutes );
+
         }
 
         break;
