@@ -737,7 +737,7 @@ static const char* _getInLoc( iIBlockBase inst ) {
 /**  */
 static const char* _getLoc( iIBlockBase inst ) {
   iOStageData data = Data(inst);
-  return NULL;
+  return data->locId;
 }
 
 

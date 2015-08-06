@@ -165,7 +165,7 @@ static void __checkAction( iOFBack inst ) {
 
       if( data->listenerObj != NULL ) {
         iIBlockBase bk = (iIBlockBase)data->listenerObj;
-        if( StrOp.equals( BlockOp.base.name(), data->listenerObj->name() ) )
+        if( StrOp.equals( BlockOp.base.name(), data->listenerObj->name() ) || StrOp.equals( StageOp.base.name(), data->listenerObj->name() ) )
           wActionCtrl.setlcid(fbaction, bk->getLoc(bk) );
       }
       else if( ListOp.size(data->listeners) > 0 ) {
