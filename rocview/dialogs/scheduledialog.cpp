@@ -587,7 +587,11 @@ void ScheduleDialog::initSchedule() {
     m_Entries->SetCellValue(m_Entries->GetNumberRows()-1, 0, wxString(wScheduleEntry.getlocation( scentry ),wxConvUTF8 ) );
     m_Entries->SetCellValue(m_Entries->GetNumberRows()-1, 1, wxString(wScheduleEntry.getblock( scentry ),wxConvUTF8 ) );
 
-    char* hour = StrOp.fmt( "%02d:%02d", wScheduleEntry.gethour( scentry ), wScheduleEntry.getminute( scentry ) );
+    char* hour = NULL;
+    if( wScheduleEntry.isregularstop(scentry) )
+      hour = StrOp.fmt( "%02d:%02d", wScheduleEntry.gethour( scentry ), wScheduleEntry.getminute( scentry ) );
+    else
+      hour = StrOp.fmt( " " );
     m_Entries->SetCellValue(m_Entries->GetNumberRows()-1, 2, wxString(hour,wxConvUTF8 ) );
     StrOp.free( hour );
 
