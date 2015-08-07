@@ -197,6 +197,12 @@ Boolean checkScheduleTime( iILcDriverInt inst, const char* scheduleID, int sched
   iOLcDriverData data = Data(inst);
   Boolean go = False;
   iONode schedule = data->model->getSchedule( data->model, scheduleID );
+  if( data->state == LC_FINDDEST && data->curBlock != NULL ) {
+    int i = scheduleIdx;
+    scheduleIdx = data->model->getScheduleIndex( data->model, scheduleID, data->curBlock->base.id(data->curBlock), data->loc );
+    if( i != scheduleIdx )
+      TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 9999, "corrected scheduleIdx from %d to %d", i, scheduleIdx );
+  }
 
   if( schedule != NULL ) {
     int idx = 0;
