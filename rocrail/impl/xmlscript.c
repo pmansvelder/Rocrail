@@ -729,7 +729,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
 
   /* text */
   else if( StrOp.equals( wText.name(), NodeOp.getName(cmd)) ) {
-    const char* oid = wItem.getid(cmd);
+    char* oid = TextOp.replaceAllSubstitutions(wItem.getid(cmd), map);
     iOText text = ModelOp.getText( model, oid );
     if( text != NULL && wText.getformat(cmd) != NULL ) {
       iONode evt = NodeOp.inst( wText.name(), NULL, ELEMENT_NODE );
@@ -751,6 +751,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     else if( text != NULL && wText.getformat(cmd) == NULL ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "text [%s] format is missing", oid);
     }
+    StrOp.free(oid);
   }
 
   /* if */
