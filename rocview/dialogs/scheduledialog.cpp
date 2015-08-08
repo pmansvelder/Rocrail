@@ -65,6 +65,7 @@ IMPLEMENT_DYNAMIC_CLASS( ScheduleDialog, wxDialog )
 BEGIN_EVENT_TABLE( ScheduleDialog, wxDialog )
 
 ////@begin ScheduleDialog event table entries
+    EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_SCHEDULE, ScheduleDialog::OnNotebookSchedulePageChanged )
     EVT_LIST_ITEM_SELECTED( ID_LISTBOX_SCHEDULE_LIST, ScheduleDialog::OnListboxScheduleListSelected )
     EVT_LIST_COL_CLICK( ID_LISTBOX_SCHEDULE_LIST, ScheduleDialog::OnListboxScheduleListColLeftClick )
     EVT_CHECKBOX( ID_CHECKBOX_SCHEDULES_SHOW_ALL, ScheduleDialog::OnCheckboxSchedulesShowAllClick )
@@ -1605,6 +1606,19 @@ void ScheduleDialog::OnHelpClick( wxCommandEvent& event )
   case 1: wxGetApp().openLink( "schedules-dest" ); break;
   case 2: wxGetApp().openLink( "schedules-actions" ); break;
   default: wxGetApp().openLink( "schedules" ); break;
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_SCHEDULE
+ */
+
+void ScheduleDialog::OnNotebookSchedulePageChanged( wxNotebookEvent& event ) {
+  if( event.GetSelection() == 3 ) {
+    if( m_Props != NULL ) {
+      m_Graph->setSchedule(m_Props);
+    }
   }
 }
 

@@ -136,6 +136,9 @@ public:
 
 ////@begin ScheduleDialog event handler declarations
 
+    /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_SCHEDULE
+    void OnNotebookSchedulePageChanged( wxNotebookEvent& event );
+
     /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_LISTBOX_SCHEDULE_LIST
     void OnListboxScheduleListSelected( wxListEvent& event );
 

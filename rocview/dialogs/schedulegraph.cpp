@@ -67,7 +67,8 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
 
   int nrentries = 0;
   int nrtime = 0;
-  iOMap map = MapOp.inst();
+  iOMap  map  = MapOp.inst();
+  iOList list = ListOp.inst();
   iONode scentry = wSchedule.getscentry( m_Schedule );
   while( scentry != NULL ) {
     const char* location = wScheduleEntry.getlocation(scentry);
@@ -75,12 +76,14 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
     if( location != NULL && StrOp.len(location) > 0 ) {
       if( !MapOp.haskey(map, location) ) {
         MapOp.put(map, location, (obj)scentry);
+        ListOp.add(list, (obj)scentry);
         nrentries++;
       }
     }
     else if( block != NULL && StrOp.len(block) > 0 ) {
       if( !MapOp.haskey(map, block) ) {
         MapOp.put(map, block, (obj)scentry);
+        ListOp.add(list, (obj)scentry);
         nrentries++;
       }
     }
@@ -108,20 +111,26 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
     float leftmargin = 40.0;
     float topmargin = 80.0;
     float v = (float)((float)(w-2*margin-leftmargin) / (float)(nrentries-1));
-    iONode scentry = wSchedule.getscentry( m_Schedule );
+
+    // Vertical destination lines:
     for( int i = 0; i < nrentries; i++) {
+      iONode scentry = (iONode)ListOp.get(list, i);
       const char* location = wScheduleEntry.getlocation(scentry);
       const char* block = wScheduleEntry.getblock(scentry);
       int x = i*v+leftmargin+margin;
       NodeOp.setInt( scentry, "gx", x);
+
+      TraceOp.trc( "scgraph", TRCLEVEL_INFO, __LINE__, 9999, "draw line[%d of %d] at x=%d for [%s][%s]",
+          i, nrentries, x, location != NULL ? location:"-", block != NULL ? block:"-");
+
       dc.DrawLine( x, topmargin, x, h );
       if( location != NULL && StrOp.len(location) > 0 )
         dc.DrawRotatedText( wxString(location,wxConvUTF8), x-(theight/2), topmargin, 90 );
       else
         dc.DrawRotatedText( wxString(block,wxConvUTF8), x-(theight/2), topmargin, 90 );
-      scentry = wSchedule.nextscentry( m_Schedule, scentry );
     }
 
+    // Horizontal time lines:
     scentry = wSchedule.getscentry( m_Schedule );
     float timeh = (h - topmargin - 2*margin) / (nrtime-1);
     for( int n = 0; n < nrtime; n++) {
@@ -132,7 +141,9 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
       scentry = wSchedule.nextscentry( m_Schedule, scentry );
     }
 
+    // The graphic:
     dc.SetPen( *wxBLACK_PEN );
+    dc.SetBrush( *wxBLACK_BRUSH );
     wxPen pen2 = dc.GetPen();
     pen2.SetWidth(3);
     dc.SetPen(pen2);
@@ -140,30 +151,33 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
     scentry = wSchedule.getscentry( m_Schedule );
     int gx = -1;
     int gy = -1;
+    int idx = 0;
     while( scentry != NULL ) {
       int x = NodeOp.getInt( scentry, "gx", 0);
       int y = NodeOp.getInt( scentry, "gy", 0);
       if( gx == -1 ) {
+        // The first entry:
         gx = x;
         gy = y;
       }
       else {
-        if( x == 0 ) {
-          iONode node = getEntry(map, scentry);
-          if( node != NULL )
-            x = NodeOp.getInt( node, "gx", 0);
-        }
-        TraceOp.trc( "scgraph", TRCLEVEL_DEBUG, __LINE__, 9999, "draw line from %d,%d to %d,%d", gx,gy,x,y );
+        iONode node = getEntry(map, scentry);
+        if( node != NULL )
+          x = NodeOp.getInt( node, "gx", 0);
+        TraceOp.trc( "scgraph", TRCLEVEL_INFO, __LINE__, 9999, "draw line[%d] from %d,%d to %d,%d", idx, gx,gy,x,y );
         dc.DrawLine( gx, gy, x, y );
         gx = x;
         gy = y;
       }
+      dc.DrawCircle(gx, gy, 5);
       scentry = wSchedule.nextscentry( m_Schedule, scentry );
+      idx++;
     }
 
   }
 
   MapOp.base.del(map);
+  ListOp.base.del(list);
 }
 
 void ScheduleGraph::setSchedule(iONode schedule) {
