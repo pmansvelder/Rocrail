@@ -15141,7 +15141,7 @@
     <be txt="Захаваць пазыцыю"/>
   </Msg>
   <Msg id="savepostime">
-    <de txt="Zeit nach der Weichen in Vorzugslage zurückschalten"/>
+    <de txt="Zeitgeber für sichere Weichenlage"/>
     <en txt="Save position timer" alttxt="Switch safe position timer"/>
     <nl txt="Wissel terugsteltijd"/>
     <sv txt="Spara position timer"/>
@@ -31025,6 +31025,7 @@
     <be txt="Зацямненьне"/>
     <ru txt="Dim"/>
     <es txt="Oscurecer"/>
+    <pl txt="Przyciemnij"/>
   </Msg>
   <Msg id="redirecttomaster">
     <en txt="Redirect slave commands to the master loco"/>
@@ -31620,6 +31621,7 @@
     <it txt="Resettare orientamento e direzione"/>
     <ru txt="Сброс размещения и направления"/>
     <es txt="Resetear localizacion y dirección"/>
+    <pl txt="Resetuj położenie i kierunek"/>
   </Msg>
   <Msg id="savelevelas" dialog="true">
     <en txt="Save level as" tip="Save track plan level in a separate file."/>
@@ -31641,15 +31643,23 @@
     <nl txt="Tabblad index"/>
     <pt_BR txt="Índice de abas"/>
     <sr_latin txt="Tab Indeks"/>
+    <sl txt="Indeks zavihka"/>
   </Msg>
   <Msg id="validate">
     <en txt="Validate"/>
     <de txt="Prüfen"/>
     <es txt="Validar"/>
     <nl txt="Validatie"/>
+    <pt_BR txt="Validar"/>
+    <sl txt="Preveri"/>
+    <sr_latin txt="Potvrdi"/>
   </Msg>
   <Msg id="regularstop">
     <en txt="Regular stop"/>
+    <de txt="Haltepunkt"/>
+    <nl txt="Halteplaats"/>
+    <pt_BR txt="Parada normal"/>
+    <sl txt="Normalno ustavljanje"/>
   </Msg>
   <Msg id="diagram">
     <en txt="Diagram"/>
