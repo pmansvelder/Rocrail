@@ -405,7 +405,6 @@ static Boolean __isCondition(const char* conditionRes, Boolean alltrue) {
   return ok;
 }
 
-
 static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* breakloop, Boolean* continueloop, iONode script) {
   Boolean exit = False;
   iOModel model = AppOp.getModel();
@@ -473,6 +472,28 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     if( car != NULL ) {
       iONode clone = (iONode)NodeOp.base.clone(cmd);
       wCar.setid(clone, wCar.getid(CarOp.base.properties(car)));
+
+      if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) ) {
+        int fnaction = wFunCmd.getfnchanged(cmd);
+        if( wFunCmd.getfndesc(cmd) != NULL ) {
+          fnaction = CarOp.getFnNrByDesc(car, wFunCmd.getfndesc(cmd));
+        }
+        if( fnaction != -1 ) {
+          char fnkey[32];
+          wFunCmd.setfnchanged(clone, fnaction);
+          StrOp.fmtb(fnkey, "f%d", fnaction);
+          if( wFunCmd.getfncmd(cmd) != NULL ) {
+            const char* fncmd = wFunCmd.getfncmd(cmd);
+            if( StrOp.equals(wFunCmd.on, fncmd) )
+              NodeOp.setBool(clone, fnkey, True);
+            else if( StrOp.equals(wFunCmd.off, fncmd) )
+              NodeOp.setBool(clone, fnkey, False);
+            else if( StrOp.equals(wFunCmd.flip, fncmd) )
+              NodeOp.setBool(clone, fnkey, !CarOp.isFunction(car, fnaction));
+          }
+        }
+      }
+
       CarOp.cmd(car, clone);
     }
     StrOp.free(idRes);
