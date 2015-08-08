@@ -136,7 +136,8 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
     for( int n = 0; n < nrtime; n++) {
       int y = topmargin + margin + timeh*n;
       dc.DrawLine( leftmargin, y, w, y );
-      dc.DrawRotatedText( wxString::Format(wxT("%02d:%02d"),wScheduleEntry.gethour(scentry),wScheduleEntry.getminute(scentry)), margin/2, y - (theight/2), 0 );
+      if( wScheduleEntry.isregularstop(scentry) )
+        dc.DrawRotatedText( wxString::Format(wxT("%02d:%02d"),wScheduleEntry.gethour(scentry),wScheduleEntry.getminute(scentry)), margin/2, y - (theight/2), 0 );
       NodeOp.setInt( scentry, "gy", y);
       scentry = wSchedule.nextscentry( m_Schedule, scentry );
     }
@@ -169,7 +170,10 @@ void ScheduleGraph::OnPaint(wxPaintEvent& event)
         gx = x;
         gy = y;
       }
-      dc.DrawCircle(gx, gy, 5);
+      if( wScheduleEntry.isregularstop(scentry) )
+        dc.DrawCircle(gx, gy, 5);
+      else
+        dc.DrawRectangle(gx-3, gy-3, 6, 6);
       scentry = wSchedule.nextscentry( m_Schedule, scentry );
       idx++;
     }
