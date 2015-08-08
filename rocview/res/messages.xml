@@ -31651,4 +31651,7 @@
   <Msg id="regularstop">
     <en txt="Regular stop"/>
   </Msg>
+  <Msg id="diagram">
+    <en txt="Diagram"/>
+  </Msg>
 </Messages>

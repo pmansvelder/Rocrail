@@ -7955,3 +7955,9 @@ msgstr ""
 msgid "Regular stop"
 msgstr ""
 
+#. 
+# id="diagram"
+#, c-format
+msgid "Diagram"
+msgstr ""
+

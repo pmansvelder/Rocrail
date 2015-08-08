@@ -257,6 +257,7 @@ void ScheduleDialog::initLabels() {
   m_NoteBook->SetPageText( 0, wxGetApp().getMsg( "index" ) );
   m_NoteBook->SetPageText( 1, wxGetApp().getMsg( "destinations" ) );
   m_NoteBook->SetPageText( 2, wxGetApp().getMsg( "followup" ) );
+  m_NoteBook->SetPageText( 3, wxGetApp().getMsg( "diagram" ) );
 
   //m_Entries->SetRowLabelSize(0);
   wxFont* font = new wxFont( m_Entries->GetDefaultCellFont() );
