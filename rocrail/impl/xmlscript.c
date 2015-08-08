@@ -437,6 +437,26 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
       iONode clone = (iONode)NodeOp.base.clone(cmd);
       wLoc.setid(clone, LocOp.getId(lc));
 
+      if( StrOp.equals( wFunCmd.name(), NodeOp.getName(cmd)) ) {
+        if( wFunCmd.getfndesc(cmd) != NULL ) {
+          int fnaction = LocOp.getFnNrByDesc(lc, wFunCmd.getfndesc(cmd));
+          if( fnaction != -1 ) {
+            char fnkey[32];
+            wFunCmd.setfnchanged(clone, fnaction);
+            StrOp.fmtb(fnkey, "f%d", fnaction);
+            if( wFunCmd.getfncmd(cmd) != NULL ) {
+              const char* fncmd = wFunCmd.getfncmd(cmd);
+              if( StrOp.equals(wFunCmd.on, fncmd) )
+                NodeOp.setBool(clone, fnkey, True);
+              else if( StrOp.equals(wFunCmd.off, fncmd) )
+                NodeOp.setBool(clone, fnkey, False);
+              else if( StrOp.equals(wFunCmd.flip, fncmd) )
+                NodeOp.setBool(clone, fnkey, !LocOp.isFunction(lc, fnaction));
+            }
+          }
+        }
+      }
+
       if( wLoc.getblockid(clone) != NULL && StrOp.len(wLoc.getblockid(clone)) > 0 ) {
         char* bkidRes = VarOp.getText(wLoc.getblockid(clone), map, ' ');
         wLoc.setblockid(clone, bkidRes);

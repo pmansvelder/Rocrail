@@ -744,6 +744,10 @@
       <param name="inst" vt="this" remark="Loc instance"/>
       <param name="maxkmh" vt="int"/>
     </fun>
+    <fun name="isFunction" vt="Boolean">
+      <param name="inst" vt="this" remark="Loc instance"/>
+      <param name="fn" vt="int"/>
+    </fun>
     <data include="$rocint/public/lcdriverint">
       <var name="props" vt="iONode"/>
       <var name="cvMap" vt="iOMap"/>
@@ -2355,6 +2359,10 @@
     </fun>
     <fun name="getLocality" vt="const char*">
       <param name="inst" vt="this" remark="Car instance"/>
+    </fun>
+    <fun name="isFunction" vt="Boolean">
+      <param name="inst" vt="this" remark="Car instance"/>
+      <param name="fn" vt="int"/>
     </fun>
     <data>
       <var name="props" vt="iONode"/>

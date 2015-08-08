@@ -1356,6 +1356,11 @@
     <var name="id" vt="string" defval="" range="*"/>
     <var name="bus" vt="int" defval="0" range="0-*" required="false" remark="Some systems support more than one bus: SLX"/>
     <var name="addr" vt="int" defval="0" range="0-*"/>
+    <var name="fndesc" vt="string" defval="NULL" remark="actual changed function decription"/>
+    <const name="on" vt="string" val="on"/>
+    <const name="off" vt="string" val="off"/>
+    <const name="flip" vt="string" val="flip"/>
+    <var name="fncmd" vt="string" defval="NULL"/>
     <var name="fnchanged" vt="int" defval="-1" remark="actual changed function"/>
     <var name="fnchangedstate" vt="bool" defval="false" remark="actual changed function state"/>
     <var name="fncnt" vt="int" defval="4" range="0-*" remark="number of decoder funktions"/>

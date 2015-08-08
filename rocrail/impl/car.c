@@ -189,6 +189,13 @@ static void __copyFx2Node( iOCar inst, iONode nodeA ) {
 }
 
 
+static Boolean _isFunction(iOCar inst, int fn) {
+  iOCarData data = Data(inst);
+  return data->fx[fn];
+}
+
+
+
 static void __traceFunctions(iOCar inst, int fnchanged) {
   iOCarData data = Data(inst);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "car=%s [addr=%d] [fn=%d] lights=%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s",

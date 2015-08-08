@@ -247,6 +247,19 @@ static void __saveFxState(iOLoc inst) {
   wLoc.setfx( data->props, fx );
 }
 
+static Boolean _isFunction(iOLoc inst, int fn) {
+  iOLocData data = Data(inst);
+  if( fn == 0 )
+    return data->fn0;
+  else {
+    int mask = 1;
+    int fx = wLoc.getfx(data->props);
+    fn--;
+    mask = mask << fn;
+    return (fx & mask) ? True:False;
+  }
+}
+
 static Boolean __cpNode2Fn(iOLoc inst, iONode cmd) {
   iOLocData data = Data(inst);
   int function = wFunCmd.getfnchanged(cmd);
