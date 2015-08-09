@@ -800,7 +800,7 @@ void ScheduleDialog::CreateControls()
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     m_Index->SetSizer(itemBoxSizer5);
 
-    m_List = new wxListCtrl( m_Index, ID_LISTBOX_SCHEDULE_LIST, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
+    m_List = new wxListCtrl( m_Index, ID_LISTBOX_SCHEDULE_LIST, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES|wxSIMPLE_BORDER );
     itemBoxSizer5->Add(m_List, 1, wxGROW|wxALL, 5);
 
     wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(0, 3, 0, 0);
@@ -834,7 +834,7 @@ void ScheduleDialog::CreateControls()
 
     m_NoteBook->AddPage(m_Index, _("Index"));
 
-    m_Destinations = new wxPanel( m_NoteBook, ID_PANEL_SCHEDULE_DESTINATIONS, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxTAB_TRAVERSAL );
+    m_Destinations = new wxPanel( m_NoteBook, ID_PANEL_SCHEDULE_DESTINATIONS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
     m_Destinations->SetSizer(itemBoxSizer17);
 
