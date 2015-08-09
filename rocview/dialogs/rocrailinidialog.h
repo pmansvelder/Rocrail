@@ -52,6 +52,12 @@ class wxSpinCtrl;
 #define ID_BUTTON_KEYPATH 10411
 #define wxID_STATIC_RR_LIBPATH 10095
 #define ID_TEXTCTRL_RR_LIBPATH 10096
+#define ID_BUTTON_LIBPATH 10490
+#define ID_BUTTON_IMGPATH 10440
+#define ID_BUTTON_ICONPATH 10486
+#define ID_BUTTON_ISSUESPATH 10487
+#define ID_BUTTON_SOUNDPATH 10488
+#define ID_BUTTON_SOUNDPLAYER 10489
 #define ID_PANEL_RR_TRACE 10102
 #define ID_CHECKBOX_RR_AUTO 10006
 #define ID_CHECKBOX_RR_MONITOR 10232
@@ -162,6 +168,24 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_KEYPATH
     void OnButtonKeypathClick( wxCommandEvent& event );
 
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_LIBPATH
+    void OnButtonLibpathClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_IMGPATH
+    void OnButtonImgpathClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ICONPATH
+    void OnButtonIconpathClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ISSUESPATH
+    void OnButtonIssuespathClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SOUNDPATH
+    void OnButtonSoundpathClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SOUNDPLAYER
+    void OnButtonSoundplayerClick( wxCommandEvent& event );
+
     /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_RR_CONTROLLERS
     void OnListboxRrControllersSelected( wxCommandEvent& event );
 
@@ -252,16 +276,22 @@ public:
     wxTextCtrl* m_KeyPath;
     wxStaticText* m_LabelLibPath;
     wxTextCtrl* m_LibPath;
+    wxButton* m_SelectLibPath;
     wxStaticText* m_labImgPath;
     wxTextCtrl* m_ImgPath;
+    wxButton* m_SelectImgPath;
     wxStaticText* m_labIconPath;
     wxTextCtrl* m_IconPath;
+    wxButton* m_SelectIconPath;
     wxStaticText* m_labIssuesPath;
     wxTextCtrl* m_IssuePath;
+    wxButton* m_SelectIssuesPath;
     wxStaticText* m_labSoundPath;
     wxTextCtrl* m_SoundPath;
+    wxButton* m_SelectSoundPath;
     wxStaticText* m_labSoundPlayer;
     wxTextCtrl* m_SoundPlayer;
+    wxButton* m_SelectSoundPlayer;
     wxCheckBox* m_SoundPlayerLocation;
     wxStaticBox* m_ScBox;
     wxStaticText* m_labScSensor;
