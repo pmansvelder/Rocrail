@@ -3179,6 +3179,7 @@ function handleLoco(lc) {
     lcNode.setAttribute('blockenterside', newblockenterside);
     blockentersidechanged = true;
   }
+  trace("loco enterside new/old: " + newblockenterside + "/" + prevblockenterside + " changed=" + blockentersidechanged);
   
   var newtrain  = lc.getAttribute('train');
   var prevtrain = lcNode.getAttribute('train');
@@ -3212,7 +3213,7 @@ function handleLoco(lc) {
       if( modechanged )
         updateBlockstate(bk.getAttribute('id'), bk.getAttribute('statesignal'), lc.getAttribute('id'), "loco");
       
-      if( (blockenterid != undefined && blockenterid.length > 0 && blockenterid == bk.getAttribute('id')) || trainchanged || placingchanged ) {
+      if( (blockenterid != undefined && blockenterid.length > 0 && blockenterid == bk.getAttribute('id')) || trainchanged || placingchanged || blockentersidechanged ) {
         if( blockentersidechanged || trainchanged || placingchanged ) {
           var div = document.getElementById("bk_"+bk.getAttribute('id'));
           getBlockLabel(bk, div);
