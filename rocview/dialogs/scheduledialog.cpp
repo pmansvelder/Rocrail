@@ -88,7 +88,6 @@ BEGIN_EVENT_TABLE( ScheduleDialog, wxDialog )
     EVT_BUTTON( ID_DESTUP, ScheduleDialog::OnDestupClick )
     EVT_BUTTON( ID_DESTDOWN, ScheduleDialog::OnDestdownClick )
     EVT_BUTTON( ID_SCHEDULE_ACTIONS, ScheduleDialog::OnScheduleActionsClick )
-    EVT_BUTTON( ID_BUTTON_GRAPH_GEN, ScheduleDialog::OnButtonGraphGenClick )
     EVT_BUTTON( wxID_OK, ScheduleDialog::OnOkClick )
     EVT_BUTTON( wxID_CANCEL, ScheduleDialog::OnCancelClick )
     EVT_BUTTON( wxID_APPLY, ScheduleDialog::OnApplyClick )
@@ -764,7 +763,6 @@ bool ScheduleDialog::Create( wxWindow* parent, wxWindowID id, const wxString& ca
     m_ScheduleAction = NULL;
     m_Actions = NULL;
     m_Graph = NULL;
-    m_GraphGen = NULL;
     m_OK = NULL;
     m_Cancel = NULL;
     m_Apply = NULL;
@@ -1025,31 +1023,26 @@ void ScheduleDialog::CreateControls()
     m_Graph->SetBackgroundColour(wxColour(255, 255, 255));
     itemBoxSizer73->Add(m_Graph, 1, wxGROW|wxALL, 10);
 
-    wxBoxSizer* itemBoxSizer75 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer73->Add(itemBoxSizer75, 0, wxALIGN_RIGHT|wxALL, 5);
-    m_GraphGen = new wxButton( itemPanel72, ID_BUTTON_GRAPH_GEN, _("Generate"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer75->Add(m_GraphGen, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
     m_NoteBook->AddPage(itemPanel72, _("Graph"));
 
     itemBoxSizer2->Add(m_NoteBook, 1, wxGROW|wxALL, 5);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer77 = new wxStdDialogButtonSizer;
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer75 = new wxStdDialogButtonSizer;
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer77, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(itemStdDialogButtonSizer75, 0, wxGROW|wxALL, 5);
     m_OK = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer77->AddButton(m_OK);
+    itemStdDialogButtonSizer75->AddButton(m_OK);
 
     m_Cancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer77->AddButton(m_Cancel);
+    itemStdDialogButtonSizer75->AddButton(m_Cancel);
 
     m_Apply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer77->AddButton(m_Apply);
+    itemStdDialogButtonSizer75->AddButton(m_Apply);
 
-    wxButton* itemButton81 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer77->AddButton(itemButton81);
+    wxButton* itemButton79 = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer75->AddButton(itemButton79);
 
-    itemStdDialogButtonSizer77->Realize();
+    itemStdDialogButtonSizer75->Realize();
 
 ////@end ScheduleDialog content construction
 }
@@ -1584,22 +1577,6 @@ void ScheduleDialog::OnListboxScheduleListColLeftClick( wxListEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_GRAPH_GEN
- */
-
-void ScheduleDialog::OnButtonGraphGenClick( wxCommandEvent& event )
-{
-  if( m_Props != NULL ) {
-    m_Graph->setSchedule(m_Props);
-  }
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_HELP
- */
-
 void ScheduleDialog::OnHelpClick( wxCommandEvent& event )
 {
   switch( m_NoteBook->GetSelection() ) {
@@ -1610,10 +1587,6 @@ void ScheduleDialog::OnHelpClick( wxCommandEvent& event )
   }
 }
 
-
-/*!
- * wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_SCHEDULE
- */
 
 void ScheduleDialog::OnNotebookSchedulePageChanged( wxNotebookEvent& event ) {
   if( event.GetSelection() == 3 ) {

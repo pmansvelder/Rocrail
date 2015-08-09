@@ -78,7 +78,6 @@ class ScheduleGraph;
 #define ID_PANEL_SCHEDULES_ACTIONS 10079
 #define ID_SCHEDULE_ACTIONS 10209
 #define ID_PANEL_SCHEDULE_GRAPH 10439
-#define ID_BUTTON_GRAPH_GEN 10440
 #define SYMBOL_SCHEDULEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_SCHEDULEDIALOG_TITLE _("Schedule")
 #define SYMBOL_SCHEDULEDIALOG_IDNAME ID_DIALOG_SCHEDULE
@@ -205,9 +204,6 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SCHEDULE_ACTIONS
     void OnScheduleActionsClick( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_GRAPH_GEN
-    void OnButtonGraphGenClick( wxCommandEvent& event );
-
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
     void OnOkClick( wxCommandEvent& event );
 
@@ -292,7 +288,6 @@ public:
     wxComboBox* m_ScheduleAction;
     wxButton* m_Actions;
     ScheduleGraph* m_Graph;
-    wxButton* m_GraphGen;
     wxButton* m_OK;
     wxButton* m_Cancel;
     wxButton* m_Apply;
