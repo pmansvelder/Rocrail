@@ -2946,7 +2946,7 @@ void LocDialog::CreateControls()
     m_labBBTCalculation = new wxStaticText( m_BBTPanel, wxID_ANY, _("Calculation"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer348->Add(m_labBBTCalculation, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
-    m_BBTList2 = new wxListCtrl( m_BBTPanel, ID_LOC_BBTLIST2, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_HRULES );
+    m_BBTList2 = new wxListCtrl( m_BBTPanel, ID_LOC_BBTLIST2, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT|wxLC_HRULES );
     itemBoxSizer348->Add(m_BBTList2, 1, wxGROW|wxALL, 5);
 
     wxFlexGridSizer* itemFlexGridSizer367 = new wxFlexGridSizer(0, 8, 0, 0);
@@ -4717,12 +4717,24 @@ void LocDialog::OnBbtFixallClick( wxCommandEvent& event )
   if( m_Props == NULL )
     return;
 
-  iONode bbt = wLoc.getbbt( m_Props );
+  if( m_BBTList2->GetSelectedItemCount() > 1 ) {
+    iOList list = sortBBT();
+    for( int i = 0; i < m_BBTList2->GetItemCount(); i++ ) {
+      TraceOp.trc( "locdlg", TRCLEVEL_INFO, __LINE__, 9999, "Item state = %X", m_BBTList2->GetItemState(i, wxLIST_STATE_SELECTED) );
+      if( m_BBTList2->GetItemState(i, wxLIST_STATE_SELECTED) & wxLIST_STATE_SELECTED ) {
+        iONode bbt = (iONode)ListOp.get(list, i);
+        wBBT.setfixed(bbt, wBBT.isfixed(bbt) ? False:True);
+      }
+    }
+  }
+  else {
+    iONode bbt = wLoc.getbbt( m_Props );
+    while( bbt != NULL ) {
+      wBBT.setfixed(bbt, True);
+      bbt = wLoc.nextbbt( m_Props, bbt );
+    };
+  }
 
-  while( bbt != NULL ) {
-    wBBT.setfixed(bbt, True);
-    bbt = wLoc.nextbbt( m_Props, bbt );
-  };
   initBBT();
 }
 
