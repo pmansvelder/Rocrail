@@ -1017,7 +1017,7 @@ void ScheduleDialog::CreateControls()
 
     m_NoteBook->AddPage(m_ScheduleActions, _("Actions"));
 
-    wxPanel* itemPanel72 = new wxPanel( m_NoteBook, ID_PANEL_SCHEDULE_GRAPH, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+    wxPanel* itemPanel72 = new wxPanel( m_NoteBook, ID_PANEL_SCHEDULE_GRAPH, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer73 = new wxBoxSizer(wxVERTICAL);
     itemPanel72->SetSizer(itemBoxSizer73);
 
