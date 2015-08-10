@@ -31670,4 +31670,7 @@
   <Msg id="tohour">
     <en txt="To hour"/>
   </Msg>
+  <Msg id="fixall">
+    <en txt="Fix all"/>
+  </Msg>
 </Messages>

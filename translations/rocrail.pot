@@ -7973,3 +7973,9 @@ msgstr ""
 msgid "To hour"
 msgstr ""
 
+#. 
+# id="fixall"
+#, c-format
+msgid "Fix all"
+msgstr ""
+

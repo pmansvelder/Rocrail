@@ -152,6 +152,7 @@ class wxGrid;
 #define ID_BBT_MODIFY 10426
 #define ID_BBT_EXPORT 10459
 #define ID_BBT_IMPORT 10460
+#define ID_BBT_FIXALL 10491
 #define ID_BBT_GENATE_IN 10456
 #define ID_PANEL_LOC_SBT 10470
 #define wxID_STATIC_LOC_V_STEP 10033
@@ -369,6 +370,9 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BBT_IMPORT
     void OnBbtImportClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BBT_FIXALL
+    void OnBbtFixallClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_BBT_GENATE_IN
     void OnBbtGenateInClick( wxCommandEvent& event );
@@ -712,6 +716,7 @@ public:
     wxButton* m_BBTModify;
     wxButton* m_BBTExport;
     wxButton* m_BBTImport;
+    wxButton* m_BBTFixAll;
     wxCheckBox* m_BBTFixed;
     wxCheckBox* m_BBTGenerateIn;
     wxPanel* m_SBTPanel;
