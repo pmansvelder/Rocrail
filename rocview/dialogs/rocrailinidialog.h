@@ -58,6 +58,7 @@ class wxSpinCtrl;
 #define ID_BUTTON_ISSUESPATH 10487
 #define ID_BUTTON_SOUNDPATH 10488
 #define ID_BUTTON_SOUNDPLAYER 10489
+#define ID_BUTTON_XMLSCRIPTPATH 10492
 #define ID_PANEL_RR_TRACE 10102
 #define ID_CHECKBOX_RR_AUTO 10006
 #define ID_CHECKBOX_RR_MONITOR 10232
@@ -293,6 +294,9 @@ public:
     wxTextCtrl* m_SoundPlayer;
     wxButton* m_SelectSoundPlayer;
     wxCheckBox* m_SoundPlayerLocation;
+    wxStaticText* m_labXmlScriptPath;
+    wxTextCtrl* m_XmlScriptPath;
+    wxButton* m_SelectXmlScriptPath;
     wxStaticBox* m_ScBox;
     wxStaticText* m_labScSensor;
     wxComboBox* m_ScSensor;

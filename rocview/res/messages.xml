@@ -31673,4 +31673,7 @@
   <Msg id="fixall">
     <en txt="Fix all"/>
   </Msg>
+  <Msg id="xmlscriptpath">
+    <en txt="XmlScript path"/>
+  </Msg>
 </Messages>

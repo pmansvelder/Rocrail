@@ -29,6 +29,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocrail/public/seltab.h"
 #include "rocrail/public/location.h"
 
+#include "rocrail/wrapper/public/RocRail.h"
 #include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/FunCmd.h"
 #include "rocrail/wrapper/public/Loc.h"
@@ -693,19 +694,27 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
   /* sub */
   else if( StrOp.equals( "sub", NodeOp.getName(cmd)) ) {
     const char* scriptFile = NodeOp.getStr(cmd, "file", "");
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "sub xmlscript: [%s]", scriptFile );
-    if( FileOp.exist(scriptFile) ) {
-      int size = FileOp.fileSize(scriptFile);
+    char* xmlFilename = NULL;
+    if( FileOp.isAbsolute(scriptFile) )
+      xmlFilename = StrOp.dup(scriptFile);
+    else
+      xmlFilename = StrOp.fmt("%s%c%s", wRocRail.getxmlscriptpath(AppOp.getIni()), SystemOp.getFileSeparator(), scriptFile);
+
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "sub xmlscript: [%s]", xmlFilename );
+    if( FileOp.exist(xmlFilename) ) {
+      int size = FileOp.fileSize(xmlFilename);
       char* xmlscript = allocMem( size + 1);
       iOFile f = FileOp.inst( scriptFile, OPEN_READONLY);
       if( f != NULL ) {
         FileOp.read( f, xmlscript, size);
         FileOp.base.del(f);
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run sub xmlscript file [%s], size=%d", scriptFile, size );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run sub xmlscript file [%s], size=%d", xmlFilename, size );
         XmlScriptOp.run( xmlscript, map, wItem.getid(cmd) );
         freeMem(xmlscript);
       }
     }
+    StrOp.free(xmlFilename);
+
   }
 
   /* var */

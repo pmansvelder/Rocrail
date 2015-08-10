@@ -1050,7 +1050,13 @@ static void __callback( obj inst, iONode nodeA ) {
     else if( wDataReq.getcmd(nodeA) == wDataReq.readxmlscript ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "DataReq read xmlscript filename=[%s]", wDataReq.getfilename(nodeA)!=NULL?wDataReq.getfilename(nodeA):"-" );
       if(wDataReq.getfilename(nodeA) != NULL &&  StrOp.len(wDataReq.getfilename(nodeA)) > 0 ) {
-        char* text = __readFile((iOControl)inst, wDataReq.getfilename(nodeA));
+        char* text = NULL;
+        char* xmlFilename = NULL;
+        if( FileOp.isAbsolute(wDataReq.getfilename(nodeA)) )
+          xmlFilename = StrOp.dup(wDataReq.getfilename(nodeA));
+        else
+          xmlFilename = StrOp.fmt("%s%c%s", wRocRail.getxmlscriptpath(AppOp.getIni()), SystemOp.getFileSeparator(), wDataReq.getfilename(nodeA));
+        text = __readFile((iOControl)inst, xmlFilename);
         if( text != NULL ) {
           wDataReq.setdata( nodeA, text );
           freeMem( text );
@@ -1060,13 +1066,25 @@ static void __callback( obj inst, iONode nodeA ) {
           wDataReq.setdata( nodeA, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xmlscript>\n\n</xmlscript>\n" );
           ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
         }
+        StrOp.free(xmlFilename);
       }
       return;
     }
     else if( wDataReq.getcmd(nodeA) == wDataReq.writexmlscript ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "DataReq write xmlscript filename=[%s]", wDataReq.getfilename(nodeA)!=NULL?wDataReq.getfilename(nodeA):"-" );
       if(wDataReq.getfilename(nodeA) != NULL &&  StrOp.len(wDataReq.getfilename(nodeA)) > 0 ) {
-        __writeFile((iOControl)inst, wDataReq.getfilename(nodeA), wDataReq.getdata(nodeA));
+        char* xmlFilename = NULL;
+
+        if( FileOp.isAbsolute(wDataReq.getfilename(nodeA)) )
+          xmlFilename = StrOp.dup(wDataReq.getfilename(nodeA));
+        else {
+          if( !FileOp.exist(wRocRail.getxmlscriptpath(AppOp.getIni()) ) )
+            FileOp.mkdir(wRocRail.getxmlscriptpath(AppOp.getIni()));
+          xmlFilename = StrOp.fmt("%s%c%s", wRocRail.getxmlscriptpath(AppOp.getIni()), SystemOp.getFileSeparator(), wDataReq.getfilename(nodeA));
+        }
+
+        __writeFile((iOControl)inst, xmlFilename, wDataReq.getdata(nodeA));
+        StrOp.free(xmlFilename);
       }
       return;
     }

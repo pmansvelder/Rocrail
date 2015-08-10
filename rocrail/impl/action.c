@@ -1016,14 +1016,20 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
       }
       else if( StrOp.endsWithi(extaction, ".xml") ) {
         /* xmlscript */
-        if( FileOp.exist(extaction) ) {
-          int size = FileOp.fileSize(extaction);
+        char* xmlFilename = NULL;
+        if( FileOp.isAbsolute(extaction) )
+          xmlFilename = StrOp.dup(extaction);
+        else
+          xmlFilename = StrOp.fmt("%s%c%s", wRocRail.getxmlscriptpath(AppOp.getIni()), SystemOp.getFileSeparator(), extaction);
+
+        if( FileOp.exist(xmlFilename) ) {
+          int size = FileOp.fileSize(xmlFilename);
           char* xmlscript = allocMem( size + 1);
-          iOFile f = FileOp.inst( extaction, OPEN_READONLY);
+          iOFile f = FileOp.inst( xmlFilename, OPEN_READONLY);
           if( f != NULL ) {
             FileOp.read( f, xmlscript, size);
             FileOp.base.del(f);
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run xmlscript file [%s], size=%d called by [%s]", extaction, size, wActionCtrl.getcallerid(actionctrl) );
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "run xmlscript file [%s], size=%d called by [%s]", xmlFilename, size, wActionCtrl.getcallerid(actionctrl) );
             iOMap map = MapOp.inst();
             MapOp.put(map, "callerid", (obj)wActionCtrl.getcallerid(actionctrl));
             MapOp.put(map, "lcid", (obj)wActionCtrl.getlcid(actionctrl));
@@ -1037,8 +1043,9 @@ static void __executeAction( struct OAction* inst, iONode actionctrl ) {
           }
         }
         else {
-          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "xmlscript file [%s] not found", extaction );
+          TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "xmlscript file [%s] not found", xmlFilename );
         }
+        StrOp.free(xmlFilename);
       }
       else if( wActionCtrl.getparam(actionctrl) != NULL && StrOp.len(wActionCtrl.getparam(actionctrl)) > 0 ) {
         char* s = NULL;

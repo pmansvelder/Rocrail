@@ -7979,3 +7979,9 @@ msgstr ""
 msgid "Fix all"
 msgstr ""
 
+#. 
+# id="xmlscriptpath"
+#, c-format
+msgid "XmlScript path"
+msgstr ""
+
