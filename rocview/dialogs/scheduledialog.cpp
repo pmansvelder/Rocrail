@@ -287,6 +287,8 @@ void ScheduleDialog::initLabels() {
   m_TimeProcessing->SetString( 1, wxGetApp().getMsg( "relative" ) );
   m_TimeProcessing->SetString( 2, wxGetApp().getMsg( "hourly" ) );
   m_labCycle->SetLabel( wxGetApp().getMsg( "recycle" ) );
+  m_labFromHour->SetLabel( wxGetApp().getMsg( "fromhour" ) );
+  m_labToHour->SetLabel( wxGetApp().getMsg( "tohour" ) );
 
   m_LabelLocation->SetLabel( wxGetApp().getMsg( "location" ) );
   m_LabelBlock->SetLabel( wxGetApp().getMsg( "block" ) );

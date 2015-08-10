@@ -7961,3 +7961,15 @@ msgstr ""
 msgid "Diagram"
 msgstr ""
 
+#. 
+# id="fromhour"
+#, c-format
+msgid "From hour"
+msgstr ""
+
+#. 
+# id="tohour"
+#, c-format
+msgid "To hour"
+msgstr ""
+

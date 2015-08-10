@@ -31664,4 +31664,10 @@
   <Msg id="diagram">
     <en txt="Diagram"/>
   </Msg>
+  <Msg id="fromhour">
+    <en txt="From hour"/>
+  </Msg>
+  <Msg id="tohour">
+    <en txt="To hour"/>
+  </Msg>
 </Messages>
