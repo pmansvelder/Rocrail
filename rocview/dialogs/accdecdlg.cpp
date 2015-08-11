@@ -51,6 +51,8 @@ AccDecDlg::AccDecDlg( wxWindow* parent ):AccDecGenDlg( parent )
   GetSizer()->Fit(this);
   GetSizer()->SetSizeHints(this);
 
+  m_Notebook->SetSelection(0);
+
   initIndex();
 }
 
@@ -74,6 +76,7 @@ void AccDecDlg::onAdd( wxCommandEvent& event )
         appendItem(dec);
         setIDSelection(wItem.getid(dec));
         initValues();
+        initUsage();
       }
     }
   }
@@ -125,6 +128,7 @@ void AccDecDlg::initLabels() {
   SetTitle(wxGetApp().getMsg( "accdectable" ));
   m_Notebook->SetPageText( 0, wxGetApp().getMsg( "index" ) );
   m_Notebook->SetPageText( 1, wxGetApp().getMsg( "general" ) );
+  m_Notebook->SetPageText( 3, wxGetApp().getMsg( "usage" ) );
   m_Add->SetLabel( wxGetApp().getMsg( "new" ) );
   m_Delete->SetLabel( wxGetApp().getMsg( "delete" ) );
   m_Doc->SetLabel( wxGetApp().getMsg( "doc_report" ) );
@@ -137,6 +141,7 @@ void AccDecDlg::initLabels() {
   m_labProt->SetLabel( wxGetApp().getMsg( "protocol" ) );
   m_labVersion->SetLabel( wxGetApp().getMsg( "protocol_version" ) );
   m_labImageFile->SetLabel( wxGetApp().getMsg( "image" ) );
+  m_labDoc->SetLabel( wxGetApp().getMsg( "documentation" ) );
   m_labDesc->SetLabel( wxGetApp().getMsg( "description" ) );
 
   m_labManu->SetLabel( wxGetApp().getMsg( "manufactured_ID" ) );
@@ -169,7 +174,47 @@ void AccDecDlg::initLabels() {
   m_CVDescModify->Enable(false);
   m_CVDescription->Enable(false);
 
+  // Usage
+  m_UsageList->InsertColumn(0, wxGetApp().getMsg( "id" ), wxLIST_FORMAT_LEFT );
+  m_UsageList->InsertColumn(1, wxGetApp().getMsg( "type" ), wxLIST_FORMAT_LEFT );
+  m_UsageList->InsertColumn(2, wxGetApp().getMsg( "address" ), wxLIST_FORMAT_RIGHT );
+  m_UsageList->InsertColumn(3, wxGetApp().getMsg( "position" ), wxLIST_FORMAT_RIGHT );
+  m_UsageList->InsertColumn(4, wxGetApp().getMsg( "description" ), wxLIST_FORMAT_LEFT );
 
+}
+
+void AccDecDlg::initUsage() {
+  if( m_Props == NULL ) {
+    TraceOp.trc( "accdecdlg", TRCLEVEL_DEBUG, __LINE__, 9999, "no dec selected" );
+    return;
+  }
+  m_UsageList->DeleteAllItems();
+  iONode model  = wxGetApp().getModel();
+  iONode swlist = wPlan.getswlist( model );
+  int cnt = NodeOp.getChildCnt( swlist );
+  TraceOp.trc( "accdecdlg", TRCLEVEL_DEBUG, __LINE__, 9999, "check switch usage %d...", cnt );
+  for( int i = 0; i < cnt; i++ ) {
+    iONode sw = NodeOp.getChild( swlist, i );
+    TraceOp.trc( "accdecdlg", TRCLEVEL_DEBUG, __LINE__, 9999, "%s == %s", wDec.getid(m_Props), wSwitch.getdecid(sw) );
+    if( StrOp.equals(wDec.getid(m_Props), wSwitch.getdecid(sw) ) ) {
+      m_UsageList->InsertItem( i, wxString(wSwitch.getid(sw),wxConvUTF8) );
+      m_UsageList->SetItem( i, 1, wxGetApp().getMsg( "turnout" ) );
+      m_UsageList->SetItem( i, 2, wxString::Format(wxT("%d:%d"), wSwitch.getaddr1(sw), wSwitch.getport1(sw)) );
+      m_UsageList->SetItem( i, 3, wxString::Format(wxT("%d:%d:%d"), wSwitch.getx(sw), wSwitch.gety(sw), wSwitch.getz(sw)) );
+      m_UsageList->SetItem( i, 4, wxString(wSwitch.getdesc(sw),wxConvUTF8) );
+    }
+  }
+  // resize
+  for( int n = 0; n < 3; n++ ) {
+    m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+    int autoheadersize = m_UsageList->GetColumnWidth(n);
+    m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE);
+    int autosize = m_UsageList->GetColumnWidth(n);
+    if(autoheadersize > autosize )
+      m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+    else if( autosize > 120 )
+      m_UsageList->SetColumnWidth(n, autoheadersize > 120 ? autoheadersize:120);
+  }
 }
 
 bool AccDecDlg::initIndex() {
@@ -278,6 +323,7 @@ void AccDecDlg::initValues() {
   m_Manu->SetValue( wxString(wDec.getmanu( m_Props ),wxConvUTF8) );
   m_CatNr->SetValue( wxString(wDec.getcatnr( m_Props ),wxConvUTF8) );
   m_ImageFile->SetValue( wxString(wDec.getimage( m_Props ),wxConvUTF8) );
+  m_Docu->SetValue( wxString(wDec.getdocu( m_Props ),wxConvUTF8) );
 
   // CV's
   TraceOp.trc( "locdlg", TRCLEVEL_INFO, __LINE__, 9999, "CV list...");
@@ -359,6 +405,7 @@ bool AccDecDlg::evaluate() {
   wDec.setmanu( m_Props, m_Manu->GetValue().mb_str(wxConvUTF8) );
   wDec.setcatnr( m_Props, m_CatNr->GetValue().mb_str(wxConvUTF8) );
   wDec.setimage( m_Props, m_ImageFile->GetValue().mb_str(wxConvUTF8) );
+  wDec.setdocu( m_Props, m_Docu->GetValue().mb_str(wxConvUTF8) );
 
   return true;
 }
@@ -390,8 +437,10 @@ void AccDecDlg::onApply( wxCommandEvent& event )
 void AccDecDlg::onSelected( wxListEvent& event ) {
   int index = event.GetIndex();
   m_Props = (iONode)m_IndexList->GetItemData(index);
-  if( m_Props != NULL )
+  if( m_Props != NULL ) {
     initValues();
+    initUsage();
+  }
   else
     TraceOp.trc( "accdecdlg", TRCLEVEL_INFO, __LINE__, 9999, "no selection..." );
 }
@@ -456,11 +505,25 @@ void AccDecDlg::onCVModify( wxCommandEvent& event ) {
 
 }
 
+void AccDecDlg::onUsageListActivated( wxListEvent& event ) {
+
+}
+
+void AccDecDlg::onUsageListSelected( wxListEvent& event ) {
+
+}
+
+void AccDecDlg::onOpenDoc( wxCommandEvent& event ) {
+  wxLaunchDefaultBrowser(m_Docu->GetValue(), wxBROWSER_NEW_WINDOW );
+}
+
+
 void AccDecDlg::onHelp( wxCommandEvent& event ) {
   switch( m_Notebook->GetSelection() ) {
   case 0: wxGetApp().openLink( "accdec" ); break;
   case 1: wxGetApp().openLink( "accdec-gen" ); break;
   case 2: wxGetApp().openLink( "accdec-cv" ); break;
+  case 3: wxGetApp().openLink( "accdec-usage" ); break;
   default: wxGetApp().openLink( "accdec" ); break;
   }
 }

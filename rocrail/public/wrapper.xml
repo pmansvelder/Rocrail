@@ -1763,6 +1763,7 @@
         <var name="switched" vt="int" defval="0" range="0-*" remark="Number of switch commands."/>
         <var name="accessory" vt="bool" defval="false"/>
         <var name="porttype" vt="int" defval="0" range="0-*" required="false" remark=""/>
+        <var name="decid" vt="string" defval="" range="*" remark="Decoder ID"/>
 
         <!-- Addressing -->
         <var name="iid" vt="string" defval="NULL" range="*" remark="Interface ID"/>
@@ -1933,6 +1934,7 @@
         <var name="manualreset" vt="bool" defval="true" remark="operator controlled signal reset automatically to red"/>
         <var name="accessory" vt="bool" defval="true"/>
         <var name="porttype" vt="int" defval="0" range="0-*" required="false" remark=""/>
+        <var name="decid" vt="string" defval="" range="*" remark="Decoder ID"/>
 
         <!-- Addressing -->
         <var name="iid" vt="string" defval="NULL" range="*" remark="Interface ID"/>
@@ -2021,6 +2023,7 @@
         <var name="blockid" vt="string" defval="NULL" range="*"/>
         <var name="accessory" vt="bool" defval="true"/>
         <var name="porttype" vt="int" defval="0" range="0-*" required="false" remark=""/>
+        <var name="decid" vt="string" defval="" range="*" remark="Decoder ID"/>
 
         <!-- Addressing -->
         <var name="iid" vt="string" defval="NULL" range="*" remark="Interface ID"/>
@@ -2080,6 +2083,7 @@
         <var name="id" vt="string" defval="" range="*" required="true"/>
         <var name="oid" vt="string" defval="" range="*" required="false" remark="object ID"/>
         <var name="desc" vt="string" defval="" range="*" remark="description"/>
+        <var name="decid" vt="string" defval="" range="*" remark="Decoder ID"/>
 
         <!-- Addressing -->
         <var name="iid" vt="string" defval="NULL" range="*" remark="Interface ID."/>
@@ -2600,6 +2604,7 @@
         <var name="inv" vt="bool" defval="false" remark="invert the commands"/>
         <var name="move4opp" vt="bool" defval="true" remark="Move bridge if the target track is opposite of the current position."/>
         <var name="randomrate" vt="int" defval="10" range="0-*" remark="Rate of randomness. 0=Not used"/>
+        <var name="decid" vt="string" defval="" range="*" remark="Decoder ID"/>
         
         <var name="addr0" vt="int" defval="0" range="0-*" required="true" remark="bit 0 of track"/>
         <var name="port0" vt="int" defval="0" range="0-4" required="true" remark="bit 0 of track"/>
@@ -3252,6 +3257,7 @@
         <var name="locid" vt="string" defval="NULL" range="*" remark="loc id"/>
         <var name="bus" vt="int" defval="0" range="0-*" required="false" remark="Some systems support more than one bus: SLX"/>
         <var name="randomrate" vt="int" defval="10" range="0-*" remark="Rate of randomness. 0=Not used"/>
+        <var name="decid" vt="string" defval="" range="*" remark="Decoder ID"/>
         
         <var name="singlegate" vt="bool" defval="false"/>
         <var name="addr0" vt="int" defval="0" range="0-*" required="true" remark="decoder address"/>

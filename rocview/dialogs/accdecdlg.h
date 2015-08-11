@@ -47,9 +47,13 @@ protected:
     void onCVCell( wxGridEvent& event );
     void onCVModify( wxCommandEvent& event );
     void onHelp( wxCommandEvent& event );
+    void onUsageListActivated( wxListEvent& event );
+    void onUsageListSelected( wxListEvent& event );
+    void onOpenDoc( wxCommandEvent& event );
 
 		void initLabels();
 		bool initIndex();
+    void initUsage();
 		void initValues();
 		bool evaluate();
 	public:
