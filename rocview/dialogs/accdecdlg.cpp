@@ -30,6 +30,9 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocrail/wrapper/public/CVByte.h"
 
 #include "rocview/public/guiapp.h"
+
+#include "rocview/dialogs/switchdialog.h"
+
 #include "rocview/wrapper/public/Gui.h"
 
 #include "rocview/xpm/nopict.xpm"
@@ -202,18 +205,19 @@ void AccDecDlg::initUsage() {
       m_UsageList->SetItem( i, 2, wxString::Format(wxT("%d:%d"), wSwitch.getaddr1(sw), wSwitch.getport1(sw)) );
       m_UsageList->SetItem( i, 3, wxString::Format(wxT("%d:%d:%d"), wSwitch.getx(sw), wSwitch.gety(sw), wSwitch.getz(sw)) );
       m_UsageList->SetItem( i, 4, wxString(wSwitch.getdesc(sw),wxConvUTF8) );
+      m_UsageList->SetItemPtrData(i, (wxUIntPtr)sw);
     }
   }
   // resize
-  for( int n = 0; n < 3; n++ ) {
+  for( int n = 0; n < 5; n++ ) {
     m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
     int autoheadersize = m_UsageList->GetColumnWidth(n);
     m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE);
     int autosize = m_UsageList->GetColumnWidth(n);
     if(autoheadersize > autosize )
       m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
-    else if( autosize > 120 )
-      m_UsageList->SetColumnWidth(n, autoheadersize > 120 ? autoheadersize:120);
+    //else if( autosize > 120 )
+    //  m_UsageList->SetColumnWidth(n, autoheadersize > 120 ? autoheadersize:120);
   }
 }
 
@@ -506,7 +510,15 @@ void AccDecDlg::onCVModify( wxCommandEvent& event ) {
 }
 
 void AccDecDlg::onUsageListActivated( wxListEvent& event ) {
-
+  int index = event.GetIndex();
+  iONode props = (iONode)m_UsageList->GetItemData(index);
+  if( props != NULL ) {
+    if( StrOp.equals( wSwitch.name(), NodeOp.getName(props) ) ) {
+      SwitchDialog* dlg = new SwitchDialog( this, props );
+      dlg->ShowModal();
+      dlg->Destroy();
+    }
+  }
 }
 
 void AccDecDlg::onUsageListSelected( wxListEvent& event ) {
