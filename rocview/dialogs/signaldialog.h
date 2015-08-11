@@ -212,6 +212,8 @@ public:
     wxTextCtrl* m_ID;
     wxStaticText* m_LabelDescription;
     wxTextCtrl* m_Description;
+    wxStaticText* m_labDecID;
+    wxComboBox* m_DecID;
     wxStaticText* m_LabelBlockID;
     wxComboBox* m_BlockID;
     wxStaticText* m_labRouteIDs;

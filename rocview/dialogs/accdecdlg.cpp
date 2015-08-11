@@ -27,11 +27,17 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocrail/wrapper/public/ModelCmd.h"
 #include "rocrail/wrapper/public/DataReq.h"
 #include "rocrail/wrapper/public/Switch.h"
+#include "rocrail/wrapper/public/Signal.h"
+#include "rocrail/wrapper/public/Output.h"
+#include "rocrail/wrapper/public/Feedback.h"
 #include "rocrail/wrapper/public/CVByte.h"
 
 #include "rocview/public/guiapp.h"
 
 #include "rocview/dialogs/switchdialog.h"
+#include "rocview/dialogs/signaldialog.h"
+#include "rocview/dialogs/outputdialog.h"
+#include "rocview/dialogs/feedbackdialog.h"
 
 #include "rocview/wrapper/public/Gui.h"
 
@@ -192,6 +198,7 @@ void AccDecDlg::initUsage() {
     return;
   }
   m_UsageList->DeleteAllItems();
+  int idx = 0;
   iONode model  = wxGetApp().getModel();
   iONode swlist = wPlan.getswlist( model );
   int cnt = NodeOp.getChildCnt( swlist );
@@ -200,14 +207,61 @@ void AccDecDlg::initUsage() {
     iONode sw = NodeOp.getChild( swlist, i );
     TraceOp.trc( "accdecdlg", TRCLEVEL_DEBUG, __LINE__, 9999, "%s == %s", wDec.getid(m_Props), wSwitch.getdecid(sw) );
     if( StrOp.equals(wDec.getid(m_Props), wSwitch.getdecid(sw) ) ) {
-      m_UsageList->InsertItem( i, wxString(wSwitch.getid(sw),wxConvUTF8) );
-      m_UsageList->SetItem( i, 1, wxGetApp().getMsg( "turnout" ) );
-      m_UsageList->SetItem( i, 2, wxString::Format(wxT("%d:%d"), wSwitch.getaddr1(sw), wSwitch.getport1(sw)) );
-      m_UsageList->SetItem( i, 3, wxString::Format(wxT("%d:%d:%d"), wSwitch.getx(sw), wSwitch.gety(sw), wSwitch.getz(sw)) );
-      m_UsageList->SetItem( i, 4, wxString(wSwitch.getdesc(sw),wxConvUTF8) );
-      m_UsageList->SetItemPtrData(i, (wxUIntPtr)sw);
+      m_UsageList->InsertItem( idx, wxString(wSwitch.getid(sw),wxConvUTF8) );
+      m_UsageList->SetItem( idx, 1, wxGetApp().getMsg( "turnout" ) );
+      m_UsageList->SetItem( idx, 2, wxString::Format(wxT("%d:%d"), wSwitch.getaddr1(sw), wSwitch.getport1(sw)) );
+      m_UsageList->SetItem( idx, 3, wxString::Format(wxT("%d:%d:%d"), wSwitch.getx(sw), wSwitch.gety(sw), wSwitch.getz(sw)) );
+      m_UsageList->SetItem( idx, 4, wxString(wSwitch.getdesc(sw),wxConvUTF8) );
+      m_UsageList->SetItemPtrData(idx, (wxUIntPtr)sw);
+      idx++;
     }
   }
+
+  iONode sglist = wPlan.getsglist( model );
+  cnt = NodeOp.getChildCnt( sglist );
+  for( int i = 0; i < cnt; i++ ) {
+    iONode sg = NodeOp.getChild( sglist, i );
+    if( StrOp.equals(wDec.getid(m_Props), wSignal.getdecid(sg) ) ) {
+      m_UsageList->InsertItem( idx, wxString(wSignal.getid(sg),wxConvUTF8) );
+      m_UsageList->SetItem( idx, 1, wxGetApp().getMsg( "signal" ) );
+      m_UsageList->SetItem( idx, 2, wxString::Format(wxT("%d:%d"), wSignal.getaddr(sg), wSignal.getport1(sg)) );
+      m_UsageList->SetItem( idx, 3, wxString::Format(wxT("%d:%d:%d"), wItem.getx(sg), wItem.gety(sg), wItem.getz(sg)) );
+      m_UsageList->SetItem( idx, 4, wxString(wSignal.getdesc(sg),wxConvUTF8) );
+      m_UsageList->SetItemPtrData(idx, (wxUIntPtr)sg);
+      idx++;
+    }
+  }
+
+  iONode colist = wPlan.getcolist( model );
+  cnt = NodeOp.getChildCnt( colist );
+  for( int i = 0; i < cnt; i++ ) {
+    iONode co = NodeOp.getChild( colist, i );
+    if( StrOp.equals(wDec.getid(m_Props), wOutput.getdecid(co) ) ) {
+      m_UsageList->InsertItem( idx, wxString(wOutput.getid(co),wxConvUTF8) );
+      m_UsageList->SetItem( idx, 1, wxGetApp().getMsg( "output" ) );
+      m_UsageList->SetItem( idx, 2, wxString::Format(wxT("%d:%d"), wOutput.getaddr(co), wOutput.getport(co)) );
+      m_UsageList->SetItem( idx, 3, wxString::Format(wxT("%d:%d:%d"), wItem.getx(co), wItem.gety(co), wItem.getz(co)) );
+      m_UsageList->SetItem( idx, 4, wxString(wOutput.getdesc(co),wxConvUTF8) );
+      m_UsageList->SetItemPtrData(idx, (wxUIntPtr)co);
+      idx++;
+    }
+  }
+
+  iONode fblist = wPlan.getfblist( model );
+  cnt = NodeOp.getChildCnt( fblist );
+  for( int i = 0; i < cnt; i++ ) {
+    iONode fb = NodeOp.getChild( fblist, i );
+    if( StrOp.equals(wDec.getid(m_Props), wFeedback.getdecid(fb) ) ) {
+      m_UsageList->InsertItem( idx, wxString(wFeedback.getid(fb),wxConvUTF8) );
+      m_UsageList->SetItem( idx, 1, wxGetApp().getMsg( "sensor" ) );
+      m_UsageList->SetItem( idx, 2, wxString::Format(wxT("%d"), wFeedback.getaddr(fb)) );
+      m_UsageList->SetItem( idx, 3, wxString::Format(wxT("%d:%d:%d"), wItem.getx(fb), wItem.gety(fb), wItem.getz(fb)) );
+      m_UsageList->SetItem( idx, 4, wxString(wFeedback.getdesc(fb),wxConvUTF8) );
+      m_UsageList->SetItemPtrData(idx, (wxUIntPtr)fb);
+      idx++;
+    }
+  }
+
   // resize
   for( int n = 0; n < 5; n++ ) {
     m_UsageList->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
@@ -515,6 +569,21 @@ void AccDecDlg::onUsageListActivated( wxListEvent& event ) {
   if( props != NULL ) {
     if( StrOp.equals( wSwitch.name(), NodeOp.getName(props) ) ) {
       SwitchDialog* dlg = new SwitchDialog( this, props );
+      dlg->ShowModal();
+      dlg->Destroy();
+    }
+    else if( StrOp.equals( wSignal.name(), NodeOp.getName(props) ) ) {
+      SignalDialog* dlg = new SignalDialog( this, props );
+      dlg->ShowModal();
+      dlg->Destroy();
+    }
+    else if( StrOp.equals( wOutput.name(), NodeOp.getName(props) ) ) {
+      OutputDialog* dlg = new OutputDialog( this, props );
+      dlg->ShowModal();
+      dlg->Destroy();
+    }
+    else if( StrOp.equals( wFeedback.name(), NodeOp.getName(props) ) ) {
+      FeedbackDialog* dlg = new FeedbackDialog( this, props );
       dlg->ShowModal();
       dlg->Destroy();
     }
