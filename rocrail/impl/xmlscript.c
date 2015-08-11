@@ -645,9 +645,9 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
   /* sleep */
   else if( StrOp.equals( "sleep", NodeOp.getName(cmd)) ) {
     int sleep = VarOp.getValue(NodeOp.getStr(cmd, "time", "0"), NULL );
-    if( sleep > 100 ) {
-      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "a sleep > 100ms, %d, is not permitted; Sleep 100ms...", sleep );
-      sleep = 100;
+    if( sleep > 1000 ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "a sleep > 1000ms, %d, is not permitted; Sleep 1000ms...", sleep );
+      sleep = 1000;
     }
     ThreadOp.sleep(sleep);
   }
