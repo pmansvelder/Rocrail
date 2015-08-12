@@ -7,12 +7,16 @@
 #include "rocabox/impl/archivebox_impl.h"
 
 #include "rocs/public/trace.h"
+#include "rocs/public/file.h"
 #include "rocs/public/node.h"
 #include "rocs/public/attr.h"
 #include "rocs/public/mem.h"
 #include "rocs/public/str.h"
 #include "rocs/public/strtok.h"
 #include "rocs/public/system.h"
+
+#include "rocabox/wrapper/public/ArchiveBox.h"
+#include "rocabox/wrapper/public/Stub.h"
 
 static int instCnt = 0;
 
@@ -77,29 +81,33 @@ static const char* _find( const char* text ) {
 
 
 /**  */
-static struct OArchiveBox* _inst( const iONode ini ,const iOTrace trc ) {
+static struct OArchiveBox* _inst( const char* home ,const iOTrace trc ) {
   iOArchiveBox __ArchiveBox = allocMem( sizeof( struct OArchiveBox ) );
   iOArchiveBoxData data = allocMem( sizeof( struct OArchiveBoxData ) );
   MemOp.basecpy( __ArchiveBox, &ArchiveBoxOp, 0, sizeof( struct OArchiveBox ), data );
 
   TraceOp.set( trc );
   /* Initialize data->xxx members... */
-  data->ini      = ini;
+  data->home = home;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "------------------------------------------------------------" );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "ArchiveBox" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "ArchiveBox: [%s]", data->home );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "All rights reserved." );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "------------------------------------------------------------" );
+
+  if( !FileOp.exist(data->home) ) {
+    FileOp.mkdir(data->home);
+  }
 
   instCnt++;
   return __ArchiveBox;
 }
 
 /* Support for dynamic Loading */
-iOArchiveBox getArchiveBox( const iONode ini ,const iOTrace trc )
+iOArchiveBox getArchiveBox( const char* home ,const iOTrace trc )
 {
-  return _inst(ini,trc);
+  return _inst(home,trc);
 }
 
 

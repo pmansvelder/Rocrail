@@ -1,0 +1,22 @@
+<!--
+ Rocrail - Model Railroad Software
+ Copyright (C) 2002-2015 Robert Jan Versluis, Rocrail.net
+ All rights reserved.
+-->
+<Wrappers modulename="rocabox" title="rocabox">
+
+  <archivebox wrappername="ArchiveBox">
+    <var name="storedata" vt="bool" defval="false"/>
+    <var name="categories" vt="string" defval=""/>
+    <var name="recent" vt="string" defval=""/>
+  </archivebox>
+    
+  <stub wrappername="Stub">
+    <var name="path" vt="string" defval=""/>
+    <var name="category" vt="string" defval=""/>
+    <var name="text" vt="string" defval=""/>
+    <var name="modified" vt="string" defval=""/>
+  </stub>
+    
+</Wrappers>
+    

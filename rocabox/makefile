@@ -86,7 +86,8 @@ CPP=$(TOOLPREFIX)gcc
 INCL_PATH=$(MOUNTPOINT)
 CC_FLAGS=-c $(CC_EXTRA_FLAGS) $(DEBUG) -I$(INCL_PATH) -I$(GENDIR)
 DDL_CC_FLAGS=-c $(CC_EXTRA_FLAGS) $(DEBUG) -O2 -I$(INCL_PATH) -I$(GENDIR)
-RRLIBS=$(OUTDIR)$(FS)libwrapper.a $(OUTDIR)$(FS)librocutils.a $(OUTDIR)$(FS)librocs.a
+RRLIBS=$(OUTDIR)$(FS)libwrapper.a $(OUTDIR)$(FS)librocs.a
+WOBJS=$(patsubst $(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)impl$(FS)%.c,$(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)bin$(FS)%.o,$(wildcard $(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)impl$(FS)*.c))
 
 OBJS=$(patsubst impl/%.c,$(TMPOUTDIR)/%.o,$(wildcard impl/*.c))
 
@@ -95,8 +96,12 @@ all: $(OBJS) $(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX)
 # ------------------------------------------------------------
 # The Digital Interfaces as shared libraries.
 # ------------------------------------------------------------
-$(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX): $(TMPOUTDIR)$(FS)archivebox.o $(COMMONOBJS) $(RRLIBS)
-	$(LNK) $(LNK_FLAGS) -o $(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX) $(TMPOUTDIR)$(FS)archivebox.o $(COMMONOBJS) $(RRLIBS) $(LIBS)
+$(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX): $(TMPOUTDIR)$(FS)archivebox.o $(RRLIBS) $(WOBJS)
+	$(LNK) $(LNK_FLAGS) -o $(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX) $(TMPOUTDIR)$(FS)archivebox.o $(WOBJS) $(RRLIBS) $(LIBS)
+
+$(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)bin$(FS)%.o: $(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)impl$(FS)%.c
+	$(CC) $(CC_FLAGS) $< -o $@
+
 
 # ------------------------------------------------------------
 # The rocabox objects.
@@ -109,6 +114,8 @@ clean:
 	-$(MKDIR) $(TMPOUTDIR)
 	-$(MKDIR) $(GENDIR)$(FS)rocabox
 	-$(REMOVE) $(TMPOUTDIR)$(FS)*.o
+	-$(REMOVE) $(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)public$(FS)*
+	cd $(GENDIR)$(FS)rocabox$(CS) ..$(FS)$(BINDIR)$(FS)wgen$(GENSUFFIX) ..$(FS)..$(FS)rocabox$(FS)public$(FS)wrapper.xml
 	cd $(GENDIR)$(FS)rocabox$(CS) ..$(FS)$(BINDIR)$(FS)ogen$(GENSUFFIX) ..$(FS)..$(FS)rocabox$(FS)rocabox.xml ..$(FS)
 
 install:

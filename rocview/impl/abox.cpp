@@ -11,7 +11,10 @@
 #include "rocs/public/trace.h"
 #include "rocs/public/system.h"
 
-typedef iOArchiveBox (* LPFNGETARCHIVEBOX)( const iONode, const iOTrace );
+#include "rocview/wrapper/public/Gui.h"
+
+
+typedef iOArchiveBox (* LPFNGETARCHIVEBOX)( const char*, const iOTrace );
 
 ABox::ABox() {
   m_ArchiveBox = NULL;
@@ -21,7 +24,7 @@ ABox::ABox() {
   if( pLib != NULL ) {
     LPFNGETARCHIVEBOX  pInitFun = (LPFNGETARCHIVEBOX)LibOp.getProc( pLib, "getArchiveBox" );
     if (pInitFun != NULL) {
-      m_ArchiveBox = pInitFun( NULL, TraceOp.get() );
+      m_ArchiveBox = pInitFun( wGui.getaboxhome(wxGetApp().getIni()), TraceOp.get() );
       m_ArchiveBox->find("Zoek iets");
     }
   }
