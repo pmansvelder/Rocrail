@@ -33,6 +33,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 ////@end XPM images
 
 #include "rocrail/wrapper/public/Plan.h"
+#include "rocrail/wrapper/public/Item.h"
 #include "rocrail/wrapper/public/Block.h"
 #include "rocrail/wrapper/public/BlockList.h"
 #include "rocrail/wrapper/public/Link.h"
@@ -81,6 +82,16 @@ BEGIN_EVENT_TABLE( BlockGroupingDialog, wxDialog )
     EVT_MENU( ID_PANEL_LINK_GENERAL, BlockGroupingDialog::OnSelectPage )
 
 END_EVENT_TABLE()
+
+/* comparator for sorting by id: */
+static int __sortID(obj* _a, obj* _b)
+{
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = wItem.getid( a );
+    const char* idB = wItem.getid( b );
+    return strcmp( idA, idB );
+}
 
 /*!
  * BlockGroupingDialog constructors
@@ -189,14 +200,24 @@ void BlockGroupingDialog::initIndex() {
   if( model != NULL ) {
     iONode linklist = wPlan.getlinklist( model );
     if( linklist != NULL ) {
+      iOList list = ListOp.inst();
       int cnt = NodeOp.getChildCnt( linklist );
       for( int i = 0; i < cnt; i++ ) {
         iONode link = NodeOp.getChild( linklist, i );
+        ListOp.add(list, (obj)link);
+      }
+      ListOp.sort(list, &__sortID);
+
+      cnt = ListOp.size( list );
+      for( int i = 0; i < cnt; i++ ) {
+        iONode link = (iONode)ListOp.get( list, i );
         const char* id = wLink.getid( link );
         if( id != NULL ) {
           m_List->Append( wxString(id,wxConvUTF8) );
         }
       }
+      ListOp.base.del(list);
+
       if( m_Props != NULL ) {
         m_List->SetStringSelection( wxString(wLink.getid( m_Props ),wxConvUTF8) );
         m_List->SetFirstItem( wxString(wLink.getid( m_Props ),wxConvUTF8) );
