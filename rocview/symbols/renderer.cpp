@@ -1420,7 +1420,7 @@ void SymbolRenderer::drawCrossing( wxPaintDC& dc, bool occupied, bool actroute, 
   if( wSwitch.getlocid( m_Props )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( m_Props )) )
     islocked = False;
 
-  if( islocked || issavepos || ( !isset && !wGui.isshowroute4switch(wxGetApp().getIni()) ) )
+  if( islocked || issavepos || !isset || !wGui.isshowroute4switch(wxGetApp().getIni()) )
     actroute = !occupied;
 
   // SVG Symbol:
@@ -1509,7 +1509,7 @@ void SymbolRenderer::drawDCrossing( wxPaintDC& dc, bool occupied, bool actroute,
   if( wSwitch.getlocid( m_Props )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( m_Props )) )
     islocked = False;
 
-  if( islocked || issavepos || ( !isset && !wGui.isshowroute4switch(wxGetApp().getIni()) ) )
+  if( islocked || issavepos || !isset || !wGui.isshowroute4switch(wxGetApp().getIni()) )
     actroute = !occupied;
 
   // SVG Symbol:
@@ -1794,7 +1794,7 @@ void SymbolRenderer::drawTurnout( wxPaintDC& dc, bool occupied, bool actroute, c
   if( wSwitch.getlocid( m_Props )!=NULL && StrOp.equals( wSwitch.unlocked, wSwitch.getlocid( m_Props )) )
     islocked = False;
 
-  if( islocked || issavepos || ( !isset && !wGui.isshowroute4switch(wxGetApp().getIni()) ) )
+  if( islocked || issavepos || !isset || !wGui.isshowroute4switch(wxGetApp().getIni()) )
     actroute = !occupied;
 
   // SVG Symbol:
