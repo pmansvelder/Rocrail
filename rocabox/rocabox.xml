@@ -8,9 +8,11 @@
     <fun name="inst" vt="this">
       <param name="home" vt="const char*" remark="Ini node"/>
       <param name="trc" vt="const iOTrace" remark="Trace instance"/>
+      <param name="readonly" vt="int" remark="Read only mode"/>
     </fun>
     <data>
       <var name="home" vt="const char*"/>
+      <var name="readonly" vt="int"/>
     </data>
   </object>
 

@@ -82,7 +82,7 @@ static const char* _find( obj inst, const char* text ) {
 
 
 /**  */
-static struct OArchiveBox* _inst( const char* home ,const iOTrace trc ) {
+static struct OArchiveBox* _inst( const char* home ,const iOTrace trc, int readonly ) {
   iOArchiveBox __ArchiveBox = allocMem( sizeof( struct OArchiveBox ) );
   iOArchiveBoxData data = allocMem( sizeof( struct OArchiveBoxData ) );
   MemOp.basecpy( __ArchiveBox, &ArchiveBoxOp, 0, sizeof( struct OArchiveBox ), data );
@@ -90,15 +90,17 @@ static struct OArchiveBox* _inst( const char* home ,const iOTrace trc ) {
   TraceOp.set( trc );
   /* Initialize data->xxx members... */
   data->home = home;
+  data->readonly = readonly;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "------------------------------------------------------------" );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  ArchiveBox" );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  home = [%s]", data->home );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "ArchiveBox" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  home     = [%s]", data->home );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  readonly = [%s]", data->readonly?"true":"false" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net" );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  All rights reserved." );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "------------------------------------------------------------" );
 
-  if( !FileOp.exist(data->home) ) {
+  if( !data->readonly && !FileOp.exist(data->home) ) {
     FileOp.mkdir(data->home);
   }
 
@@ -107,9 +109,9 @@ static struct OArchiveBox* _inst( const char* home ,const iOTrace trc ) {
 }
 
 /* Support for dynamic Loading */
-iOArchiveBox getArchiveBox( const char* home ,const iOTrace trc )
+iOArchiveBox getArchiveBox( const char* home ,const iOTrace trc, int readonly )
 {
-  return _inst(home,trc);
+  return _inst(home,trc, readonly);
 }
 
 

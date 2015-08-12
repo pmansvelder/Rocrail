@@ -1016,25 +1016,19 @@ static int _Main( iOApp inst, int argc, char** argv ) {
   }
 
   /* ABox */
-  typedef iIArchiveBox (* LPFNGETARCHIVEBOX)( const char*, const iOTrace );
+  typedef iIArchiveBox (* LPFNGETARCHIVEBOX)( const char*, const iOTrace, int );
 
   if( StrOp.len( wRocRail.getaboxhome(data->ini) ) > 0 ) {
     unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
     char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
-
-    if( !SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) ) {
-      char* libpath = StrOp.fmt( "%s%c%s", AppOp.getLibPath(), SystemOp.getFileSeparator(), "rocabox" );
-      iOLib pLib = LibOp.inst(libpath);
-      if( pLib != NULL ) {
-        LPFNGETARCHIVEBOX  pInitFun = (LPFNGETARCHIVEBOX)LibOp.getProc( pLib, "getArchiveBox" );
-        if (pInitFun != NULL) {
-          data->abox = pInitFun( wRocRail.getaboxhome(data->ini), TraceOp.get() );
-          data->abox->find((obj)data->abox, "Zoek iets");
-        }
+    char* libpath = StrOp.fmt( "%s%c%s", AppOp.getLibPath(), SystemOp.getFileSeparator(), "rocabox" );
+    iOLib pLib = LibOp.inst(libpath);
+    if( pLib != NULL ) {
+      LPFNGETARCHIVEBOX  pInitFun = (LPFNGETARCHIVEBOX)LibOp.getProc( pLib, "getArchiveBox" );
+      if (pInitFun != NULL) {
+        data->abox = pInitFun( wRocRail.getaboxhome(data->ini), TraceOp.get(), SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) );
+        data->abox->find((obj)data->abox, "Zoek iets");
       }
-    }
-    else {
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "ArchiveBox not loaded; Support key is expired or missing." );
     }
   }
 
