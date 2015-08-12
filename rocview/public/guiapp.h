@@ -84,6 +84,7 @@ public:
   iOList getSensorEvents(){return m_SensorEvents;}
   void sensorEvent(iONode event);
   void setSensorEventListener(wxDialog* listener) {m_SensorEventListener=listener;}
+  const char* getLibPath() {return m_LibPath;}
 #ifdef __APPLE__
   void MacOpenFile( const wxString& fileName);
 #endif
@@ -103,6 +104,7 @@ public:
   const char*   m_donkey;
   const char*   m_doneml;
   iOScript       m_Script;
+  const char*   m_LibPath;
 
 private:
   void saveSizePos();

@@ -4,17 +4,20 @@
  All rights reserved.
 */
 
+#include "rocview/public/guiapp.h"
 #include "rocview/public/abox.h"
 
 #include "rocs/public/lib.h"
 #include "rocs/public/trace.h"
+#include "rocs/public/system.h"
 
 typedef iOArchiveBox (* LPFNGETARCHIVEBOX)( const iONode, const iOTrace );
 
 ABox::ABox() {
   m_ArchiveBox = NULL;
 
-  iOLib pLib = LibOp.inst("./rocabox");
+  char* libpath = StrOp.fmt( "%s%c%s", wxGetApp().getLibPath(), SystemOp.getFileSeparator(), "rocabox" );
+  iOLib pLib = LibOp.inst(libpath);
   if( pLib != NULL ) {
     LPFNGETARCHIVEBOX  pInitFun = (LPFNGETARCHIVEBOX)LibOp.getProc( pLib, "getArchiveBox" );
     if (pInitFun != NULL) {

@@ -623,6 +623,7 @@ bool RocGui::OnInit() {
   m_Script = ScriptOp.inst(NULL);
   m_SensorEvents = ListOp.inst();
   m_SensorEventListener = NULL;
+  m_LibPath = ".";
 
   // we could need some of these:
   wxInitAllImageHandlers();
@@ -646,9 +647,14 @@ bool RocGui::OnInit() {
   const char* sp      = CmdLnOp.getStr( m_CmdLn, wCmdline.serverpath );
   const char* tp      = CmdLnOp.getStr( m_CmdLn, wCmdline.themespath );
   const char* lang    = CmdLnOp.getStr( m_CmdLn, wCmdline.langfile );
-  m_bForceTabView     = CmdLnOp.hasKey(m_CmdLn, wCmdline.tabview);
-  m_bTabViewRotated   = CmdLnOp.hasKey(m_CmdLn, wCmdline.tabviewrotated);
-  Boolean fs          = CmdLnOp.hasKey(m_CmdLn, wCmdline.fullscreen);
+  m_bForceTabView     = CmdLnOp.hasKey( m_CmdLn, wCmdline.tabview);
+  m_bTabViewRotated   = CmdLnOp.hasKey( m_CmdLn, wCmdline.tabviewrotated);
+  Boolean fs          = CmdLnOp.hasKey( m_CmdLn, wCmdline.fullscreen);
+  m_LibPath           = CmdLnOp.getStr( m_CmdLn, wCmdline.libpath );
+
+  if( m_LibPath == NULL ) {
+    m_LibPath = ".";
+  }
 
   if( m_bTabViewRotated ) {
     m_bForceTabView = true;

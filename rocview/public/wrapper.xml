@@ -23,7 +23,8 @@
     <const name="serverpath" vt="string" val="-sp" defval="" range="*" remark="Server path to start Rocrail in a workspace."/>
     <const name="langfile" vt="string" val="-lang" defval="*" range="*" remark="Alternative translations file: -lang [file]"/>
     <const name="fullscreen" vt="string" val="-fs" defval="" range="*" remark="Start in fullscreen mode."/>
-    </Cmdline>
+    <const name="libpath" vt="string" val="-l" defval="." range="*" remark="Location of the libraries: -l [path]"/>
+  </Cmdline>
 
   <accelerator structname="ACCEL" wrappername="Accelerator">
     <const name="ebreak" vt="string" val="ebreak"/>
