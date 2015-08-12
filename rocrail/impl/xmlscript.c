@@ -704,7 +704,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     if( FileOp.exist(xmlFilename) ) {
       int size = FileOp.fileSize(xmlFilename);
       char* xmlscript = allocMem( size + 1);
-      iOFile f = FileOp.inst( scriptFile, OPEN_READONLY);
+      iOFile f = FileOp.inst( xmlFilename, OPEN_READONLY);
       if( f != NULL ) {
         FileOp.read( f, xmlscript, size);
         FileOp.base.del(f);
