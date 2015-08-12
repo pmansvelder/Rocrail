@@ -251,6 +251,14 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
+			<target name="macosx" path="rocabox" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>PLATFORM=MACOSX all</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
 			<target name="rocrail" path="rocrail" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
 				<buildTarget>rocrail</buildTarget>

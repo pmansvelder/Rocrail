@@ -270,7 +270,8 @@
     <var name="resetspfx" vt="bool" defval="false" remark="Reset all loco functions and speed at startup."/>
     <var name="nodevcheck" vt="bool" defval="false" remark="Do not check availability of serial devices."/>
     <var name="weatherid" vt="string" defval="default" range="*" remark="Default weather ID."/>
-
+    <var name="aboxhome" vt="string" defval="archivebox" range="*"/>
+    
     <r2rnet wrappername="R2RnetIni" cardinality="1" remark="Setup for the R2RNet.">
       <var name="enable" vt="bool" defval="false" remark="Enable R2Rnet."/>
       <var name="id" vt="string" defval="" remark="R2Rnet ID."/>

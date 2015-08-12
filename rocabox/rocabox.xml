@@ -4,13 +4,10 @@
  All rights reserved.
 -->
 <Project name="RocABox" title="RocAbox API" docname="rocaboxapi">
-  <object name="ArchiveBox" use="node,trace,thread,map">
+  <object name="ArchiveBox" use="node,trace,thread,map" interface="$../rocint/rocint.xml:ArchiveBox" include="$rocint/public/archivebox" >
     <fun name="inst" vt="this">
       <param name="home" vt="const char*" remark="Ini node"/>
       <param name="trc" vt="const iOTrace" remark="Trace instance"/>
-    </fun>
-    <fun name="find" vt="const char*">
-      <param name="text" vt="const char*"/>
     </fun>
     <data>
       <var name="home" vt="const char*"/>

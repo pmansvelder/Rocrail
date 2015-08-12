@@ -74,8 +74,9 @@ static void* __event( void* inst, const void* evt ) {
 }
 
 /** ----- OArchiveBox ----- */
-static const char* _find( const char* text ) {
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find [%s]", text );
+static const char* _find( obj inst, const char* text ) {
+  iOArchiveBoxData data = Data(inst);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find [%s] in [%s]", text, data->home );
   return NULL;
 }
 
@@ -91,9 +92,10 @@ static struct OArchiveBox* _inst( const char* home ,const iOTrace trc ) {
   data->home = home;
 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "------------------------------------------------------------" );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "ArchiveBox: [%s]", data->home );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net" );
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "All rights reserved." );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  ArchiveBox" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  home = [%s]", data->home );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net" );
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "  All rights reserved." );
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "------------------------------------------------------------" );
 
   if( !FileOp.exist(data->home) ) {
