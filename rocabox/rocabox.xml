@@ -1,0 +1,21 @@
+<!--
+ Rocrail - Model Railroad Software
+ Copyright (C) 2002-2015 Robert Jan Versluis, Rocrail.net
+ All rights reserved.
+-->
+<Project name="RocABox" title="RocAbox API" docname="rocaboxapi">
+  <object name="ArchiveBox" use="node,trace,thread,map">
+    <fun name="inst" vt="this">
+      <param name="ini" vt="const iONode" remark="Ini node"/>
+      <param name="trc" vt="const iOTrace" remark="Trace instance"/>
+    </fun>
+    <fun name="find" vt="const char*">
+      <param name="text" vt="const char*"/>
+    </fun>
+    <data>
+      <var name="ini" vt="iONode"/>
+    </data>
+  </object>
+
+</Project>
+

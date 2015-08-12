@@ -2030,6 +2030,11 @@ RocGuiFrame::RocGuiFrame(const wxString& title, const wxPoint& pos, const wxSize
       wxTheClipboard->Close();
     }
   }
+
+  if( m_bExpired )
+    m_ABox = NULL;
+  else
+    m_ABox = new ABox();
 }
 
 void RocGuiFrame::initFrame() {

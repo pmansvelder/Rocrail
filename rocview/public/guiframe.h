@@ -28,6 +28,8 @@
 #include "rocview/public/lc.h"
 #include "rocview/public/jssupport.h"
 #include "rocview/public/statbar.h"
+#include "rocview/public/abox.h"
+
 
 #include "rocview/dialogs/decoders/locoio.h"
 #include "rocview/dialogs/decoders/cbusnodedlg.h"
@@ -423,6 +425,7 @@ private:
   wxString          m_LocalPlan;
   StatusBar *       m_StatusBar;
   wxComboBox*       m_ScaleComboBox;
+  ABox*             m_ABox;
 
   LocoIO* m_LocoIO;
   CBusNodeDlg* m_CBusNodeDlg;
