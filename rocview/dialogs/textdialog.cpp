@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE( TextDialog, wxDialog )
 
 ////@begin TextDialog event table entries
     EVT_LIST_ITEM_SELECTED( ID_INDEXLIST, TextDialog::OnIndexlistSelected )
+    EVT_LIST_COL_CLICK( ID_INDEXLIST, TextDialog::OnIndexlistColLeftClick )
     EVT_BUTTON( ID_NEWTEXT, TextDialog::OnNewtextClick )
     EVT_BUTTON( ID_DELETETEXT, TextDialog::OnDeletetextClick )
     EVT_BUTTON( ID_BUTTON_TXT_IMAGE, TextDialog::OnButtonTxtImageClick )
@@ -858,5 +859,11 @@ void TextDialog::OnApplyClick( wxCommandEvent& event )
     wxGetApp().setLocalModelModified(true);
   }
   initIndex();
+}
+
+
+void TextDialog::OnIndexlistColLeftClick( wxListEvent& event )
+{
+  sortOnColumn(event.GetColumn());
 }
 

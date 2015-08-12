@@ -120,6 +120,9 @@ public:
     /// wxEVT_COMMAND_LIST_ITEM_SELECTED event handler for ID_INDEXLIST
     void OnIndexlistSelected( wxListEvent& event );
 
+    /// wxEVT_COMMAND_LIST_COL_CLICK event handler for ID_INDEXLIST
+    void OnIndexlistColLeftClick( wxListEvent& event );
+
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_NEWTEXT
     void OnNewtextClick( wxCommandEvent& event );
 
