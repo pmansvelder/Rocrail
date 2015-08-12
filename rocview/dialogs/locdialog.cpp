@@ -470,7 +470,7 @@ void LocDialog::initLabels() {
   m_BBTCopy->SetLabel( wxGetApp().getMsg( "copy" ) );
   m_BBTDeleteAll->SetLabel( wxGetApp().getMsg( "deleteall" ) );
   m_BBTAdd->SetLabel( wxGetApp().getMsg( "add" ) );
-  m_BBTFixAll->SetLabel( wxGetApp().getMsg( "fixall" ) );
+  m_BBTFixAll->SetLabel( wxGetApp().getMsg( "togglefix" ) );
 
   m_BBTKey->SetLabel( wxGetApp().getMsg( "use" ) );
   m_BBTKey->SetString( 0, wxGetApp().getMsg( "block" ) );
@@ -4717,7 +4717,7 @@ void LocDialog::OnBbtFixallClick( wxCommandEvent& event )
   if( m_Props == NULL )
     return;
 
-  if( m_BBTList2->GetSelectedItemCount() > 1 ) {
+  if( m_BBTList2->GetSelectedItemCount() > 0 ) {
     iOList list = sortBBT();
     for( int i = 0; i < m_BBTList2->GetItemCount(); i++ ) {
       TraceOp.trc( "locdlg", TRCLEVEL_INFO, __LINE__, 9999, "Item state = %X", m_BBTList2->GetItemState(i, wxLIST_STATE_SELECTED) );
@@ -4726,13 +4726,6 @@ void LocDialog::OnBbtFixallClick( wxCommandEvent& event )
         wBBT.setfixed(bbt, wBBT.isfixed(bbt) ? False:True);
       }
     }
-  }
-  else {
-    iONode bbt = wLoc.getbbt( m_Props );
-    while( bbt != NULL ) {
-      wBBT.setfixed(bbt, True);
-      bbt = wLoc.nextbbt( m_Props, bbt );
-    };
   }
 
   initBBT();

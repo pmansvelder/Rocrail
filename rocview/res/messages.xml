@@ -31676,4 +31676,7 @@
   <Msg id="xmlscriptpath">
     <en txt="XmlScript path"/>
   </Msg>
+  <Msg id="togglefix">
+    <en txt="Toggle fix"/>
+  </Msg>
 </Messages>
