@@ -187,6 +187,9 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SOUNDPLAYER
     void OnButtonSoundplayerClick( wxCommandEvent& event );
 
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_XMLSCRIPTPATH
+    void OnButtonXmlscriptpathClick( wxCommandEvent& event );
+
     /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_RR_CONTROLLERS
     void OnListboxRrControllersSelected( wxCommandEvent& event );
 

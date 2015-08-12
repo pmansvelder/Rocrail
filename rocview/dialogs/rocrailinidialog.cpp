@@ -97,6 +97,7 @@ BEGIN_EVENT_TABLE( RocrailIniDialog, wxDialog )
     EVT_BUTTON( ID_BUTTON_ISSUESPATH, RocrailIniDialog::OnButtonIssuespathClick )
     EVT_BUTTON( ID_BUTTON_SOUNDPATH, RocrailIniDialog::OnButtonSoundpathClick )
     EVT_BUTTON( ID_BUTTON_SOUNDPLAYER, RocrailIniDialog::OnButtonSoundplayerClick )
+    EVT_BUTTON( ID_BUTTON_XMLSCRIPTPATH, RocrailIniDialog::OnButtonXmlscriptpathClick )
     EVT_LISTBOX( ID_LISTBOX_RR_CONTROLLERS, RocrailIniDialog::OnListboxRrControllersSelected )
     EVT_LISTBOX_DCLICK( ID_LISTBOX_RR_CONTROLLERS, RocrailIniDialog::OnListboxRrControllersDoubleClicked )
     EVT_BUTTON( ID_BUTTON_RR_DELETE, RocrailIniDialog::OnButtonRrDeleteClick )
@@ -2726,7 +2727,7 @@ void RocrailIniDialog::OnRocwebWebButtonClick( wxCommandEvent& event )
 void RocrailIniDialog::OnButtonImgpathClick( wxCommandEvent& event )
 {
   wxDirDialog* dlg = new wxDirDialog( this );
-  dlg->SetPath(m_WebPath->GetValue());
+  dlg->SetPath(m_ImgPath->GetValue());
   if( dlg->ShowModal() == wxID_OK ) {
     m_ImgPath->SetValue( dlg->GetPath() );
   }
@@ -2736,7 +2737,7 @@ void RocrailIniDialog::OnButtonImgpathClick( wxCommandEvent& event )
 void RocrailIniDialog::OnButtonLibpathClick( wxCommandEvent& event )
 {
   wxDirDialog* dlg = new wxDirDialog( this );
-  dlg->SetPath(m_WebPath->GetValue());
+  dlg->SetPath(m_LibPath->GetValue());
   if( dlg->ShowModal() == wxID_OK ) {
     m_LibPath->SetValue( dlg->GetPath() );
   }
@@ -2746,7 +2747,7 @@ void RocrailIniDialog::OnButtonLibpathClick( wxCommandEvent& event )
 void RocrailIniDialog::OnButtonIconpathClick( wxCommandEvent& event )
 {
   wxDirDialog* dlg = new wxDirDialog( this );
-  dlg->SetPath(m_WebPath->GetValue());
+  dlg->SetPath(m_IconPath->GetValue());
   if( dlg->ShowModal() == wxID_OK ) {
     m_IconPath->SetValue( dlg->GetPath() );
   }
@@ -2756,7 +2757,7 @@ void RocrailIniDialog::OnButtonIconpathClick( wxCommandEvent& event )
 void RocrailIniDialog::OnButtonIssuespathClick( wxCommandEvent& event )
 {
   wxDirDialog* dlg = new wxDirDialog( this );
-  dlg->SetPath(m_WebPath->GetValue());
+  dlg->SetPath(m_IssuePath->GetValue());
   if( dlg->ShowModal() == wxID_OK ) {
     m_IssuePath->SetValue( dlg->GetPath() );
   }
@@ -2766,7 +2767,7 @@ void RocrailIniDialog::OnButtonIssuespathClick( wxCommandEvent& event )
 void RocrailIniDialog::OnButtonSoundpathClick( wxCommandEvent& event )
 {
   wxDirDialog* dlg = new wxDirDialog( this );
-  dlg->SetPath(m_WebPath->GetValue());
+  dlg->SetPath(m_SoundPath->GetValue());
   if( dlg->ShowModal() == wxID_OK ) {
     m_SoundPath->SetValue( dlg->GetPath() );
   }
@@ -2778,6 +2779,16 @@ void RocrailIniDialog::OnButtonSoundplayerClick( wxCommandEvent& event )
   wxFileDialog* fdlg = new wxFileDialog(this, wxGetApp().getMenu("soundplayer"));
   if( fdlg->ShowModal() == wxID_OK ) {
     m_SoundPlayer->SetValue( fdlg->GetPath() );
+  }
+}
+
+
+void RocrailIniDialog::OnButtonXmlscriptpathClick( wxCommandEvent& event )
+{
+  wxDirDialog* dlg = new wxDirDialog( this );
+  dlg->SetPath(m_XmlScriptPath->GetValue());
+  if( dlg->ShowModal() == wxID_OK ) {
+    m_XmlScriptPath->SetValue( dlg->GetPath() );
   }
 }
 
