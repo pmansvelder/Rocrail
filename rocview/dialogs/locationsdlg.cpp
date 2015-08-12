@@ -179,6 +179,7 @@ void LocationsDialog::initLabels() {
 
 }
 
+
 void LocationsDialog::initIndex() {
 
   int selected = m_LocationList->GetSelection();
@@ -188,11 +189,20 @@ void LocationsDialog::initIndex() {
   if( model != NULL ) {
     iONode locationlist = wPlan.getlocationlist( model );
     if( locationlist != NULL ) {
+      iOList list = ListOp.inst();
       int cnt = NodeOp.getChildCnt( locationlist );
       for( int i = 0; i < cnt; i++ ) {
         iONode location = NodeOp.getChild( locationlist, i );
+        ListOp.add(list, (obj)location);
+      }
+      ListOp.sort(list, &__sortID);
+
+      cnt = ListOp.size( list );
+      for( int i = 0; i < cnt; i++ ) {
+        iONode location = (iONode)ListOp.get( list, i );
         m_LocationList->Append( wxString(wLocation.getid( location ),wxConvUTF8), location );
       }
+      ListOp.base.del(list);
     }
   }
 
