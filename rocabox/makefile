@@ -100,7 +100,7 @@ $(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX): $(TMPOUTDIR)$(FS)archivebox.o $(RRLIBS) $(
 	$(LNK) $(LNK_FLAGS) -o $(OUTDIR)$(FS)rocabox$(SHAREDSUFFIX) $(TMPOUTDIR)$(FS)archivebox.o $(WOBJS) $(RRLIBS) $(LIBS)
 
 $(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)bin$(FS)%.o: $(GENDIR)$(FS)rocabox$(FS)wrapper$(FS)impl$(FS)%.c
-	$(CC) $(CC_FLAGS) $< -o $@
+	$(CPP) $(CC_FLAGS) $< -o $@
 
 
 # ------------------------------------------------------------
