@@ -81,6 +81,7 @@ class wxSpinCtrl;
 #define ID_TEXTCTRL_RR_CLIENTPORT 10109
 #define wxID_STATIC_RR_MAXCON 10110
 #define ID_TEXTCTRL_RR_MAXCONN 10111
+#define ID_SELECT_ABOXHOME 10493
 #define ID_PANEL_RR_AUTO 10146
 #define wxID_STATIC_RR_SWTIME 10147
 #define ID_TEXTCTRL_RR_SWTIME 10148
@@ -189,6 +190,9 @@ public:
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_XMLSCRIPTPATH
     void OnButtonXmlscriptpathClick( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SELECT_ABOXHOME
+    void OnSelectAboxhomeClick( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_RR_CONTROLLERS
     void OnListboxRrControllersSelected( wxCommandEvent& event );
@@ -372,6 +376,8 @@ public:
     wxTextCtrl* m_SnmpTrapHost;
     wxStaticText* m_labSnmpTrapPort;
     wxSpinCtrl* m_SnmpTrapPort;
+    wxTextCtrl* m_ABoxHome;
+    wxButton* m_SelectABoxHome;
     wxPanel* m_AtomatPanel;
     wxStaticText* m_LabelSwTime;
     wxTextCtrl* m_SwTime;
