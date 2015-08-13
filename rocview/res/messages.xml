@@ -457,7 +457,7 @@
     <sv txt="B R E A K" tip="Stoppa lok omedelbart"/>
     <fr txt="Arrêt d'urgence" tip="Arrêter la locomotive immédiatement !"/>
     <tr txt="F R E N" tip="Lokomotifi aniden durdur!"/>
-    <es txt="Frenar" tip="¡Parar loc inmediatamente!"/>
+    <es txt="Parada Emergencia" tip="¡Parar loc inmediatamente!"/>
     <it txt="EMERGENZA" tip="Arrestare immediatamente la locomotiva"/>
     <da txt="S T O P" tip="Stop lokomotiv med det samme!"/>
     <cs txt="STOP" tip="Okamžitě zastav lokomotivu!"/>
@@ -526,7 +526,7 @@
     <sv txt="Öppna" accel="0" tip="Öppna en spårplan"/>
     <fr txt="Ouvrir" accel="0" tip="Ouvrir un plan."/>
     <tr txt="Aç" accel="0" tip="Bir kurgu planı aç."/>
-    <es txt="Abrir" accel="0" tip="Abrir un plan de ruta"/>
+    <es txt="Abrir" accel="0" tip="Abrir un plano de vías"/>
     <it txt="Apri" tip="Apre un tracciato"/>
     <da txt="Åben" accel="0" tip="Åben en sporplan."/>
     <bs txt="Otvori"/>
@@ -629,7 +629,7 @@
     <sv txt="Spara" tip="Spara spårplan"/>
     <fr txt="Enregistrer" tip="Enregistrer le plan."/>
     <tr txt="Kaydet" tip="Kurgu planını kaydet."/>
-    <es txt="Guardar" tip="Guardar plan de seguimiento"/>
+    <es txt="Guardar" tip="Guardar plano de vías"/>
     <it txt="Salva" tip="Salva il tracciato"/>
     <da txt="Gem" tip="Gem Sporplan."/>
     <bs txt="Spremi"/>
@@ -663,7 +663,7 @@
     <sv txt="Spara som" accel="8" tip="Spara spårplan med annat namn"/>
     <fr txt="Enregistrer sous" tip="Enregistrer le plan sous un autre nom."/>
     <tr txt="Farklı Kaydet" accel="5" tip="Kurgu planını başka isimle kaydet."/>
-    <es txt="Salvar Como" accel="5" tip="Guardar plan de seguimiento con otro nombre"/>
+    <es txt="Guardar como" accel="5" tip="Guardar plano de vías con otro nombre"/>
     <it txt="Salva con nome" tip="Salva il tracciato con nome"/>
     <da txt="Gem som" accel="5" tip="Gem sporplan med et nyt navn."/>
     <bs txt="Spremi kao"/>
@@ -802,7 +802,7 @@
     <sv txt="Ångra"/>
     <fr txt="Annuler"/>
     <tr txt="Geri al"/>
-    <es txt="Undo"/>
+    <es txt="Deshacer"/>
     <it txt="Annullare"/>
     <da txt="Fortryd"/>
     <bs txt="Povrati nazad"/>
@@ -904,7 +904,7 @@
     <sv txt="Körström på" accel="9" tip="Slå till spänning"/>
     <fr txt="Mettre sous tension" accel="1" tip="Mettre sous tension."/>
     <tr txt="Güç Açık" accel="6" tip="Gücü aç."/>
-    <es txt="Encendido" accel="6" tip="Posición de encendido."/>
+    <es txt="Encendido" accel="6" tip="Interruptor de encendido"/>
     <it txt="Alimenta il tracciato" tip="Alimenta il tracciato"/>
     <da txt="Kørestrøm tænd" accel="9" tip="Tænd kørestrøm"/>
     <cs txt="Zapnout" tip="Zapni"/>
@@ -974,7 +974,7 @@
     <sv txt="Initialisera fält" accel="8" tip="Initialisera växlar enligt spårplan"/>
     <fr txt="Champs d'initialisation" accel="0" tip="Positionner les aiguillages selon le plan."/>
     <tr txt="Makasları hazırla" accel="0" tip="Makasları kurgu planına göre hazırla."/>
-    <es txt="Iniciar maqueta" accel="0" tip="Inicializar conmutadores de acuerdo al plan de seguimiento"/>
+    <es txt="Comprobación de desvios" accel="0" tip="Inicializar conmutadores de acuerdo al plan de seguimiento"/>
     <it txt="Campo di inizializzazione" tip="Inizializza i deviatoi secondo il tracciato"/>
     <da txt="Initialisere anlæg" accel="8" tip="Initialiser kontakter ifølge spor plan"/>
     <cs txt="inicializace položky" tip="Nastav výhybky podle plánu trati"/>
@@ -1008,7 +1008,7 @@
     <sv txt="Lokkontroll" accel="0" tip="Dialog för lokstyrning"/>
     <fr txt="Poste de conduite" accel="0" tip="Contrôle des locomotives."/>
     <tr txt="Lok Kontrol" accel="0" tip="Loc kontrolü için diyalog."/>
-    <es txt="Control de Locomotora" accel="0" tip="Diálogo de control de locs."/>
+    <es txt="Control de Locomotora" accel="0" tip="Controlador de locomotoras"/>
     <it txt="Controllo locomotive" tip="Finestra controllo locomotive"/>
     <da txt="Lokomotivkontrol" accel="0" tip="Dialog til at kontrollere Lokomotiver"/>
     <bg txt="Loc контрол"/>
@@ -1042,7 +1042,7 @@
     <sv txt="Växelkontroll" accel="0" tip="Dialog för att testa växlar."/>
     <fr txt="Contrôle d'aiguillage" accel="0" tip="Test des aiguillages."/>
     <tr txt="Maks Kontrolü" accel="0" tip="Makas testi için diyalog."/>
-    <es txt="Control de posición" accel="0" tip="Diálogo para probar los conmutadores"/>
+    <es txt="Control de desvios" accel="0" tip="Probar de desvios"/>
     <it txt="Controllo deviatoi" tip="Finestra controllo deviatoi"/>
     <da txt="Skifte kontrol" accel="0" tip="Dialog til at teste kontakter"/>
     <bg txt="Активност контрол"/>
@@ -1076,7 +1076,7 @@
     <sv txt="Tågvägskontroll" accel="0" tip="Dialog för att testa tågvägar"/>
     <fr txt="Vérifier les itinéraires" accel="1" tip="Test des itinéraires."/>
     <tr txt="Rota Kontrol" accel="1" tip="Rotaları test için diyalog."/>
-    <es txt="Control de Rutas" accel="1" tip="Diálogo para probar rutas"/>
+    <es txt="Control de Rutas" accel="1" tip="Probador de rutas"/>
     <it txt="Controllo itinerari" tip="Finestra controllo itinerari"/>
     <da txt="Togvejkontrol" accel="1" tip="Dialog til at teste togvej"/>
     <bg txt="Маршрути контрол"/>
@@ -1110,7 +1110,7 @@
     <sv txt="Spårplansegenskaper." accel="0" tip="Dialog för att visa och ändra spårplansegenskaper."/>
     <fr txt="Propriétés du plan de voies" accel="0" tip="Fenêtre des propriétés du plan de voies"/>
     <tr txt="Ray Diyagram Özellikleri" accel="0" tip="Ray Diyagramlarını görüntülemek ve yerleştirmek için diyalog."/>
-    <es txt="Propiedades del panel de carriles" accel="0" tip="Dialogo para ver y cambiar las propiedades del panel de pistas"/>
+    <es txt="Propiedades del panel del circuito" accel="0" tip="Dialogo para ver y cambiar las propiedades del panel de pistas"/>
     <it txt="Proprietà del tracciato" tip="Finestra per visualizzare e impostare le proprietà del pannello Binario"/>
     <da txt="Sportavle egenskaber" accel="0" tip="Dialog til at se og redigere Track Panel egenskaber"/>
     <bg txt="Track план имоти"/>
@@ -1655,7 +1655,7 @@
     <sv txt="Automatikläge" accel="1" tip="Ändra till automatikläge"/>
     <fr txt="Mode automatique" accel="1" tip="Activer le mode automatique."/>
     <tr txt="Oto Mod" accel="1" tip="Otomatik modu aç."/>
-    <es txt="Modo automático" accel="1" tip="Cambiar a modo automático activo."/>
+    <es txt="Modo automático" accel="1" tip="Activar modo automático"/>
     <it txt="Modalità automatica" tip="Attiva modalità automatica"/>
     <da txt="Automatisk tilstand" accel="1" tip="Slå automatisk tilstand til."/>
     <cs txt="Automatický režim" tip="Zapni automatický režim"/>
@@ -2751,7 +2751,7 @@
     <sv txt="Blockgrupper" tip="Blockgruppstabell"/>
     <fr txt="Groupes de blocs" tip="Tableau des Groupes de blocs "/>
     <tr txt="Blok grupları" tip="Blok grup tablosu"/>
-    <es txt="Grupo de Bloques" tip="Tabla de Grupos de bloques"/>
+    <es txt="Table de grupos de bloques" tip="Tabla de Grupos de bloques"/>
     <it txt="Gruppo blocchi" tip="Tabella blocchi"/>
     <da txt="Blok gruppe tabel" tip="Blokgruppetabel"/>
     <bg txt="Блок маса група"/>
@@ -2817,7 +2817,7 @@
     <sv txt="Växeltabell" tip="Växeltabell"/>
     <fr txt="Aiguillages" tip="Tableau d'aiguillages"/>
     <tr txt="Makaslar" tip="Makaslar"/>
-    <es txt="Cambiar tabla" tip="Desvíos"/>
+    <es txt="Tabla de desvios" tip="Desvíos"/>
     <it txt="Deviatoi" tip="Deviatoi"/>
     <da txt="Skifte tabel" tip="Skiftespor-tabel"/>
     <bg txt="Активност таблица"/>
@@ -3010,7 +3010,7 @@
     <sv txt="Lägg till spårplan" tip="Lägg till spårplan"/>
     <fr txt="Ajouter un plan de voies" tip="Ajouter un TCO"/>
     <tr txt="Ray Diyagramı Ekle" tip="Ray Diyagramı Ekle"/>
-    <es txt="Añadir panel de carriles" tip=" Añadir diagrama de circuito"/>
+    <es txt="Añadir plano de circuito" tip=" Añadir diagrama de circuito"/>
     <it txt="Aggiungi pannello" tip="Aggiungi un tracciato"/>
     <da txt="Tilføj sportavle" tip="Tilføj til sporplan"/>
     <bg txt="Добави песен план"/>
@@ -3078,7 +3078,7 @@
     <sv txt="Spårplansegenskaper" tip="Spårplansegenskaper"/>
     <fr txt="Propriétés du plan" tip="Propriétés du TCO"/>
     <tr txt="Panel özellikleri" tip="Ray Diyagram Özellikleri"/>
-    <es txt="Propiedades del diagrama de circuito" tip="Propiedades del diagrama del circuito"/>
+    <es txt="Propiedades del panel del circuito" tip="Propiedades del diagrama del circuito"/>
     <it txt="Proprietà pannello" tip="Proprietà del tracciato"/>
     <da txt="Sporplansegenskaber" tip="Sporplansegenskaber"/>
     <bg txt="Панелна имота"/>
@@ -3609,7 +3609,7 @@
     <sv txt="Öppna spårplan"/>
     <fr txt="Ouvrir un plan"/>
     <tr txt="Ray Diyagramı Aç"/>
-    <es txt="Abrir diagrama de circuito"/>
+    <es txt="Abrir plano de vías"/>
     <it txt="lApri pannello tracciato"/>
     <da txt="Åben sporplan"/>
     <bg txt="Отвори следите план"/>
@@ -3676,7 +3676,7 @@
     <sv txt="Språkvalet är sparat och tas i bruk vid nästa start av Rocrail."/>
     <fr txt="La langue de l'interface utilisateur a été mise à jour et sera appliquée au prochain redémarrage de Rocview."/>
     <tr txt="Kullanıcı ara yüzünün dil seçimi güncellendi; ancak tekrar başlatılınca aktif hale gelecek."/>
-    <es txt="El idioma ha sido modificado, el cambio tendrá efecto la próxima vez que arranque."/>
+    <es txt="El idioma ha sido modificado, el cambio tendrá efecto la próxima vez que inicie"/>
     <it txt="Lingua dell'interfaccia aggiornata, riavviare il programma per rendere effettive le modifiche"/>
     <da txt="Sproget er ændret og vil blive aktivt næste gang du starter Rocrail."/>
     <bg txt="Езиковата настройка на потребителския интерфейс е актуализиран и ще влязат в сила при следващото стартиране."/>
@@ -4907,7 +4907,7 @@
     <sv txt="Ny" tip="Ny spårplan"/>
     <fr txt="Nouveau" tip="Nouveau plan"/>
     <tr txt="Yeni" tip="Yeni kurgu planı"/>
-    <es txt="Nueva" tip="Nuevo plan de  pista"/>
+    <es txt="Nueva" tip="Nuevo plano de vias"/>
     <it txt="Nuovo" tip="Nuovo pannello tracciato"/>
     <da txt="Ny" tip="Ny sporplan"/>
     <bs txt="Nova"/>
@@ -7519,7 +7519,7 @@
     <sv txt="Logg"/>
     <fr txt="Suivi des opérations"/>
     <tr txt="İzleme"/>
-    <es txt="Seguimiento"/>
+    <es txt="Comunicación servidor"/>
     <it txt="Tracciamento (Trace)"/>
     <da txt="Trace"/>
     <bs txt="Prati"/>
@@ -10628,7 +10628,7 @@
     <sv txt="Platser" tip="Destinationstabell"/>
     <fr txt="Emplacements" tip="Places"/>
     <tr txt="Konumlar" tip="Konumlar"/>
-    <es txt="Coordenadas" tip=" Coordenadas"/>
+    <es txt="Tabla de localizaciones" tip=" Coordenadas"/>
     <it txt="Località" tip="Tabella delle destinazioni"/>
     <da txt="Pladser" tip="Destinationstabel"/>
     <bg txt="Местоположение таблица"/>
@@ -14738,7 +14738,7 @@
     <sv txt="Spårplansfärg"/>
     <fr txt="Couleur de fond du plan"/>
     <tr txt="Track plan color"/>
-    <es txt="Track plan color"/>
+    <es txt="Color fondo plano vias"/>
     <it txt="Colore pannello tracciato"/>
     <da txt="Sporplansfarve"/>
     <bg txt="Track план цветен"/>
@@ -15233,7 +15233,7 @@
     <sv txt="Lokpanel"/>
     <fr txt="Fenêtre des locomotives"/>
     <tr txt="Loco Panel"/>
-    <es txt="Loco Panel"/>
+    <es txt="Panel de locomotoras"/>
     <it txt="Pannello locomotive"/>
     <da txt="Lokomotiv panel"/>
     <cs txt="Panel lokomotiv"/>
@@ -17645,7 +17645,7 @@
     <bg txt="Изпраща кратки документи за самоличност"/>
     <da txt="Send kort ID" tip="Send kort ID til en tilsluttet hastighed"/>
     <el txt="Transmit σύντομο IDs"/>
-    <es txt="Transmit short IDs" tip="Transmitir IDs cortas a un acelerador conectado."/>
+    <es txt="Transmitir IDs cortas" tip="Transmitir IDs cortas a un acelerador conectado."/>
     <nl txt="Verzend korte ID's" tip="Zend korte ID's naar de hand regelaar."/>
     <tr txt="Transmit short IDs"/>
     <hu txt="Rövid ID küldése"/>
@@ -17674,7 +17674,7 @@
     <cs txt="Tabulka Aut"/>
     <fr txt="Wagons"/>
     <da txt="Vogn liste"/>
-    <es txt="Cars"/>
+    <es txt="Coches"/>
     <hu txt="Kocsi lista"/>
     <tr txt="Cars"/>
     <bg txt="Кола таблица"/>
@@ -20828,7 +20828,7 @@
     <it txt="Cartella di lavoro predefinita" tip="Cartella di lavoro predefinita da aprire all'avvio"/>
     <pt txt="Espaço de trabalho default"/>
     <ru txt="Workspace  по-умолчанию" tip="Открывать при запуске  Workspace по-умолчанию"/>
-    <es txt="Espacio de trabajo por defecto" tip="Abrir al inicio espacio de trabajo por defecto"/>
+    <es txt="Espacio de trabajo por defecto" tip="Espacio de trabajo por defecto"/>
     <ca txt="Entorn de treball per defecte"/>
     <da txt="standart arbejdsområde" tip="standart arbejdsområde ved opstart"/>
     <en_AU txt="Default Workspace" tip="Default Workspace to open at startup."/>
@@ -24337,7 +24337,7 @@
     <de txt="Touren"/>
     <fr txt="Tableau de trajets compilés"/>
     <ru txt="Туры"/>
-    <es txt="Table de tours"/>
+    <es txt="Tabla de Tours"/>
     <it txt="Percorsi"/>
     <sr_latin txt="Tabela tura"/>
     <ja txt="旅程テーブル"/>
@@ -24672,6 +24672,7 @@
     <pl txt="Dodaj parametr lokalizacji"/>
     <fr txt="Ajouter paramètres de localisation"/>
     <be txt="Дадаць параметр месцазнаходжаньня"/>
+    <da txt="Indsæt lokation parameter"/>
   </Msg>
   <Msg id="nodenumber">
     <en txt="Node Nr."/>
@@ -24717,6 +24718,7 @@
     <en_CA txt="Event Nr."/>
     <pl txt="Zdarzenie Nr."/>
     <be txt="№ здарэньня"/>
+    <da txt="Event nummer"/>
   </Msg>
   <Msg id="triggerlowevents">
     <en txt="Trigger low events after 100ms"/>
@@ -24939,6 +24941,7 @@
     <fr txt="Fermer si pas d'évènement"/>
     <sv txt="Stäng block om ingen händelse är vald"/>
     <be txt="Зачыніць пры адсутнасьці здарэньняў"/>
+    <da txt="Luk ved ingen events"/>
   </Msg>
   <Msg id="every">
     <en txt="every"/>
@@ -24983,7 +24986,7 @@
     <en_AU txt="Start of Day" tip="Initialise accessories and query sensors."/>
     <en_CA txt="Start of Day" tip="Initialize accessories and query sensors."/>
     <pl txt="Początek dnia" tip="Inicjalizacja akcesoriów i weryfikacja stanu czujników."/>
-    <da tip="Initialiser tilbehør og forspørg sensorer"/>
+    <da tip="Initialiser tilbehør og forspørg sensorer" txt="Start af dag"/>
     <be txt="Пачатак працы" tip="Ініцыялізаваць аксэсуары і апытаць чуйнікі."/>
   </Msg>
   <Msg id="querysensors">
@@ -25006,7 +25009,7 @@
     <pl txt="Sprawdzenie stanu czujników" tip="Sprawdzenie aktualnego stanu wszystkich czujników."/>
     <en_AU txt="Query sensors" tip="Query actual state of all sensors."/>
     <en_CA txt="Query sensors" tip="Query actual state of all sensors."/>
-    <da tip="Forespørg aktuel sensor status"/>
+    <da tip="Forespørg aktuel sensor status" txt="Forespørg sensorer"/>
     <be txt="Апытаць чуйнікі" tip="Апытаць фактычны стан ўсіх чуйнікаў."/>
   </Msg>
   <Msg id="canid">
@@ -25127,7 +25130,7 @@
     <en txt="Open Key file"/>
     <nl txt="Open sleutel bestand"/>
     <de txt="Spenden-Schlüssel-Datei öffnen"/>
-    <es txt="Abrir calve de registro"/>
+    <es txt="Abrir archivo de clave"/>
     <ru txt="Открыть файл ключа"/>
     <it txt="Aprire file delle chiavi"/>
     <sr_latin txt="Otvori fajl ključa"/>
@@ -26153,6 +26156,7 @@
     <pl txt="Wyczyść identyfikator trasy (ID) dla wszystkich wykrytych tras automatycznych"/>
     <fr txt="Effacer tous les identifians des routes détectées automatiquement"/>
     <be txt="Сьцерці ID маршрута ўсіх аўтаматычна знойдзеных маршрутаў"/>
+    <da txt="Reset ruteid for alle automatisk detekterede ruter"/>
   </Msg>
   <Msg id="ana_setBlockId">
     <en txt="Set blockid for all blocks"/>
@@ -26337,6 +26341,7 @@
     <pl txt="Kontrole w zakresie tras"/>
     <be txt="Праверкі адносна маршрутаў"/>
     <es txt="Comprobaciones acerca de rutas"/>
+    <da txt="Check relevante ruter"/>
   </Msg>
   <Msg id="ana_actionCheck">
     <en txt="Check actions and conditions"/>
@@ -26376,6 +26381,7 @@
     <en_CA txt="Clean basic problems on all items"/>
     <be txt="Выдаліць асноўныя праблемы ўсіх элемэнтаў"/>
     <es txt="Borrar los problemas basicos de todos los elementos"/>
+    <da txt="Fjern grundlæggende problemer"/>
   </Msg>
   <Msg id="ana_blockClean">
     <en txt="Clean block problems"/>
@@ -26623,7 +26629,7 @@
     <pl txt="Wyzeruj licznik koła"/>
     <en_AU txt="Reset wheel counter"/>
     <en_CA txt="Reset wheel counter"/>
-    <es txt="Restablecer contador de rueda"/>
+    <es txt="Restablecer contador de ruedas"/>
     <fr txt="Remettre le compteur de roues à 0"/>
     <be txt="Скінуць лічыльнік колаў"/>
   </Msg>
@@ -26663,7 +26669,7 @@
     <en_AU txt="No device check at startup"/>
     <en_CA txt="No device check at startup"/>
     <pl txt="Nie sprawdzaj urządzenia przy starcie"/>
-    <es txt="No comprobar dispositivo al arranque"/>
+    <es txt="No comprobar dispositivos en el arranque"/>
     <fr txt="Pas de vérification des dispositifs au démarrage"/>
     <be txt="Не правяраць прыладу пры запуску"/>
   </Msg>
@@ -31652,7 +31658,7 @@
     <nl txt="Validatie"/>
     <pt_BR txt="Validar"/>
     <sl txt="Preveri"/>
-    <sr_latin txt="Potvrdi"/>
+    <sr_latin txt="Proveri"/>
   </Msg>
   <Msg id="regularstop">
     <en txt="Regular stop"/>
@@ -31660,21 +31666,49 @@
     <nl txt="Halteplaats"/>
     <pt_BR txt="Parada normal"/>
     <sl txt="Normalno ustavljanje"/>
+    <es txt="Parada regular"/>
+    <sr_latin txt="Normalno zaustavljanje"/>
   </Msg>
   <Msg id="diagram">
     <en txt="Diagram"/>
+    <de txt="Diagramm"/>
+    <es txt="Diagrama"/>
+    <nl txt="Diagram"/>
+    <pt_BR txt="Diagrama"/>
+    <sl txt="Diagram"/>
+    <sr_latin txt="Dijagram"/>
   </Msg>
   <Msg id="fromhour">
     <en txt="From hour"/>
+    <de txt="Von Stunde"/>
+    <es txt="Desde la hora"/>
+    <nl txt="Van uur"/>
+    <pt_BR txt="Hora Origem"/>
+    <sl txt="Od ure"/>
   </Msg>
   <Msg id="tohour">
     <en txt="To hour"/>
+    <de txt="Bis Stunde"/>
+    <es txt="Hasta la hora"/>
+    <nl txt="Tot uur"/>
+    <pt_BR txt="Hora Destino"/>
+    <sl txt="Do ure"/>
   </Msg>
   <Msg id="fixall">
     <en txt="Fix all"/>
+    <de txt="Alle fest"/>
+    <es txt="Arreglar todo"/>
+    <nl txt="Zet alle vast"/>
+    <pt_BR txt="Corrigir tudo"/>
+    <sl txt="Popravi vse"/>
   </Msg>
   <Msg id="xmlscriptpath">
     <en txt="XmlScript path"/>
+    <de txt="XmlScript-Pfad"/>
+    <es txt="Path XmlScript"/>
+    <nl txt="XmlScript pad"/>
+    <pt_BR txt="Caminho XmlScript"/>
+    <sl txt="XmlScript pot"/>
   </Msg>
   <Msg id="togglefix">
     <en txt="Toggle fix"/>
