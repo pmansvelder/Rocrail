@@ -1027,8 +1027,27 @@ static int _Main( iOApp inst, int argc, char** argv ) {
     if( pLib != NULL ) {
       LPFNGETARCHIVEBOX  pInitFun = (LPFNGETARCHIVEBOX)LibOp.getProc( pLib, "getArchiveBox" );
       if (pInitFun != NULL) {
+        Boolean test = True;
         data->abox = pInitFun( wRocRail.getaboxhome(data->ini), TraceOp.get(), SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) );
-        data->abox->find((obj)data->abox, "Zoek iets");
+
+        if( test ) { /* Test */
+          iOList list = NULL;
+          data->abox->linkFile( (obj)data->abox ,"/home/rob/test.txt" ,"0" ,5987 ,"zomaar iets" ,"Decoders" );
+          list = data->abox->find((obj)data->abox, "iets");
+          if( list != NULL ) {
+            int i = 0;
+            int listSize = ListOp.size(list);
+            for( i = 0; i < listSize; i++) {
+              iONode stub = (iONode)ListOp.get(list, i);
+              char* s = NodeOp.base.toString(stub);
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "found [%s]", s );
+              StrOp.free(s);
+              NodeOp.base.del(stub);
+            }
+            ListOp.base.del(list);
+          }
+        }
+
       }
     }
   }

@@ -1009,6 +1009,8 @@
     <const name="gettracefile" vt="int" val="2"/>
     <const name="readxmlscript" vt="int" val="3"/>
     <const name="writexmlscript" vt="int" val="4"/>
+    <const name="abox_find" vt="int" val="5"/>
+    <const name="abox_addlink" vt="int" val="6"/>
     <var name="cmd" vt="int" defval="0" range="0-*"/>
     <const name="image" vt="int" val="0"/>
     <const name="smallimage" vt="int" val="1"/>
@@ -1021,6 +1023,8 @@
 	      <var name="fname" vt="string" defval="" range="*" remark="File name"/>
 	      <var name="time" vt="string" defval="" range="*" remark="Time stamp"/>
 	      <var name="size" vt="long" defval="0" range="0-*" remark="File size"/>
+        <var name="category" vt="string" defval="" range="*"/>
+        <var name="text" vt="string" defval="" range="*"/>
 	    </fileentry>
 	  </direntry>
   </datareq>

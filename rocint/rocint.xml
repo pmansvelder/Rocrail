@@ -5,10 +5,29 @@
 -->
 <Project name="RocInt" title="RocRail Interfaces" docname="rocintapi">
 
-  <interface name="ArchiveBox" use="node">
-    <fun name="find" vt="const char*">
+  <interface name="ArchiveBox" use="node,list">
+    <fun name="find" vt="iOList">
       <param name="inst" vt="obj"/>
       <param name="text" vt="const char*"/>
+    </fun>
+    <fun name="getCategories" vt="const char*">
+      <param name="inst" vt="obj"/>
+    </fun>
+    <fun name="getCategory" vt="iONode">
+      <param name="inst" vt="obj"/>
+      <param name="category" vt="const char*"/>
+    </fun>
+    <fun name="addCategory" vt="void">
+      <param name="inst" vt="obj"/>
+      <param name="category" vt="const char*"/>
+    </fun>
+    <fun name="linkFile" vt="Boolean">
+      <param name="inst" vt="obj"/>
+      <param name="path" vt="const char*"/>
+      <param name="modified" vt="const char*"/>
+      <param name="size" vt="long"/>
+      <param name="text" vt="const char*"/>
+      <param name="category" vt="const char*"/>
     </fun>
   </interface>
   

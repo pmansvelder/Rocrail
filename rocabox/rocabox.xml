@@ -4,17 +4,18 @@
  All rights reserved.
 -->
 <Project name="RocABox" title="RocAbox API" docname="rocaboxapi">
-  <object name="ArchiveBox" use="node,trace,thread,map" interface="$../rocint/rocint.xml:ArchiveBox" include="$rocint/public/archivebox" >
+  <object name="ArchiveBox" use="node,trace,thread,map,mutex" interface="$../rocint/rocint.xml:ArchiveBox" include="$rocint/public/archivebox" >
     <fun name="inst" vt="this">
       <param name="home" vt="const char*" remark="Ini node"/>
       <param name="trc" vt="const iOTrace" remark="Trace instance"/>
       <param name="readonly" vt="int" remark="Read only mode"/>
     </fun>
     <data>
+      <var name="ini" vt="iONode"/>
       <var name="home" vt="const char*"/>
       <var name="readonly" vt="int"/>
+      <var name="stubMux" vt="iOMutex"/>
     </data>
   </object>
-
 </Project>
 
