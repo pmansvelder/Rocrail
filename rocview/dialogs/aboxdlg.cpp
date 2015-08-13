@@ -102,7 +102,8 @@ void ABoxDlg::onStubActivated( wxListEvent& event ) {
   iONode stub = (iONode)m_Stubs->GetItemData(index);
   wxMimeTypesManager manager;
   wxFileType *filetype=manager.GetFileTypeFromExtension(wxString(StrOp.getExtension(NodeOp.getStr(stub, "path", "-")),wxConvUTF8));
-  wxString command=filetype->GetOpenCommand(wxT("\"")+wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8)+wxT("\""));
+  wxString command=filetype->GetOpenCommand(wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8));
+  TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "execute [%s]", (const char*)command.mb_str(wxConvUTF8) );
   wxExecute(command);
 }
 
