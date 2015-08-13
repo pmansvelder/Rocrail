@@ -1018,6 +1018,7 @@ static int _Main( iOApp inst, int argc, char** argv ) {
   /* ABox */
   typedef iIArchiveBox (* LPFNGETARCHIVEBOX)( const char*, const iOTrace, int );
 
+  TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "aboxhome=[%s]", wRocRail.getaboxhome(data->ini) );
   if( StrOp.len( wRocRail.getaboxhome(data->ini) ) > 0 ) {
     unsigned char* donkey = StrOp.strToByte(AppOp.getdonkey());
     char* decodedKey = SystemOp.decode(donkey, StrOp.len(AppOp.getdonkey())/2, AppOp.getdoneml());
