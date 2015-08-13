@@ -1125,6 +1125,20 @@ static void __callback( obj inst, iONode nodeA ) {
           ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
         }
       }
+      else
+        NodeOp.base.del( nodeA );
+
+      return;
+    }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_getcategories ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        wDataReq.setcategory(nodeA, abox->getCategories((obj)abox));
+        ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+      }
+      else
+        NodeOp.base.del( nodeA );
+
       return;
     }
     else if( wDataReq.getcmd(nodeA) == wDataReq.abox_addlink ) {

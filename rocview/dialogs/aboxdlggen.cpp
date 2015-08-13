@@ -72,7 +72,7 @@ AboxDlgGen::AboxDlgGen( wxWindow* parent, wxWindowID id, const wxString& title, 
 	m_Add = new wxButton( this, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer2->Add( m_Add, 0, wxALL, 5 );
 	
-	m_Category = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_Category = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
 	fgSizer2->Add( m_Category, 0, wxALL|wxEXPAND, 5 );
 	
 	m_Text = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );

@@ -18,6 +18,7 @@
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
+#include <wx/combobox.h>
 #include <wx/listctrl.h>
 #include <wx/dialog.h>
 
@@ -41,7 +42,7 @@ class AboxDlgGen : public wxDialog
 		wxStaticText* m_labCategory;
 		wxStaticText* m_labText;
 		wxButton* m_Add;
-		wxTextCtrl* m_Category;
+		wxComboBox* m_Category;
 		wxTextCtrl* m_Text;
 		wxListCtrl* m_Stubs;
 		wxStdDialogButtonSizer* m_StdButtons;

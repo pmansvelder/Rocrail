@@ -23,10 +23,17 @@
 #include "rocrail/wrapper/public/DirEntry.h"
 #include "rocrail/wrapper/public/FileEntry.h"
 
+#include "rocs/public/strtok.h"
+
 ABoxDlg::ABoxDlg( wxWindow* parent ):AboxDlgGen( parent )
 {
   m_StubList = ListOp.inst();
   initLabels();
+
+  iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+  wDataReq.setcmd( cmd, wDataReq.abox_getcategories );
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
 }
 
 ABoxDlg::~ABoxDlg() {
@@ -112,36 +119,45 @@ void ABoxDlg::onStubSelected( wxListEvent& event ) {
 }
 
 void ABoxDlg::event(iONode node) {
-  m_Stubs->DeleteAllItems();
-  clearStubList();
-
-  char* s = NodeOp.base.toString(node);
-  TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "found [%s]", s );
-  StrOp.free(s);
-
-  int idx = 0;
-  iONode stub = NodeOp.findNode( node, "stub");
-  while( stub != NULL ) {
-    m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
-    m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
-    m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
-    iONode clone = (iONode)NodeOp.base.clone(stub);
-    m_Stubs->SetItemPtrData(idx, (wxUIntPtr)clone);
-    ListOp.add(m_StubList, (obj)clone);
-    idx++;
-    stub = NodeOp.findNextNode( node, stub);
+  if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
+    iOStrTok tok = StrTokOp.inst( wDataReq.getcategory( node ), ',' );
+    while( StrTokOp.hasMoreTokens(tok) ) {
+      const char* category = StrTokOp.nextToken( tok );
+      m_Category->Append( wxString(category,wxConvUTF8) );
+    }
   }
 
-  // resize
-  for( int n = 0; n < 3; n++ ) {
-    m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
-    int autoheadersize = m_Stubs->GetColumnWidth(n);
-    m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
-    int autosize = m_Stubs->GetColumnWidth(n);
-    if(autoheadersize > autosize )
+  else if( wDataReq.getcmd(node) == wDataReq.abox_find ) {
+    m_Stubs->DeleteAllItems();
+    clearStubList();
+
+    char* s = NodeOp.base.toString(node);
+    TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "found [%s]", s );
+    StrOp.free(s);
+
+    int idx = 0;
+    iONode stub = NodeOp.findNode( node, "stub");
+    while( stub != NULL ) {
+      m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
+      m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
+      m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
+      iONode clone = (iONode)NodeOp.base.clone(stub);
+      m_Stubs->SetItemPtrData(idx, (wxUIntPtr)clone);
+      ListOp.add(m_StubList, (obj)clone);
+      idx++;
+      stub = NodeOp.findNextNode( node, stub);
+    }
+
+    // resize
+    for( int n = 0; n < 3; n++ ) {
       m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+      int autoheadersize = m_Stubs->GetColumnWidth(n);
+      m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
+      int autosize = m_Stubs->GetColumnWidth(n);
+      if(autoheadersize > autosize )
+        m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+    }
   }
-
 
 }
 
