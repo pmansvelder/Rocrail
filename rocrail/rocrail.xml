@@ -26,6 +26,7 @@
     <fun name="getWeather" vt="iOWeather"/>
     <fun name="getClntCon" vt="iOClntCon"/>
     <fun name="getSrcpCon" vt="iOSrcpCon"/>
+    <fun name="getArchiveBox" vt="iIArchiveBox"/>
     <fun name="shutdown" vt="Boolean">
       <param name="network" vt="int" remark="Shutdown RocNet too."/>
       <param name="signalname" vt="const char*" remark="Signal name."/>

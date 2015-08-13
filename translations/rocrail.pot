@@ -7991,3 +7991,15 @@ msgstr ""
 msgid "Toggle fix"
 msgstr ""
 
+#. 
+# id="find"
+#, c-format
+msgid "Find"
+msgstr ""
+
+#. 
+# id="category"
+#, c-format
+msgid "Category"
+msgstr ""
+

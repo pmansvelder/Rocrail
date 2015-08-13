@@ -400,6 +400,14 @@ static iOSrcpCon _getSrcpCon( void ) {
   return NULL;
 }
 
+static iIArchiveBox _getArchiveBox( void ) {
+  if( __appinst != NULL ) {
+    iOAppData data = Data(__appinst);
+    return data->abox;
+  }
+  return NULL;
+}
+
 static int __logo( void ) {
   iOAppData data = Data(__appinst);
   int svn = 0;
@@ -1027,7 +1035,7 @@ static int _Main( iOApp inst, int argc, char** argv ) {
     if( pLib != NULL ) {
       LPFNGETARCHIVEBOX  pInitFun = (LPFNGETARCHIVEBOX)LibOp.getProc( pLib, "getArchiveBox" );
       if (pInitFun != NULL) {
-        Boolean test = True;
+        Boolean test = False;
         data->abox = pInitFun( wRocRail.getaboxhome(data->ini), TraceOp.get(), SystemOp.isExpired(decodedKey, NULL, NULL, wGlobal.vmajor, wGlobal.vminor) );
 
         if( test ) { /* Test */

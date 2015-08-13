@@ -1104,6 +1104,44 @@ static void __callback( obj inst, iONode nodeA ) {
       }
       return;
     }
+    /* ArchiveBox */
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_find ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        iOList list = NULL;
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find=[%s]", wDataReq.gettext(nodeA) );
+        list = abox->find((obj)abox, wDataReq.gettext(nodeA));
+        if( list != NULL ) {
+          int i = 0;
+          int listSize = ListOp.size(list);
+          for( i = 0; i < listSize; i++) {
+            iONode stub = (iONode)ListOp.get(list, i);
+            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "add stub to nodeA..." );
+            NodeOp.addChild( nodeA, stub);
+          }
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "clean up list..." );
+          ListOp.base.del(list);
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "post it..." );
+          ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+        }
+      }
+      return;
+    }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_addlink ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        iONode direntry = wDataReq.getdirentry(nodeA);
+        if( direntry != NULL && wDirEntry.getfileentry(direntry) != NULL ) {
+          iONode fileentry = wDirEntry.getfileentry(direntry);
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "linkFile=[%s]", wFileEntry.getfname(fileentry) );
+          abox->linkFile( (obj)abox ,wFileEntry.getfname(fileentry) ,wFileEntry.gettime(fileentry) ,wFileEntry.getsize(fileentry) ,
+              wFileEntry.gettext(fileentry) ,wFileEntry.getcategory(fileentry) );
+        }
+      }
+      NodeOp.base.del( nodeA );
+      return;
+    }
+
   }
   else if( StrOp.equals( wFunCmd.name(), nodeName ) ) {
     iOLoc loc = ModelOp.getLoc( model, wFunCmd.getid( nodeA ), NULL, False );

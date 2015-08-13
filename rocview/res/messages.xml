@@ -31679,4 +31679,10 @@
   <Msg id="togglefix">
     <en txt="Toggle fix"/>
   </Msg>
+  <Msg id="find">
+    <en txt="Find"/>
+  </Msg>
+  <Msg id="category">
+    <en txt="Category"/>
+  </Msg>
 </Messages>

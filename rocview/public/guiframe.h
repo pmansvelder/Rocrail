@@ -49,6 +49,7 @@
 #include "rocview/dialogs/trackpickerdlg.h"
 #include "rocview/dialogs/tracedlg.h"
 #include "rocview/dialogs/timedactions.h"
+#include "rocview/dialogs/aboxdlg.h"
 
 #include <wx/splitter.h>
 #include <wx/textctrl.h>
@@ -112,6 +113,7 @@ public:
   void OnTranslations(wxCommandEvent& event);
   void OnBug(wxCommandEvent& event);
   void OnIssue(wxCommandEvent& event);
+  void OnArchiveBox(wxCommandEvent& event);
   void OnFeature(wxCommandEvent& event);
   void OnService(wxCommandEvent& event);
   void OnLcDlg(wxCommandEvent& event);
@@ -334,6 +336,7 @@ public:
 
   void ServerTrace(wxCommandEvent& event);
   void ServerReadXmlScript(wxCommandEvent& event);
+  void ServerABoxFind(wxCommandEvent& event);
   void UpdateActiveLocs(wxCommandEvent& event);
   void CVevent(wxCommandEvent& event);
   void UpdateLocImage(wxCommandEvent& event);
@@ -428,6 +431,7 @@ private:
   LocoIO* m_LocoIO;
   CBusNodeDlg* m_CBusNodeDlg;
   BidibIdentDlg* m_BidibIdentDlg;
+  ABoxDlg* m_ABoxDlg;
   RocnetNodeDlg* m_RocnetNodeDlg;
   HueConfDlg* m_HueConfDlg;
   RocProDlg* m_RocProDlg;
@@ -605,6 +609,7 @@ enum
     UPDATE_LOC_IMAGE_EVENT,
     SERVER_TRACE_EVENT,
     SERVER_READXMLSCRIPT_EVENT,
+    SERVER_ABOXFIND_EVENT,
     CV_EVENT,
     ME_PanelProps,
     ME_AddItem,
@@ -683,6 +688,7 @@ enum
     ME_Translations,
     ME_Bug,
     ME_Issue,
+    ME_ArchiveBox,
     ME_Feature,
     ME_Survey,
     ME_BackColor,

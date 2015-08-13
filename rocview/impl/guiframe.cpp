@@ -84,6 +84,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocview/dialogs/actionsctrldlg.h"
 #include "rocview/dialogs/gotodlg.h"
 #include "rocview/dialogs/issuedlg.h"
+#include "rocview/dialogs/aboxdlg.h"
 #include "rocview/dialogs/locowidget.h"
 #include "rocview/dialogs/widgetspanel.h"
 #include "rocview/dialogs/guestloco.h"
@@ -252,6 +253,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( UPDATE_ACTIVELOCS_EVENT, RocGuiFrame::UpdateActiveLocs)
     EVT_MENU( SERVER_TRACE_EVENT, RocGuiFrame::ServerTrace)
     EVT_MENU( SERVER_READXMLSCRIPT_EVENT, RocGuiFrame::ServerReadXmlScript)
+    EVT_MENU( SERVER_ABOXFIND_EVENT, RocGuiFrame::ServerABoxFind)
     EVT_MENU( UPDATE_LOC_IMAGE_EVENT, RocGuiFrame::UpdateLocImage)
     EVT_MENU( CV_EVENT, RocGuiFrame::CVevent)
     EVT_MENU( ME_PowerEvent, RocGuiFrame::OnPowerEvent)
@@ -293,6 +295,7 @@ BEGIN_EVENT_TABLE(RocGuiFrame, wxFrame)
     EVT_MENU( ME_Feature        , RocGuiFrame::OnFeature)
     EVT_MENU( ME_Survey         , RocGuiFrame::OnService)
     EVT_MENU( ME_Issue          , RocGuiFrame::OnIssue)
+    EVT_MENU( ME_ArchiveBox     , RocGuiFrame::OnArchiveBox)
     EVT_MENU( ME_MIC            , RocGuiFrame::OnMIC)
     EVT_MENU( ME_LcDlg          , RocGuiFrame::OnLcDlg)
     EVT_MENU( ME_GuestLoco      , RocGuiFrame::OnGuestLocoDlg)
@@ -1594,6 +1597,14 @@ void RocGuiFrame::ServerReadXmlScript( wxCommandEvent& event ) {
   NodeOp.base.del(node);
 }
 
+void RocGuiFrame::ServerABoxFind( wxCommandEvent& event ) {
+  iONode node = (iONode)event.GetClientData();
+  TraceOp.trc( "frame", TRCLEVEL_INFO, __LINE__, 9999, "server abox find...");
+  if( m_ABoxDlg != NULL )
+    m_ABoxDlg->event(node);
+  NodeOp.base.del(node);
+}
+
 Symbol* RocGuiFrame::GetItem( const char* key ) {
   if( m_ModPanel != NULL) {
     return (Symbol*)m_ModPanel->GetItem( key );
@@ -1976,6 +1987,7 @@ RocGuiFrame::RocGuiFrame(const wxString& title, const wxPoint& pos, const wxSize
   m_LocoIO             = NULL;
   m_CBusNodeDlg        = NULL;
   m_BidibIdentDlg      = NULL;
+  m_ABoxDlg            = NULL;
   m_TraceDlg           = NULL;
   m_TimedActions       = NULL;
   m_RocnetNodeDlg      = NULL;
@@ -2428,6 +2440,7 @@ void RocGuiFrame::initFrame() {
 */
   menuHelp->AppendSeparator();
   menuHelp->Append(ME_DonKeyInfo, wxGetApp().getMenu("donkey"), wxGetApp().getTip("donkey") );
+  menuHelp->Append(ME_ArchiveBox, wxT("ArchiveBox..."), wxT("ArchiveBox") );
 
 #ifndef __APPLE__
   menuHelp->AppendSeparator();
@@ -5128,6 +5141,13 @@ void RocGuiFrame::OnIssue(wxCommandEvent& WXUNUSED(event)) {
     NodeOp.base.del(issueDlg->getIssue());
   }
   issueDlg->Destroy();
+}
+
+void RocGuiFrame::OnArchiveBox(wxCommandEvent& WXUNUSED(event)) {
+  m_ABoxDlg = new ABoxDlg( this );
+  m_ABoxDlg->ShowModal();
+  m_ABoxDlg->Destroy();
+  m_ABoxDlg = NULL;
 }
 
 void RocGuiFrame::OnFeature(wxCommandEvent& WXUNUSED(event)) {
