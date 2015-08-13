@@ -31719,4 +31719,7 @@
   <Msg id="category">
     <en txt="Category"/>
   </Msg>
+  <Msg id="link">
+    <en txt="Link"/>
+  </Msg>
 </Messages>

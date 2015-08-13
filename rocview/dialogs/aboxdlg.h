@@ -29,6 +29,8 @@ class ABoxDlg : public AboxDlgGen
 		void onSelectFile( wxCommandEvent& event );
     void onStubActivated( wxListEvent& event );
     void onStubSelected( wxListEvent& event );
+    void onHelp( wxCommandEvent& event );
+    void onOK( wxCommandEvent& event );
 	public:
 		/** Constructor */
 		ABoxDlg( wxWindow* parent );

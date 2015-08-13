@@ -1133,7 +1133,9 @@ static void __callback( obj inst, iONode nodeA ) {
     else if( wDataReq.getcmd(nodeA) == wDataReq.abox_getcategories ) {
       iIArchiveBox abox = AppOp.getArchiveBox();
       if( abox != NULL ) {
-        wDataReq.setcategory(nodeA, abox->getCategories((obj)abox));
+        Boolean readonly = False;
+        wDataReq.setcategory(nodeA, abox->getCategories((obj)abox, &readonly));
+        wDataReq.setreadonly(nodeA, readonly);
         ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
       }
       else

@@ -12,6 +12,7 @@
     </fun>
     <fun name="getCategories" vt="const char*">
       <param name="inst" vt="obj"/>
+      <param name="readonly" vt="Boolean*"/>
     </fun>
     <fun name="getCategory" vt="iONode">
       <param name="inst" vt="obj"/>

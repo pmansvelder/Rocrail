@@ -54,6 +54,8 @@ void ABoxDlg::initLabels() {
   m_SelectFile->SetLabel( wxGetApp().getMsg( "select" ) + wxT("...") );
   m_labText->SetLabel( wxGetApp().getMsg( "text" ) );
   m_labCategory->SetLabel( wxGetApp().getMsg( "category" ) );
+  m_Link->SetLabel( wxGetApp().getMsg( "link" ) );
+  m_Link->Enable(false);
 
   m_Stubs->InsertColumn(0, wxGetApp().getMsg( "file" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(1, wxGetApp().getMsg( "category" ), wxLIST_FORMAT_LEFT );
@@ -120,6 +122,7 @@ void ABoxDlg::onStubSelected( wxListEvent& event ) {
 
 void ABoxDlg::event(iONode node) {
   if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
+    m_Add->Enable(!wDataReq.isreadonly(node)?true:false);
     iOStrTok tok = StrTokOp.inst( wDataReq.getcategory( node ), ',' );
     while( StrTokOp.hasMoreTokens(tok) ) {
       const char* category = StrTokOp.nextToken( tok );
@@ -161,3 +164,10 @@ void ABoxDlg::event(iONode node) {
 
 }
 
+void ABoxDlg::onHelp( wxCommandEvent& event ) {
+  wxGetApp().openLink( "abox:archivebox" );
+}
+
+void ABoxDlg::onOK( wxCommandEvent& event ) {
+  EndModal( wxID_OK );
+}

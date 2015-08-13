@@ -157,7 +157,7 @@ static iOList __find( const char* directory ,const char* text ) {
             stub = __readStub(stubName);
             /* add to list... */
             if( stub != NULL ) {
-              if( StrOp.findi(wStub.gettext(stub), text) || StrOp.findi(wStub.getpath(stub), text) ) {
+              if( StrOp.findi(wStub.gettext(stub), text) || StrOp.findi(wStub.getpath(stub), text) || StrOp.findi(wStub.getcategory(stub), text) ) {
                 TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "add stub %s [%s]", wStub.getpath(stub), wStub.gettext(stub) );
                 ListOp.add(list, (obj)stub);
               }
@@ -184,9 +184,10 @@ static iOList _find( obj inst ,const char* text ) {
 
 
 /**  */
-static const char* _getCategories( obj inst ) {
+static const char* _getCategories( obj inst, Boolean* readonly) {
   iOArchiveBoxData data = Data(inst);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "get categories [%s]", wArchiveBox.getcategories(data->ini) );
+  *readonly = data->readonly;
   return wArchiveBox.getcategories(data->ini);
 }
 
@@ -234,6 +235,10 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
 /**  */
 static Boolean _linkFile( obj inst ,const char* path ,const char* modified ,long size ,const char* text ,const char* category ) {
   iOArchiveBoxData data = Data(inst);
+  if( data->readonly ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ArchiveBox is in readonly mode" );
+    return False;
+  }
   iONode stub = NodeOp.inst(wStub.name(), NULL, ELEMENT_NODE);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "link file [%s]", path );
   wStub.setpath(stub, path);
