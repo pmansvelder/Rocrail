@@ -167,6 +167,7 @@ void ABoxDlg::event(iONode node) {
     while( StrTokOp.hasMoreTokens(tok) ) {
       const char* category = StrTokOp.nextToken( tok );
       m_Category->Append( wxString(category,wxConvUTF8) );
+      m_FindText->Append( wxString(category,wxConvUTF8) );
     }
   }
 
