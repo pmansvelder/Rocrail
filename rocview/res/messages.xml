@@ -31722,4 +31722,10 @@
   <Msg id="link">
     <en txt="Link"/>
   </Msg>
+  <Msg id="missingcriteria">
+    <en txt="Missing criteria; Check all input fields."/>
+  </Msg>
+  <Msg id="result">
+    <en txt="Result"/>
+  </Msg>
 </Messages>

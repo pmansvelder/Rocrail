@@ -208,6 +208,10 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
     char* stubFilename = StrOp.fmt("%s%cstub%s.abox", stubRoot, SystemOp.getFileSeparator(), stamp );
     char*  xmlStr = NULL;
     iOFile f      = NULL;
+
+    wStub.setuid(stub, stamp);
+    wStub.setstubfile(stub, stubFilename);
+
     StrOp.free(stamp);
 
     if( !FileOp.exist(stubRoot) ) {

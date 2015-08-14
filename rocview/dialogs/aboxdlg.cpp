@@ -28,6 +28,9 @@
 ABoxDlg::ABoxDlg( wxWindow* parent ):AboxDlgGen( parent )
 {
   m_StubList = ListOp.inst();
+  m_SelectedStub = wxNOT_FOUND;
+  m_Open->Enable(false);
+  m_Delete->Enable(false);
   initLabels();
 
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
@@ -51,11 +54,17 @@ void ABoxDlg::clearStubList() {
 void ABoxDlg::initLabels() {
   m_Find->SetLabel( wxGetApp().getMsg( "find" ) );
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
-  m_SelectFile->SetLabel( wxGetApp().getMsg( "select" ) + wxT("...") );
+  m_Open->SetLabel( wxGetApp().getMsg( "open" ) );
+  m_Delete->SetLabel( wxGetApp().getMsg( "delete" ) );
+  m_labFile->SetLabel( wxGetApp().getMsg( "file" ) );
   m_labText->SetLabel( wxGetApp().getMsg( "text" ) );
   m_labCategory->SetLabel( wxGetApp().getMsg( "category" ) );
   m_Link->SetLabel( wxGetApp().getMsg( "link" ) );
   m_Link->Enable(false);
+
+  m_FindBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "find" ) );
+  m_UploadBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "upload" ) );
+  m_ResultBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "result" ) );
 
   m_Stubs->InsertColumn(0, wxGetApp().getMsg( "file" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(1, wxGetApp().getMsg( "category" ), wxLIST_FORMAT_LEFT );
@@ -80,6 +89,12 @@ void ABoxDlg::onSelectFile( wxCommandEvent& event ) {
 }
 
 void ABoxDlg::onAdd( wxCommandEvent& event ) {
+  if( m_Filename->GetValue().IsEmpty() || m_Text->GetValue().IsEmpty() || m_Category->GetValue().IsEmpty() ) {
+    // Upload criteria missing.
+    int action = wxMessageDialog( this, wxGetApp().getMsg("missingcriteria"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    return;
+  }
+
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_addlink );
 
@@ -105,10 +120,8 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
 }
 
-
-void ABoxDlg::onStubActivated( wxListEvent& event ) {
-  int index = event.GetIndex();
-  iONode stub = (iONode)m_Stubs->GetItemData(index);
+void ABoxDlg::openStub() {
+  iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
   wxMimeTypesManager manager;
   wxFileType *filetype=manager.GetFileTypeFromExtension(wxString(StrOp.getExtension(NodeOp.getStr(stub, "path", "-")),wxConvUTF8));
   wxString command=filetype->GetOpenCommand(wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8));
@@ -116,8 +129,17 @@ void ABoxDlg::onStubActivated( wxListEvent& event ) {
   wxExecute(command);
 }
 
-void ABoxDlg::onStubSelected( wxListEvent& event ) {
+void ABoxDlg::onStubActivated( wxListEvent& event ) {
+  m_SelectedStub = event.GetIndex();
+  m_Open->Enable(true);
+  m_Delete->Enable(true);
+  openStub();
+}
 
+void ABoxDlg::onStubSelected( wxListEvent& event ) {
+  m_SelectedStub = event.GetIndex();
+  m_Open->Enable(true);
+  m_Delete->Enable(true);
 }
 
 void ABoxDlg::event(iONode node) {
@@ -131,6 +153,9 @@ void ABoxDlg::event(iONode node) {
   }
 
   else if( wDataReq.getcmd(node) == wDataReq.abox_find ) {
+    m_SelectedStub = wxNOT_FOUND;
+    m_Open->Enable(false);
+    m_Delete->Enable(false);
     m_Stubs->DeleteAllItems();
     clearStubList();
 
@@ -171,3 +196,18 @@ void ABoxDlg::onHelp( wxCommandEvent& event ) {
 void ABoxDlg::onOK( wxCommandEvent& event ) {
   EndModal( wxID_OK );
 }
+
+void ABoxDlg::onOpen( wxCommandEvent& event ) {
+  if( m_SelectedStub != wxNOT_FOUND ) {
+    openStub();
+  }
+}
+
+void ABoxDlg::onDelete( wxCommandEvent& event ) {
+  if( m_SelectedStub != wxNOT_FOUND ) {
+    int action = wxMessageDialog( this, wxGetApp().getMsg("removewarning"), _T("Rocrail"), wxYES_NO | wxICON_EXCLAMATION ).ShowModal();
+    if( action == wxID_NO )
+      return;
+  }
+}
+

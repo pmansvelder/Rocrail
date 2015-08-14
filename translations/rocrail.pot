@@ -8009,3 +8009,15 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
+#. 
+# id="missingcriteria"
+#, c-format
+msgid "Missing criteria; Check all input fields."
+msgstr ""
+
+#. 
+# id="result"
+#, c-format
+msgid "Result"
+msgstr ""
+

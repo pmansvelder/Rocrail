@@ -31,6 +31,8 @@ class ABoxDlg : public AboxDlgGen
     void onStubSelected( wxListEvent& event );
     void onHelp( wxCommandEvent& event );
     void onOK( wxCommandEvent& event );
+    void onOpen( wxCommandEvent& event );
+    void onDelete( wxCommandEvent& event );
 	public:
 		/** Constructor */
 		ABoxDlg( wxWindow* parent );
@@ -40,7 +42,9 @@ class ABoxDlg : public AboxDlgGen
 	private:
     void initLabels();
     void clearStubList();
+    void openStub();
     iOList m_StubList;
+    int m_SelectedStub;
 
 };
 

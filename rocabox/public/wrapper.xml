@@ -12,6 +12,8 @@
   </archivebox>
     
   <stub wrappername="Stub">
+    <var name="uid" vt="string" defval=""/>
+    <var name="stubfile" vt="string" defval=""/>
     <var name="path" vt="string" defval=""/>
     <var name="category" vt="string" defval=""/>
     <var name="text" vt="string" defval=""/>
