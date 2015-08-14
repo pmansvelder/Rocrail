@@ -33,6 +33,7 @@ class ABoxDlg : public AboxDlgGen
     void onOK( wxCommandEvent& event );
     void onOpen( wxCommandEvent& event );
     void onDelete( wxCommandEvent& event );
+    void onStubCol( wxListEvent& event );
 	public:
 		/** Constructor */
 		ABoxDlg( wxWindow* parent, const char* text=NULL );
@@ -41,12 +42,14 @@ class ABoxDlg : public AboxDlgGen
     void event(iONode node);
 	private:
     void initLabels();
+    void initResult();
     void clearStubList();
     void openStub();
     void doFind(const char* text);
     iOList m_StubList;
     int m_SelectedStub;
     bool m_ReadOnly;
+    int m_SortCol;
 
 };
 

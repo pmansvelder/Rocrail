@@ -25,11 +25,14 @@
 
 #include "rocs/public/strtok.h"
 
+static bool ms_Sort = true;
+
 ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
 {
   m_StubList = ListOp.inst();
   m_SelectedStub = wxNOT_FOUND;
   m_ReadOnly = false;
+  m_SortCol = 0;
 
   m_Open->Enable(false);
   m_Delete->Enable(false);
@@ -78,6 +81,7 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(0, wxGetApp().getMsg( "file" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(1, wxGetApp().getMsg( "category" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(2, wxGetApp().getMsg( "text" ), wxLIST_FORMAT_LEFT );
+  m_Stubs->InsertColumn(3, wxT( "UID" ), wxLIST_FORMAT_LEFT );
 }
 
 void ABoxDlg::doFind( const char* text ) {
@@ -163,6 +167,81 @@ void ABoxDlg::onStubSelected( wxListEvent& event ) {
   m_Delete->Enable(!m_ReadOnly);
 }
 
+
+static int __sortPath(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getStr(a, "path", "-");
+    const char* idB = NodeOp.getStr(b, "path", "-");
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
+static int __sortCategory(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getStr(a, "category", "-");
+    const char* idB = NodeOp.getStr(b, "category", "-");
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
+static int __sortText(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getStr(a, "text", "-");
+    const char* idB = NodeOp.getStr(b, "text", "-");
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
+static int __sortUID(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getStr(a, "uid", "-");
+    const char* idB = NodeOp.getStr(b, "uid", "-");
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
+
+void ABoxDlg::initResult() {
+  m_Stubs->DeleteAllItems();
+
+  iOList list = ListOp.inst();
+  int listSize = ListOp.size(m_StubList);
+  for( int idx = 0; idx < listSize; idx++ ) {
+    ListOp.add(list, ListOp.get(m_StubList, idx));
+  }
+
+  if( m_SortCol == 1 ) {
+    ListOp.sort(list, &__sortCategory);
+  }
+  else if( m_SortCol == 2 ) {
+    ListOp.sort(list, &__sortText);
+  }
+  else if( m_SortCol == 3 ) {
+    ListOp.sort(list, &__sortUID);
+  }
+  else {
+    ListOp.sort(list, &__sortPath);
+  }
+
+  listSize = ListOp.size(list);
+  for( int idx = 0; idx < listSize; idx++ ) {
+    iONode stub = (iONode)ListOp.get( list, idx);
+    m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
+    m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
+    m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
+    m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
+    m_Stubs->SetItemPtrData(idx, (wxUIntPtr)stub);
+  }
+
+  ListOp.base.del(list);
+
+  // resize
+  for( int n = 0; n < 4; n++ ) {
+    m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+    int autoheadersize = m_Stubs->GetColumnWidth(n);
+    m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
+    int autosize = m_Stubs->GetColumnWidth(n);
+    if(autoheadersize > autosize )
+      m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
+  }
+}
+
 void ABoxDlg::event(iONode node) {
   if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
     m_ReadOnly = wDataReq.isreadonly(node)?true:false;
@@ -188,28 +267,13 @@ void ABoxDlg::event(iONode node) {
     TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "found [%s]", s );
     StrOp.free(s);
 
-    int idx = 0;
     iONode stub = NodeOp.findNode( node, "stub");
     while( stub != NULL ) {
-      m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
-      m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
-      m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
       iONode clone = (iONode)NodeOp.base.clone(stub);
-      m_Stubs->SetItemPtrData(idx, (wxUIntPtr)clone);
       ListOp.add(m_StubList, (obj)clone);
-      idx++;
       stub = NodeOp.findNextNode( node, stub);
     }
-
-    // resize
-    for( int n = 0; n < 3; n++ ) {
-      m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
-      int autoheadersize = m_Stubs->GetColumnWidth(n);
-      m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
-      int autosize = m_Stubs->GetColumnWidth(n);
-      if(autoheadersize > autosize )
-        m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
-    }
+    initResult();
   }
 
 }
@@ -243,4 +307,15 @@ void ABoxDlg::onDelete( wxCommandEvent& event ) {
     onFind(event);
   }
 }
+
+void ABoxDlg::onStubCol( wxListEvent& event ) {
+  if(m_SortCol == event.GetColumn())
+    ms_Sort = !ms_Sort;
+  else
+    ms_Sort = true;
+
+  m_SortCol = event.GetColumn();
+  initResult();
+}
+
 
