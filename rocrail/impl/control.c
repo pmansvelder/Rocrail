@@ -1168,6 +1168,19 @@ static void __callback( obj inst, iONode nodeA ) {
       NodeOp.base.del( nodeA );
       return;
     }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_modifylink ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        iONode stub = NodeOp.findNode( nodeA, "stub");
+        if( stub != NULL ) {
+          abox->modifyFile( (obj)abox, NodeOp.getStr(stub, "uid", ""), NodeOp.getStr(stub, "stubfile", ""), NodeOp.getStr(stub, "text", ""),
+              NodeOp.getStr(stub, "note", ""), NodeOp.getStr(stub, "category", ""));
+        }
+      }
+      NodeOp.base.del( nodeA );
+      return;
+    }
+
 
   }
   else if( StrOp.equals( wFunCmd.name(), nodeName ) ) {

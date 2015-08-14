@@ -35,6 +35,7 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
   m_SortCol = 0;
 
   m_Open->Enable(false);
+  m_Modify->Enable(false);
   m_Delete->Enable(false);
   initLabels();
 
@@ -67,6 +68,7 @@ void ABoxDlg::initLabels() {
   m_Find->SetLabel( wxGetApp().getMsg( "find" ) );
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
   m_Open->SetLabel( wxGetApp().getMsg( "open" ) );
+  m_Modify->SetLabel( wxGetApp().getMsg( "modify" ) );
   m_Delete->SetLabel( wxGetApp().getMsg( "delete" ) );
   m_labFile->SetLabel( wxGetApp().getMsg( "file" ) );
   m_labText->SetLabel( wxGetApp().getMsg( "text" ) );
@@ -154,9 +156,16 @@ void ABoxDlg::openStub() {
   wxExecute(command);
 }
 
+void ABoxDlg::showStub() {
+  iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
+  m_ResultText->SetValue(wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8));
+  m_ResultNote->SetValue(wxString(NodeOp.getStr(stub, "note", ""),wxConvUTF8));
+}
+
 void ABoxDlg::onStubActivated( wxListEvent& event ) {
   m_SelectedStub = event.GetIndex();
   m_Open->Enable(true);
+  m_Modify->Enable(!m_ReadOnly);
   m_Delete->Enable(!m_ReadOnly);
   openStub();
 }
@@ -164,7 +173,9 @@ void ABoxDlg::onStubActivated( wxListEvent& event ) {
 void ABoxDlg::onStubSelected( wxListEvent& event ) {
   m_SelectedStub = event.GetIndex();
   m_Open->Enable(true);
+  m_Modify->Enable(!m_ReadOnly);
   m_Delete->Enable(!m_ReadOnly);
+  showStub();
 }
 
 
@@ -199,6 +210,8 @@ static int __sortUID(obj* _a, obj* _b) {
 
 void ABoxDlg::initResult() {
   m_Stubs->DeleteAllItems();
+  m_ResultText->SetValue(wxT(""));
+  m_ResultNote->SetValue(wxT(""));
 
   iOList list = ListOp.inst();
   int listSize = ListOp.size(m_StubList);
@@ -259,6 +272,7 @@ void ABoxDlg::event(iONode node) {
   else if( wDataReq.getcmd(node) == wDataReq.abox_find ) {
     m_SelectedStub = wxNOT_FOUND;
     m_Open->Enable(false);
+    m_Modify->Enable(false);
     m_Delete->Enable(false);
     m_Stubs->DeleteAllItems();
     clearStubList();
@@ -316,6 +330,23 @@ void ABoxDlg::onStubCol( wxListEvent& event ) {
 
   m_SortCol = event.GetColumn();
   initResult();
+}
+
+
+void ABoxDlg::onModify( wxCommandEvent& event ) {
+  if( m_SelectedStub != wxNOT_FOUND ) {
+    iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
+    iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+    wDataReq.setcmd( cmd, wDataReq.abox_modifylink );
+    iONode clone = (iONode)NodeOp.base.clone(stub);
+    NodeOp.setStr(clone, "text", m_ResultText->GetValue().mb_str(wxConvUTF8) );
+    NodeOp.setStr(clone, "note", m_ResultNote->GetValue().mb_str(wxConvUTF8) );
+    NodeOp.addChild(cmd, clone);
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+
+    onFind(event);
+  }
 }
 
 

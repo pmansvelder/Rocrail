@@ -35,6 +35,14 @@
       <param name="uid" vt="const char*"/>
       <param name="stubfile" vt="const char*"/>
     </fun>
+    <fun name="modifyFile" vt="Boolean">
+      <param name="inst" vt="obj"/>
+      <param name="uid" vt="const char*"/>
+      <param name="stubfile" vt="const char*"/>
+      <param name="text" vt="const char*"/>
+      <param name="note" vt="const char*"/>
+      <param name="category" vt="const char*"/>
+    </fun>
   </interface>
   
   <interface name="DigInt" use="node">

@@ -200,6 +200,23 @@ static iONode _getCategory( obj inst ,const char* category ) {
 }
 
 
+static void __replaceStub(iOArchiveBox inst, const char* stubFilename, iONode stub) {
+  iOArchiveBoxData data = Data(inst);
+  if( MutexOp.wait( data->stubMux ) ) {
+    char* xmlStr = NodeOp.base.toString(stub);
+    iOFile f = FileOp.inst(stubFilename, OPEN_WRITE);
+    if( f != NULL ) {
+      FileOp.write(f, xmlStr, StrOp.len(xmlStr)+1);
+      FileOp.base.del(f);
+    }
+    StrOp.free(xmlStr);
+
+    /* Release the mux. */
+    MutexOp.post( data->stubMux );
+  }
+}
+
+
 static void __writeStub(iOArchiveBox inst, iONode stub) {
   iOArchiveBoxData data = Data(inst);
   if( MutexOp.wait( data->stubMux ) ) {
@@ -254,6 +271,16 @@ static Boolean _linkFile( obj inst ,const char* path ,const char* modified ,long
   __writeStub((iOArchiveBox)inst, stub);
   NodeOp.base.del(stub);
   return True;
+}
+
+
+static Boolean _modifyFile( obj inst, const char* uid, const char* stubfile, const char* text, const char* note, const char* category ) {
+  iONode stub = __readStub(stubfile);
+  if( stub != NULL ) {
+    wStub.settext(stub, text);
+    wStub.setnote(stub, note);
+    __replaceStub((iOArchiveBox)inst, stubfile, stub);
+  }
 }
 
 

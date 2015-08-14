@@ -1013,6 +1013,7 @@
     <const name="abox_addlink" vt="int" val="6"/>
     <const name="abox_getcategories" vt="int" val="7"/>
     <const name="abox_deletelink" vt="int" val="8"/>
+    <const name="abox_modifylink" vt="int" val="9"/>
     <var name="cmd" vt="int" defval="0" range="0-*"/>
     <const name="image" vt="int" val="0"/>
     <const name="smallimage" vt="int" val="1"/>
@@ -1023,6 +1024,7 @@
     <const name="dataparts" vt="int" val="0"/>
     <var name="category" vt="string" defval="" range="*"/>
     <var name="text" vt="string" defval="" range="*"/>
+    <var name="note" vt="string" defval="" range="*"/>
     <var name="readonly" vt="bool" defval="false"/>
     <direntry wrappername="DirEntry" remark="Directory" cardinality="1" >
       <var name="dir" vt="string" defval="" range="*" remark="File name"/>

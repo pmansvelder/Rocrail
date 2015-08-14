@@ -33,6 +33,7 @@ class ABoxDlg : public AboxDlgGen
     void onOK( wxCommandEvent& event );
     void onOpen( wxCommandEvent& event );
     void onDelete( wxCommandEvent& event );
+    void onModify( wxCommandEvent& event );
     void onStubCol( wxListEvent& event );
 	public:
 		/** Constructor */
@@ -45,6 +46,7 @@ class ABoxDlg : public AboxDlgGen
     void initResult();
     void clearStubList();
     void openStub();
+    void showStub();
     void doFind(const char* text);
     iOList m_StubList;
     int m_SelectedStub;
