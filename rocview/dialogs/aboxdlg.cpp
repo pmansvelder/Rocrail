@@ -44,6 +44,8 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
     m_FindText->SetValue( wxString(text,wxConvUTF8) );
     doFind(text);
   }
+  else
+    doFind("");
 }
 
 ABoxDlg::~ABoxDlg() {

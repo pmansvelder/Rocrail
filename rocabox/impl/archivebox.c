@@ -292,7 +292,6 @@ static void __readIni(iOArchiveBox inst) {
     char*  xmlStr = NULL;
     iOFile f      = NULL;
     data->ini = NodeOp.inst(wArchiveBox.name(), NULL, ELEMENT_NODE);
-    wArchiveBox.setcategories(data->ini, "Genereal");
     __writeIni(inst);
   }
   else {
