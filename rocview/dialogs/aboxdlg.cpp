@@ -114,9 +114,13 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
 
+  m_FindText->SetValue(m_Text->GetValue());
+
   m_Filename->SetValue(wxT(""));
   m_Text->SetValue(wxT(""));
   m_Category->SetValue(wxT(""));
+
+  onFind(event);
 
 }
 
