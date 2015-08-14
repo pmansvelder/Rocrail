@@ -135,6 +135,10 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
   onFind(event);
 
+  cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+  wDataReq.setcmd( cmd, wDataReq.abox_getcategories );
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
 }
 
 void ABoxDlg::openStub() {
@@ -163,6 +167,8 @@ void ABoxDlg::event(iONode node) {
   if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
     m_ReadOnly = wDataReq.isreadonly(node)?true:false;
     m_Add->Enable(!m_ReadOnly);
+    m_Category->Clear();
+    m_FindText->Clear();
     iOStrTok tok = StrTokOp.inst( wDataReq.getcategory( node ), ',' );
     while( StrTokOp.hasMoreTokens(tok) ) {
       const char* category = StrTokOp.nextToken( tok );
