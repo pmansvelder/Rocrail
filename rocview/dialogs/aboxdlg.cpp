@@ -25,10 +25,12 @@
 
 #include "rocs/public/strtok.h"
 
-ABoxDlg::ABoxDlg( wxWindow* parent ):AboxDlgGen( parent )
+ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
 {
   m_StubList = ListOp.inst();
   m_SelectedStub = wxNOT_FOUND;
+  m_ReadOnly = false;
+
   m_Open->Enable(false);
   m_Delete->Enable(false);
   initLabels();
@@ -37,6 +39,11 @@ ABoxDlg::ABoxDlg( wxWindow* parent ):AboxDlgGen( parent )
   wDataReq.setcmd( cmd, wDataReq.abox_getcategories );
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
+
+  if( text != NULL ) {
+    m_FindText->SetValue( wxString(text,wxConvUTF8) );
+    doFind(text);
+  }
 }
 
 ABoxDlg::~ABoxDlg() {
@@ -71,12 +78,16 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(2, wxGetApp().getMsg( "text" ), wxLIST_FORMAT_LEFT );
 }
 
-void ABoxDlg::onFind( wxCommandEvent& event ) {
+void ABoxDlg::doFind( const char* text ) {
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_find );
-  wDataReq.settext( cmd, m_FindText->GetValue().mb_str(wxConvUTF8) );
+  wDataReq.settext( cmd, text );
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
+}
+
+void ABoxDlg::onFind( wxCommandEvent& event ) {
+  doFind(m_FindText->GetValue().mb_str(wxConvUTF8));
 }
 
 void ABoxDlg::onSelectFile( wxCommandEvent& event ) {
@@ -136,19 +147,20 @@ void ABoxDlg::openStub() {
 void ABoxDlg::onStubActivated( wxListEvent& event ) {
   m_SelectedStub = event.GetIndex();
   m_Open->Enable(true);
-  m_Delete->Enable(true);
+  m_Delete->Enable(!m_ReadOnly);
   openStub();
 }
 
 void ABoxDlg::onStubSelected( wxListEvent& event ) {
   m_SelectedStub = event.GetIndex();
   m_Open->Enable(true);
-  m_Delete->Enable(true);
+  m_Delete->Enable(!m_ReadOnly);
 }
 
 void ABoxDlg::event(iONode node) {
   if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
-    m_Add->Enable(!wDataReq.isreadonly(node)?true:false);
+    m_ReadOnly = wDataReq.isreadonly(node)?true:false;
+    m_Add->Enable(!m_ReadOnly);
     iOStrTok tok = StrTokOp.inst( wDataReq.getcategory( node ), ',' );
     while( StrTokOp.hasMoreTokens(tok) ) {
       const char* category = StrTokOp.nextToken( tok );

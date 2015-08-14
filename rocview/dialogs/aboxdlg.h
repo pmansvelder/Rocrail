@@ -35,7 +35,7 @@ class ABoxDlg : public AboxDlgGen
     void onDelete( wxCommandEvent& event );
 	public:
 		/** Constructor */
-		ABoxDlg( wxWindow* parent );
+		ABoxDlg( wxWindow* parent, const char* text=NULL );
     ~ABoxDlg();
 	//// end generated class members
     void event(iONode node);
@@ -43,8 +43,10 @@ class ABoxDlg : public AboxDlgGen
     void initLabels();
     void clearStubList();
     void openStub();
+    void doFind(const char* text);
     iOList m_StubList;
     int m_SelectedStub;
+    bool m_ReadOnly;
 
 };
 

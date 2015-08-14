@@ -81,6 +81,7 @@ public:
   void onF4Icon( wxMouseEvent& event );
   void onHelp( wxCommandEvent& event );
   void onImageChooser( wxCommandEvent& event );
+  void onABox( wxCommandEvent& event );
 };
 
 #endif // __cardlg__

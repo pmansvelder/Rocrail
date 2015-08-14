@@ -5143,11 +5143,14 @@ void RocGuiFrame::OnIssue(wxCommandEvent& WXUNUSED(event)) {
   issueDlg->Destroy();
 }
 
-void RocGuiFrame::OnArchiveBox(wxCommandEvent& WXUNUSED(event)) {
-  m_ABoxDlg = new ABoxDlg( this );
+void RocGuiFrame::OnArchiveBox(wxCommandEvent& event) {
+  char* s = (char*)event.GetClientData();
+  m_ABoxDlg = new ABoxDlg( this, s );
   m_ABoxDlg->ShowModal();
   m_ABoxDlg->Destroy();
   m_ABoxDlg = NULL;
+  if( s != NULL )
+    StrOp.free(s);
 }
 
 void RocGuiFrame::OnFeature(wxCommandEvent& WXUNUSED(event)) {
