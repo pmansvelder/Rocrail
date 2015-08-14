@@ -64,13 +64,14 @@ class wxGrid;
 #define ID_LOC_MANUALLY 10328
 #define ID_LOC_SHOW 10433
 #define ID_PANEL_GENERAL 10004
-#define wxID_STATIC_ID 10017
+#define ID_ABOX_ID 10494
 #define ID_TEXTCTRL_ID 10005
+#define ID_ABOX_ROADNAME 10495
 #define wxID_STATIC_DESCRIPTION 10018
 #define ID_TEXTCTRL_DESCRIPTION 10006
 #define ID_SELECT_LOCOIMAGE 10172
 #define wxID_STATIC_LENGTH 10019
-#define wxID_STATIC_CATALOGNR 10020
+#define ID_ABOX_CATNR 10496
 #define ID_TEXTCTRL_CATALOGNR 10008
 #define ID_BUTTON_SHOWDOC 10391
 #define wxID_STATIC_PURCHASED 10021
@@ -263,8 +264,17 @@ public:
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LOC_SHOW
     void OnShowClick( wxCommandEvent& event );
 
+    /// wxEVT_LEFT_UP event handler for ID_ABOX_ID
+    void OnAboxID( wxMouseEvent& event );
+
+    /// wxEVT_LEFT_UP event handler for ID_ABOX_ROADNAME
+    void OnAboxRoadname( wxMouseEvent& event );
+
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SELECT_LOCOIMAGE
     void OnSelectLocoimage( wxCommandEvent& event );
+
+    /// wxEVT_LEFT_UP event handler for ID_ABOX_CATNR
+    void OnAboxCatnr( wxMouseEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SHOWDOC
     void OnButtonShowdocClick( wxCommandEvent& event );

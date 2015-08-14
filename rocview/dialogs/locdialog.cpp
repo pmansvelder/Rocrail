@@ -235,13 +235,13 @@ void LocDialog::initLabels() {
 
 
   // General
-  m_label_ID->SetLabel( wxGetApp().getMsg( "id" ) );
+  m_label_ID->SetLabel( wxGetApp().getMsg( "id" ) + wxT(" @"));
   m_labShortID->SetLabel( wxGetApp().getMsg( "shortid" ) );
-  m_labRoadname->SetLabel( wxGetApp().getMsg( "roadname" ) );
+  m_labRoadname->SetLabel( wxGetApp().getMsg( "roadname" ) + wxT(" @") );
   m_labNumber->SetLabel( wxGetApp().getMsg( "number" ) );
   m_Label_Description->SetLabel( wxGetApp().getMsg( "description" ) );
   m_Label_Length->SetLabel( wxGetApp().getMsg( "length" ) );
-  m_Label_CatalogNr->SetLabel( wxGetApp().getMsg( "catnr" ) );
+  m_Label_CatalogNr->SetLabel( wxGetApp().getMsg( "catnr" ) + wxT(" @") );
   m_Label_Purchased->SetLabel( wxGetApp().getMsg( "purchased" ) );
   m_labValue->SetLabel( wxGetApp().getMsg( "value" ) );
   m_Label_Runtime->SetLabel( wxGetApp().getMsg( "runtime" ) );
@@ -1833,13 +1833,13 @@ void LocDialog::CreateControls()
     itemBoxSizer29->Add(m_GeneralSizer, 1, wxALIGN_TOP|wxALL, 0);
     wxFlexGridSizer* itemFlexGridSizer31 = new wxFlexGridSizer(0, 2, 0, 0);
     m_GeneralSizer->Add(itemFlexGridSizer31, 1, wxGROW|wxALL, 5);
-    m_label_ID = new wxStaticText( m_General_Panel, wxID_STATIC_ID, _("ID:"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_label_ID = new wxStaticText( m_General_Panel, ID_ABOX_ID, _("ID @"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer31->Add(m_label_ID, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_ID = new wxTextCtrl( m_General_Panel, ID_TEXTCTRL_ID, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer31->Add(m_ID, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_labRoadname = new wxStaticText( m_General_Panel, wxID_ANY, _("Roadname"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_labRoadname = new wxStaticText( m_General_Panel, ID_ABOX_ROADNAME, _("Roadname @"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer31->Add(m_labRoadname, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_Roadname = new wxTextCtrl( m_General_Panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -1892,7 +1892,7 @@ void LocDialog::CreateControls()
 
     itemFlexGridSizer47->AddGrowableCol(0);
 
-    m_Label_CatalogNr = new wxStaticText( m_General_Panel, wxID_STATIC_CATALOGNR, _("CatalogNr:"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_Label_CatalogNr = new wxStaticText( m_General_Panel, ID_ABOX_CATNR, _("CatalogNr @"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer31->Add(m_Label_CatalogNr, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5);
 
     m_CatNr = new wxTextCtrl( m_General_Panel, ID_TEXTCTRL_CATALOGNR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -3133,6 +3133,9 @@ void LocDialog::CreateControls()
     itemStdDialogButtonSizer417->Realize();
 
     // Connect events and objects
+    m_label_ID->Connect(ID_ABOX_ID, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::OnAboxID), NULL, this);
+    m_labRoadname->Connect(ID_ABOX_ROADNAME, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::OnAboxRoadname), NULL, this);
+    m_Label_CatalogNr->Connect(ID_ABOX_CATNR, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::OnAboxCatnr), NULL, this);
     m_F0Icon->Connect(ID_LOC_ICONF0, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocIconf0), NULL, this);
     m_Sound1->Connect(ID_LOC_SOUND1, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocSound1), NULL, this);
     m_Icon_f1->Connect(ID_LOC_ICONF1, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocIconf1), NULL, this);
@@ -4729,5 +4732,23 @@ void LocDialog::OnBbtFixallClick( wxCommandEvent& event )
   }
 
   initBBT();
+}
+
+
+void LocDialog::OnAboxID( wxMouseEvent& event )
+{
+  ABox(m_ID);
+}
+
+
+void LocDialog::OnAboxRoadname( wxMouseEvent& event )
+{
+  ABox(m_Roadname);
+}
+
+
+void LocDialog::OnAboxCatnr( wxMouseEvent& event )
+{
+  ABox(m_CatNr);
 }
 
