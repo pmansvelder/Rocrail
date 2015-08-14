@@ -174,10 +174,10 @@ void CarDlg::initLabels() {
   m_CarList2->InsertColumn(8, wxGetApp().getMsg( "train" ), wxLIST_FORMAT_LEFT );
 
   // General
-  m_labID->SetLabel( wxGetApp().getMsg( "id" ) );
+  m_labID->SetLabel( wxGetApp().getMsg( "id" ) + wxT(" @"));
   m_labIdent->SetLabel( wxGetApp().getMsg( "identifier" ) );
   m_labNumber->SetLabel( wxGetApp().getMsg( "number" ) );
-  m_labRoadname->SetLabel( wxGetApp().getMsg( "roadname" ) );
+  m_labRoadname->SetLabel( wxGetApp().getMsg( "roadname" ) + wxT(" @") );
   m_labColor->SetLabel( wxGetApp().getMsg( "color" ) );
   m_Era->SetLabel( wxGetApp().getMsg( "era" ) );
   m_labLocation->SetLabel( wxGetApp().getMsg( "place" ) );
@@ -206,7 +206,7 @@ void CarDlg::initLabels() {
   m_labWeight->SetLabel( wxGetApp().getMsg( "weight" ) );
   m_labWeightEmpty->SetLabel( wxGetApp().getMsg( "empty" ) );
   m_labWeightLoaded->SetLabel( wxGetApp().getMsg( "loaded" ) );
-  m_labManuId->SetLabel( wxGetApp().getMsg( "manufactured_ID" ) );
+  m_labManuId->SetLabel( wxGetApp().getMsg( "manufactured_ID" ) + wxT(" @") );
   m_labRemark->SetLabel( wxGetApp().getMsg( "remark" ) );
   m_labVMax->SetLabel( wxGetApp().getMsg( "maxkmh" ) );
 
@@ -1327,20 +1327,14 @@ void CarDlg::onHelp( wxCommandEvent& event ) {
   }
 }
 
-void CarDlg::aboxManuId( wxCommandEvent& event ) {
-  if(m_ManuId->GetValue().IsEmpty())
-    return;
-  wxCommandEvent evt1( wxEVT_COMMAND_MENU_SELECTED, ME_ArchiveBox );
-  char* s = StrOp.dup(m_ManuId->GetValue().mb_str(wxConvUTF8));
-  evt1.SetClientData(s);
-  wxPostEvent( wxGetApp().getFrame(), evt1 );
+void CarDlg::aboxManuId( wxMouseEvent& event ) {
+  ABox(m_ManuId);
 }
 
-void CarDlg::aboxID( wxCommandEvent& event ) {
-  if(m_ID->GetValue().IsEmpty())
-    return;
-  wxCommandEvent evt1( wxEVT_COMMAND_MENU_SELECTED, ME_ArchiveBox );
-  char* s = StrOp.dup(m_ID->GetValue().mb_str(wxConvUTF8));
-  evt1.SetClientData(s);
-  wxPostEvent( wxGetApp().getFrame(), evt1 );
+void CarDlg::aboxID( wxMouseEvent& event ) {
+  ABox(m_ID);
+}
+
+void CarDlg::aboxRoadname( wxMouseEvent& event ) {
+  ABox(m_Roadname);
 }

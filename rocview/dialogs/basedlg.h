@@ -31,6 +31,7 @@ public:
   int findID( const char* ID );
   void appendItem( iONode Item);
   void sortOnColumn( int col );
+  void ABox( wxTextCtrl* text );
 
   wxWindow* m_Parent;
   wxListCtrl* m_ItemList;

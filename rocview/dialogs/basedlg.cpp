@@ -56,6 +56,16 @@ BaseDialog::BaseDialog() {
   m_SelectedID = NULL;
 }
 
+void BaseDialog::ABox( wxTextCtrl* text ) {
+  if(text->GetValue().IsEmpty())
+    return;
+  wxCommandEvent evt1( wxEVT_COMMAND_MENU_SELECTED, ME_ArchiveBox );
+  char* s = StrOp.dup(text->GetValue().mb_str(wxConvUTF8));
+  evt1.SetClientData(s);
+  wxPostEvent( wxGetApp().getFrame(), evt1 );
+}
+
+
 
 void BaseDialog::sortOnColumn( int col ) {
   if(m_ItemList == NULL)
