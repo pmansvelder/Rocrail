@@ -1327,13 +1327,20 @@ void CarDlg::onHelp( wxCommandEvent& event ) {
   }
 }
 
-void CarDlg::onABox( wxCommandEvent& event ) {
+void CarDlg::aboxManuId( wxCommandEvent& event ) {
   if(m_ManuId->GetValue().IsEmpty())
     return;
-
   wxCommandEvent evt1( wxEVT_COMMAND_MENU_SELECTED, ME_ArchiveBox );
   char* s = StrOp.dup(m_ManuId->GetValue().mb_str(wxConvUTF8));
   evt1.SetClientData(s);
   wxPostEvent( wxGetApp().getFrame(), evt1 );
+}
 
+void CarDlg::aboxID( wxCommandEvent& event ) {
+  if(m_ID->GetValue().IsEmpty())
+    return;
+  wxCommandEvent evt1( wxEVT_COMMAND_MENU_SELECTED, ME_ArchiveBox );
+  char* s = StrOp.dup(m_ID->GetValue().mb_str(wxConvUTF8));
+  evt1.SetClientData(s);
+  wxPostEvent( wxGetApp().getFrame(), evt1 );
 }
