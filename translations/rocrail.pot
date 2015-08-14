@@ -8021,3 +8021,9 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
+#. 
+# id="note"
+#, c-format
+msgid "Note"
+msgstr ""
+

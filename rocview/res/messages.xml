@@ -31728,4 +31728,7 @@
   <Msg id="result">
     <en txt="Result"/>
   </Msg>
+  <Msg id="note">
+    <en txt="Note"/>
+  </Msg>
 </Messages>

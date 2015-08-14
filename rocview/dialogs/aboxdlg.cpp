@@ -73,6 +73,8 @@ void ABoxDlg::initLabels() {
   m_labFile->SetLabel( wxGetApp().getMsg( "file" ) );
   m_labText->SetLabel( wxGetApp().getMsg( "text" ) );
   m_labCategory->SetLabel( wxGetApp().getMsg( "category" ) );
+  m_labResultText->SetLabel( wxGetApp().getMsg( "text" ) );
+  m_labResultNote->SetLabel( wxGetApp().getMsg( "note" ) );
   m_Link->SetLabel( wxGetApp().getMsg( "link" ) );
   m_Link->Enable(false);
 
