@@ -30,6 +30,11 @@
       <param name="text" vt="const char*"/>
       <param name="category" vt="const char*"/>
     </fun>
+    <fun name="deleteFile" vt="Boolean">
+      <param name="inst" vt="obj"/>
+      <param name="uid" vt="const char*"/>
+      <param name="stubfile" vt="const char*"/>
+    </fun>
   </interface>
   
   <interface name="DigInt" use="node">

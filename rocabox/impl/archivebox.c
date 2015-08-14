@@ -257,6 +257,16 @@ static Boolean _linkFile( obj inst ,const char* path ,const char* modified ,long
 }
 
 
+static Boolean _deleteFile( obj inst ,const char* uid ,const char* stubfile ) {
+  iOArchiveBoxData data = Data(inst);
+  if( data->readonly ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ArchiveBox is in readonly mode" );
+    return False;
+  }
+  return FileOp.remove(stubfile);
+}
+
+
 static void __writeIni(iOArchiveBox inst) {
   iOArchiveBoxData data = Data(inst);
   char* iniFilename = StrOp.fmt("%s%c%s", data->home, SystemOp.getFileSeparator(), "rocabox.ini");

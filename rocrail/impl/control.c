@@ -1157,6 +1157,17 @@ static void __callback( obj inst, iONode nodeA ) {
       NodeOp.base.del( nodeA );
       return;
     }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_deletelink ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        iONode stub = NodeOp.findNode( nodeA, "stub");
+        if( stub != NULL ) {
+          abox->deleteFile( (obj)abox, NodeOp.getStr(stub, "uid", ""), NodeOp.getStr(stub, "stubfile", ""));
+        }
+      }
+      NodeOp.base.del( nodeA );
+      return;
+    }
 
   }
   else if( StrOp.equals( wFunCmd.name(), nodeName ) ) {

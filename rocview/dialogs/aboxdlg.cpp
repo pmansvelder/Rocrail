@@ -212,6 +212,14 @@ void ABoxDlg::onDelete( wxCommandEvent& event ) {
     int action = wxMessageDialog( this, wxGetApp().getMsg("removewarning"), _T("Rocrail"), wxYES_NO | wxICON_EXCLAMATION ).ShowModal();
     if( action == wxID_NO )
       return;
+    iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
+    iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+    wDataReq.setcmd( cmd, wDataReq.abox_deletelink );
+    NodeOp.addChild(cmd, (iONode)NodeOp.base.clone(stub));
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+
+    onFind(event);
   }
 }
 

@@ -1012,6 +1012,7 @@
     <const name="abox_find" vt="int" val="5"/>
     <const name="abox_addlink" vt="int" val="6"/>
     <const name="abox_getcategories" vt="int" val="7"/>
+    <const name="abox_deletelink" vt="int" val="8"/>
     <var name="cmd" vt="int" defval="0" range="0-*"/>
     <const name="image" vt="int" val="0"/>
     <const name="smallimage" vt="int" val="1"/>
