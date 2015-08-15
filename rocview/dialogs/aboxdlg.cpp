@@ -247,7 +247,10 @@ void ABoxDlg::initResult() {
   listSize = ListOp.size(list);
   for( int idx = 0; idx < listSize; idx++ ) {
     iONode stub = (iONode)ListOp.get( list, idx);
-    m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
+    if( m_ShowPath->IsChecked() )
+      m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
+    else
+      m_Stubs->InsertItem( idx, wxString(FileOp.ripPath(NodeOp.getStr(stub, "path", "-")),wxConvUTF8) );
     m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
@@ -359,6 +362,10 @@ void ABoxDlg::onModify( wxCommandEvent& event ) {
 
     onFind(event);
   }
+}
+
+void ABoxDlg::onShowPath( wxCommandEvent& event ) {
+  initResult();
 }
 
 
