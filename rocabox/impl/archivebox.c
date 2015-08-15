@@ -122,7 +122,7 @@ static iONode __readStub(const char* stubFilename) {
 }
 
 
-static iOList __find( const char* directory ,const char* text ) {
+static iOList __find( const char* directory ,const char* text, Boolean intext, Boolean incategory, Boolean infilename ) {
   iOList list = ListOp.inst();
   char* filepath = NULL;
   if( FileOp.exist(directory) ) {
@@ -139,7 +139,7 @@ static iOList __find( const char* directory ,const char* text ) {
           continue;
         }
         else if( FileOp.isDirectory( filepath ) ) {
-          iOList list2 = __find(filepath, text);
+          iOList list2 = __find(filepath, text, intext, incategory, infilename);
           if( list2 != NULL ) {
             int listSize = ListOp.size(list2);
             int n = 0;
@@ -157,7 +157,10 @@ static iOList __find( const char* directory ,const char* text ) {
             stub = __readStub(stubName);
             /* add to list... */
             if( stub != NULL ) {
-              if( StrOp.findi(wStub.gettext(stub), text) || StrOp.findi(wStub.getpath(stub), text) || StrOp.findi(wStub.getcategory(stub), text) ) {
+              if( (intext && StrOp.findi(wStub.gettext(stub), text)) ||
+                  (infilename && StrOp.findi(wStub.getpath(stub), text)) ||
+                  (incategory && StrOp.findi(wStub.getcategory(stub), text)) )
+              {
                 TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "add stub %s [%s]", wStub.getpath(stub), wStub.gettext(stub) );
                 ListOp.add(list, (obj)stub);
               }
@@ -176,10 +179,10 @@ static iOList __find( const char* directory ,const char* text ) {
 
 
 /**  */
-static iOList _find( obj inst ,const char* text ) {
+static iOList _find( obj inst ,const char* text, Boolean intext, Boolean incategory, Boolean infilename ) {
   iOArchiveBoxData data = Data(inst);
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find [%s] in [%s]", text, data->home );
-  return __find(data->home, text);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find [%s] in [%s] [%d%d%d]", text, data->home, intext, incategory, infilename );
+  return __find(data->home, text, intext, incategory, infilename);
 }
 
 
@@ -280,7 +283,9 @@ static Boolean _modifyFile( obj inst, const char* uid, const char* stubfile, con
     wStub.settext(stub, text);
     wStub.setnote(stub, note);
     __replaceStub((iOArchiveBox)inst, stubfile, stub);
+    return True;
   }
+  return False;
 }
 
 

@@ -1026,6 +1026,9 @@
     <var name="text" vt="string" defval="" range="*"/>
     <var name="note" vt="string" defval="" range="*"/>
     <var name="readonly" vt="bool" defval="false"/>
+    <var name="findintext" vt="bool" defval="true"/>
+    <var name="findincategory" vt="bool" defval="true"/>
+    <var name="findinfilename" vt="bool" defval="true"/>
     <direntry wrappername="DirEntry" remark="Directory" cardinality="1" >
       <var name="dir" vt="string" defval="" range="*" remark="File name"/>
 	    <fileentry wrappername="FileEntry" cardinality="n">

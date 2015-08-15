@@ -35,6 +35,7 @@ class ABoxDlg : public AboxDlgGen
     void onDelete( wxCommandEvent& event );
     void onModify( wxCommandEvent& event );
     void onStubCol( wxListEvent& event );
+    void onFindTextEnter( wxCommandEvent& event );
 	public:
 		/** Constructor */
 		ABoxDlg( wxWindow* parent, const char* text=NULL );

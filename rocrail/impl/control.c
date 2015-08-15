@@ -1110,7 +1110,7 @@ static void __callback( obj inst, iONode nodeA ) {
       if( abox != NULL ) {
         iOList list = NULL;
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find=[%s]", wDataReq.gettext(nodeA) );
-        list = abox->find((obj)abox, wDataReq.gettext(nodeA));
+        list = abox->find((obj)abox, wDataReq.gettext(nodeA), wDataReq.isfindintext(nodeA), wDataReq.isfindincategory(nodeA), wDataReq.isfindinfilename(nodeA));
         if( list != NULL ) {
           int i = 0;
           int listSize = ListOp.size(list);

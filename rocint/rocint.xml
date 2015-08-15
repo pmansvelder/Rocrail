@@ -9,6 +9,9 @@
     <fun name="find" vt="iOList">
       <param name="inst" vt="obj"/>
       <param name="text" vt="const char*"/>
+      <param name="intext" vt="Boolean"/>
+      <param name="incategory" vt="Boolean"/>
+      <param name="infilename" vt="Boolean"/>
     </fun>
     <fun name="getCategories" vt="const char*">
       <param name="inst" vt="obj"/>

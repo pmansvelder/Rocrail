@@ -66,6 +66,9 @@ void ABoxDlg::clearStubList() {
 
 void ABoxDlg::initLabels() {
   m_Find->SetLabel( wxGetApp().getMsg( "find" ) );
+  m_FindInText->SetLabel( wxGetApp().getMsg( "text" ) );
+  m_FindInCategory->SetLabel( wxGetApp().getMsg( "category" ) );
+  m_FindInFilename->SetLabel( wxGetApp().getMsg( "filename" ) );
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
   m_Open->SetLabel( wxGetApp().getMsg( "open" ) );
   m_Modify->SetLabel( wxGetApp().getMsg( "modify" ) );
@@ -92,11 +95,18 @@ void ABoxDlg::doFind( const char* text ) {
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_find );
   wDataReq.settext( cmd, text );
+  wDataReq.setfindintext( cmd, m_FindInText->IsChecked()?True:False );
+  wDataReq.setfindincategory( cmd, m_FindInCategory->IsChecked()?True:False );
+  wDataReq.setfindinfilename( cmd, m_FindInFilename->IsChecked()?True:False );
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
 }
 
 void ABoxDlg::onFind( wxCommandEvent& event ) {
+  doFind(m_FindText->GetValue().mb_str(wxConvUTF8));
+}
+
+void ABoxDlg::onFindTextEnter( wxCommandEvent& event ) {
   doFind(m_FindText->GetValue().mb_str(wxConvUTF8));
 }
 
