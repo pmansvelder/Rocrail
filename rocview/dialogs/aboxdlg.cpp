@@ -35,6 +35,9 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
   m_SelectedStub = wxNOT_FOUND;
   m_ReadOnly = false;
   m_SortCol = 0;
+  m_AddedFilename[0] = '\0';
+  m_AddedUID[0] = '\0';
+  m_AddedPart = -1;
 
   m_Ini = wGui.getabox( wxGetApp().getIni() );
   if( m_Ini == NULL ) {
@@ -50,6 +53,8 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
   m_Open->Enable(false);
   m_Modify->Enable(false);
   m_Delete->Enable(false);
+  m_Link->Enable(false); // only links are supported
+
   initLabels();
 
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
@@ -92,7 +97,6 @@ void ABoxDlg::initLabels() {
   m_labResultText->SetLabel( wxGetApp().getMsg( "text" ) );
   m_labResultNote->SetLabel( wxGetApp().getMsg( "note" ) );
   m_Link->SetLabel( wxGetApp().getMsg( "link" ) );
-  m_Link->Enable(false);
   m_ShowPath->SetLabel( wxGetApp().getMsg( "showpath" ) );
 
   m_FindBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "find" ) );
@@ -153,6 +157,14 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
   NodeOp.addChild(direntry, fileentry);
 
   wFileEntry.setfname( fileentry, m_Filename->GetValue().mb_str(wxConvUTF8) );
+
+  // save the file path in case it must be uploaded
+  m_AddedUID[0] = '\0';
+  if( !m_Link->IsChecked() )
+    StrOp.copy( m_AddedFilename, wFileEntry.getfname(fileentry) );
+  else
+    m_AddedFilename[0] = '\0';
+
   wFileEntry.settext( fileentry, m_Text->GetValue().mb_str(wxConvUTF8) );
   wFileEntry.setcategory( fileentry, m_Category->GetValue().mb_str(wxConvUTF8) );
 
@@ -216,6 +228,13 @@ static int __sortPath(obj* _a, obj* _b) {
     const char* idB = NodeOp.getStr(b, "path", "-");
     return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
+static int __sortFilename(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = FileOp.ripPath(NodeOp.getStr(a, "path", "-"));
+    const char* idB = FileOp.ripPath(NodeOp.getStr(b, "path", "-"));
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
 static int __sortCategory(obj* _a, obj* _b) {
     iONode a = (iONode)*_a;
     iONode b = (iONode)*_b;
@@ -259,7 +278,10 @@ void ABoxDlg::initResult() {
     ListOp.sort(list, &__sortUID);
   }
   else {
-    ListOp.sort(list, &__sortPath);
+    if( m_ShowPath->IsChecked() )
+      ListOp.sort(list, &__sortPath);
+    else
+      ListOp.sort(list, &__sortFilename);
   }
 
   listSize = ListOp.size(list);
@@ -289,7 +311,25 @@ void ABoxDlg::initResult() {
 }
 
 void ABoxDlg::event(iONode node) {
-  if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
+  if( wDataReq.getcmd(node) == wDataReq.abox_addlink ) {
+    const char* uid = wDataReq.getid(node);
+    iONode direntry = wDataReq.getdirentry(node);
+    if( direntry != NULL && wDirEntry.getfileentry(direntry) != NULL ) {
+      iONode fileentry = wDirEntry.getfileentry(direntry);
+      TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "uid=%s for [%s]", uid, wFileEntry.getfname(fileentry) );
+      /*
+      char* s = StrOp.fmt("%s:\nUID=%s\n%s=%s", wxGetApp().getCMsg("upload"), uid, wxGetApp().getCMsg("file"), wFileEntry.getfname(fileentry) );
+      int action = wxMessageDialog( this, wxString(s,wxConvUTF8), _T("Rocrail"), wxOK ).ShowModal();
+      StrOp.free(s);
+      */
+    }
+  }
+
+  else if( wDataReq.getcmd(node) == wDataReq.abox_filedata ) {
+
+  }
+
+  else if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
     m_ReadOnly = wDataReq.isreadonly(node)?true:false;
     m_Add->Enable(!m_ReadOnly);
     m_Category->Clear();

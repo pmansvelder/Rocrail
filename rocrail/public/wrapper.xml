@@ -1014,14 +1014,16 @@
     <const name="abox_getcategories" vt="int" val="7"/>
     <const name="abox_deletelink" vt="int" val="8"/>
     <const name="abox_modifylink" vt="int" val="9"/>
+    <const name="abox_filedata" vt="int" val="10"/>
     <var name="cmd" vt="int" defval="0" range="0-*"/>
     <const name="image" vt="int" val="0"/>
     <const name="smallimage" vt="int" val="1"/>
     <var name="type" vt="int" defval="0" range="0-*"/>
     <var name="filename" vt="string" defval="NULL" range="*"/>
     <var name="data" vt="string" defval="NULL" range="*" remark="one byte represented by 2 ascii chars; StrOp.byteToStr()"/>
-    <const name="datapart" vt="int" val="0"/>
-    <const name="dataparts" vt="int" val="0"/>
+    <var name="datapart" vt="int" defval="0"/>
+    <var name="dataparts" vt="int" defval="0"/>
+    <var name="totalsize" vt="long" defval="0" range="0-*" remark="File size"/>
     <var name="category" vt="string" defval="" range="*"/>
     <var name="text" vt="string" defval="" range="*"/>
     <var name="note" vt="string" defval="" range="*"/>

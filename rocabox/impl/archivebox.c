@@ -225,7 +225,7 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
   if( MutexOp.wait( data->stubMux ) ) {
     char* stamp = StrOp.createStampNoDots();
     char* stubRoot = StrOp.fmt("%s%c%s", data->home, SystemOp.getFileSeparator(), wStub.getcategory(stub) );
-    char* stubFilename = StrOp.fmt("%s%cstub%s.abox", stubRoot, SystemOp.getFileSeparator(), stamp );
+    char* stubFilename = StrOp.fmt("%s%c%s.abox", stubRoot, SystemOp.getFileSeparator(), stamp );
     char*  xmlStr = NULL;
     iOFile f      = NULL;
 
@@ -257,11 +257,12 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
 
 
 /**  */
-static Boolean _linkFile( obj inst ,const char* path ,const char* modified ,long size ,const char* text ,const char* category ) {
+static char* _linkFile( obj inst ,const char* path ,const char* modified ,long size ,const char* text ,const char* category ) {
   iOArchiveBoxData data = Data(inst);
+  char* uid = NULL;
   if( data->readonly ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ArchiveBox is in readonly mode" );
-    return False;
+    return uid;
   }
   iONode stub = NodeOp.inst(wStub.name(), NULL, ELEMENT_NODE);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "link file [%s]", path );
@@ -270,10 +271,12 @@ static Boolean _linkFile( obj inst ,const char* path ,const char* modified ,long
   wStub.setsize(stub, size);
   wStub.settext(stub, text);
   wStub.setcategory(stub, category);
+  wStub.setlink(stub, True);
   ArchiveBoxOp.addCategory(inst, category);
   __writeStub((iOArchiveBox)inst, stub);
+  uid = StrOp.dup(wStub.getuid(stub));
   NodeOp.base.del(stub);
-  return True;
+  return uid;
 }
 
 
@@ -349,6 +352,16 @@ static void __readIni(iOArchiveBox inst) {
   }
 
   StrOp.free(iniFilename);
+}
+
+static Boolean _fileData( obj inst ,const char* uid ,const char* category, long size, int nr, long totalsize, const byte* bytes ) {
+  iOArchiveBoxData data = Data(inst);
+  if( data->readonly ) {
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ArchiveBox is in readonly mode" );
+    return False;
+  }
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "file data: uid=%s size=%ld nr=%d totalsize=%ld" );
+  return True;
 }
 
 /**  */

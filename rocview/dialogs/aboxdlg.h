@@ -55,6 +55,9 @@ class ABoxDlg : public AboxDlgGen
     bool m_ReadOnly;
     int m_SortCol;
     iONode m_Ini;
+    char m_AddedFilename[1024];
+    char m_AddedUID[128];
+    int m_AddedPart;
 
 };
 

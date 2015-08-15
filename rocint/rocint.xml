@@ -25,13 +25,22 @@
       <param name="inst" vt="obj"/>
       <param name="category" vt="const char*"/>
     </fun>
-    <fun name="linkFile" vt="Boolean">
+    <fun name="linkFile" vt="char*">
       <param name="inst" vt="obj"/>
       <param name="path" vt="const char*"/>
       <param name="modified" vt="const char*"/>
       <param name="size" vt="long"/>
       <param name="text" vt="const char*"/>
       <param name="category" vt="const char*"/>
+    </fun>
+    <fun name="fileData" vt="Boolean">
+      <param name="inst" vt="obj"/>
+      <param name="uid" vt="const char*"/>
+      <param name="category" vt="const char*"/>
+      <param name="size" vt="long"/>
+      <param name="nr" vt="int"/>
+      <param name="totalsize" vt="long"/>
+      <param name="bytes" vt="const byte*"/>
     </fun>
     <fun name="deleteFile" vt="Boolean">
       <param name="inst" vt="obj"/>

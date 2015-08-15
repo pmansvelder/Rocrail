@@ -1246,13 +1246,9 @@ static void rocrailCallback( obj me, iONode node ) {
       event.SetClientData( node->base.clone( node ) );
       wxPostEvent( guiApp->getFrame(), event );
     }
-    else if( wDataReq.getcmd(node) == wDataReq.abox_find ) {
-      wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, SERVER_ABOXFIND_EVENT );
-      // Make a copy of the node for using it out of this scope:
-      event.SetClientData( node->base.clone( node ) );
-      wxPostEvent( guiApp->getFrame(), event );
-    }
-    else if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
+    else if( wDataReq.getcmd(node) == wDataReq.abox_find || wDataReq.getcmd(node) == wDataReq.abox_getcategories ||
+        wDataReq.getcmd(node) == wDataReq.abox_addlink || wDataReq.getcmd(node) == wDataReq.abox_filedata )
+    {
       wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, SERVER_ABOXFIND_EVENT );
       // Make a copy of the node for using it out of this scope:
       event.SetClientData( node->base.clone( node ) );

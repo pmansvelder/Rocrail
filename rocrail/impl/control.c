@@ -1146,12 +1146,19 @@ static void __callback( obj inst, iONode nodeA ) {
     else if( wDataReq.getcmd(nodeA) == wDataReq.abox_addlink ) {
       iIArchiveBox abox = AppOp.getArchiveBox();
       if( abox != NULL ) {
+        char* uid = NULL;
         iONode direntry = wDataReq.getdirentry(nodeA);
         if( direntry != NULL && wDirEntry.getfileentry(direntry) != NULL ) {
           iONode fileentry = wDirEntry.getfileentry(direntry);
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "linkFile=[%s]", wFileEntry.getfname(fileentry) );
-          abox->linkFile( (obj)abox ,wFileEntry.getfname(fileentry) ,wFileEntry.gettime(fileentry) ,wFileEntry.getsize(fileentry) ,
+          uid = abox->linkFile( (obj)abox ,wFileEntry.getfname(fileentry) ,wFileEntry.gettime(fileentry) ,wFileEntry.getsize(fileentry) ,
               wFileEntry.gettext(fileentry) ,wFileEntry.getcategory(fileentry) );
+          if( uid != NULL ) {
+            wDataReq.setid(nodeA, uid);
+            StrOp.free(uid);
+            ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+            return;
+          }
         }
       }
       NodeOp.base.del( nodeA );
@@ -1175,6 +1182,20 @@ static void __callback( obj inst, iONode nodeA ) {
         if( stub != NULL ) {
           abox->modifyFile( (obj)abox, NodeOp.getStr(stub, "uid", ""), NodeOp.getStr(stub, "stubfile", ""), NodeOp.getStr(stub, "text", ""),
               NodeOp.getStr(stub, "note", ""), NodeOp.getStr(stub, "category", ""));
+        }
+      }
+      NodeOp.base.del( nodeA );
+      return;
+    }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_filedata ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        const char* byteStr = wDataReq.getdata(nodeA);
+        if( byteStr != NULL ) {
+          // convert string to byte array
+          byte* filedata = StrOp.strToByte( byteStr );
+          int len = StrOp.len(byteStr)/2;
+          abox->fileData((obj)abox, wDataReq.getid(nodeA), wDataReq.getcategory(nodeA), len, wDataReq.getdatapart(nodeA), wDataReq.gettotalsize(nodeA), filedata);
         }
       }
       NodeOp.base.del( nodeA );
