@@ -51,6 +51,7 @@ ThrottleDlg::ThrottleDlg( wxWindow* parent, iOList list, iOMap map, const char* 
 
   m_Stop->SetLabel( wxGetApp().getMsg( "stop" ) );
   m_Break->SetLabel( wxGetApp().getMsg( "break" ) );
+  m_F0->SetLabel( wxGetApp().getMsg( "lights" ) );
 
   m_DlgList = list;
   m_DlgMap  = map;
@@ -310,7 +311,7 @@ void ThrottleDlg::setFLabels(iONode p_Props, bool merge, bool init, int fmap) {
 
   if( init ) {
     if( !merge || m_bSecAddr ) {
-      m_F0->SetLabel( _T("lights") );
+      m_F0->SetLabel( wxGetApp().getMsg( "lights" ) );
       m_F0->SetIcon(NULL);
       for( int i = 1; i < 15; i++ ) {
         m_F[i]->SetLabel( wxString::Format(_T("F%d"), i + m_iFnGroup * 14) );

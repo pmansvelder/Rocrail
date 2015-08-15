@@ -3141,7 +3141,7 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
           wSelTab.getid( m_Props ), tablepos, locId==NULL?"unlocked":locId );
     }
     else {
-      l_locidStr = StrOp.fmt( "%s: CLOSED", wSelTab.getid( m_Props ) );
+      l_locidStr = StrOp.fmt( "%s: %s", wSelTab.getid( m_Props ), StrOp.strupr(wxGetApp().getCMsg("closed")) );
     }
 
     StrOp.free(m_Tip);
@@ -3439,7 +3439,7 @@ void Symbol::modelEvent( iONode node, bool oncreate ) {
       // Closed
       else if( StrOp.equals( wBlock.closed, state ) ) {
         if( !wBlock.issmallsymbol(m_Props) ) {
-          l_locidStr = StrOp.fmt( "%s%sCLOSED %s", wBlock.getid( node ), hasCars?"#":" ", hasCars?carList:"" );
+          l_locidStr = StrOp.fmt( "%s%s%s %s", wBlock.getid( node ), hasCars?"#":" ", StrOp.strupr(wxGetApp().getCMsg("closed")), hasCars?carList:"" );
         }
         else {
           l_locidStr = StrOp.fmt( "%s%s%s", wBlock.getid( node ), hasCars?"#":" ", hasCars?carList:"" );

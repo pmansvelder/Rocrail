@@ -107,6 +107,7 @@ void DonKey::initLabels() {
   m_LoadKey->SetLabel( wxGetApp().getMenu( "loadkey" ) );
   m_Donate->SetLabel( wxGetApp().getMsg( "donatenow" ) );
   m_stdButtonOK->SetLabel( wxGetApp().getMsg( "ok" ) );
+  m_stdButtonHelp->SetLabel( wxGetApp().getMsg( "help" ) );
 }
 
 void DonKey::initValues() {
