@@ -802,6 +802,9 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     else if( text != NULL && wText.getformat(cmd) == NULL ) {
       TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "text [%s] format is missing", oid);
     }
+    else if( text == NULL ) {
+      TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "text [%s] not found", oid);
+    }
     StrOp.free(oid);
   }
 
