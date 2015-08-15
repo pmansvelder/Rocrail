@@ -8033,3 +8033,9 @@ msgstr ""
 msgid "Filename"
 msgstr ""
 
+#. 
+# id="showpath"
+#, c-format
+msgid "Show path"
+msgstr ""
+

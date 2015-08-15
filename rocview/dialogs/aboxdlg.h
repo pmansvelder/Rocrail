@@ -54,6 +54,7 @@ class ABoxDlg : public AboxDlgGen
     int m_SelectedStub;
     bool m_ReadOnly;
     int m_SortCol;
+    iONode m_Ini;
 
 };
 

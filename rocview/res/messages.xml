@@ -31734,4 +31734,7 @@
   <Msg id="filename">
     <en txt="Filename"/>
   </Msg>
+  <Msg id="showpath">
+    <en txt="Show path"/>
+  </Msg>
 </Messages>

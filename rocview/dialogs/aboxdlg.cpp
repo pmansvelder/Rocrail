@@ -18,6 +18,8 @@
 #include <wx/mimetype.h>
 
 #include "rocview/public/guiapp.h"
+#include "rocview/wrapper/public/Gui.h"
+#include "rocview/wrapper/public/ABox.h"
 
 #include "rocrail/wrapper/public/DataReq.h"
 #include "rocrail/wrapper/public/DirEntry.h"
@@ -33,6 +35,17 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
   m_SelectedStub = wxNOT_FOUND;
   m_ReadOnly = false;
   m_SortCol = 0;
+
+  m_Ini = wGui.getabox( wxGetApp().getIni() );
+  if( m_Ini == NULL ) {
+    m_Ini = NodeOp.inst(wABox.name(), wxGetApp().getIni(), ELEMENT_NODE);
+    NodeOp.addChild( wxGetApp().getIni(), m_Ini );
+  }
+
+  m_FindInText->SetValue(wABox.isfindintext(m_Ini)?true:false);
+  m_FindInCategory->SetValue(wABox.isfindincategory(m_Ini)?true:false);
+  m_FindInFilename->SetValue(wABox.isfindinfilename(m_Ini)?true:false);
+  m_ShowPath->SetValue(wABox.isshowpath(m_Ini)?true:false);
 
   m_Open->Enable(false);
   m_Modify->Enable(false);
@@ -80,6 +93,7 @@ void ABoxDlg::initLabels() {
   m_labResultNote->SetLabel( wxGetApp().getMsg( "note" ) );
   m_Link->SetLabel( wxGetApp().getMsg( "link" ) );
   m_Link->Enable(false);
+  m_ShowPath->SetLabel( wxGetApp().getMsg( "showpath" ) );
 
   m_FindBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "find" ) );
   m_UploadBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "upload" ) );
@@ -92,6 +106,10 @@ void ABoxDlg::initLabels() {
 }
 
 void ABoxDlg::doFind( const char* text ) {
+  wABox.setfindintext(m_Ini, m_FindInText->IsChecked()?True:False);
+  wABox.setfindincategory(m_Ini, m_FindInCategory->IsChecked()?True:False);
+  wABox.setfindinfilename(m_Ini, m_FindInFilename->IsChecked()?True:False);
+
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_find );
   wDataReq.settext( cmd, text );
@@ -365,6 +383,7 @@ void ABoxDlg::onModify( wxCommandEvent& event ) {
 }
 
 void ABoxDlg::onShowPath( wxCommandEvent& event ) {
+  wABox.setshowpath(m_Ini, m_ShowPath->IsChecked()?True:False);
   initResult();
 }
 
