@@ -494,7 +494,9 @@ void ABoxDlg::event(iONode node) {
     m_ReadOnly = wDataReq.isreadonly(node)?true:false;
     m_Add->Enable(!m_ReadOnly);
     m_Category->Clear();
+    wxString findtext = m_FindText->GetValue();
     m_FindText->Clear();
+    m_FindText->SetValue(findtext);
     iOStrTok tok = StrTokOp.inst( wDataReq.getcategory( node ), ',' );
     while( StrTokOp.hasMoreTokens(tok) ) {
       const char* category = StrTokOp.nextToken( tok );
