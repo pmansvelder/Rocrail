@@ -1152,7 +1152,7 @@ static void __callback( obj inst, iONode nodeA ) {
           iONode fileentry = wDirEntry.getfileentry(direntry);
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "linkFile=[%s]", wFileEntry.getfname(fileentry) );
           uid = abox->linkFile( (obj)abox ,wFileEntry.getfname(fileentry) ,wFileEntry.gettime(fileentry) ,wFileEntry.getsize(fileentry) ,
-              wFileEntry.gettext(fileentry) ,wFileEntry.getcategory(fileentry) );
+              wFileEntry.gettext(fileentry) ,wFileEntry.getcategory(fileentry), wDataReq.islink(nodeA) );
           if( uid != NULL ) {
             wDataReq.setid(nodeA, uid);
             StrOp.free(uid);
@@ -1195,8 +1195,42 @@ static void __callback( obj inst, iONode nodeA ) {
           // convert string to byte array
           byte* filedata = StrOp.strToByte( byteStr );
           int len = StrOp.len(byteStr)/2;
-          abox->fileData((obj)abox, wDataReq.getid(nodeA), wDataReq.getcategory(nodeA), len, wDataReq.getdatapart(nodeA), wDataReq.gettotalsize(nodeA), filedata);
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "fileData: part=%d of %d", wDataReq.getdatapart(nodeA), wDataReq.getdataparts(nodeA) );
+          if( abox->fileData((obj)abox, wDataReq.getid(nodeA), wDataReq.getcategory(nodeA), wDataReq.getfilename(nodeA), len, wDataReq.getdatapart(nodeA),
+              wDataReq.gettotalsize(nodeA), filedata) )
+          {
+            freeMem(filedata);
+            // acknowledge
+            wDataReq.setack(nodeA, True);
+            wDataReq.setdata(nodeA, (const char*)"");
+            ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+            return;
+          }
+          freeMem(filedata);
         }
+      }
+      NodeOp.base.del( nodeA );
+      return;
+    }
+    else if( wDataReq.getcmd(nodeA) == wDataReq.abox_getdata ) {
+      iIArchiveBox abox = AppOp.getArchiveBox();
+      if( abox != NULL ) {
+        long datasize = 0;
+        Boolean lastBlock = False;
+        byte* bytes = allocMem(32*1024);
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "getdata: part=%d", wDataReq.getdatapart(nodeA) );
+        datasize = abox->getFileData( (obj)abox, wDataReq.getid(nodeA), wDataReq.getcategory(nodeA), wDataReq.getfilename(nodeA),
+            wDataReq.getdatapart(nodeA), bytes, &lastBlock );
+
+        char* filedata = StrOp.byteToStr(bytes, datasize);
+        wDataReq.setdata(nodeA, filedata );
+        wDataReq.setack(nodeA, lastBlock );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "getdata: datasize=%ld", datasize );
+
+        freeMem(bytes);
+        StrOp.free(filedata);
+        ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+        return;
       }
       NodeOp.base.del( nodeA );
       return;

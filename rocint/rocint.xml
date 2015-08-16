@@ -32,15 +32,26 @@
       <param name="size" vt="long"/>
       <param name="text" vt="const char*"/>
       <param name="category" vt="const char*"/>
+      <param name="link" vt="Boolean"/>
     </fun>
     <fun name="fileData" vt="Boolean">
       <param name="inst" vt="obj"/>
       <param name="uid" vt="const char*"/>
       <param name="category" vt="const char*"/>
+      <param name="filename" vt="const char*"/>
       <param name="size" vt="long"/>
       <param name="nr" vt="int"/>
       <param name="totalsize" vt="long"/>
       <param name="bytes" vt="const byte*"/>
+    </fun>
+    <fun name="getFileData" vt="long">
+      <param name="inst" vt="obj"/>
+      <param name="uid" vt="const char*"/>
+      <param name="category" vt="const char*"/>
+      <param name="filename" vt="const char*"/>
+      <param name="nr" vt="int"/>
+      <param name="bytes" vt="byte*"/>
+      <param name="lastBlock" vt="Boolean*"/>
     </fun>
     <fun name="deleteFile" vt="Boolean">
       <param name="inst" vt="obj"/>

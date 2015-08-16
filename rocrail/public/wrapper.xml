@@ -1015,6 +1015,7 @@
     <const name="abox_deletelink" vt="int" val="8"/>
     <const name="abox_modifylink" vt="int" val="9"/>
     <const name="abox_filedata" vt="int" val="10"/>
+    <const name="abox_getdata" vt="int" val="11"/>
     <var name="cmd" vt="int" defval="0" range="0-*"/>
     <const name="image" vt="int" val="0"/>
     <const name="smallimage" vt="int" val="1"/>
@@ -1027,6 +1028,8 @@
     <var name="category" vt="string" defval="" range="*"/>
     <var name="text" vt="string" defval="" range="*"/>
     <var name="note" vt="string" defval="" range="*"/>
+    <var name="link" vt="bool" defval="true"/>
+    <var name="ack" vt="bool" defval="false" remark="Achknowledge of the request."/>
     <var name="readonly" vt="bool" defval="false"/>
     <var name="findintext" vt="bool" defval="true"/>
     <var name="findincategory" vt="bool" defval="true"/>

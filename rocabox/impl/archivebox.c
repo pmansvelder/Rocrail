@@ -257,7 +257,7 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
 
 
 /**  */
-static char* _linkFile( obj inst ,const char* path ,const char* modified ,long size ,const char* text ,const char* category ) {
+static char* _linkFile( obj inst ,const char* path ,const char* modified ,long size ,const char* text ,const char* category, Boolean link ) {
   iOArchiveBoxData data = Data(inst);
   char* uid = NULL;
   if( data->readonly ) {
@@ -266,12 +266,15 @@ static char* _linkFile( obj inst ,const char* path ,const char* modified ,long s
   }
   iONode stub = NodeOp.inst(wStub.name(), NULL, ELEMENT_NODE);
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "link file [%s]", path );
-  wStub.setpath(stub, path);
+  if( link )
+    wStub.setpath(stub, path);
+  else
+    wStub.setpath(stub, FileOp.ripPath(path));
   wStub.setmodified(stub, modified);
   wStub.setsize(stub, size);
   wStub.settext(stub, text);
   wStub.setcategory(stub, category);
-  wStub.setlink(stub, True);
+  wStub.setlink(stub, link);
   ArchiveBoxOp.addCategory(inst, category);
   __writeStub((iOArchiveBox)inst, stub);
   uid = StrOp.dup(wStub.getuid(stub));
@@ -354,13 +357,66 @@ static void __readIni(iOArchiveBox inst) {
   StrOp.free(iniFilename);
 }
 
-static Boolean _fileData( obj inst ,const char* uid ,const char* category, long size, int nr, long totalsize, const byte* bytes ) {
+#define DATABLOCK 32*1024
+
+static long _getFileData( obj inst, const char* uid, const char* category, const char* filename, int nr, byte* bytes, Boolean* lastBlock ) {
+  iOArchiveBoxData data = Data(inst);
+  long bufferSize = 0;
+  char* rootDir = StrOp.fmt("%s%c%s%c%s", data->home, SystemOp.getFileSeparator(), category, SystemOp.getFileSeparator(), uid);
+  char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), filename);
+
+  iOFile f = FileOp.inst(filepath, OPEN_READONLY);
+  if( f != NULL ) {
+    long totalsize = FileOp.fileSize(filepath);
+
+    bufferSize = DATABLOCK;
+    if( (totalsize - nr*DATABLOCK <  DATABLOCK) || (totalsize - nr*DATABLOCK == DATABLOCK) ) {
+      bufferSize = totalsize - nr*DATABLOCK;
+      *lastBlock = True;
+    }
+    else
+      *lastBlock = False;
+
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
+        "get file data: uid=%s size=%ld nr=%d totalsize=%ld (last=%s)",
+        uid, bufferSize, nr, totalsize, *lastBlock?"true":"false" );
+
+    FileOp.setpos(f, nr*DATABLOCK);
+    FileOp.read(f, (char*)bytes, bufferSize);
+    FileOp.base.del(f);
+  }
+
+  StrOp.free(rootDir);
+  StrOp.free(filepath);
+
+  return bufferSize;
+}
+
+
+static Boolean _fileData( obj inst, const char* uid, const char* category, const char* filename, long size, int nr, long totalsize, const byte* bytes ) {
   iOArchiveBoxData data = Data(inst);
   if( data->readonly ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ArchiveBox is in readonly mode" );
     return False;
   }
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "file data: uid=%s size=%ld nr=%d totalsize=%ld" );
+  else {
+    char* rootDir = StrOp.fmt("%s%c%s%c%s", data->home, SystemOp.getFileSeparator(), category, SystemOp.getFileSeparator(), uid);
+    char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), filename);
+    iOFile f = NULL;
+
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "file data: uid=%s size=%ld nr=%d totalsize=%ld", uid, size, nr, totalsize );
+    if( !FileOp.exist(rootDir) )
+      FileOp.mkdir(rootDir);
+
+    f = FileOp.inst(filepath, OPEN_APPEND);
+    if( f != NULL ) {
+      FileOp.write(f, (char*)bytes, size);
+      FileOp.base.del(f);
+    }
+
+    StrOp.free(rootDir);
+    StrOp.free(filepath);
+  }
   return True;
 }
 

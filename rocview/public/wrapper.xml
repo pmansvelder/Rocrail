@@ -142,6 +142,7 @@
       <var name="findintext" vt="bool" defval="true"/>
       <var name="findincategory" vt="bool" defval="true"/>
       <var name="findinfilename" vt="bool" defval="true"/>
+      <var name="link" vt="bool" defval="true"/>
     </abox>    
     <workspaces cardinality="1" wrappername="WorkSpaces">
       <workspace cardinality="n" wrappername="WorkSpace">

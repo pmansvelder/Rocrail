@@ -16,6 +16,7 @@
 
 #include <wx/filedlg.h>
 #include <wx/mimetype.h>
+#include <wx/filename.h>
 
 #include "rocview/public/guiapp.h"
 #include "rocview/wrapper/public/Gui.h"
@@ -26,6 +27,7 @@
 #include "rocrail/wrapper/public/FileEntry.h"
 
 #include "rocs/public/strtok.h"
+#include "rocs/public/system.h"
 
 static bool ms_Sort = true;
 
@@ -49,11 +51,12 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
   m_FindInCategory->SetValue(wABox.isfindincategory(m_Ini)?true:false);
   m_FindInFilename->SetValue(wABox.isfindinfilename(m_Ini)?true:false);
   m_ShowPath->SetValue(wABox.isshowpath(m_Ini)?true:false);
+  m_Link->SetValue(wABox.islink(m_Ini)?true:false);
 
   m_Open->Enable(false);
   m_Modify->Enable(false);
   m_Delete->Enable(false);
-  m_Link->Enable(false); // only links are supported
+  //m_Link->Enable(false); // only links are supported
 
   initLabels();
 
@@ -148,8 +151,11 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
     return;
   }
 
+  wABox.setlink(m_Ini, m_Link->IsChecked()?True:False);
+
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_addlink );
+  wDataReq.setlink( cmd, m_Link->IsChecked()?True:False);
 
   iONode direntry = NodeOp.inst(wDirEntry.name(), cmd, ELEMENT_NODE );
   NodeOp.addChild(cmd, direntry);
@@ -189,13 +195,45 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
   cmd->base.del(cmd);
 }
 
-void ABoxDlg::openStub() {
-  iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
+void ABoxDlg::executeStub(const char* filepath) {
   wxMimeTypesManager manager;
-  wxFileType *filetype=manager.GetFileTypeFromExtension(wxString(StrOp.getExtension(NodeOp.getStr(stub, "path", "-")),wxConvUTF8));
-  wxString command=filetype->GetOpenCommand(wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8));
+  wxFileType *filetype=manager.GetFileTypeFromExtension(wxString(StrOp.getExtension(filepath),wxConvUTF8));
+  wxString command=filetype->GetOpenCommand(wxString(filepath,wxConvUTF8));
   TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "execute [%s]", (const char*)command.mb_str(wxConvUTF8) );
   wxExecute(command);
+}
+
+void ABoxDlg::openStub() {
+  iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
+  if( NodeOp.getBool(stub, "link", True) ) {
+    executeStub(NodeOp.getStr(stub, "path", "-"));
+  }
+  else {
+    // Download file.
+    wxString tempdir = wxFileName::GetTempDir();
+    char* filepath = StrOp.fmt("%s%c%s", (const char*)tempdir.mb_str(wxConvUTF8), SystemOp.getFileSeparator(), NodeOp.getStr(stub, "path", "-") );
+    TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "tempdir [%s]", filepath );
+
+    if( FileOp.exist(filepath) ) {
+      executeStub(filepath);
+    }
+    else {
+      StrOp.copy(m_DownloadFilename, NodeOp.getStr(stub, "path", "-"));
+      StrOp.copy(m_DownloadUID, NodeOp.getStr(stub, "uid", "-"));
+      m_DownloadPart = 0;
+
+      iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+      wDataReq.setcmd( cmd, wDataReq.abox_getdata );
+      wDataReq.setid( cmd, NodeOp.getStr(stub, "uid", "-") );
+      wDataReq.setcategory( cmd, NodeOp.getStr(stub, "category", "-") );
+      wDataReq.setfilename(cmd, NodeOp.getStr(stub, "path", "-"));
+      wDataReq.setdatapart(cmd, m_DownloadPart);
+      wxGetApp().sendToRocrail( cmd );
+      cmd->base.del(cmd);
+    }
+
+    StrOp.free(filepath);
+  }
 }
 
 void ABoxDlg::showStub() {
@@ -310,22 +348,133 @@ void ABoxDlg::initResult() {
   }
 }
 
+bool ABoxDlg::readDataBlock(const char* filename, iONode node, int nr) {
+  bool lastBlock = false;
+  iOFile f = FileOp.inst( m_AddedFilename, OPEN_READONLY );
+  if( f != NULL ) {
+    long totalsize = FileOp.fileSize(filename);
+    byte* buffer = (byte*)allocMem(DATABLOCK+1);
+    FileOp.setpos(f, nr*DATABLOCK);
+    long bufferSize = DATABLOCK;
+    if( (totalsize - nr*DATABLOCK <  DATABLOCK) || totalsize - nr*DATABLOCK == DATABLOCK ) {
+      bufferSize = totalsize - nr*DATABLOCK;
+      lastBlock = true;
+    }
+    TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "uploading file data %ld of %ld (last=%s)", bufferSize, totalsize, lastBlock?"true":"false" );
+
+    FileOp.read(f, (char*)buffer, bufferSize);
+
+    char* filedata = StrOp.byteToStr(buffer, bufferSize);
+    wDataReq.setdata(node, filedata );
+    wDataReq.setdataparts(node, totalsize / DATABLOCK + ( (totalsize % DATABLOCK) > 0 ? 1:0 ) );
+    wDataReq.settotalsize(node, totalsize);
+
+    FileOp.base.del(f);
+    wDataReq.setdatapart(node, nr);
+    freeMem(buffer);
+    StrOp.free(filedata);
+  }
+  return lastBlock;
+}
+
 void ABoxDlg::event(iONode node) {
+  char* s = NodeOp.base.toString(node);
+  TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "event: %.256s", s );
+  StrOp.free(s);
+
   if( wDataReq.getcmd(node) == wDataReq.abox_addlink ) {
     const char* uid = wDataReq.getid(node);
     iONode direntry = wDataReq.getdirentry(node);
     if( direntry != NULL && wDirEntry.getfileentry(direntry) != NULL ) {
       iONode fileentry = wDirEntry.getfileentry(direntry);
-      TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "uid=%s for [%s]", uid, wFileEntry.getfname(fileentry) );
+      TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "uid=%s for [%s] added=[%s]", uid, wFileEntry.getfname(fileentry), m_AddedFilename );
       /*
       char* s = StrOp.fmt("%s:\nUID=%s\n%s=%s", wxGetApp().getCMsg("upload"), uid, wxGetApp().getCMsg("file"), wFileEntry.getfname(fileentry) );
       int action = wxMessageDialog( this, wxString(s,wxConvUTF8), _T("Rocrail"), wxOK ).ShowModal();
       StrOp.free(s);
       */
+      if( StrOp.equals(m_AddedFilename, wFileEntry.getfname(fileentry) ) ) {
+        StrOp.copy( m_AddedUID, uid );
+        iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+        wDataReq.setcmd( cmd, wDataReq.abox_filedata );
+        wDataReq.setid( cmd, uid );
+        wDataReq.setcategory(cmd, wFileEntry.getcategory(fileentry));
+        wDataReq.setfilename(cmd, FileOp.ripPath(m_AddedFilename));
+        wDataReq.setdatapart(cmd, 0);
+
+        if( readDataBlock(wFileEntry.getfname(fileentry), cmd, 0) ) {
+          m_AddedFilename[0] = '\0';
+          m_AddedUID[0] = '\0';
+        }
+        wxGetApp().sendToRocrail( cmd );
+        cmd->base.del(cmd);
+      }
     }
   }
 
+  else if( wDataReq.getcmd(node) == wDataReq.abox_getdata ) {
+    TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "getdata..." );
+    /*
+     * <datareq cmd="11" id="20150816093859345" category="Zomaar" filename="paspoort-2014.jpeg" datapart="0" controlcode="" server="infw5601F5A0" data="FFD8FFE0
+     */
+    if( StrOp.equals(m_DownloadUID, wDataReq.getid(node)) ) {
+      wxString tempdir = wxFileName::GetTempDir();
+      char* filepath = StrOp.fmt("%s%c%s", (const char*)tempdir.mb_str(wxConvUTF8), SystemOp.getFileSeparator(), wDataReq.getfilename(node)  );
+
+      iOFile f = FileOp.inst(filepath, OPEN_APPEND);
+      if( f != NULL ) {
+        const char* byteStr = wDataReq.getdata(node);
+        byte* filedata = StrOp.strToByte( byteStr );
+        int len = StrOp.len(byteStr)/2;
+        FileOp.write(f, (char*)filedata, len);
+        FileOp.base.del(f);
+        freeMem(filedata);
+      }
+
+      if( !wDataReq.isack(node) ) {
+        // get next part
+        iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+        wDataReq.setcmd( cmd, wDataReq.abox_getdata );
+        wDataReq.setid( cmd, wDataReq.getid(node) );
+        wDataReq.setcategory( cmd, wDataReq.getcategory(node) );
+        wDataReq.setfilename(cmd, wDataReq.getfilename(node) );
+        m_DownloadPart++;
+        wDataReq.setdatapart(cmd, m_DownloadPart);
+        wxGetApp().sendToRocrail( cmd );
+        cmd->base.del(cmd);
+      }
+      else {
+        m_DownloadFilename[0] = '\0';
+        m_DownloadUID[0] = '\0';
+        m_DownloadPart = -1;
+        executeStub(filepath);
+      }
+      StrOp.free(filepath);
+    }
+  }
+
+
   else if( wDataReq.getcmd(node) == wDataReq.abox_filedata ) {
+    TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "filedata..." );
+    // <datareq cmd="10" id="20150816081059871" category="Zomaar" datapart="0" dataparts="33" totalsize="794973" data=""
+    //   controlcode="" server="infw2368A4D0" ack="true"/>
+    if( wDataReq.isack(node) ) {
+      if( StrOp.equals(m_AddedUID, wDataReq.getid(node) ) ) {
+        iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
+        wDataReq.setcmd( cmd, wDataReq.abox_filedata );
+        wDataReq.setid( cmd, wDataReq.getid(node) );
+        wDataReq.setcategory(cmd, wDataReq.getcategory(node));
+        wDataReq.setfilename(cmd, wDataReq.getfilename(node));
+        wDataReq.setdatapart(cmd, wDataReq.getdatapart(node)+1);
+
+        if( readDataBlock(m_AddedFilename, cmd, wDataReq.getdatapart(cmd)) ) {
+          m_AddedFilename[0] = '\0';
+          m_AddedUID[0] = '\0';
+        }
+        wxGetApp().sendToRocrail( cmd );
+        cmd->base.del(cmd);
+      }
+    }
 
   }
 
