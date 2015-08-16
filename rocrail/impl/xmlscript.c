@@ -581,6 +581,11 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
   else if( StrOp.equals( wRoute.name(), NodeOp.getName(cmd)) ) {
     char* idRes = VarOp.getText(wItem.getid(cmd), map, ' ');
     iORoute st = ModelOp.getRoute(model, idRes);
+    if( NodeOp.findAttr(cmd, "locid") != NULL ) {
+      char* locidRes = VarOp.getText(wRoute.getlocid(cmd), map, ' ');
+      wRoute.setlocid(cmd, locidRes);
+      StrOp.free(locidRes);
+    }
     if( st != NULL ) {
       RouteOp.cmd(st, (iONode)NodeOp.base.clone(cmd));
     }
