@@ -110,6 +110,7 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(1, wxGetApp().getMsg( "category" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(2, wxGetApp().getMsg( "text" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(3, wxT( "UID" ), wxLIST_FORMAT_LEFT );
+  m_Stubs->InsertColumn(4, wxGetApp().getMsg( "link" ), wxLIST_FORMAT_LEFT );
 }
 
 void ABoxDlg::doFind( const char* text ) {
@@ -294,6 +295,13 @@ static int __sortUID(obj* _a, obj* _b) {
     const char* idB = NodeOp.getStr(b, "uid", "-");
     return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
+static int __sortLink(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getBool(a, "link", True)?"X":"-";
+    const char* idB = NodeOp.getBool(b, "link", True)?"X":"-";
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
 
 void ABoxDlg::initResult() {
   m_Stubs->DeleteAllItems();
@@ -315,6 +323,9 @@ void ABoxDlg::initResult() {
   else if( m_SortCol == 3 ) {
     ListOp.sort(list, &__sortUID);
   }
+  else if( m_SortCol == 4 ) {
+    ListOp.sort(list, &__sortLink);
+  }
   else {
     if( m_ShowPath->IsChecked() )
       ListOp.sort(list, &__sortPath);
@@ -332,13 +343,14 @@ void ABoxDlg::initResult() {
     m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
+    m_Stubs->SetItem( idx, 4, wxString(NodeOp.getBool(stub, "link", True)?"X":"-",wxConvUTF8) );
     m_Stubs->SetItemPtrData(idx, (wxUIntPtr)stub);
   }
 
   ListOp.base.del(list);
 
   // resize
-  for( int n = 0; n < 4; n++ ) {
+  for( int n = 0; n < 5; n++ ) {
     m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
     int autoheadersize = m_Stubs->GetColumnWidth(n);
     m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
