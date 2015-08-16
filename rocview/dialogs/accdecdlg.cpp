@@ -144,7 +144,7 @@ void AccDecDlg::initLabels() {
 
   BaseDialog::addIIDs(m_IID);
   m_labIID->SetLabel( wxGetApp().getMsg( "iid" ) );
-  m_labID->SetLabel( wxGetApp().getMsg( "id" ) );
+  m_labID->SetLabel( wxGetApp().getMsg( "id" ) + wxT(" @") );
   m_labBus->SetLabel( wxGetApp().getMsg( "bus" ) );
   m_labAddr->SetLabel( wxGetApp().getMsg( "address" ) );
   m_labProt->SetLabel( wxGetApp().getMsg( "protocol" ) );
@@ -153,8 +153,8 @@ void AccDecDlg::initLabels() {
   m_labDoc->SetLabel( wxGetApp().getMsg( "documentation" ) );
   m_labDesc->SetLabel( wxGetApp().getMsg( "description" ) );
 
-  m_labManu->SetLabel( wxGetApp().getMsg( "manufactured_ID" ) );
-  m_labCatNr->SetLabel( wxGetApp().getMsg( "catnr" ) );
+  m_labManu->SetLabel( wxGetApp().getMsg( "manufactured_ID" ) + wxT(" @") );
+  m_labCatNr->SetLabel( wxGetApp().getMsg( "catnr" ) + wxT(" @") );
 
   m_StdButtonOK->SetLabel( wxGetApp().getMsg( "ok" ) );
   m_StdButtonCancel->SetLabel( wxGetApp().getMsg( "cancel" ) );
@@ -610,3 +610,12 @@ void AccDecDlg::onHelp( wxCommandEvent& event ) {
 }
 
 
+void AccDecDlg::aboxID( wxMouseEvent& event ) {
+  ABox(m_ID);
+}
+void AccDecDlg::aboxManu( wxMouseEvent& event ) {
+  ABox(m_Manu);
+}
+void AccDecDlg::aboxCatNr( wxMouseEvent& event ) {
+  ABox(m_CatNr);
+}

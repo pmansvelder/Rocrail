@@ -716,7 +716,7 @@
                                                     <property name="font"></property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="label">ID</property>
+                                                    <property name="label">ID @</property>
                                                     <property name="maximum_size"></property>
                                                     <property name="minimum_size"></property>
                                                     <property name="name">m_labID</property>
@@ -743,7 +743,7 @@
                                                     <event name="OnLeaveWindow"></event>
                                                     <event name="OnLeftDClick"></event>
                                                     <event name="OnLeftDown"></event>
-                                                    <event name="OnLeftUp"></event>
+                                                    <event name="OnLeftUp">aboxID</event>
                                                     <event name="OnMiddleDClick"></event>
                                                     <event name="OnMiddleDown"></event>
                                                     <event name="OnMiddleUp"></event>
@@ -1638,7 +1638,7 @@
                                                     <property name="font"></property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="label">Manu</property>
+                                                    <property name="label">Manu @</property>
                                                     <property name="maximum_size"></property>
                                                     <property name="minimum_size"></property>
                                                     <property name="name">m_labManu</property>
@@ -1665,7 +1665,7 @@
                                                     <event name="OnLeaveWindow"></event>
                                                     <event name="OnLeftDClick"></event>
                                                     <event name="OnLeftDown"></event>
-                                                    <event name="OnLeftUp"></event>
+                                                    <event name="OnLeftUp">aboxManu</event>
                                                     <event name="OnMiddleDClick"></event>
                                                     <event name="OnMiddleDown"></event>
                                                     <event name="OnMiddleUp"></event>
@@ -1754,7 +1754,7 @@
                                                     <property name="font"></property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="label">CatNr</property>
+                                                    <property name="label">CatNr @</property>
                                                     <property name="maximum_size"></property>
                                                     <property name="minimum_size"></property>
                                                     <property name="name">m_labCatNr</property>
@@ -1781,7 +1781,7 @@
                                                     <event name="OnLeaveWindow"></event>
                                                     <event name="OnLeftDClick"></event>
                                                     <event name="OnLeftDown"></event>
-                                                    <event name="OnLeftUp"></event>
+                                                    <event name="OnLeftUp">aboxCatNr</event>
                                                     <event name="OnMiddleDClick"></event>
                                                     <event name="OnMiddleDown"></event>
                                                     <event name="OnMiddleUp"></event>

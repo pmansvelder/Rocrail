@@ -50,6 +50,9 @@ protected:
     void onUsageListActivated( wxListEvent& event );
     void onUsageListSelected( wxListEvent& event );
     void onOpenDoc( wxCommandEvent& event );
+    void aboxID( wxMouseEvent& event );
+    void aboxManu( wxMouseEvent& event );
+    void aboxCatNr( wxMouseEvent& event );
 
 		void initLabels();
 		bool initIndex();
