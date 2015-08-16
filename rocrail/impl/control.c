@@ -1200,7 +1200,7 @@ static void __callback( obj inst, iONode nodeA ) {
               wDataReq.gettotalsize(nodeA), filedata) )
           {
             freeMem(filedata);
-            // acknowledge
+            /* acknowledge */
             wDataReq.setack(nodeA, True);
             wDataReq.setdata(nodeA, (const char*)"");
             ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
