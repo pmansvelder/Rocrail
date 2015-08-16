@@ -1192,7 +1192,7 @@ static void __callback( obj inst, iONode nodeA ) {
       if( abox != NULL ) {
         const char* byteStr = wDataReq.getdata(nodeA);
         if( byteStr != NULL ) {
-          // convert string to byte array
+          /* convert string to byte array */
           byte* filedata = StrOp.strToByte( byteStr );
           int len = StrOp.len(byteStr)/2;
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "fileData: part=%d of %d", wDataReq.getdatapart(nodeA), wDataReq.getdataparts(nodeA) );
