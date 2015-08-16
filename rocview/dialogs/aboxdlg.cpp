@@ -110,7 +110,7 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(1, wxGetApp().getMsg( "category" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(2, wxGetApp().getMsg( "text" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(3, wxT( "UID" ), wxLIST_FORMAT_LEFT );
-  m_Stubs->InsertColumn(4, wxGetApp().getMsg( "link" ), wxLIST_FORMAT_LEFT );
+  m_Stubs->InsertColumn(4, wxGetApp().getMsg( "link" ), wxLIST_FORMAT_CENTER );
 }
 
 void ABoxDlg::doFind( const char* text ) {
