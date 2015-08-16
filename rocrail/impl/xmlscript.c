@@ -868,23 +868,41 @@ static Boolean __doSwitch(iONode nodeScript, iOMap map, iONode script) {
   const char* var = NodeOp.getStr(nodeScript, "var", NULL);
   char*    varRes = TextOp.replaceAllSubstitutions(var, map);
   int    varValue = VarOp.getValue(varRes, NULL);
+  char*  varText  = NULL;
+  Boolean stringCompare = False;
 
   int cases = NodeOp.getChildCnt(nodeScript);
   int i = 0;
 
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch [%s]=%d", varRes, varValue );
+  if( var[0] == '@' || var[0] == '\%' ) {
+    varText = VarOp.getText(varRes, map, ' ');
+    stringCompare = True;
+  }
+
+  if( stringCompare )
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch [%s]=%s", varRes, varText );
+  else
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch [%s]=%d", varRes, varValue );
 
   for( i = 0; i < cases && exit == False; i++ ) {
     iONode l_case = NodeOp.getChild(nodeScript, i);
-    if( StrOp.equals("case", NodeOp.getName(l_case)) && varValue == NodeOp.getInt(l_case, "val", -1)) {
-      int cmds = NodeOp.getChildCnt(l_case);
-      int n = 0;
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch:case [%s]=%d", varRes, varValue );
-      for( n = 0; n < cmds && exit == False; n++ ) {
-        iONode cmd = NodeOp.getChild(l_case, n);
-        exit = __executeCmd(cmd, map, NULL, NULL, NULL, script);
+    if( StrOp.equals("case", NodeOp.getName(l_case)) ) {
+      if( ( stringCompare && StrOp.equals(varText, NodeOp.getStr(l_case, "val", NULL)) ) ||
+          ( !stringCompare && varValue == NodeOp.getInt(l_case, "val", -1) ) )
+      {
+        int cmds = NodeOp.getChildCnt(l_case);
+        int n = 0;
+        if( stringCompare )
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch:case [%s]=%s", varRes, varText );
+        else
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "switch:case [%s]=%d", varRes, varValue );
+        for( n = 0; n < cmds && exit == False; n++ ) {
+          iONode cmd = NodeOp.getChild(l_case, n);
+          exit = __executeCmd(cmd, map, NULL, NULL, NULL, script);
+        }
+        StrOp.free(varRes);
+        return exit;
       }
-      return exit;
     }
   }
 
@@ -901,6 +919,7 @@ static Boolean __doSwitch(iONode nodeScript, iOMap map, iONode script) {
     }
   }
 
+  StrOp.free(varRes);
   return exit;
 }
 
