@@ -324,6 +324,7 @@ static Boolean _deleteFile( obj inst ,const char* uid ,const char* stubfile ) {
       char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), wStub.getpath(stub));
       if( FileOp.exist(filepath) )
         FileOp.remove(filepath);
+      FileOp.rmdir(rootDir);
       StrOp.free(rootDir);
       StrOp.free(filepath);
     }
