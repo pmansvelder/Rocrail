@@ -2563,6 +2563,9 @@ void RocGuiFrame::initFrame() {
     //m_ToolBar->AddTool(ME_Update, wxGetApp().getMsg("softwareupdates"), *_img_updates, l_useDisableIcons?*_img_updates_32_disabled:wxNullBitmap, wxITEM_NORMAL, wxGetApp().getTip("softwareupdates") );
     m_ToolBar->AddTool(wxID_HELP, wxGetApp().getMsg("documentation"), l_grayIcons?*_img_manual:*_img_manual_c, wxNullBitmap, wxITEM_NORMAL, wxGetApp().getTip("documentation") );
 
+    if(l_grayIcons)
+      m_ToolBar->AddTool(ME_ArchiveBox, wxT("ArchiveBox"), *_img_abox, wxNullBitmap, wxITEM_NORMAL );
+
     m_ToolBar->Realize();
 
     m_ToolBar->EnableTool(ME_Update, false);
