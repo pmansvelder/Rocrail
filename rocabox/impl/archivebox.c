@@ -122,6 +122,20 @@ static iONode __readStub(const char* stubFilename) {
 }
 
 
+static Boolean __findInText(const char* stubText, const char* searchText) {
+  Boolean found = True;
+  iOStrTok tok = StrTokOp.inst( searchText, ' ' );
+  while( StrTokOp.hasMoreTokens(tok) ) {
+    const char* text = StrTokOp.nextToken( tok );
+    if( StrOp.findi(stubText, text) == NULL ) {
+      found = False;
+      break;
+    }
+  }
+  StrTokOp.base.del(tok);
+  return found;
+}
+
 static iOList __find( const char* directory ,const char* text, Boolean intext, Boolean incategory, Boolean infilename ) {
   iOList list = ListOp.inst();
   char* filepath = NULL;
@@ -157,7 +171,7 @@ static iOList __find( const char* directory ,const char* text, Boolean intext, B
             stub = __readStub(stubName);
             /* add to list... */
             if( stub != NULL ) {
-              if( (intext && StrOp.findi(wStub.gettext(stub), text)) ||
+              if( (intext && __findInText(wStub.gettext(stub), text)) ||
                   (infilename && StrOp.findi(wStub.getpath(stub), text)) ||
                   (incategory && StrOp.findi(wStub.getcategory(stub), text)) )
               {
