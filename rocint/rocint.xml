@@ -28,7 +28,8 @@
     <fun name="linkFile" vt="char*">
       <param name="inst" vt="obj"/>
       <param name="path" vt="const char*"/>
-      <param name="modified" vt="const char*"/>
+      <param name="filedate" vt="const char*"/>
+      <param name="filetime" vt="const char*"/>
       <param name="size" vt="long"/>
       <param name="text" vt="const char*"/>
       <param name="category" vt="const char*"/>

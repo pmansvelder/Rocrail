@@ -1151,8 +1151,8 @@ static void __callback( obj inst, iONode nodeA ) {
         if( direntry != NULL && wDirEntry.getfileentry(direntry) != NULL ) {
           iONode fileentry = wDirEntry.getfileentry(direntry);
           TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "linkFile=[%s]", wFileEntry.getfname(fileentry) );
-          uid = abox->linkFile( (obj)abox ,wFileEntry.getfname(fileentry) ,wFileEntry.gettime(fileentry) ,wFileEntry.getsize(fileentry) ,
-              wFileEntry.gettext(fileentry) ,wFileEntry.getcategory(fileentry), wDataReq.islink(nodeA) );
+          uid = abox->linkFile( (obj)abox, wFileEntry.getfname(fileentry), wFileEntry.getfiledate(fileentry), wFileEntry.getfiletime(fileentry),
+              wFileEntry.getsize(fileentry), wFileEntry.gettext(fileentry), wFileEntry.getcategory(fileentry), wDataReq.islink(nodeA) );
           if( uid != NULL ) {
             wDataReq.setid(nodeA, uid);
             StrOp.free(uid);

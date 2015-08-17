@@ -31737,4 +31737,7 @@
   <Msg id="showpath">
     <en txt="Show path"/>
   </Msg>
+  <Msg id="date">
+    <en txt="Date"/>
+  </Msg>
 </Messages>

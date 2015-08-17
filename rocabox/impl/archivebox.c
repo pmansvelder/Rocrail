@@ -242,7 +242,8 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
     xmlStr = NodeOp.base.toString(stub);
     f = FileOp.inst(stubFilename, OPEN_WRITE);
     if( f != NULL ) {
-      FileOp.write(f, xmlStr, StrOp.len(xmlStr)+1);
+      FileOp.write(f, xmlStr, StrOp.len(xmlStr));
+      FileOp.write(f, "\n", 1);
       FileOp.base.del(f);
     }
     StrOp.free(xmlStr);
@@ -257,7 +258,7 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
 
 
 /**  */
-static char* _linkFile( obj inst ,const char* path ,const char* modified ,long size ,const char* text ,const char* category, Boolean link ) {
+static char* _linkFile( obj inst ,const char* path, const char* filedate, const char* filetime, long size ,const char* text ,const char* category, Boolean link ) {
   iOArchiveBoxData data = Data(inst);
   char* uid = NULL;
   if( data->readonly ) {
@@ -270,7 +271,8 @@ static char* _linkFile( obj inst ,const char* path ,const char* modified ,long s
     wStub.setpath(stub, path);
   else
     wStub.setpath(stub, FileOp.ripPath(path));
-  wStub.setmodified(stub, modified);
+  wStub.setfiledate(stub, filedate);
+  wStub.setfiletime(stub, filetime);
   wStub.setsize(stub, size);
   wStub.settext(stub, text);
   wStub.setcategory(stub, category);

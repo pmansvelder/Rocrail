@@ -1039,6 +1039,8 @@
 	    <fileentry wrappername="FileEntry" cardinality="n">
 	      <var name="fname" vt="string" defval="" range="*" remark="File name"/>
 	      <var name="time" vt="string" defval="" range="*" remark="Time stamp"/>
+        <var name="filetime" vt="string" defval="" range="*"/>
+        <var name="filedate" vt="string" defval="" range="*"/>
 	      <var name="size" vt="long" defval="0" range="0-*" remark="File size"/>
         <var name="category" vt="string" defval="" range="*"/>
         <var name="text" vt="string" defval="" range="*"/>

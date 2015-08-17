@@ -18,7 +18,8 @@
     <var name="category" vt="string" defval=""/>
     <var name="text" vt="string" defval=""/>
     <var name="size" vt="long" defval="0"/>
-    <var name="modified" vt="string" defval=""/>
+    <var name="filedate" vt="string" defval=""/>
+    <var name="filetime" vt="string" defval=""/>
     <var name="note" vt="string" defval=""/>
     <var name="link" vt="bool" defval="true"/>
   </stub>

@@ -111,6 +111,7 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(2, wxGetApp().getMsg( "text" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(3, wxT( "UID" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(4, wxGetApp().getMsg( "link" ), wxLIST_FORMAT_CENTER );
+  m_Stubs->InsertColumn(5, wxGetApp().getMsg( "date" ), wxLIST_FORMAT_CENTER );
 }
 
 void ABoxDlg::doFind( const char* text ) {
@@ -174,6 +175,13 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
   wFileEntry.settext( fileentry, m_Text->GetValue().mb_str(wxConvUTF8) );
   wFileEntry.setcategory( fileentry, m_Category->GetValue().mb_str(wxConvUTF8) );
+
+  char   dateStr[20];
+  long aTime = FileOp.fileTime( wFileEntry.getfname(fileentry) );
+  strftime( dateStr, sizeof(dateStr), "%Y%m%d", localtime(&aTime) );
+  wFileEntry.setfiledate(fileentry, dateStr);
+  strftime( dateStr, sizeof(dateStr), "%H%M%S", localtime(&aTime) );
+  wFileEntry.setfiletime(fileentry, dateStr);
 
   char* s = NodeOp.base.toString(cmd);
   TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "add: %s", s );
@@ -302,6 +310,13 @@ static int __sortLink(obj* _a, obj* _b) {
     const char* idB = NodeOp.getBool(b, "link", True)?"X":"-";
     return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
+static int __sortDate(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getStr(a, "filedate", "-");
+    const char* idB = NodeOp.getStr(b, "filedate", "-");
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
 
 void ABoxDlg::initResult() {
   m_Stubs->DeleteAllItems();
@@ -326,6 +341,9 @@ void ABoxDlg::initResult() {
   else if( m_SortCol == 4 ) {
     ListOp.sort(list, &__sortLink);
   }
+  else if( m_SortCol == 5 ) {
+    ListOp.sort(list, &__sortDate);
+  }
   else {
     if( m_ShowPath->IsChecked() )
       ListOp.sort(list, &__sortPath);
@@ -344,13 +362,14 @@ void ABoxDlg::initResult() {
     m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 4, wxString(NodeOp.getBool(stub, "link", True)?"X":"-",wxConvUTF8) );
+    m_Stubs->SetItem( idx, 5, wxString(NodeOp.getStr(stub, "filedate", "-"),wxConvUTF8) );
     m_Stubs->SetItemPtrData(idx, (wxUIntPtr)stub);
   }
 
   ListOp.base.del(list);
 
   // resize
-  for( int n = 0; n < 5; n++ ) {
+  for( int n = 0; n < 6; n++ ) {
     m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
     int autoheadersize = m_Stubs->GetColumnWidth(n);
     m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
