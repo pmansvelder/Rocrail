@@ -100,7 +100,7 @@ static iONode __readStub(const char* stubFilename) {
   if( FileOp.exist(stubFilename) ) {
     iOFile f      = NULL;
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "read stub [%s]", stubFilename );
+    TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "read stub [%s]", stubFilename );
     f = FileOp.inst(stubFilename, OPEN_READONLY);
     if( f != NULL ) {
       iODoc stubDoc = NULL;
@@ -112,7 +112,7 @@ static iONode __readStub(const char* stubFilename) {
       if( stubDoc != NULL ) {
         stub = DocOp.getRootNode( stubDoc );
         DocOp.base.del(stubDoc);
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "stub text = [%s]", wStub.gettext(stub) );
+        TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "stub text = [%s]", wStub.gettext(stub) );
       }
 
       freeMem(xmlStr);
@@ -166,7 +166,7 @@ static iOList __find( const char* directory ,const char* text, Boolean intext, B
           if( StrOp.endsWith(dir->name, ".abox") ) {
             iONode stub = NULL;
             char* stubName = StrOp.fmt("%s%c%s", directory, SystemOp.getFileSeparator(), dir->name);
-            TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "getDirEntry: %s", stubName );
+            TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "getDirEntry: %s", stubName );
             /* evaluate the stub... */
             stub = __readStub(stubName);
             /* add to list... */
@@ -322,6 +322,7 @@ static Boolean _deleteFile( obj inst ,const char* uid ,const char* stubfile ) {
     if( stub != NULL && !wStub.islink(stub) ) {
       char* rootDir = StrOp.fmt("%s%c%s%c%s", data->home, SystemOp.getFileSeparator(), wStub.getcategory(stub), SystemOp.getFileSeparator(), wStub.getuid(stub));
       char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), wStub.getpath(stub));
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "delete link [%s]", rootDir );
       if( FileOp.exist(filepath) )
         FileOp.remove(filepath);
       FileOp.rmdir(rootDir);
@@ -406,7 +407,7 @@ static long _getFileData( obj inst, const char* uid, const char* category, const
     else
       *lastBlock = False;
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999,
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999,
         "get file data: uid=%s size=%ld nr=%d totalsize=%ld (last=%s)",
         uid, bufferSize, nr, totalsize, *lastBlock?"true":"false" );
 
@@ -433,7 +434,7 @@ static Boolean _fileData( obj inst, const char* uid, const char* category, const
     char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), filename);
     iOFile f = NULL;
 
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "file data: uid=%s size=%ld nr=%d totalsize=%ld", uid, size, nr, totalsize );
+    TraceOp.trc( name, TRCLEVEL_BYTE, __LINE__, 9999, "file data: uid=%s size=%ld nr=%d totalsize=%ld", uid, size, nr, totalsize );
     if( !FileOp.exist(rootDir) )
       FileOp.mkdir(rootDir);
 
