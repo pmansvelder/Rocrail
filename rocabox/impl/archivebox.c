@@ -301,6 +301,18 @@ static Boolean _deleteFile( obj inst ,const char* uid ,const char* stubfile ) {
     TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "ArchiveBox is in readonly mode" );
     return False;
   }
+  else {
+    iONode stub = __readStub(stubfile);
+    if( stub != NULL && !wStub.islink(stub) ) {
+      char* rootDir = StrOp.fmt("%s%c%s%c%s", data->home, SystemOp.getFileSeparator(), wStub.getcategory(stub), SystemOp.getFileSeparator(), wStub.getuid(stub));
+      char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), wStub.getpath(stub));
+      if( FileOp.exist(filepath) )
+        FileOp.remove(filepath);
+      StrOp.free(rootDir);
+      StrOp.free(filepath);
+    }
+    NodeOp.base.del(stub);
+  }
   return FileOp.remove(stubfile);
 }
 
