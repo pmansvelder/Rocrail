@@ -2440,7 +2440,10 @@ void RocGuiFrame::initFrame() {
 */
   menuHelp->AppendSeparator();
   menuHelp->Append(ME_DonKeyInfo, wxGetApp().getMenu("donkey"), wxGetApp().getTip("donkey") );
-  menuHelp->Append(ME_ArchiveBox, wxT("ArchiveBox..."), wxT("ArchiveBox") );
+
+  wxMenuItem *abox = new wxMenuItem(menuHelp, ME_ArchiveBox, wxT("ArchiveBox..."), wxT("ArchiveBox") );
+  abox->SetBitmap(l_grayIcons?*_img_abox:*_img_abox_c);
+  menuHelp->Append(abox);
 
 #ifndef __APPLE__
   menuHelp->AppendSeparator();
