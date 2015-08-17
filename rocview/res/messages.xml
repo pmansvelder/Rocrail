@@ -31740,4 +31740,7 @@
   <Msg id="date">
     <en txt="Date"/>
   </Msg>
+  <Msg id="toomanyhits">
+    <en txt="Too many hits; Reduce selection by search criteria."/>
+  </Msg>
 </Messages>

@@ -1114,6 +1114,12 @@ static void __callback( obj inst, iONode nodeA ) {
         if( list != NULL ) {
           int i = 0;
           int listSize = ListOp.size(list);
+          if( listSize > 100 ) {
+            /* only the first 100 hits */
+            listSize = 100;
+            wDataReq.settoomanyhits(nodeA, True);
+            TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "too many hits; reducing to 100" );
+          }
           for( i = 0; i < listSize; i++) {
             iONode stub = (iONode)ListOp.get(list, i);
             TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "add stub to nodeA..." );

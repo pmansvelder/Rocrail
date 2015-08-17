@@ -543,6 +543,10 @@ void ABoxDlg::event(iONode node) {
       stub = NodeOp.findNextNode( node, stub);
     }
     initResult();
+    if(wDataReq.istoomanyhits(node)) {
+      // Show warning.
+      int action = wxMessageDialog( this, wxGetApp().getMsg("toomanyhits"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    }
   }
 
 }
