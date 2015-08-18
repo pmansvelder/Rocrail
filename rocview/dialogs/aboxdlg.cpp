@@ -381,6 +381,12 @@ void ABoxDlg::initResult() {
   m_ResultText->SetValue(wxT(""));
   m_ResultNote->SetValue(wxT(""));
 
+  wxBitmap bmp;
+  m_Preview->SetBitmap(bmp);
+  m_Preview->Refresh();
+  GetSizer()->Fit(this);
+  GetSizer()->Layout();
+
   iOList list = ListOp.inst();
   int listSize = ListOp.size(m_StubList);
   for( int idx = 0; idx < listSize; idx++ ) {
