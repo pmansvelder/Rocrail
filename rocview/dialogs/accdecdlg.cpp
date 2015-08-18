@@ -611,11 +611,11 @@ void AccDecDlg::onHelp( wxCommandEvent& event ) {
 
 
 void AccDecDlg::aboxID( wxMouseEvent& event ) {
-  ABox(m_ID, wxGetApp().getMsg( "id" ));
+  ABox(m_ID, wxGetApp().getCMsg( "id" ));
 }
 void AccDecDlg::aboxManu( wxMouseEvent& event ) {
-  ABox(m_Manu, wxGetApp().getMsg( "manufactured_ID" ));
+  ABox(m_Manu, wxGetApp().getCMsg( "manufactured_ID" ));
 }
 void AccDecDlg::aboxCatNr( wxMouseEvent& event ) {
-  ABox(m_CatNr, wxGetApp().getMsg( "catnr" ));
+  ABox(m_CatNr, wxGetApp().getCMsg( "catnr" ));
 }
