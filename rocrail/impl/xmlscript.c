@@ -746,7 +746,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
 
     if( var != NULL ) {
       if( NodeOp.findAttr(cmd, "text") != NULL) {
-        wVariable.settext(var, VarOp.getText(wVariable.gettext(cmd), NULL, ' '));
+        wVariable.settext(var, VarOp.getText(wVariable.gettext(cmd), NULL, wVariable.gettokeniser(cmd)[0]));
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "var [%s] = [%s]", varRes, wVariable.gettext(var) );
       }
       if( NodeOp.findAttr(cmd, "value") != NULL ) {
