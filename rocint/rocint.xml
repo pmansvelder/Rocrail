@@ -12,6 +12,9 @@
       <param name="intext" vt="Boolean"/>
       <param name="incategory" vt="Boolean"/>
       <param name="infilename" vt="Boolean"/>
+      <param name="indate" vt="Boolean"/>
+      <param name="fromdate" vt="const char*"/>
+      <param name="todate" vt="const char*"/>
     </fun>
     <fun name="getCategories" vt="const char*">
       <param name="inst" vt="obj"/>

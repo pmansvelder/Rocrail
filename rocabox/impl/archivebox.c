@@ -136,7 +136,7 @@ static Boolean __findInText(const char* stubText, const char* searchText) {
   return found;
 }
 
-static iOList __find( const char* directory ,const char* text, Boolean intext, Boolean incategory, Boolean infilename ) {
+static iOList __find( const char* directory ,const char* text, Boolean intext, Boolean incategory, Boolean infilename, Boolean indate, const char* fromdate, const char* todate ) {
   iOList list = ListOp.inst();
   char* filepath = NULL;
   if( FileOp.exist(directory) ) {
@@ -153,7 +153,7 @@ static iOList __find( const char* directory ,const char* text, Boolean intext, B
           continue;
         }
         else if( FileOp.isDirectory( filepath ) ) {
-          iOList list2 = __find(filepath, text, intext, incategory, infilename);
+          iOList list2 = __find(filepath, text, intext, incategory, infilename, indate, fromdate, todate);
           if( list2 != NULL ) {
             int listSize = ListOp.size(list2);
             int n = 0;
@@ -175,8 +175,25 @@ static iOList __find( const char* directory ,const char* text, Boolean intext, B
                   (infilename && StrOp.findi(wStub.getpath(stub), text)) ||
                   (incategory && StrOp.findi(wStub.getcategory(stub), text)) )
               {
-                TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "add stub %s [%s]", wStub.getpath(stub), wStub.gettext(stub) );
-                ListOp.add(list, (obj)stub);
+                Boolean isInDate = True;
+                if( indate ) {
+                  int from = strcmp(fromdate, wStub.getfiledate(stub));
+                  int to   = strcmp(todate  , wStub.getfiledate(stub));
+                  /*
+                     from      file          to        file
+                    [20140818][20141021]=-1 [20150818][20141021]=1
+                    [20140818][20150112]=-1 [20150818][20150112]=7
+                   */
+                  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "[%s][%s]=%d [%s][%s]=%d",
+                      fromdate, wStub.getfiledate(stub), from, todate , wStub.getfiledate(stub), to );
+                  if( from > 0 || to < 0 ) {
+                    isInDate = False;
+                  }
+                }
+                if( isInDate ) {
+                  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "add stub %s [%s]", wStub.getpath(stub), wStub.gettext(stub) );
+                  ListOp.add(list, (obj)stub);
+                }
               }
             }
             StrOp.free(stubName);
@@ -193,10 +210,10 @@ static iOList __find( const char* directory ,const char* text, Boolean intext, B
 
 
 /**  */
-static iOList _find( obj inst ,const char* text, Boolean intext, Boolean incategory, Boolean infilename ) {
+static iOList _find( obj inst ,const char* text, Boolean intext, Boolean incategory, Boolean infilename, Boolean indate, const char* fromdate, const char* todate ) {
   iOArchiveBoxData data = Data(inst);
-  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find [%s] in [%s] [%d%d%d]", text, data->home, intext, incategory, infilename );
-  return __find(data->home, text, intext, incategory, infilename);
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find [%s] in [%s] [%d%d%d%d] [%s]-[%s]", text, data->home, intext, incategory, infilename, indate, fromdate, todate );
+  return __find(data->home, text, intext, incategory, infilename, indate, fromdate, todate);
 }
 
 

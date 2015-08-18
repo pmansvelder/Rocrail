@@ -50,6 +50,7 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text, const char* title ):AboxDl
   m_FindInText->SetValue(wABox.isfindintext(m_Ini)?true:false);
   m_FindInCategory->SetValue(wABox.isfindincategory(m_Ini)?true:false);
   m_FindInFilename->SetValue(wABox.isfindinfilename(m_Ini)?true:false);
+  m_FindInDate->SetValue(wABox.isfindindate(m_Ini)?true:false);
   m_ShowPath->SetValue(wABox.isshowpath(m_Ini)?true:false);
   m_Link->SetValue(wABox.islink(m_Ini)?true:false);
 
@@ -94,6 +95,9 @@ void ABoxDlg::initLabels() {
   m_FindInText->SetLabel( wxGetApp().getMsg( "text" ) );
   m_FindInCategory->SetLabel( wxGetApp().getMsg( "category" ) );
   m_FindInFilename->SetLabel( wxGetApp().getMsg( "filename" ) );
+  m_FindInDate->SetLabel( wxGetApp().getMsg( "date" ) );
+  m_labFromDate->SetLabel( wxGetApp().getMsg( "from" ) );
+  m_labToDate->SetLabel( wxGetApp().getMsg( "to" ) );
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
   m_Open->SetLabel( wxGetApp().getMsg( "open" ) );
   m_Modify->SetLabel( wxGetApp().getMsg( "modify" ) );
@@ -122,6 +126,7 @@ void ABoxDlg::doFind( const char* text ) {
   wABox.setfindintext(m_Ini, m_FindInText->IsChecked()?True:False);
   wABox.setfindincategory(m_Ini, m_FindInCategory->IsChecked()?True:False);
   wABox.setfindinfilename(m_Ini, m_FindInFilename->IsChecked()?True:False);
+  wABox.setfindindate(m_Ini, m_FindInDate->IsChecked()?True:False);
 
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_find );
@@ -129,6 +134,17 @@ void ABoxDlg::doFind( const char* text ) {
   wDataReq.setfindintext( cmd, m_FindInText->IsChecked()?True:False );
   wDataReq.setfindincategory( cmd, m_FindInCategory->IsChecked()?True:False );
   wDataReq.setfindinfilename( cmd, m_FindInFilename->IsChecked()?True:False );
+  wDataReq.setfindindate( cmd, m_FindInDate->IsChecked()?True:False );
+
+  wxDateTime fromdate = m_FromDate->GetValue();
+  wxDateTime todate   = m_ToDate->GetValue();
+  char* dateStr = StrOp.fmt("%d%02d%02d", fromdate.GetYear(), fromdate.GetMonth()+1, fromdate.GetDay());
+  wDataReq.setfromdate(cmd, dateStr);
+  StrOp.free(dateStr);
+  dateStr = StrOp.fmt("%d%02d%02d", todate.GetYear(), todate.GetMonth()+1, todate.GetDay());
+  wDataReq.settodate(cmd, dateStr);
+  StrOp.free(dateStr);
+
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
 }
@@ -617,4 +633,14 @@ void ABoxDlg::onShowPath( wxCommandEvent& event ) {
   initResult();
 }
 
+
+void ABoxDlg::onFromDate( wxDateEvent& event ) {
+  wxDateTime date = m_FromDate->GetValue();
+  TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "from date: %d%02d%02d", date.GetYear(), date.GetMonth()+1, date.GetDay() );
+}
+
+void ABoxDlg::onToDate( wxDateEvent& event ) {
+  wxDateTime date = m_ToDate->GetValue();
+  TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "to date: %d%02d%02d", date.GetYear(), date.GetMonth()+1, date.GetDay() );
+}
 

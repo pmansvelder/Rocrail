@@ -38,6 +38,9 @@ class ABoxDlg : public AboxDlgGen
     void onStubCol( wxListEvent& event );
     void onFindTextEnter( wxCommandEvent& event );
     void onShowPath( wxCommandEvent& event );
+    void onFromDate( wxDateEvent& event );
+    void onToDate( wxDateEvent& event );
+
 	public:
 		/** Constructor */
 		ABoxDlg( wxWindow* parent, const char* text=NULL, const char* title=NULL );
