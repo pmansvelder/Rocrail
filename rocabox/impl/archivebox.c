@@ -124,7 +124,7 @@ static iONode __readStub(const char* stubFilename) {
 
 static Boolean __findInText(const char* stubText, const char* searchText) {
   Boolean found = True;
-  iOStrTok tok = StrTokOp.inst( searchText, ' ' );
+  iOStrTok tok = StrTokOp.inst( searchText, '&' );
   while( StrTokOp.hasMoreTokens(tok) ) {
     const char* text = StrTokOp.nextToken( tok );
     if( StrOp.findi(stubText, text) == NULL ) {
