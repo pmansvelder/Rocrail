@@ -273,22 +273,40 @@ void ABoxDlg::showStub() {
   iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
   m_ResultText->SetValue(wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8));
   m_ResultNote->SetValue(wxString(NodeOp.getStr(stub, "note", ""),wxConvUTF8));
-  wxImage image( wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
-  if( image.IsOk() ) {
-    int h = image.GetHeight();
-    int w = image.GetWidth();
-    float scale = (float)h / (float)MAXHEIGHT;
-    float width = (float)w / scale;
-    wxBitmap bmp(image.Scale((int)width, MAXHEIGHT, wxIMAGE_QUALITY_HIGH));
-    m_Preview->SetBitmap(bmp);
+
+  char* path = NULL;
+  if( NodeOp.getBool(stub, "link", True) ) {
+    path = StrOp.dup(NodeOp.getStr(stub, "path", "-"));
+  }
+  else {
+    wxString tempdir = wxFileName::GetTempDir();
+    path = StrOp.fmt("%s%c%s", (const char*)tempdir.mb_str(wxConvUTF8), SystemOp.getFileSeparator(), NodeOp.getStr(stub, "path", "-") );
+  }
+  if( path != NULL ) {
+    wxImage image( wxString(path,wxConvUTF8) );
+    StrOp.free(path);
+    if( image.IsOk() ) {
+      int h = image.GetHeight();
+      int w = image.GetWidth();
+      float scale = (float)h / (float)MAXHEIGHT;
+      float width = (float)w / scale;
+      wxBitmap bmp(image.Scale((int)width, MAXHEIGHT, wxIMAGE_QUALITY_HIGH));
+      m_Preview->SetBitmap(bmp);
+    }
+    else {
+      wxBitmap bmp;
+      m_Preview->SetBitmap(bmp);
+    }
   }
   else {
     wxBitmap bmp;
     m_Preview->SetBitmap(bmp);
   }
+
   m_Preview->Refresh();
   GetSizer()->Fit(this);
   GetSizer()->Layout();
+
 }
 
 void ABoxDlg::onStubActivated( wxListEvent& event ) {
