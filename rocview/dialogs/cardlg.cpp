@@ -1336,5 +1336,5 @@ void CarDlg::aboxID( wxMouseEvent& event ) {
 }
 
 void CarDlg::aboxRoadname( wxMouseEvent& event ) {
-  ABox(m_Roadname, wxGetApp().getMsg( "roadname" ));
+  ABox(m_Roadname, wxGetApp().getCMsg( "roadname" ));
 }
