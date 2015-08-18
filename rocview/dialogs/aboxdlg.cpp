@@ -29,6 +29,8 @@
 #include "rocs/public/strtok.h"
 #include "rocs/public/system.h"
 
+#include "rocview/res/icons.hpp"
+
 static bool ms_Sort = true;
 
 ABoxDlg::ABoxDlg( wxWindow* parent, const char* text, const char* title ):AboxDlgGen( parent )
@@ -294,13 +296,11 @@ void ABoxDlg::showStub() {
       m_Preview->SetBitmap(bmp);
     }
     else {
-      wxBitmap bmp;
-      m_Preview->SetBitmap(bmp);
+      m_Preview->SetBitmap(*_img_document);
     }
   }
   else {
-    wxBitmap bmp;
-    m_Preview->SetBitmap(bmp);
+    m_Preview->SetBitmap(*_img_document);
   }
 
   m_Preview->Refresh();
@@ -381,11 +381,11 @@ void ABoxDlg::initResult() {
   m_ResultText->SetValue(wxT(""));
   m_ResultNote->SetValue(wxT(""));
 
-  wxBitmap bmp;
-  m_Preview->SetBitmap(bmp);
+  m_Preview->SetBitmap(*_img_document);
   m_Preview->Refresh();
   GetSizer()->Fit(this);
   GetSizer()->Layout();
+
 
   iOList list = ListOp.inst();
   int listSize = ListOp.size(m_StubList);
