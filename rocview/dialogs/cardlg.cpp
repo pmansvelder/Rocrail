@@ -1328,13 +1328,13 @@ void CarDlg::onHelp( wxCommandEvent& event ) {
 }
 
 void CarDlg::aboxManuId( wxMouseEvent& event ) {
-  ABox(m_ManuId);
+  ABox(m_ManuId, wxGetApp().getCMsg( "manufactured_ID" ));
 }
 
 void CarDlg::aboxID( wxMouseEvent& event ) {
-  ABox(m_ID);
+  ABox(m_ID, wxGetApp().getCMsg( "id" ));
 }
 
 void CarDlg::aboxRoadname( wxMouseEvent& event ) {
-  ABox(m_Roadname);
+  ABox(m_Roadname, wxGetApp().getMsg( "roadname" ));
 }

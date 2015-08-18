@@ -56,11 +56,15 @@ BaseDialog::BaseDialog() {
   m_SelectedID = NULL;
 }
 
-void BaseDialog::ABox( wxTextCtrl* text ) {
+void BaseDialog::ABox( wxTextCtrl* text, const char* title ) {
   if(text->GetValue().IsEmpty())
     return;
   wxCommandEvent evt1( wxEVT_COMMAND_MENU_SELECTED, ME_ArchiveBox );
-  char* s = StrOp.dup(text->GetValue().mb_str(wxConvUTF8));
+  char* s = NULL;
+  if( title != NULL && StrOp.len(title) > 0 )
+    s = StrOp.fmt("%s$%s", (const char*)text->GetValue().mb_str(wxConvUTF8), title);
+  else
+    s = StrOp.dup(text->GetValue().mb_str(wxConvUTF8));
   evt1.SetClientData(s);
   wxPostEvent( wxGetApp().getFrame(), evt1 );
 }

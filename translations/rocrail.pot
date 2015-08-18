@@ -8039,3 +8039,15 @@ msgstr ""
 msgid "Show path"
 msgstr ""
 
+#. 
+# id="date"
+#, c-format
+msgid "Date"
+msgstr ""
+
+#. 
+# id="toomanyhits"
+#, c-format
+msgid "Too many hits; Reduce selection by search criteria."
+msgstr ""
+

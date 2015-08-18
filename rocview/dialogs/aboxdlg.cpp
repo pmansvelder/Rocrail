@@ -31,7 +31,7 @@
 
 static bool ms_Sort = true;
 
-ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
+ABoxDlg::ABoxDlg( wxWindow* parent, const char* text, const char* title ):AboxDlgGen( parent )
 {
   m_StubList = ListOp.inst();
   m_SelectedStub = wxNOT_FOUND;
@@ -64,6 +64,10 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text ):AboxDlgGen( parent )
   wDataReq.setcmd( cmd, wDataReq.abox_getcategories );
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
+
+  if( title != NULL ) {
+    SetTitle(wxT("Archivebox: ") + wxString(title,wxConvUTF8) );
+  }
 
   if( text != NULL ) {
     m_FindText->SetValue( wxString(text,wxConvUTF8) );

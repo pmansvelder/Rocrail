@@ -40,7 +40,7 @@ class ABoxDlg : public AboxDlgGen
     void onShowPath( wxCommandEvent& event );
 	public:
 		/** Constructor */
-		ABoxDlg( wxWindow* parent, const char* text=NULL );
+		ABoxDlg( wxWindow* parent, const char* text=NULL, const char* title=NULL );
     ~ABoxDlg();
 	//// end generated class members
     void event(iONode node);

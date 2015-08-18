@@ -5150,7 +5150,16 @@ void RocGuiFrame::OnIssue(wxCommandEvent& WXUNUSED(event)) {
 
 void RocGuiFrame::OnArchiveBox(wxCommandEvent& event) {
   char* s = (char*)event.GetClientData();
-  m_ABoxDlg = new ABoxDlg( this, s );
+  if( s != NULL && StrOp.find(s, "$") != NULL ) {
+    iOStrTok tok = StrTokOp.inst( s, '$' );
+    const char* text  = StrTokOp.nextToken(tok);
+    const char* title = StrTokOp.nextToken(tok);
+    m_ABoxDlg = new ABoxDlg( this, text, title );
+    StrTokOp.base.del( tok );
+  }
+  else {
+    m_ABoxDlg = new ABoxDlg( this, s );
+  }
   m_ABoxDlg->ShowModal();
   m_ABoxDlg->Destroy();
   m_ABoxDlg = NULL;

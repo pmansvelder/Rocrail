@@ -73,6 +73,7 @@ class wxGrid;
 #define wxID_STATIC_LENGTH 10019
 #define ID_ABOX_CATNR 10496
 #define ID_TEXTCTRL_CATALOGNR 10008
+#define ID_ABOX_DECODERTYPE 10497
 #define ID_BUTTON_SHOWDOC 10391
 #define wxID_STATIC_PURCHASED 10021
 #define ID_TEXTCTRL_PURCHASED 10009
@@ -275,6 +276,9 @@ public:
 
     /// wxEVT_LEFT_UP event handler for ID_ABOX_CATNR
     void OnAboxCatnr( wxMouseEvent& event );
+
+    /// wxEVT_LEFT_UP event handler for ID_ABOX_DECODERTYPE
+    void onABoxDecoderType( wxMouseEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SHOWDOC
     void OnButtonShowdocClick( wxCommandEvent& event );

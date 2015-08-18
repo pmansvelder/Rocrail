@@ -245,7 +245,7 @@ void LocDialog::initLabels() {
   m_Label_Purchased->SetLabel( wxGetApp().getMsg( "purchased" ) );
   m_labValue->SetLabel( wxGetApp().getMsg( "value" ) );
   m_Label_Runtime->SetLabel( wxGetApp().getMsg( "runtime" ) );
-  m_labDecType->SetLabel( wxGetApp().getMsg( "decodertype" ) );
+  m_labDecType->SetLabel( wxGetApp().getMsg( "decodertype" ) + wxT(" @") );
   m_labIdent->SetLabel( wxGetApp().getMsg( "identifier" ) );
   m_Ident->SetToolTip( wxGetApp().getTip( "identifier" ) );
   m_labRemark->SetLabel( wxGetApp().getMsg( "remark" ) );
@@ -1898,7 +1898,7 @@ void LocDialog::CreateControls()
     m_CatNr = new wxTextCtrl( m_General_Panel, ID_TEXTCTRL_CATALOGNR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer31->Add(m_CatNr, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    m_labDecType = new wxStaticText( m_General_Panel, wxID_ANY, _("Decoder type:"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_labDecType = new wxStaticText( m_General_Panel, ID_ABOX_DECODERTYPE, _("Decoder type @"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer31->Add(m_labDecType, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DecoderType = new wxTextCtrl( m_General_Panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -3136,6 +3136,7 @@ void LocDialog::CreateControls()
     m_label_ID->Connect(ID_ABOX_ID, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::OnAboxID), NULL, this);
     m_labRoadname->Connect(ID_ABOX_ROADNAME, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::OnAboxRoadname), NULL, this);
     m_Label_CatalogNr->Connect(ID_ABOX_CATNR, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::OnAboxCatnr), NULL, this);
+    m_labDecType->Connect(ID_ABOX_DECODERTYPE, wxEVT_LEFT_UP, wxMouseEventHandler(LocDialog::onABoxDecoderType), NULL, this);
     m_F0Icon->Connect(ID_LOC_ICONF0, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocIconf0), NULL, this);
     m_Sound1->Connect(ID_LOC_SOUND1, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocSound1), NULL, this);
     m_Icon_f1->Connect(ID_LOC_ICONF1, wxEVT_LEFT_DCLICK, wxMouseEventHandler(LocDialog::OnLocIconf1), NULL, this);
@@ -4737,18 +4738,24 @@ void LocDialog::OnBbtFixallClick( wxCommandEvent& event )
 
 void LocDialog::OnAboxID( wxMouseEvent& event )
 {
-  ABox(m_ID);
+  ABox(m_ID, wxGetApp().getCMsg( "id" ) );
 }
 
 
 void LocDialog::OnAboxRoadname( wxMouseEvent& event )
 {
-  ABox(m_Roadname);
+  ABox(m_Roadname, wxGetApp().getCMsg( "roadname" ));
 }
 
 
 void LocDialog::OnAboxCatnr( wxMouseEvent& event )
 {
-  ABox(m_CatNr);
+  ABox(m_CatNr, wxGetApp().getCMsg( "catnr" ));
+}
+
+
+void LocDialog::onABoxDecoderType( wxMouseEvent& event )
+{
+  ABox(m_DecoderType, wxGetApp().getCMsg( "decodertype" ));
 }
 
