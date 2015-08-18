@@ -40,6 +40,7 @@ class ABoxDlg : public AboxDlgGen
     void onShowPath( wxCommandEvent& event );
     void onFromDate( wxDateEvent& event );
     void onToDate( wxDateEvent& event );
+    void onOpenPreview( wxMouseEvent& event );
 
 	public:
 		/** Constructor */

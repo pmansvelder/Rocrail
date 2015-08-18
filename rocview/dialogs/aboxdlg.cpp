@@ -643,6 +643,12 @@ void ABoxDlg::onOpen( wxCommandEvent& event ) {
   }
 }
 
+void ABoxDlg::onOpenPreview( wxMouseEvent& event ) {
+  if( m_SelectedStub != wxNOT_FOUND ) {
+    openStub();
+  }
+}
+
 void ABoxDlg::onDelete( wxCommandEvent& event ) {
   if( m_SelectedStub != wxNOT_FOUND ) {
     int action = wxMessageDialog( this, wxGetApp().getMsg("removewarning"), _T("Rocrail"), wxYES_NO | wxICON_EXCLAMATION ).ShowModal();
