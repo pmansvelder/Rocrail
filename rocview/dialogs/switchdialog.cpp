@@ -148,7 +148,7 @@ void SwitchDialog::initLabels() {
 
   // General
   m_LabelID->SetLabel( wxGetApp().getMsg( "id" ) );
-  m_labDesc->SetLabel( wxGetApp().getMsg( "description" ) );
+  m_labDesc->SetLabel( wxGetApp().getMsg( "description" ) + wxT(" @") );
   m_labDecID->SetLabel( wxGetApp().getMsg( "decoder" ) );
   m_labBlockID->SetLabel( wxGetApp().getMsg( "blockid" ) );
   m_labRouteIDs->SetLabel( wxGetApp().getMsg( "routeids" ) );
@@ -1254,7 +1254,7 @@ void SwitchDialog::CreateControls()
     m_ID = new wxTextCtrl( m_GeneralPanel, ID_TEXTCTRL_SW_ID, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer15->Add(m_ID, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_labDesc = new wxStaticText( m_GeneralPanel, wxID_ANY, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_labDesc = new wxStaticText( m_GeneralPanel, ID_ABOX_DESCRIPTION, _("Description @"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer15->Add(m_labDesc, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_Desc = new wxTextCtrl( m_GeneralPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -2047,6 +2047,8 @@ void SwitchDialog::CreateControls()
 
     itemStdDialogButtonSizer240->Realize();
 
+    // Connect events and objects
+    m_labDesc->Connect(ID_ABOX_DESCRIPTION, wxEVT_LEFT_UP, wxMouseEventHandler(SwitchDialog::aboxDescription), NULL, this);
 ////@end SwitchDialog content construction
 }
 
@@ -2360,5 +2362,11 @@ void SwitchDialog::OnHelpClick( wxCommandEvent& event )
   case 7: wxGetApp().openLink( "switch-td" ); break;
   default: wxGetApp().openLink( "switch-index" ); break;
   }
+}
+
+
+void SwitchDialog::aboxDescription( wxMouseEvent& event )
+{
+  ABox(m_Desc, wxGetApp().getCMsg( "description" ));
 }
 

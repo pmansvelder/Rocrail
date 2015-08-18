@@ -141,7 +141,7 @@ void SignalDialog::initLabels() {
   m_labDecID->SetLabel( wxGetApp().getMsg( "decoder" ) );
   m_LabelState->SetLabel( wxGetApp().getMsg( "state" ) );
   m_Road->SetLabel( wxGetApp().getMsg( "road" ) );
-  m_LabelDescription->SetLabel( wxGetApp().getMsg( "description" ) );
+  m_LabelDescription->SetLabel( wxGetApp().getMsg( "description" ) + wxT(" @") );
   m_LabelBlockID->SetLabel( wxGetApp().getMsg( "blockid" ) );
   m_Actions->SetLabel( wxGetApp().getMsg( "actions" )+_T("...") );
   m_labRouteIDs->SetLabel( wxGetApp().getMsg( "routeids" ) );
@@ -783,7 +783,7 @@ void SignalDialog::CreateControls()
     m_ID = new wxTextCtrl( m_GeneralPanel, ID_TEXTCTRL_SG_ID, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer13->Add(m_ID, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_LabelDescription = new wxStaticText( m_GeneralPanel, wxID_STATICSG_DESC, _("description"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_LabelDescription = new wxStaticText( m_GeneralPanel, wxID_STATICSG_DESC, _("description @"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer13->Add(m_LabelDescription, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     m_Description = new wxTextCtrl( m_GeneralPanel, ID_TEXTCTRL_SG_DESC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -804,7 +804,7 @@ void SignalDialog::CreateControls()
     itemFlexGridSizer13->Add(m_BlockID, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_labRouteIDs = new wxStaticText( m_GeneralPanel, wxID_ANY, _("Route IDs"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer13->Add(m_labRouteIDs, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer13->Add(m_labRouteIDs, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_RouteIDs = new wxTextCtrl( m_GeneralPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer13->Add(m_RouteIDs, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -1265,6 +1265,8 @@ void SignalDialog::CreateControls()
 
     itemStdDialogButtonSizer131->Realize();
 
+    // Connect events and objects
+    m_LabelDescription->Connect(wxID_STATICSG_DESC, wxEVT_LEFT_UP, wxMouseEventHandler(SignalDialog::aboxDescription), NULL, this);
 ////@end SignalDialog content construction
 }
 
@@ -1556,5 +1558,11 @@ void SignalDialog::OnHelpClick( wxCommandEvent& event )
 void SignalDialog::OnSignalManualClick( wxCommandEvent& event )
 {
   m_ResetManual->Enable(m_Manual->IsChecked());
+}
+
+
+void SignalDialog::aboxDescription( wxMouseEvent& event )
+{
+  ABox(m_Description, wxGetApp().getCMsg( "description" ));
 }
 

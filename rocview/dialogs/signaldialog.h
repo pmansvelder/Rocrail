@@ -156,6 +156,9 @@ public:
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SG_DOC
     void OnButtonSgDocClick( wxCommandEvent& event );
 
+    /// wxEVT_LEFT_UP event handler for wxID_STATICSG_DESC
+    void aboxDescription( wxMouseEvent& event );
+
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SIGNAL_MANUAL
     void OnSignalManualClick( wxCommandEvent& event );
 

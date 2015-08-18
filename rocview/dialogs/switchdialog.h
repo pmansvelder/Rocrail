@@ -58,6 +58,7 @@ class wxSpinCtrl;
 #define ID_PANEL_SW_GENERAL 10009
 #define wxID_STATIC_SW_ID 10010
 #define ID_TEXTCTRL_SW_ID 10011
+#define ID_ABOX_DESCRIPTION 10498
 #define ID_COMBOBOX_SW_BLOCKID 10028
 #define wxID_STATIC_SW_LOCKED 10012
 #define ID_TEXTCTRL_SW_LOCKED 10013
@@ -181,6 +182,9 @@ public:
 
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_TEST
     void OnTogglebuttonTestClick( wxCommandEvent& event );
+
+    /// wxEVT_LEFT_UP event handler for ID_ABOX_DESCRIPTION
+    void aboxDescription( wxMouseEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SW_RESET_SWITCHED
     void OnSwResetSwitchedClick( wxCommandEvent& event );
