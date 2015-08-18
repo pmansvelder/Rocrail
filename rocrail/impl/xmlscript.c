@@ -240,7 +240,17 @@ static Boolean __isSubState(const char* stateRes) {
     else if( StrOp.equals(wSwitch.name(), objType) ) {
       iOSwitch sw = ModelOp.getSwitch(model, objId);
       if( sw != NULL ) {
-        if( comparator[0] == '=' && SwitchOp.isState(sw, value) ) {
+        if( StrOp.equals("locked", value) ) {
+          if( comparator[0] == '=' && SwitchOp.isLocked(sw, NULL, False) ) {
+            ok = True;
+          }
+        }
+        else if( StrOp.equals("isfree", value) ) {
+          if( comparator[0] == '=' && !SwitchOp.isLocked(sw, NULL, False) ) {
+            ok = True;
+          }
+        }
+        else if( comparator[0] == '=' && SwitchOp.isState(sw, value) ) {
           ok = True;
         }
       }
