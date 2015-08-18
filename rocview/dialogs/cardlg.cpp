@@ -207,6 +207,7 @@ void CarDlg::initLabels() {
   m_labWeightEmpty->SetLabel( wxGetApp().getMsg( "empty" ) );
   m_labWeightLoaded->SetLabel( wxGetApp().getMsg( "loaded" ) );
   m_labManuId->SetLabel( wxGetApp().getMsg( "manufactured_ID" ) + wxT(" @") );
+  m_labCatNr->SetLabel( wxGetApp().getMsg( "catnr" ) + wxT(" @") );
   m_labRemark->SetLabel( wxGetApp().getMsg( "remark" ) );
   m_labVMax->SetLabel( wxGetApp().getMsg( "maxkmh" ) );
 
@@ -612,6 +613,7 @@ void CarDlg::initValues() {
   m_WeightEmpty->SetValue( wCar.getweight_empty( m_Props ) );
   m_WeightLoaded->SetValue( wCar.getweight_loaded( m_Props ) );
   m_ManuId->SetValue( wxString(wCar.getmanuid( m_Props ),wxConvUTF8) );
+  m_CatNr->SetValue( wxString(wCar.getcatnr( m_Props ),wxConvUTF8) );
   m_Remark->SetValue( wxString(wCar.getremark( m_Props ),wxConvUTF8) );
   m_VMax->SetValue( wCar.getV_max( m_Props ) );
 
@@ -734,6 +736,7 @@ bool CarDlg::evaluate(){
   wCar.setweight_loaded( m_Props, m_WeightLoaded->GetValue() );
 
   wCar.setmanuid( m_Props, m_ManuId->GetValue().mb_str(wxConvUTF8) );
+  wCar.setcatnr( m_Props, m_CatNr->GetValue().mb_str(wxConvUTF8) );
   wCar.setremark( m_Props, m_Remark->GetValue().mb_str(wxConvUTF8) );
   wCar.setV_max( m_Props, m_VMax->GetValue() );
 
@@ -1333,6 +1336,10 @@ void CarDlg::aboxManuId( wxMouseEvent& event ) {
 
 void CarDlg::aboxID( wxMouseEvent& event ) {
   ABox(m_ID, wxGetApp().getCMsg( "id" ));
+}
+
+void CarDlg::aboxCatNr( wxMouseEvent& event ) {
+  ABox(m_CatNr, wxGetApp().getCMsg( "catnr" ));
 }
 
 void CarDlg::aboxRoadname( wxMouseEvent& event ) {
