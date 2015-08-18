@@ -271,6 +271,7 @@ void ABoxDlg::openStub() {
 }
 
 #define MAXHEIGHT 100
+#define MAXWIDTH  100
 void ABoxDlg::showStub() {
   iONode stub = (iONode)m_Stubs->GetItemData(m_SelectedStub);
   m_ResultText->SetValue(wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8));
@@ -290,10 +291,23 @@ void ABoxDlg::showStub() {
     if( image.IsOk() ) {
       int h = image.GetHeight();
       int w = image.GetWidth();
-      float scale = (float)h / (float)MAXHEIGHT;
-      float width = (float)w / scale;
-      wxBitmap bmp(image.Scale((int)width, MAXHEIGHT, wxIMAGE_QUALITY_HIGH));
-      m_Preview->SetBitmap(bmp);
+      if( h > MAXHEIGHT || w > MAXWIDTH ) {
+        float scaleH = (float)h / (float)MAXHEIGHT;
+        float scaleW = (float)w / (float)MAXWIDTH;
+        float scale = 1.0;
+        if( scaleH > scaleW )
+          scale = scaleH;
+        else
+          scale = scaleW;
+        float width = (float)w / scale;
+        float height = (float)h / scale;
+        wxBitmap bmp(image.Scale((int)width, (int)height, wxIMAGE_QUALITY_HIGH));
+        m_Preview->SetBitmap(bmp);
+      }
+      else {
+        wxBitmap bmp(image);
+        m_Preview->SetBitmap(bmp);
+      }
     }
     else {
       m_Preview->SetBitmap(*_img_document);
