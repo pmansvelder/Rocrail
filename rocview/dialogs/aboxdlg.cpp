@@ -61,6 +61,9 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text, const char* title ):AboxDl
 
   initLabels();
 
+  m_FromDate->SetValue(wxDateTime::Now());
+  m_ToDate->SetValue(wxDateTime::Now());
+
   iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
   wDataReq.setcmd( cmd, wDataReq.abox_getcategories );
   wxGetApp().sendToRocrail( cmd );
