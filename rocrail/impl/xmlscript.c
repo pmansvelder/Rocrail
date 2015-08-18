@@ -245,7 +245,7 @@ static Boolean __isSubState(const char* stateRes) {
             ok = True;
           }
         }
-        else if( StrOp.equals("isfree", value) ) {
+        else if( StrOp.equals("free", value) ) {
           if( comparator[0] == '=' && !SwitchOp.isLocked(sw, NULL, False) ) {
             ok = True;
           }
