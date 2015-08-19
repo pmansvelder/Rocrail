@@ -1025,6 +1025,10 @@ static void __callback( obj inst, iONode nodeA ) {
                       f = FileOp.inst( foundfilename, OPEN_READONLY);
                     StrOp.free(foundfilename);
                   }
+                  else if( f == NULL && path != NULL && StrOp.endsWithi(path, ".png") && NodeOp.getBool(stub, "link", True) ) {
+                    if( FileOp.exist( path ) )
+                      f = FileOp.inst( path, OPEN_READONLY);
+                  }
                   NodeOp.base.del(stub);
                 }
                 TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "clean up list..." );

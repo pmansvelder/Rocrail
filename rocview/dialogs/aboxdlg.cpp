@@ -188,7 +188,6 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
     int action = wxMessageDialog( this, wxGetApp().getMsg("missingcriteria"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
     return;
   }
-  EnableDlg(false);
 
   wABox.setlink(m_Ini, m_Link->IsChecked()?True:False);
 
@@ -205,8 +204,10 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
   // save the file path in case it must be uploaded
   m_AddedUID[0] = '\0';
-  if( !m_Link->IsChecked() )
+  if( !m_Link->IsChecked() ) {
     StrOp.copy( m_AddedFilename, wFileEntry.getfname(fileentry) );
+    EnableDlg(false);
+  }
   else
     m_AddedFilename[0] = '\0';
 
