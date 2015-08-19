@@ -472,7 +472,7 @@ void ABoxDlg::initResult() {
     m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 4, wxString(NodeOp.getBool(stub, "link", True)?"X":"-",wxConvUTF8) );
     m_Stubs->SetItem( idx, 5, wxString(NodeOp.getStr(stub, "filedate", "-"),wxConvUTF8) );
-    m_Stubs->SetItem( idx, 6, wxString::Format("%ld", NodeOp.getLong(stub, "size", 0)) );
+    m_Stubs->SetItem( idx, 6, wxString::Format(wxT("%ld"), NodeOp.getLong(stub, "size", 0)) );
     m_Stubs->SetItemPtrData(idx, (wxUIntPtr)stub);
   }
 
