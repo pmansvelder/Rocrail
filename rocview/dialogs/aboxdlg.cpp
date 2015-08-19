@@ -126,6 +126,10 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(4, wxGetApp().getMsg( "link" ), wxLIST_FORMAT_CENTER );
   m_Stubs->InsertColumn(5, wxGetApp().getMsg( "date" ), wxLIST_FORMAT_CENTER );
   m_Stubs->InsertColumn(6, wxGetApp().getMsg( "size" ), wxLIST_FORMAT_RIGHT );
+
+  m_bmpFind->SetBitmap(*_img_zoom);
+  m_bmpUpload->SetBitmap(*_img_upload);
+
 }
 
 void ABoxDlg::EnableDlg(bool enable) {
@@ -743,3 +747,12 @@ void ABoxDlg::onToDate( wxDateEvent& event ) {
   TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "to date: %d%02d%02d", date.GetYear(), date.GetMonth()+1, date.GetDay() );
 }
 
+void ABoxDlg::onBmpFind( wxMouseEvent& event ) {
+  wxCommandEvent cmdEvent;
+  onFind(cmdEvent);
+}
+
+void ABoxDlg::onBmpAdd( wxMouseEvent& event ) {
+  wxCommandEvent cmdEvent;
+  onAdd(cmdEvent);
+}
