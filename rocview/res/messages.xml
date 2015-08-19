@@ -2356,7 +2356,7 @@
     <sv txt="Tågvägs-ID"/>
     <fr txt="ID de l'itinéraire"/>
     <tr txt="Rota ID"/>
-    <es txt="Denominación de Ruta"/>
+    <es txt="Nombre de la ruta"/>
     <it txt="ID itinerario"/>
     <da txt="Rute-ID"/>
     <cs txt="ID Vlakové cesty"/>
@@ -2751,7 +2751,7 @@
     <sv txt="Blockgrupper" tip="Blockgruppstabell"/>
     <fr txt="Groupes de blocs" tip="Tableau des Groupes de blocs "/>
     <tr txt="Blok grupları" tip="Blok grup tablosu"/>
-    <es txt="Table de grupos de bloques" tip="Tabla de Grupos de bloques"/>
+    <es txt="Tabla de grupos de bloques" tip="Tabla de Grupos de bloques"/>
     <it txt="Gruppo blocchi" tip="Tabella blocchi"/>
     <da txt="Blok gruppe tabel" tip="Blokgruppetabel"/>
     <bg txt="Блок маса група"/>
@@ -2946,7 +2946,7 @@
     <sv txt="Sensorer" tip="Sensortabell"/>
     <fr txt="Table des détecteurs" tip="Tableau des contacts"/>
     <tr txt="Sensör tablosu" tip="Algılayıcılar"/>
-    <es txt="Contactos" tip="Contactos"/>
+    <es txt="Tabla de sensores" tip="Contactos"/>
     <it txt="Sensori" tip="Sensori"/>
     <da txt="Sensor tabel" tip="sensor-tabel"/>
     <bg txt="Sensor таблица"/>
@@ -2979,7 +2979,7 @@
     <sv txt="Sensor från block %s:"/>
     <fr txt="Détecteurs en provenance du bloc %s:"/>
     <tr txt="Blok %s için algılayıcı :"/>
-    <es txt="Contactos del Bloque %s:"/>
+    <es txt="Sensores del bloque %s:"/>
     <it txt="Sensori dal blocco %s:"/>
     <sv txt="Sensor fra blok %s:"/>
     <bg txt="Сензори, идващи от блок% S:"/>
@@ -3111,7 +3111,7 @@
     <sv txt="Spårplan" accel="0"/>
     <fr txt="Plan des voies" accel="0"/>
     <tr txt="Ray Diyagramı" accel="0"/>
-    <es txt="Diagrama de circuito" accel="0"/>
+    <es txt="Plano del circuito" accel="0"/>
     <it txt="Pannello tracciato"/>
     <da txt="Sporplan" accel="0"/>
     <cs txt="Plán kolejiště"/>
@@ -3244,7 +3244,7 @@
     <sv txt="ID"/>
     <fr txt="Identifiant"/>
     <tr txt="ID"/>
-    <es txt="Denominación"/>
+    <es txt="Nombre"/>
     <it txt="ID"/>
     <da txt="ID"/>
     <bs txt="ID"/>
@@ -3477,7 +3477,7 @@
     <sv txt="Spårplanstitel" accel="0" tip="Ändra spårplanstitel"/>
     <fr txt="Nom du plan" accel="0" tip="Changer le titre du plan."/>
     <tr txt="Ray Diyagram Başlığı" accel="0" tip="Kurgu planı adını değiştir."/>
-    <es txt="Nombre del diagrama de circuito" accel="0" tip="Cambiar el nombre del plan de seguimiento"/>
+    <es txt="Nombre del plano del circuito" accel="0" tip="Cambiar el nombre del plan de seguimiento"/>
     <it txt="Titolo pannello tracciato" tip="Cambia il nome del pannello tracciato"/>
     <da txt="Sporplanstitel" accel="0" tip="Ændre sporplanstitel."/>
     <bg txt="Track план заглавие"/>
@@ -3510,7 +3510,7 @@
     <sv txt="Spårplansfil"/>
     <fr txt="Fichier du plan"/>
     <tr txt="Ray Diyagram Dosyası"/>
-    <es txt="Fichero del diagrama de circuito"/>
+    <es txt="Fichero del plano del circuito"/>
     <it txt="File pannello tracciato"/>
     <da txt="Sporplansfil"/>
     <bg txt="Track план файл"/>
@@ -3543,7 +3543,7 @@
     <sv txt="Spårplansfiler (*.xml)|*.xml"/>
     <fr txt="Fichiers des plans (*.xml)|*.xml"/>
     <tr txt="Ray Diyagram Dosyaları (*.xml)|*.xml"/>
-    <es txt="Ficheros del diagrama de circuito (*.xml)|*.xml"/>
+    <es txt="Ficheros del plano del circuito (*.xml)|*.xml"/>
     <it txt="File pannelli tracciato (*.ml)|*.xml"/>
     <da txt="Sporplansfiler (*.xml)|*.xml"/>
     <bg txt="Track план файлове (*. XML) | *. XML"/>
@@ -3576,7 +3576,7 @@
     <sv txt="Spara spårplan som"/>
     <fr txt="Enregistrer le plan sous"/>
     <tr txt="Ray Dİyagramı Kaydet"/>
-    <es txt="Salvar diagrama de circuito como"/>
+    <es txt="Guardar plano de vías como"/>
     <it txt="Salva pannello tracciato con nome"/>
     <da txt="Gem sporplan som"/>
     <bg txt="Запази следите план като"/>
@@ -3709,7 +3709,7 @@
     <sv txt="Rak"/>
     <fr txt="Droit"/>
     <tr txt="Düz"/>
-    <es txt="Recta"/>
+    <es txt="Recto"/>
     <it txt="Diritto"/>
     <da txt="Lige"/>
     <bs txt="Otvoren"/>
@@ -3842,7 +3842,7 @@
     <sv txt="Höger växel"/>
     <fr txt="Aiguillage à droite"/>
     <tr txt="Sağa makas"/>
-    <es txt="Interruptor derecho"/>
+    <es txt="Desvío a derechas"/>
     <it txt="Deviatoio destro"/>
     <da txt="Højre skift"/>
     <bg txt="Право активност"/>
@@ -3876,7 +3876,7 @@
     <sv txt="Vänster växel"/>
     <fr txt="Aiguillage à gauche"/>
     <tr txt="Sola makas"/>
-    <es txt="Interruptor izquierdo"/>
+    <es txt="Desvío a izquieradas"/>
     <it txt="Deviatoio sinistro"/>
     <da txt="Venstre skift"/>
     <bg txt="Ляв активност"/>
@@ -4142,7 +4142,7 @@
     <sv txt="Växel"/>
     <fr txt="Aiguillage"/>
     <tr txt="Değiştir"/>
-    <es txt="Interruptor"/>
+    <es txt="Desvío"/>
     <it txt="Deviatoio"/>
     <da txt="Sporskifte"/>
     <cs txt="Výhybka"/>
@@ -4275,7 +4275,7 @@
     <sv txt="Sensor"/>
     <fr txt="Détecteur"/>
     <tr txt="Algılayıcı"/>
-    <es txt="Contacto"/>
+    <es txt="Sensor"/>
     <it txt="Sensore"/>
     <da txt="Sensor"/>
     <bs txt="Senzor"/>
@@ -4907,7 +4907,7 @@
     <sv txt="Ny" tip="Ny spårplan"/>
     <fr txt="Nouveau" tip="Nouveau plan"/>
     <tr txt="Yeni" tip="Yeni kurgu planı"/>
-    <es txt="Nueva" tip="Nuevo plano de vias"/>
+    <es txt="Nuevo" tip="Nuevo plano de vias"/>
     <it txt="Nuovo" tip="Nuovo pannello tracciato"/>
     <da txt="Ny" tip="Ny sporplan"/>
     <bs txt="Nova"/>
@@ -5009,7 +5009,7 @@
     <sv txt="Lok-ID"/>
     <fr txt="Identifiant de la locomotive"/>
     <tr txt="Loc ID"/>
-    <es txt="Denominación Loc"/>
+    <es txt="Nombre de la maquina"/>
     <it txt="ID Loco"/>
     <da txt="Lokomotiv-ID"/>
     <cs txt="ID Lokomotivy"/>
@@ -5042,7 +5042,7 @@
     <sv txt="Turntable-ID"/>
     <fr txt="Identifiant du pont tournant"/>
     <tr txt="Turntable ID"/>
-    <es txt="Denominación Turntable"/>
+    <es txt="Nombre de la placa giratoria"/>
     <it txt="ID piattaforma girevole"/>
     <da txt="Drejeskive-ID"/>
     <bg txt="Обръщател ID"/>
@@ -8060,7 +8060,7 @@
     <sv txt="Sensormoduler (left,middle,right,size)"/>
     <fr txt="Modules rétrosignalisation (gauche, milieu, droite, taille)"/>
     <tr txt="Algılayıcı modülleri (sol, orta, sağ, boyut)"/>
-    <es txt="Contacto de señalización (izquierda, centro, derecha, tamaño)"/>
+    <es txt="Módulos de sensores (izquierda, centro, derecha, tamaño)"/>
     <it txt="Sensori moduli (sinistro, centrale, destro, dimensioni)"/>
     <da txt="Sensormoduler (venstre, midte, højre, størrelse)"/>
     <bg txt="Sensor Модули (от ляво, средно, нали, размер)"/>
@@ -8092,7 +8092,7 @@
     <sv txt="Erddcd-portar (cmd,sensor,info)"/>
     <fr txt="Ports Erddcd (cmd, contact, info)"/>
     <tr txt="Erddcd Portları (cmd,algılayıcı,bilgi)"/>
-    <es txt="Puertos Erddcd (cmd,contacto,info)"/>
+    <es txt="Puertos Erddcd (cmd,sensor,info)"/>
     <it txt="Porte Erddcd (comandi, sensori, informazioni)"/>
     <da txt="Erddcd porte (cmd,sensor,info)"/>
     <bg txt="Erddcd Пристанища (CMD, датчик, информация)"/>
@@ -8251,7 +8251,7 @@
     <sv txt="Utgångs-ID"/>
     <fr txt="Identifiant de la sortie"/>
     <tr txt="Çıkış ID"/>
-    <es txt="Denominación Salida"/>
+    <es txt="Nombre de la salida"/>
     <it txt="ID uscita"/>
     <da txt="Udgangs ID"/>
     <cs txt="ID výstupu"/>
@@ -8475,7 +8475,7 @@
     <sv txt="Sensor grön (rakt fram)"/>
     <fr txt="Voie avec contact"/>
     <tr txt="Yeşil Algılayıcı"/>
-    <es txt="Contacto recto"/>
+    <es txt="Sensor recto"/>
     <it txt="Sensore dritto"/>
     <da txt="Sensor (lige frem)"/>
     <bg txt="Sensor направо"/>
@@ -8507,7 +8507,7 @@
     <sv txt="Sensor röd (växla ut)"/>
     <fr txt="Aiguillage avec contact"/>
     <tr txt="Kırmızı Algılayıcı"/>
-    <es txt="Contacto de desvío"/>
+    <es txt="Sensor de desvío"/>
     <it txt="Rilevatore"/>
     <da txt="Sensor (dreje)"/>
     <bg txt="Sensor активност"/>
@@ -8604,7 +8604,7 @@
     <sv txt="Sensorposition"/>
     <fr txt="Détecteur de position"/>
     <tr txt="Pozisyon algılayıcı"/>
-    <es txt="Contacto de posición"/>
+    <es txt="Sensor de posición"/>
     <it txt="Sensore di posizione"/>
     <da txt="Sensor position"/>
     <bg txt="Длъжност сензор"/>
@@ -8636,7 +8636,7 @@
     <sv txt="Loksensor"/>
     <fr txt="détecteur de locomotive"/>
     <tr txt="Loc algılayıcı"/>
-    <es txt="Contacto de Locomotora"/>
+    <es txt="Sensor de locomotora"/>
     <it txt="Sensore locomotiva"/>
     <da txt="Lokomotivsensor"/>
     <cs txt="Lokomotivní senzor"/>
@@ -8763,7 +8763,7 @@
     <sv txt="Block-ID"/>
     <fr txt="Identifiant du bloc"/>
     <tr txt="Blok ID"/>
-    <es txt="Denominación del Bloque"/>
+    <es txt="Nombre del bloque"/>
     <it txt="ID blocco"/>
     <da txt="Blok-ID"/>
     <cs txt="ID Bloku"/>
@@ -8828,7 +8828,7 @@
     <sv txt="Sätt ID"/>
     <fr txt="Entrer l'identifiant"/>
     <tr txt="ID Girişi"/>
-    <es txt="Introducir Denominación"/>
+    <es txt="Introduzca el nombre"/>
     <it txt="Inserire ID"/>
     <da txt="Indtast ID"/>
     <cs txt="Zadej ID"/>
@@ -9440,7 +9440,7 @@
     <sv txt="Tillverkar-ID"/>
     <fr txt="Identifiant du fabricant"/>
     <tr txt="Yapımcı ID"/>
-    <es txt="Denominación del Fabricante"/>
+    <es txt="Nombre del fabricante"/>
     <it txt="ID produttore"/>
     <da txt="Fabrikant ID"/>
     <bg txt="Производител ID"/>
@@ -10467,7 +10467,7 @@
     <sv txt="Spara ändringar innan avslut?"/>
     <fr txt="Enregistrer les modifications avant de quitter ?"/>
     <tr txt="Kapatmadan önce değişiklikler kaydedilsin mi?"/>
-    <es txt="¿Salvar cambios antes de cerrar?"/>
+    <es txt="¿Guardas cambios antes de cerrar?"/>
     <it txt="Salvare le modifiche prima di chiudere?"/>
     <da txt="Gem ændringer før der afsluttes ?"/>
     <bg txt="Запазване на промените преди затваряне?"/>
@@ -11112,7 +11112,7 @@
     <sv txt="Körström"/>
     <fr txt="Tension"/>
     <tr txt="Gücü"/>
-    <es txt="Energizar"/>
+    <es txt="Tensión en via"/>
     <it txt="Presenza tensione"/>
     <da txt="Kørestrøm"/>
     <cs txt="Napájení"/>
@@ -11822,7 +11822,7 @@
     <sv txt="Riktningsväxlingspaus" tip="Pausa xxxms efter sista växelkommandot"/>
     <fr txt="Pause lors d'un changement de direction" tip="Pause de x ms après la dernière commande d'aiguillage."/>
     <tr txt="DirChange pause" tip="Son makas komutundan sonra xxx ms ara ver."/>
-    <es txt="Pausa de descarga" tip="Detener xxxms despues del ultimo comando de accesorio"/>
+    <es txt="Pausa en cambio de dirección" tip="Detener xxxms después del ultimo comando de desvío"/>
     <it txt="Pausa cambio di direzione" tip="Attesa in ms prima del cambio di direzione"/>
     <da txt="Sporskifte Pause" tip="Pause xxxms efter sidste sporskifte kommando."/>
     <bg txt="DirChange пауза"/>
@@ -12004,7 +12004,7 @@
     <sv txt="Överlappade växlar"/>
     <fr txt="Chevauchement d'aiguillages"/>
     <tr txt="Overlapped switches"/>
-    <es txt="Interruptores solapados"/>
+    <es txt="Desvíos solapados"/>
     <it txt="Blocchi sovrapposti"/>
     <da txt="Overlappende sporskifter"/>
     <bg txt="Припокриват switches"/>
@@ -14197,7 +14197,7 @@
     <sv txt="Sensorer"/>
     <fr txt="Détecteurs"/>
     <tr txt="Sensors"/>
-    <es txt="Contactos"/>
+    <es txt="Sensores"/>
     <it txt="Sensori"/>
     <da txt="Sensorer"/>
     <cs txt="Senzory"/>
@@ -14856,7 +14856,7 @@
     <sv txt="Tillbehörsdekoder"/>
     <fr txt="Décodeur d'accessoires"/>
     <tr txt="Accessory Decoder"/>
-    <es txt="Accessory Decoder"/>
+    <es txt="Decoder de accesorios"/>
     <it txt="Decoder accessori"/>
     <da txt="Funktionsdekoder"/>
     <bg txt="Аксесоари декодер"/>
@@ -15032,7 +15032,7 @@
     <sv txt="Väg"/>
     <fr txt="Route"/>
     <tr txt="Road"/>
-    <es txt="Road"/>
+    <es txt="Carretera"/>
     <it txt="Strada"/>
     <da txt="Vej"/>
     <cs txt="Silnice"/>
@@ -15090,7 +15090,7 @@
     <sv txt="Omkastad"/>
     <fr txt="Dévié"/>
     <tr txt="Thrown"/>
-    <es txt="Thrown"/>
+    <es txt="Cruzado"/>
     <it txt="Deviato"/>
     <da txt="Omlagt"/>
     <cs txt="Zamítnout"/>
@@ -16667,7 +16667,7 @@
     <sv txt="Tillbehör"/>
     <fr txt="Accessoire"/>
     <tr txt="Accessory"/>
-    <es txt="Accessory"/>
+    <es txt="Accesorio"/>
     <it txt="Accessorio"/>
     <da txt="Tilbehør"/>
     <cs txt="Příslušenství"/>
@@ -16697,7 +16697,7 @@
     <sv txt="Tillbehör#"/>
     <fr txt="Accessoire#"/>
     <tr txt="Accessory#"/>
-    <es txt="Accessory#"/>
+    <es txt="Accesorio#"/>
     <it txt="Numero accessorio"/>
     <da txt="Tilbehør#"/>
     <cs txt="Příslušenství#"/>
@@ -16906,7 +16906,7 @@
     <sv txt="Återuppta alla lok" tip="Sätt alla lok i automode från tidigare session."/>
     <fr txt="Reprendre toutes les locomotives" tip="Mettre toutes les locomotives en mode automatique comme lors de la session précédente."/>
     <tr txt="Resume all locs" tip="Önceki oturumdaki tüm lokomotifleri otomatik moda geçir."/>
-    <es txt="Resume all locs" tip="Pasar todas las locomotoras de la sesión anterior a modo automático."/>
+    <es txt="Poner en marcha todas las locomotoras" tip="Pasar todas las locomotoras de la sesión anterior a modo automático."/>
     <it txt="Ripristinare tutte le locomotive" tip="Impostare modalità automatica a tutte le locomotive della precedente sessione"/>
     <da txt="Genoptag alle lokomotiver" tip="Sæt alle lokomotiver i auto tilstand fra foregående session."/>
     <bg txt="Възстанови всички locs"/>
@@ -17079,7 +17079,7 @@
     <sv txt="Tågvägs-IDs"/>
     <fr txt="Identifiant de l'itinéraire"/>
     <tr txt="Rota ID's"/>
-    <es txt="Denominación de Rutas"/>
+    <es txt="Nombres de las rutas"/>
     <it txt="ID itinerari"/>
     <da txt="Rute-IDs"/>
     <cs txt="ID vlakové cesty"/>
@@ -17290,7 +17290,7 @@
     <bg txt="Светлини разстояние"/>
     <da txt="Sluk lys"/>
     <el txt="Lights off"/>
-    <es txt="Lights off"/>
+    <es txt="Apagar luces"/>
     <hu txt="Fények ki"/>
     <tr txt="Lights off"/>
     <pt txt="Luzes desligadas"/>
@@ -17826,7 +17826,7 @@
     <bg txt="Спри времето"/>
     <da txt="Frys tid"/>
     <el txt="Πάγωμα του χρόνου"/>
-    <es txt="Freeze time"/>
+    <es txt="Parar el tiempo"/>
     <tr txt="Freeze time"/>
     <hu txt="Felfüggesztési idő"/>
     <pt txt="Parar tempo"/>
@@ -17856,7 +17856,7 @@
     <bg txt="Resume време"/>
     <da txt="Genoptag tid"/>
     <el txt="Resume χρόνο"/>
-    <es txt="Resume time"/>
+    <es txt="Poner en marcha el tiempo"/>
     <tr txt="Resume time"/>
     <hu txt="Újraindítási idő"/>
     <pt txt="Continuar tempo"/>
@@ -17916,7 +17916,7 @@
     <cs txt="Jméno cesty"/>
     <fr txt="Compagnie"/>
     <da txt="Vejnavn"/>
-    <es txt="Roadname"/>
+    <es txt="Nombre de la carretera"/>
     <tr txt="Roadname"/>
     <hu txt="Vasúttársaság"/>
     <bg txt="Roadname"/>
@@ -21105,7 +21105,7 @@
     <it txt="Supportateci ora"/>
     <pt txt="Doar já"/>
     <ru txt="Сделать пожертвование"/>
-    <es txt="Ayude ahora"/>
+    <es txt="Done ahora"/>
     <en_AU txt="Support now"/>
     <en_CA txt="Support now"/>
     <en_GB txt="Support now"/>
@@ -21154,7 +21154,7 @@
     <it txt="Carica codice"/>
     <pt txt="Carregar tecla"/>
     <ru txt="Загрузить ключ"/>
-    <es txt="Clave de Carga"/>
+    <es txt="Cargar archivo de licencia"/>
     <fr txt="Charger une clé produit"/>
     <en_AU txt="Load key"/>
     <en_CA txt="Load key"/>
@@ -21735,7 +21735,7 @@
     <nl txt="Spanning moet aan voor toebehoor commando's"/>
     <de txt="Gleisspannung für Zubehör-Schaltbefehle einschalten"/>
     <ru txt="Включить питание для аксессуарных команд"/>
-    <es txt="Encender estado para comandos accesorios"/>
+    <es txt="Encender estado para comandos de accesorios"/>
     <en_AU txt="Power on state for accessory commands"/>
     <en_CA txt="Power on state for accessory commands"/>
     <en_GB txt="Power on state for accessory commands"/>
@@ -23175,7 +23175,7 @@
     <en_AU txt="Plan health"/>
     <ru txt="Состояние плана"/>
     <fr txt="Plan de santé"/>
-    <es txt="Estado del plano"/>
+    <es txt="Comprobar el plano"/>
     <it txt="Salute del progetto"/>
     <sr_latin txt="Ispravnost plana"/>
     <zh_CN txt="方案健壮度"/>
@@ -23657,7 +23657,7 @@
     <en_AU txt="Get all"/>
     <fr txt="Tout obtenir"/>
     <ru txt="Получить всё"/>
-    <es txt="Ontener todos"/>
+    <es txt="Obtener todos"/>
     <it txt="Leggere tutto"/>
     <sr_latin txt="Primi sve"/>
     <ja txt="全て取得"/>
@@ -23862,7 +23862,7 @@
     <en_AU txt="Reset status"/>
     <fr txt="Remet a zéro les états"/>
     <ru txt="Сброс статуса"/>
-    <es txt="Estado del reset"/>
+    <es txt="Resetear estado"/>
     <it txt="Resettare stato"/>
     <sr_latin txt="Poništi status"/>
     <ja txt="状態のリセット"/>
@@ -24969,7 +24969,7 @@
   <Msg id="startofday">
     <en txt="Start of Day" tip="Initialize accessories and query sensors."/>
     <de txt="Weichen/Signale/Zähler initialisieren" tip="Zubehör initialisieren und Rückmelder abfragen"/>
-    <es txt="Inicio de Día" tip="Inicializar accesorios y sensores de consulta"/>
+    <es txt="Inicio de Día" tip="Inicializar accesorios y sensores"/>
     <fr txt="Début de journée" tip="Initialisation des accessoires et capteurs"/>
     <nl txt="Begin van de dag" tip="Initialiseer wissels, seinen en bezetmelders"/>
     <zh_CN txt="起始日" tip="初始化配件和查询传感器"/>
@@ -25130,7 +25130,7 @@
     <en txt="Open Key file"/>
     <nl txt="Open sleutel bestand"/>
     <de txt="Spenden-Schlüssel-Datei öffnen"/>
-    <es txt="Abrir archivo de clave"/>
+    <es txt="Abrir archivo de licencia"/>
     <ru txt="Открыть файл ключа"/>
     <it txt="Aprire file delle chiavi"/>
     <sr_latin txt="Otvori fajl ključa"/>
@@ -27087,7 +27087,7 @@
     <pl txt="Pokaż zablokowane rozjazdy" tip="Pokaż zablokowane rozjazdy w innym kolorze"/>
     <fr txt="Montrer les aiguillages bloqués" tip="Montrer les aiguillages bloqués avec une couleur différente"/>
     <be txt="Паказваць заблякаваныя стрэлкі" tip="Паказваць заблякаваныя стрэлкі іншым колерам."/>
-    <es txt="Mostrar cambios bloqueados" tip="Mostrar cambios bloqueados en diferente color."/>
+    <es txt="Mostrar desvíos bloqueados" tip="Mostrar desvíos bloqueados en diferente color."/>
   </Msg>
   <Msg id="altthrottle">
     <en txt="Alternative throttle"/>
@@ -28566,7 +28566,7 @@
   <Msg id="govirtual">
     <en txt="Virtual automatic"/>
     <de txt="Virtuelle Automatik"/>
-    <es txt="atutomatica virtual"/>
+    <es txt="Automático virtual"/>
     <nl txt="Virtueel automatisch"/>
     <pt_BR txt="Automático virtual"/>
     <sr_latin txt="Automatski virtualno"/>
@@ -28604,7 +28604,7 @@
   <Msg id="startallvirtual">
     <en txt="Start all locs virtual" tip="Put all locs in virtual auto mode."/>
     <de txt="Alle Loks virtuell starten" tip="Alle Loks in den virtuellen Modus setzen"/>
-    <es txt="comienzo de todos los locs virtuales" tip="poner todos los locs virtuales en modo automatico"/>
+    <es txt="Poner todas las maquinas en  modo automático virtual" tip="Poner todas las maquinas en modo automático virtual"/>
     <nl txt="Start alle loks virtueel" tip="Zet voor alle loks de virtuele automaat aan."/>
     <pt_BR txt="Iniciar todas locomotivas virtuais" tip="Colocar todas locomotivas no modo automático virtual."/>
     <sr_latin txt="Pokreni sve lokomotive virtualno" tip="Pokreni sve lokomotive u virtualnom auto modu."/>
@@ -29380,6 +29380,7 @@
     <ru txt="Количество trace-файлов"/>
     <be txt="Колькасьць файлаў пратаколу."/>
     <es txt="Numero de archivos de rastreo"/>
+    <pl txt="Ilość plików trace"/>
   </Msg>
   <Msg id="tracefilesize">
     <en txt="Trace file size in KB"/>
@@ -29397,6 +29398,7 @@
     <sv txt="Spårningsfil storlek i KB"/>
     <be txt="Памер файлаў пратаколу ў КБ"/>
     <es txt="Tamaño del archivo de rastreo en kB"/>
+    <pl txt="Wielkość pliku Trace w KB"/>
   </Msg>
   <Msg id="recording">
     <en txt="Recording"/>
@@ -29486,7 +29488,7 @@
     <fi txt="Sammuta myös Rocrail-palvelin?"/>
     <pl txt="Wyłącz również serwer Rocrail"/>
     <be txt="Завяршыць таксама працу сэрвэру Rocrail?"/>
-    <es txt="Apagar tambien el servido Rocrail?"/>
+    <es txt="Apagar también el servidor Rocrail?"/>
   </Msg>
   <Msg id="toolbar">
     <en txt="Toolbar"/>
@@ -30033,6 +30035,7 @@
     <sv txt="Kurvsensor"/>
     <be txt="Чуйнік у крывой"/>
     <es txt="Sensor en curva"/>
+    <pl txt="Sensor ukośny"/>
   </Msg>
   <Msg id="sensor_notrack">
     <en txt="General sensor"/>
@@ -30049,6 +30052,7 @@
     <sv txt="Allmän sensor"/>
     <be txt="Звычайны чуйнік"/>
     <es txt="Sensor general"/>
+    <pl txt="Sensor ogólny"/>
   </Msg>
   <Msg id="level_crossing">
     <en txt="Level crossing"/>
@@ -31685,6 +31689,7 @@
     <nl txt="Van uur"/>
     <pt_BR txt="Hora Origem"/>
     <sl txt="Od ure"/>
+    <sr_latin txt="Iz sata"/>
   </Msg>
   <Msg id="tohour">
     <en txt="To hour"/>
@@ -31693,6 +31698,7 @@
     <nl txt="Tot uur"/>
     <pt_BR txt="Hora Destino"/>
     <sl txt="Do ure"/>
+    <sr_latin txt="U sat"/>
   </Msg>
   <Msg id="fixall">
     <en txt="Fix all"/>
@@ -31701,6 +31707,7 @@
     <nl txt="Zet alle vast"/>
     <pt_BR txt="Corrigir tudo"/>
     <sl txt="Popravi vse"/>
+    <sr_latin txt="Popravi sve"/>
   </Msg>
   <Msg id="xmlscriptpath">
     <en txt="XmlScript path"/>
@@ -31709,38 +31716,105 @@
     <nl txt="XmlScript pad"/>
     <pt_BR txt="Caminho XmlScript"/>
     <sl txt="XmlScript pot"/>
+    <sr_latin txt="Putanja Xmlskripta"/>
   </Msg>
   <Msg id="togglefix">
     <en txt="Toggle fix"/>
+    <de txt="Alle fest"/>
+    <es txt="Parpadeo fijo"/>
+    <nl txt="Vast omzetten"/>
+    <pt_BR txt="Corrigir alternância"/>
+    <sl txt="Popravi preklope"/>
+    <sr_latin txt="Popravka preklopa"/>
   </Msg>
   <Msg id="find">
     <en txt="Find"/>
+    <de txt="Finden"/>
+    <es txt="Buscar"/>
+    <nl txt="Zoek"/>
+    <pt_BR txt="Encontrar"/>
+    <sl txt="Najdi"/>
+    <sr_latin txt="Nađi"/>
   </Msg>
   <Msg id="category">
     <en txt="Category"/>
+    <de txt="Kategorie"/>
+    <es txt="Categoría"/>
+    <nl txt="Categorie"/>
+    <pt_BR txt="Categoria"/>
+    <sl txt="Kategorija"/>
+    <sr_latin txt="Kategorija"/>
   </Msg>
   <Msg id="link">
     <en txt="Link"/>
+    <de txt="Link"/>
+    <es txt="Enlace"/>
+    <nl txt="Verwijzing"/>
+    <pt_BR txt="Conectar"/>
+    <sl txt="Povezava"/>
+    <sr_latin txt="Veza"/>
   </Msg>
   <Msg id="missingcriteria">
     <en txt="Missing criteria; Check all input fields."/>
+    <de txt="Fehlende Kriterien; alle Eingabe-Felder überprüfen."/>
+    <es txt="Falta criterio; compruebe todos los archivos entrantes"/>
+    <nl txt="Niet alle criteria is ingevuld."/>
+    <pt_BR txt="Falta um critério; Verifique todos os campos de entrada."/>
+    <sl txt="Manjkajoči kriterij; Preveri vsa vnosna polja."/>
+    <sr_latin txt="Nedostaje kriterijum;Proveri sva polja za unos."/>
   </Msg>
   <Msg id="result">
     <en txt="Result"/>
+    <de txt="Ergebnis"/>
+    <es txt="Resultado"/>
+    <nl txt="Resultaat"/>
+    <pt_BR txt="Resultado"/>
+    <sl txt="Rezultat"/>
+    <sr_latin txt="Rezultat"/>
   </Msg>
   <Msg id="note">
     <en txt="Note"/>
+    <de txt="Notiz"/>
+    <es txt="Nota"/>
+    <nl txt="Notitie"/>
+    <pt_BR txt="Recado"/>
+    <sl txt="Beležka"/>
+    <sr_latin txt="Napomena"/>
   </Msg>
   <Msg id="filename">
     <en txt="Filename"/>
+    <de txt="Dateiname"/>
+    <es txt="Nombre de archivo"/>
+    <nl txt="Bestandsnaam"/>
+    <pt_BR txt="Nome do arquivo"/>
+    <sl txt="Ime datoteke"/>
+    <sr_latin txt="Ime fajla"/>
   </Msg>
   <Msg id="showpath">
     <en txt="Show path"/>
+    <de txt="Pfad anzeigen"/>
+    <es txt="Mostrar ubicación"/>
+    <nl txt="Pad laten zien"/>
+    <pt_BR txt="Exibir Caminho"/>
+    <sl txt="Prikaži pot"/>
+    <sr_latin txt="Pokaži putanju"/>
   </Msg>
   <Msg id="date">
     <en txt="Date"/>
+    <de txt="Datum"/>
+    <es txt="Fecha"/>
+    <nl txt="Datum"/>
+    <pt_BR txt="Data"/>
+    <sl txt="Datum"/>
+    <sr_latin txt="Datum"/>
   </Msg>
   <Msg id="toomanyhits">
     <en txt="Too many hits; Reduce selection by search criteria."/>
+    <de txt="Zu viele Treffer; Auswahl mit Suchkriterien reduzieren"/>
+    <es txt="Demasiados resultados; reduce la selección mediante los criterios"/>
+    <nl txt="Te veel treffers; Beperk dit middels de zoek criteria."/>
+    <pt_BR txt="Encontrados muitos itens; melhore a busca com mais critérios."/>
+    <sl txt="Preveč zadetkov; Zmanjšaj izbor s kriteriji iskanja."/>
+    <sr_latin txt="Suviše pokušaja. Smanji izbor u načinu traženja."/>
   </Msg>
 </Messages>
