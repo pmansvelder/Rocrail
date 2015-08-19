@@ -177,7 +177,7 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
     int action = wxMessageDialog( this, wxGetApp().getMsg("missingcriteria"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
     return;
   }
-  Enable(false);
+  //Enable(false);
 
   wABox.setlink(m_Ini, m_Link->IsChecked()?True:False);
 
@@ -252,7 +252,7 @@ void ABoxDlg::openStub() {
       executeStub(filepath);
     }
     else {
-      Enable(false);
+      //Enable(false);
       StrOp.copy(m_DownloadFilename, NodeOp.getStr(stub, "path", "-"));
       StrOp.copy(m_DownloadUID, NodeOp.getStr(stub, "uid", "-"));
       m_DownloadPart = 0;
@@ -557,7 +557,7 @@ void ABoxDlg::event(iONode node) {
         m_DownloadFilename[0] = '\0';
         m_DownloadUID[0] = '\0';
         m_DownloadPart = -1;
-        Enable(true);
+        //Enable(true);
         executeStub(filepath);
       }
       StrOp.free(filepath);
@@ -581,7 +581,7 @@ void ABoxDlg::event(iONode node) {
         if( readDataBlock(m_AddedFilename, cmd, wDataReq.getdatapart(cmd)) ) {
           m_AddedFilename[0] = '\0';
           m_AddedUID[0] = '\0';
-          Enable(true);
+          //Enable(true);
         }
         wxGetApp().sendToRocrail( cmd );
         cmd->base.del(cmd);
