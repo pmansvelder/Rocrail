@@ -127,7 +127,7 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(5, wxGetApp().getMsg( "date" ), wxLIST_FORMAT_CENTER );
   m_Stubs->InsertColumn(6, wxGetApp().getMsg( "size" ), wxLIST_FORMAT_RIGHT );
 
-  m_bmpFind->SetBitmap(*_img_zoom);
+  m_bmpFind->SetBitmap(*_img_find);
   m_bmpUpload->SetBitmap(*_img_upload);
 
 }
