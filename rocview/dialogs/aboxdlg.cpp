@@ -116,7 +116,7 @@ void ABoxDlg::initLabels() {
   m_ShowPath->SetLabel( wxGetApp().getMsg( "showpath" ) );
 
   m_FindBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "find" ) );
-  m_UploadBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "upload" ) );
+  m_UploadBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "add" ) );
   m_ResultBox->GetStaticBox()->SetLabel( wxGetApp().getMsg( "result" ) );
 
   m_Stubs->InsertColumn(0, wxGetApp().getMsg( "file" ), wxLIST_FORMAT_LEFT );
