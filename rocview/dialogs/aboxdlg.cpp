@@ -127,6 +127,17 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(5, wxGetApp().getMsg( "date" ), wxLIST_FORMAT_CENTER );
 }
 
+void ABoxDlg::EnableDlg(bool enable) {
+  m_Find->Enable(enable);
+  m_Add->Enable(enable);
+  m_Open->Enable(enable);
+  m_Modify->Enable(enable);
+  m_Delete->Enable(enable);
+  m_Stubs->Enable(enable);
+  m_Link->Enable(enable);
+  m_ShowPath->Enable(enable);
+}
+
 void ABoxDlg::doFind( const char* text ) {
   wABox.setfindintext(m_Ini, m_FindInText->IsChecked()?True:False);
   wABox.setfindincategory(m_Ini, m_FindInCategory->IsChecked()?True:False);
@@ -177,7 +188,7 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
     int action = wxMessageDialog( this, wxGetApp().getMsg("missingcriteria"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
     return;
   }
-  //Enable(false);
+  EnableDlg(false);
 
   wABox.setlink(m_Ini, m_Link->IsChecked()?True:False);
 
@@ -252,7 +263,7 @@ void ABoxDlg::openStub() {
       executeStub(filepath);
     }
     else {
-      //Enable(false);
+      EnableDlg(false);
       StrOp.copy(m_DownloadFilename, NodeOp.getStr(stub, "path", "-"));
       StrOp.copy(m_DownloadUID, NodeOp.getStr(stub, "uid", "-"));
       m_DownloadPart = 0;
@@ -515,6 +526,7 @@ void ABoxDlg::event(iONode node) {
         if( readDataBlock(wFileEntry.getfname(fileentry), cmd, 0) ) {
           m_AddedFilename[0] = '\0';
           m_AddedUID[0] = '\0';
+          EnableDlg(true);
         }
         wxGetApp().sendToRocrail( cmd );
         cmd->base.del(cmd);
@@ -557,7 +569,7 @@ void ABoxDlg::event(iONode node) {
         m_DownloadFilename[0] = '\0';
         m_DownloadUID[0] = '\0';
         m_DownloadPart = -1;
-        //Enable(true);
+        EnableDlg(true);
         executeStub(filepath);
       }
       StrOp.free(filepath);
@@ -581,7 +593,7 @@ void ABoxDlg::event(iONode node) {
         if( readDataBlock(m_AddedFilename, cmd, wDataReq.getdatapart(cmd)) ) {
           m_AddedFilename[0] = '\0';
           m_AddedUID[0] = '\0';
-          //Enable(true);
+          EnableDlg(true);
         }
         wxGetApp().sendToRocrail( cmd );
         cmd->base.del(cmd);

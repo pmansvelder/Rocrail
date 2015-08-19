@@ -54,6 +54,7 @@ class ABoxDlg : public AboxDlgGen
     void clearStubList();
     void openStub();
     void showStub();
+    void EnableDlg(bool enable=true);
     void doFind(const char* text);
     bool readDataBlock(const char* filename, iONode node, int nr);
     void executeStub(const char* filepath);
