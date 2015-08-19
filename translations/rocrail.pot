@@ -8063,3 +8063,9 @@ msgstr ""
 msgid "To date"
 msgstr ""
 
+#. 
+# id="nodefaultapplicationfound"
+#, c-format
+msgid "No default application found for [%s]."
+msgstr ""
+

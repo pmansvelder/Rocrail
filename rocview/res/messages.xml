@@ -31823,4 +31823,7 @@
   <Msg id="todate">
     <en txt="To date" alttxt="To"/>
   </Msg>
+  <Msg id="nodefaultapplicationfound">
+    <en txt="No default application found for [%s]."/>
+  </Msg>
 </Messages>
