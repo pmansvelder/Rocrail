@@ -129,6 +129,7 @@ void ABoxDlg::initLabels() {
 
   m_bmpFind->SetBitmap(*_img_find);
   m_bmpUpload->SetBitmap(*_img_upload);
+  m_bmpOpen->SetBitmap(*_img_view);
 
 }
 
@@ -141,6 +142,9 @@ void ABoxDlg::EnableDlg(bool enable) {
   m_Stubs->Enable(enable);
   m_Link->Enable(enable);
   m_ShowPath->Enable(enable);
+  m_bmpFind->Enable(enable);
+  m_bmpUpload->Enable(enable);
+  m_bmpOpen->Enable(enable);
 }
 
 void ABoxDlg::doFind( const char* text ) {
@@ -756,3 +760,9 @@ void ABoxDlg::onBmpAdd( wxMouseEvent& event ) {
   wxCommandEvent cmdEvent;
   onAdd(cmdEvent);
 }
+
+void ABoxDlg::onBmpOpen( wxMouseEvent& event ) {
+  wxCommandEvent cmdEvent;
+  onOpen(cmdEvent);
+}
+

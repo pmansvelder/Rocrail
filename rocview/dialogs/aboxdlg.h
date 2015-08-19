@@ -43,6 +43,7 @@ class ABoxDlg : public AboxDlgGen
     void onOpenPreview( wxMouseEvent& event );
     void onBmpFind( wxMouseEvent& event );
     void onBmpAdd( wxMouseEvent& event );
+    void onBmpOpen( wxMouseEvent& event );
 
 	public:
 		/** Constructor */
