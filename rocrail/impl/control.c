@@ -952,14 +952,21 @@ static void __callback( obj inst, iONode nodeA ) {
     if( wDataReq.getcmd(nodeA) == wDataReq.get ) {
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "DataReq filename=[%s]", wDataReq.getfilename(nodeA) );
       if( wDataReq.gettype(nodeA) == wDataReq.image || wDataReq.gettype(nodeA) == wDataReq.smallimage ) {
-        const char* imageFilename = FileOp.isAbsolute(wDataReq.getfilename(nodeA)) ? FileOp.ripPath(wDataReq.getfilename(nodeA)):wDataReq.getfilename(nodeA);
+        const char* imageFilename = NULL;
+        const char* imageFileExt  = "";
+        if( wDataReq.getfilename(nodeA) != NULL && StrOp.len(wDataReq.getfilename(nodeA)) > 0 )
+          imageFilename = FileOp.isAbsolute(wDataReq.getfilename(nodeA)) ? FileOp.ripPath(wDataReq.getfilename(nodeA)):wDataReq.getfilename(nodeA);
+        else if( wDataReq.getid(nodeA) != NULL && StrOp.len(wDataReq.getid(nodeA)) > 0 ) {
+          imageFilename = wDataReq.getid(nodeA);
+          imageFileExt = ".png";
+        }
 
-        if( wDataReq.getfilename(nodeA) != NULL && StrOp.len(wDataReq.getfilename(nodeA)) > 0 ) {
+        if( imageFilename != NULL ) {
           iOFile f = NULL;
           Boolean smallimage = (wDataReq.gettype(nodeA) == wDataReq.smallimage) ? True:False;
-          char* filename = StrOp.fmt( "%s%c%s", AppOp.getImgPath(), SystemOp.getFileSeparator(), imageFilename );
-          char* sfilename = StrOp.fmt( "%s%csmall%c%s", AppOp.getImgPath(), SystemOp.getFileSeparator(), SystemOp.getFileSeparator(), imageFilename );
-          char* ifilename = StrOp.fmt( "%s%c%s", AppOp.getIconPath(), SystemOp.getFileSeparator(), imageFilename );
+          char* filename  = StrOp.fmt( "%s%c%s%s", AppOp.getImgPath(), SystemOp.getFileSeparator(), imageFilename, imageFileExt );
+          char* sfilename = StrOp.fmt( "%s%csmall%c%s%s", AppOp.getImgPath(), SystemOp.getFileSeparator(), SystemOp.getFileSeparator(), imageFilename, imageFileExt );
+          char* ifilename = StrOp.fmt( "%s%c%s%s", AppOp.getIconPath(), SystemOp.getFileSeparator(), imageFilename, imageFileExt );
 
           if( !wRocRail.isfsutf8(AppOp.getIni()) ) {
             if( smallimage && FileOp.exist( sfilename ) ) {
@@ -989,11 +996,42 @@ static void __callback( obj inst, iONode nodeA ) {
           StrOp.free(ifilename);
 
           if( f == NULL ) {
-            /* ToDo: Do a recursive search. */
+            /* Do a recursive search. */
             char* foundfilename = FileUtilsOp.findFile(AppOp.getImgPath(), imageFilename);
             if( FileOp.exist( foundfilename ) )
               f = FileOp.inst( foundfilename, OPEN_READONLY);
             StrOp.free(foundfilename);
+          }
+
+          if( f == NULL ) {
+            /* Do a find in the ArchiveBox. */
+            iIArchiveBox abox = AppOp.getArchiveBox();
+            if( abox != NULL ) {
+              iOList list = NULL;
+              TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "find=[%s]", imageFilename );
+              list = abox->find((obj)abox, imageFilename, False, False, True, False, "", "" );
+              if( list != NULL ) {
+                int i = 0;
+                int listSize = ListOp.size(list);
+                for( i = 0; i < listSize; i++) {
+                  iONode stub = (iONode)ListOp.get(list, i);
+                  const char* path = NodeOp.getStr(stub, "path", NULL);
+                  if( f == NULL && path != NULL && StrOp.endsWithi(path, ".png") && !NodeOp.getBool(stub, "link", True) ) {
+                    char* foundfilename = StrOp.fmt("%s%c%s%c%s%c%s",
+                        wRocRail.getaboxhome(AppOp.getIni()), SystemOp.getFileSeparator(),
+                        NodeOp.getStr(stub, "category", "category"), SystemOp.getFileSeparator(), NodeOp.getStr(stub, "uid", "uid"), SystemOp.getFileSeparator(), path);
+                    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "image=[%s]", foundfilename );
+                    if( FileOp.exist( foundfilename ) )
+                      f = FileOp.inst( foundfilename, OPEN_READONLY);
+                    StrOp.free(foundfilename);
+                  }
+                  NodeOp.base.del(stub);
+                }
+                TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "clean up list..." );
+                ListOp.base.del(list);
+
+              }
+            }
           }
 
           if( f != NULL ) {
