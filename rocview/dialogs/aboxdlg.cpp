@@ -490,7 +490,7 @@ void ABoxDlg::initResult() {
   ListOp.base.del(list);
 
   // resize
-  for( int n = 0; n < 6; n++ ) {
+  for( int n = 0; n < 7; n++ ) {
     m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE_USEHEADER);
     int autoheadersize = m_Stubs->GetColumnWidth(n);
     m_Stubs->SetColumnWidth(n, wxLIST_AUTOSIZE);
@@ -571,6 +571,15 @@ void ABoxDlg::event(iONode node) {
      * <datareq cmd="11" id="20150816093859345" category="Zomaar" filename="paspoort-2014.jpeg" datapart="0" controlcode="" server="infw5601F5A0" data="FFD8FFE0
      */
     if( StrOp.equals(m_DownloadUID, wDataReq.getid(node)) ) {
+
+      if(wDataReq.getrc(node) != 0) {
+        m_DownloadFilename[0] = '\0';
+        m_DownloadUID[0] = '\0';
+        m_DownloadPart = -1;
+        EnableDlg(true);
+        int action = wxMessageDialog( this, wxT("Error getting file data!"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+      }
+
       wxString tempdir = wxFileName::GetTempDir();
       char* filepath = StrOp.fmt("%s%c%s", (const char*)tempdir.mb_str(wxConvUTF8), SystemOp.getFileSeparator(), wDataReq.getfilename(node)  );
 

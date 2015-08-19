@@ -1030,6 +1030,7 @@
     <var name="note" vt="string" defval="" range="*"/>
     <var name="link" vt="bool" defval="true"/>
     <var name="ack" vt="bool" defval="false" remark="Achknowledge of the request."/>
+    <var name="rc" vt="int" defval="0"/>
     <var name="readonly" vt="bool" defval="false"/>
     <var name="findintext" vt="bool" defval="true"/>
     <var name="findincategory" vt="bool" defval="true"/>

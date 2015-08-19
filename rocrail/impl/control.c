@@ -1271,14 +1271,21 @@ static void __callback( obj inst, iONode nodeA ) {
         datasize = abox->getFileData( (obj)abox, wDataReq.getid(nodeA), wDataReq.getcategory(nodeA), wDataReq.getfilename(nodeA),
             wDataReq.getdatapart(nodeA), bytes, &lastBlock );
 
-        char* filedata = StrOp.byteToStr(bytes, datasize);
-        wDataReq.setdata(nodeA, filedata );
-        wDataReq.setack(nodeA, lastBlock );
-        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "getdata: datasize=%ld", datasize );
+        if( datasize > 0 ) {
+          char* filedata = StrOp.byteToStr(bytes, datasize);
+          wDataReq.setdata(nodeA, filedata );
+          wDataReq.setack(nodeA, lastBlock );
+          TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "getdata: datasize=%ld", datasize );
 
-        freeMem(bytes);
-        StrOp.free(filedata);
-        ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+          freeMem(bytes);
+          StrOp.free(filedata);
+          ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+        }
+        else {
+          wDataReq.setrc(nodeA, -1 );
+          wDataReq.setack(nodeA, True );
+          ClntConOp.postEvent( AppOp.getClntCon(), nodeA, wCommand.getserver( nodeA ) );
+        }
         return;
       }
       NodeOp.base.del( nodeA );
