@@ -230,8 +230,7 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 }
 
 void ABoxDlg::executeStub(const char* filepath) {
-  wxMimeTypesManager manager;
-  wxFileType *filetype=manager.GetFileTypeFromExtension(wxString(StrOp.getExtension(filepath),wxConvUTF8));
+  wxFileType *filetype=wxTheMimeTypesManager->GetFileTypeFromExtension(wxString(StrOp.getExtension(filepath),wxConvUTF8));
   wxString command=filetype->GetOpenCommand(wxString(filepath,wxConvUTF8));
   TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "execute [%s]", (const char*)command.mb_str(wxConvUTF8) );
   wxExecute(command);
