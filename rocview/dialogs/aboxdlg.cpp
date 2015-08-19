@@ -341,11 +341,14 @@ void ABoxDlg::showStub() {
       }
     }
     else {
-      m_Preview->SetBitmap(*_img_abox);
+      if( StrOp.endsWithi(path, ".pdf") )
+        m_Preview->SetBitmap(*_img_pdf);
+      else
+        m_Preview->SetBitmap(*_img_document);
     }
   }
   else {
-    m_Preview->SetBitmap(*_img_abox);
+    m_Preview->SetBitmap(*_img_document);
   }
 
   m_Preview->Refresh();
