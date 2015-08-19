@@ -101,8 +101,8 @@ void ABoxDlg::initLabels() {
   m_FindInCategory->SetLabel( wxGetApp().getMsg( "category" ) );
   m_FindInFilename->SetLabel( wxGetApp().getMsg( "filename" ) );
   m_FindInDate->SetLabel( wxGetApp().getMsg( "date" ) );
-  m_labFromDate->SetLabel( wxGetApp().getMsg( "from" ) );
-  m_labToDate->SetLabel( wxGetApp().getMsg( "to" ) );
+  m_labFromDate->SetLabel( wxGetApp().getMsg( "fromdate" ) );
+  m_labToDate->SetLabel( wxGetApp().getMsg( "todate" ) );
   m_Add->SetLabel( wxGetApp().getMsg( "add" ) );
   m_Open->SetLabel( wxGetApp().getMsg( "open" ) );
   m_Modify->SetLabel( wxGetApp().getMsg( "modify" ) );

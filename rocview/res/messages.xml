@@ -31817,4 +31817,10 @@
     <sl txt="Preveč zadetkov; Zmanjšaj izbor s kriteriji iskanja."/>
     <sr_latin txt="Suviše pokušaja. Smanji izbor u načinu traženja."/>
   </Msg>
+  <Msg id="fromdate">
+    <en txt="From date" alttxt="From"/>
+  </Msg>
+  <Msg id="todate">
+    <en txt="To date" alttxt="To"/>
+  </Msg>
 </Messages>

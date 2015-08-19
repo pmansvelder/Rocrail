@@ -8051,3 +8051,15 @@ msgstr ""
 msgid "Too many hits; Reduce selection by search criteria."
 msgstr ""
 
+#. 
+# id="fromdate"
+#, c-format
+msgid "From date"
+msgstr ""
+
+#. 
+# id="todate"
+#, c-format
+msgid "To date"
+msgstr ""
+
