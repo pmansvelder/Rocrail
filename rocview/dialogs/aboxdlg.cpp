@@ -125,6 +125,7 @@ void ABoxDlg::initLabels() {
   m_Stubs->InsertColumn(3, wxT( "UID" ), wxLIST_FORMAT_LEFT );
   m_Stubs->InsertColumn(4, wxGetApp().getMsg( "link" ), wxLIST_FORMAT_CENTER );
   m_Stubs->InsertColumn(5, wxGetApp().getMsg( "date" ), wxLIST_FORMAT_CENTER );
+  m_Stubs->InsertColumn(6, wxGetApp().getMsg( "size" ), wxLIST_FORMAT_RIGHT );
 }
 
 void ABoxDlg::EnableDlg(bool enable) {
@@ -213,6 +214,7 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
   wFileEntry.settext( fileentry, m_Text->GetValue().mb_str(wxConvUTF8) );
   wFileEntry.setcategory( fileentry, m_Category->GetValue().mb_str(wxConvUTF8) );
+  wFileEntry.setsize(fileentry, FileOp.fileSize(wFileEntry.getfname(fileentry)));
 
   char   dateStr[20];
   long aTime = FileOp.fileTime( wFileEntry.getfname(fileentry) );
@@ -331,16 +333,15 @@ void ABoxDlg::showStub() {
       }
     }
     else {
-      m_Preview->SetBitmap(*_img_document);
+      m_Preview->SetBitmap(*_img_abox);
     }
   }
   else {
-    m_Preview->SetBitmap(*_img_document);
+    m_Preview->SetBitmap(*_img_abox);
   }
 
   m_Preview->Refresh();
-  GetSizer()->Fit(this);
-  GetSizer()->Layout();
+  m_PreviewSizer->Layout();
 
 }
 
@@ -410,16 +411,22 @@ static int __sortDate(obj* _a, obj* _b) {
     const char* idB = NodeOp.getStr(b, "filedate", "-");
     return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
 }
+static int __sortSize(obj* _a, obj* _b) {
+    iONode a = (iONode)*_a;
+    iONode b = (iONode)*_b;
+    const char* idA = NodeOp.getStr(a, "size", "0");
+    const char* idB = NodeOp.getStr(b, "size", "0");
+    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+}
 
 void ABoxDlg::initResult() {
   m_Stubs->DeleteAllItems();
   m_ResultText->SetValue(wxT(""));
   m_ResultNote->SetValue(wxT(""));
 
-  m_Preview->SetBitmap(*_img_document);
+  m_Preview->SetBitmap(*_img_abox);
   m_Preview->Refresh();
-  GetSizer()->Fit(this);
-  GetSizer()->Layout();
+  m_PreviewSizer->Layout();
 
 
   iOList list = ListOp.inst();
@@ -443,6 +450,9 @@ void ABoxDlg::initResult() {
   else if( m_SortCol == 5 ) {
     ListOp.sort(list, &__sortDate);
   }
+  else if( m_SortCol == 6 ) {
+    ListOp.sort(list, &__sortSize);
+  }
   else {
     if( m_ShowPath->IsChecked() )
       ListOp.sort(list, &__sortPath);
@@ -462,6 +472,7 @@ void ABoxDlg::initResult() {
     m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 4, wxString(NodeOp.getBool(stub, "link", True)?"X":"-",wxConvUTF8) );
     m_Stubs->SetItem( idx, 5, wxString(NodeOp.getStr(stub, "filedate", "-"),wxConvUTF8) );
+    m_Stubs->SetItem( idx, 6, wxString::Format("%ld", NodeOp.getLong(stub, "size", 0)) );
     m_Stubs->SetItemPtrData(idx, (wxUIntPtr)stub);
   }
 
