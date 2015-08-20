@@ -301,8 +301,12 @@ static char* _linkFile( obj inst ,const char* path, const char* filedate, const 
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "link file [%s]", path );
   if( link )
     wStub.setpath(stub, path);
-  else
-    wStub.setpath(stub, FileOp.ripPath(path));
+  else {
+    /* preserve original file separators */
+    char* l_path = StrOp.dup(path);
+    wStub.setpath(stub, FileOp.ripPath(l_path));
+    StrOp.free(l_path);
+  }
   wStub.setfiledate(stub, filedate);
   wStub.setfiletime(stub, filetime);
   wStub.setsize(stub, size);
