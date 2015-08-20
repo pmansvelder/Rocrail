@@ -231,14 +231,17 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
   wFileEntry.settext( fileentry, m_Text->GetValue().mb_str(wxConvUTF8) );
   wFileEntry.setcategory( fileentry, m_Category->GetValue().mb_str(wxConvUTF8) );
-  wFileEntry.setsize(fileentry, FileOp.fileSize(wFileEntry.getfname(fileentry)));
+  if( !StrOp.startsWithi(wFileEntry.getfname(fileentry), "http"))
+    wFileEntry.setsize(fileentry, FileOp.fileSize(wFileEntry.getfname(fileentry)));
 
-  char   dateStr[20];
-  long aTime = FileOp.fileTime( wFileEntry.getfname(fileentry) );
-  strftime( dateStr, sizeof(dateStr), "%Y%m%d", localtime(&aTime) );
-  wFileEntry.setfiledate(fileentry, dateStr);
-  strftime( dateStr, sizeof(dateStr), "%H%M%S", localtime(&aTime) );
-  wFileEntry.setfiletime(fileentry, dateStr);
+  if( !StrOp.startsWithi(wFileEntry.getfname(fileentry), "http")) {
+    char   dateStr[20];
+    long aTime = FileOp.fileTime( wFileEntry.getfname(fileentry) );
+    strftime( dateStr, sizeof(dateStr), "%Y%m%d", localtime(&aTime) );
+    wFileEntry.setfiledate(fileentry, dateStr);
+    strftime( dateStr, sizeof(dateStr), "%H%M%S", localtime(&aTime) );
+    wFileEntry.setfiletime(fileentry, dateStr);
+  }
 
   char* s = NodeOp.base.toString(cmd);
   TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "add: %s", s );
