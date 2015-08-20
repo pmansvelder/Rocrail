@@ -562,7 +562,8 @@ void ABoxDlg::event(iONode node) {
       int action = wxMessageDialog( this, wxString(s,wxConvUTF8), _T("Rocrail"), wxOK ).ShowModal();
       StrOp.free(s);
       */
-      if( StrOp.find( wFileEntry.getfname(fileentry), FileOp.ripPath(m_AddedFilename) ) ) {
+      if( StrOp.equals( wFileEntry.getfname(fileentry), m_AddedFilename ) ) {
+        TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "start upload of [%s]...", wFileEntry.getfname(fileentry) );
         StrOp.copy( m_AddedUID, uid );
         iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
         wDataReq.setcmd( cmd, wDataReq.abox_filedata );
