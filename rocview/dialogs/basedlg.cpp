@@ -300,6 +300,10 @@ static int __sortPos(obj* _a, obj* _b)
     int zB = wItem.getz( b );
     if( xA == xB && yA == yB && zA == zB )
       return 0;
+    if( zA > zB )
+      return order?-1:1;
+    if( zA < zB )
+      return order?1:-1;
     if( xA > xB )
       return order?-1:1;
     if( xA < xB )
@@ -307,10 +311,6 @@ static int __sortPos(obj* _a, obj* _b)
     if( yA > yB )
       return order?-1:1;
     if( yA < yB )
-      return order?1:-1;
-    if( zA > zB )
-      return order?-1:1;
-    if( zA < zB )
       return order?1:-1;
     return 0;
 }
@@ -501,7 +501,7 @@ void BaseDialog::appendItem( iONode Item) {
     m_ItemList->SetItem( index, m_colShow, wxString( wItem.isshow(Item)?"true":"false", wxConvUTF8));
   }
   if( m_ShowPos ) {
-    m_ItemList->SetItem( index, m_colPos, wxString::Format(_T("%d, %d, %d"), wItem.getx(Item), wItem.gety(Item), wItem.getz(Item)) );
+    m_ItemList->SetItem( index, m_colPos, wxString::Format(_T("%d: %d,%d"), wItem.getz(Item), wItem.getx(Item), wItem.gety(Item)) );
     m_ItemList->SetItem( index, m_colOri, wxString( wItem.getori(Item)!=NULL?wItem.getori(Item):wItem.west, wxConvUTF8));
     m_ItemList->SetColumnWidth(m_colPos, wxLIST_AUTOSIZE_USEHEADER);
     m_ItemList->SetColumnWidth(m_colOri, wxLIST_AUTOSIZE_USEHEADER);
