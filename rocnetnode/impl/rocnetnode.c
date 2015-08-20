@@ -45,6 +45,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocrail/wrapper/public/MacroLine.h"
 #include "rocrail/wrapper/public/Switch.h"
 #include "rocrail/wrapper/public/Output.h"
+#include "rocrail/wrapper/public/State.h"
 
 #include "rocnetnode/impl/rocnetnode_impl.h"
 
@@ -2760,6 +2761,19 @@ static void __listener( obj inst, iONode nodeC, int level ) {
 
       __sendRN((iORocNetNode)inst, msg);
     }
+
+    else if(StrOp.equals(NodeOp.getName(nodeC), wState.name())) {
+      byte msg[256];
+      const char* ident = wFeedback.getidentifier(nodeC);
+      msg[RN_PACKET_NETID] = data->location;
+      msg[RN_PACKET_GROUP] = RN_GROUP_CS;
+      msg[RN_PACKET_ACTION] = RN_CS_TRACKPOWER;
+      msg[RN_PACKET_LEN] = 1;
+      msg[RN_PACKET_DATA+2] = wState.ispower(nodeC)?RN_CS_TRACKPOWER_ON:RN_CS_TRACKPOWER_OFF;
+      rnSenderAddresToPacket( data->id, msg, 0 );
+      __sendRN((iORocNetNode)inst, msg);
+    }
+
     NodeOp.base.del(nodeC);
   }
 }
