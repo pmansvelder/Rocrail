@@ -27,7 +27,6 @@ static int instCnt = 0;
 
 static void __writeIni(iOArchiveBox inst);
 
-#define StubPrefix "stub"
 #define StubExt    ".abox"
 
 /** ----- OBase ----- */
@@ -165,7 +164,7 @@ static iOList __find( const char* directory ,const char* text, Boolean intext, B
           }
         }
         else {
-          if( StrOp.endsWith(dir->name, ".abox") ) {
+          if( StrOp.endsWith(dir->name, StubExt) ) {
             iONode stub = NULL;
             char* stubName = StrOp.fmt("%s%c%s", directory, SystemOp.getFileSeparator(), dir->name);
             TraceOp.trc( name, TRCLEVEL_DEBUG, __LINE__, 9999, "getDirEntry: %s", stubName );
@@ -258,7 +257,7 @@ static void __writeStub(iOArchiveBox inst, iONode stub) {
   if( MutexOp.wait( data->stubMux ) ) {
     char* stamp = StrOp.createStampNoDots();
     char* stubRoot = StrOp.fmt("%s%c%s", data->home, SystemOp.getFileSeparator(), wStub.getcategory(stub) );
-    char* stubFilename = StrOp.fmt("%s%c%s.abox", stubRoot, SystemOp.getFileSeparator(), stamp );
+    char* stubFilename = StrOp.fmt("%s%c%s%s", stubRoot, SystemOp.getFileSeparator(), stamp, StubExt );
     char*  xmlStr = NULL;
     iOFile f      = NULL;
 
