@@ -21,6 +21,8 @@
 #include "rocabox/wrapper/public/ArchiveBox.h"
 #include "rocabox/wrapper/public/Stub.h"
 
+#include <string.h>
+
 static int instCnt = 0;
 
 static void __writeIni(iOArchiveBox inst);
@@ -340,8 +342,7 @@ static Boolean _deleteFile( obj inst ,const char* uid ,const char* stubfile ) {
       char* rootDir = StrOp.fmt("%s%c%s%c%s", data->home, SystemOp.getFileSeparator(), wStub.getcategory(stub), SystemOp.getFileSeparator(), wStub.getuid(stub));
       char* filepath = StrOp.fmt("%s%c%s", rootDir, SystemOp.getFileSeparator(), wStub.getpath(stub));
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "delete link [%s]", rootDir );
-      if( FileOp.exist(filepath) )
-        FileOp.remove(filepath);
+      FileOp.remove(filepath);
       FileOp.rmdir(rootDir);
       StrOp.free(rootDir);
       StrOp.free(filepath);
