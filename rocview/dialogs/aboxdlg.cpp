@@ -559,7 +559,7 @@ void ABoxDlg::event(iONode node) {
       int action = wxMessageDialog( this, wxString(s,wxConvUTF8), _T("Rocrail"), wxOK ).ShowModal();
       StrOp.free(s);
       */
-      if( StrOp.equals(m_AddedFilename, wFileEntry.getfname(fileentry) ) ) {
+      if( StrOp.find( wFileEntry.getfname(fileentry), FileOp.ripPath(m_AddedFilename) ) ) {
         StrOp.copy( m_AddedUID, uid );
         iONode cmd = NodeOp.inst( wDataReq.name(), NULL, ELEMENT_NODE );
         wDataReq.setcmd( cmd, wDataReq.abox_filedata );
