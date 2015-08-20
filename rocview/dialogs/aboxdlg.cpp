@@ -206,6 +206,8 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
     int action = wxMessageDialog( this, wxGetApp().getMsg("missingcriteria"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
     return;
   }
+  if( StrOp.startsWithi(m_Filename->GetValue().mb_str(wxConvUTF8), "http"))
+    m_Link->SetValue(true);
 
   wABox.setlink(m_Ini, m_Link->IsChecked()?True:False);
 
