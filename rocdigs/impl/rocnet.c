@@ -1696,6 +1696,15 @@ static void __evaluateRN( iOrocNet rocnet, byte* rn ) {
   switch( group ) {
     case RN_GROUP_CS:
       rnReply = rocnetParseGeneral( rocnet, rn );
+      if( actionType == RN_CS_TRACKPOWER ) {
+        Boolean power = (rn[RN_PACKET_DATA + 0] == RN_CS_TRACKPOWER_ON) ? True:False;
+        iONode nodeC = NodeOp.inst( wState.name(), NULL, ELEMENT_NODE );
+        wState.setiid( nodeC, data->iid );
+        wState.setpower( nodeC, power );
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "state event: power=%s", power?"ON":"OFF");
+        if( data->listenerFun != NULL && data->listenerObj != NULL )
+          data->listenerFun( data->listenerObj, nodeC, TRCLEVEL_INFO );
+      }
       break;
 
     case RN_GROUP_OUTPUT:
