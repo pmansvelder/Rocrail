@@ -1411,7 +1411,7 @@
                                         <property name="font"></property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">  </property>
+                                        <property name="label"></property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
                                         <property name="name">m_labUploadState</property>
@@ -1875,7 +1875,7 @@
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
                                         <property name="maximum_size">-1,-1</property>
-                                        <property name="minimum_size">-1,-1</property>
+                                        <property name="minimum_size">-1,100</property>
                                         <property name="name">m_Preview</property>
                                         <property name="permission">protected</property>
                                         <property name="pos"></property>
@@ -2163,7 +2163,7 @@
                                         <property name="font"></property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">  </property>
+                                        <property name="label"></property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
                                         <property name="name">m_labDownloadState</property>
