@@ -73,6 +73,7 @@ class ABoxDlg : public AboxDlgGen
     char m_DownloadFilename[1024];
     char m_DownloadUID[128];
     int m_DownloadPart;
+    bool m_Enable;
 
 };
 

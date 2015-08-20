@@ -45,6 +45,7 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text, const char* title ):AboxDl
   m_DownloadFilename[0] = '\0';
   m_DownloadUID[0] = '\0';
   m_DownloadPart = -1;
+  m_Enable = true;
 
   m_Ini = wGui.getabox( wxGetApp().getIni() );
   if( m_Ini == NULL ) {
@@ -137,8 +138,13 @@ void ABoxDlg::initLabels() {
 }
 
 void ABoxDlg::EnableDlg(bool enable) {
+  m_Enable = enable;
+
   m_Find->Enable(enable);
-  m_Add->Enable(enable);
+  if( m_Enable )
+    m_Add->Enable(!m_ReadOnly);
+  else
+    m_Add->Enable(enable);
   m_Open->Enable(enable);
   m_Modify->Enable(enable);
   m_Delete->Enable(enable);
@@ -579,6 +585,7 @@ void ABoxDlg::event(iONode node) {
         m_DownloadFilename[0] = '\0';
         m_DownloadUID[0] = '\0';
         m_DownloadPart = -1;
+        m_labDownloadState->SetLabel(wxT(""));
         EnableDlg(true);
         int action = wxMessageDialog( this, wxT("Error getting file data!"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
         return;
@@ -605,6 +612,7 @@ void ABoxDlg::event(iONode node) {
         wDataReq.setcategory( cmd, wDataReq.getcategory(node) );
         wDataReq.setfilename(cmd, wDataReq.getfilename(node) );
         m_DownloadPart++;
+        m_labDownloadState->SetLabel(wxString::Format(wxT("%d"), m_DownloadPart));
         wDataReq.setdatapart(cmd, m_DownloadPart);
         wxGetApp().sendToRocrail( cmd );
         cmd->base.del(cmd);
@@ -613,6 +621,7 @@ void ABoxDlg::event(iONode node) {
         m_DownloadFilename[0] = '\0';
         m_DownloadUID[0] = '\0';
         m_DownloadPart = -1;
+        m_labDownloadState->SetLabel(wxT(""));
         EnableDlg(true);
         executeStub(filepath);
       }
@@ -634,9 +643,12 @@ void ABoxDlg::event(iONode node) {
         wDataReq.setfilename(cmd, wDataReq.getfilename(node));
         wDataReq.setdatapart(cmd, wDataReq.getdatapart(node)+1);
 
+        m_labUploadState->SetLabel(wxString::Format(wxT("%d"), wDataReq.getdatapart(cmd)));
+
         if( readDataBlock(m_AddedFilename, cmd, wDataReq.getdatapart(cmd)) ) {
           m_AddedFilename[0] = '\0';
           m_AddedUID[0] = '\0';
+          m_labUploadState->SetLabel(wxT(""));
           EnableDlg(true);
         }
         wxGetApp().sendToRocrail( cmd );
@@ -648,7 +660,8 @@ void ABoxDlg::event(iONode node) {
 
   else if( wDataReq.getcmd(node) == wDataReq.abox_getcategories ) {
     m_ReadOnly = wDataReq.isreadonly(node)?true:false;
-    m_Add->Enable(!m_ReadOnly);
+    if( m_Enable )
+      m_Add->Enable(!m_ReadOnly);
     m_Category->Clear();
     wxString findtext = m_FindText->GetValue();
     m_FindText->Clear();

@@ -63,6 +63,7 @@ class AboxDlgGen : public wxDialog
 		wxCheckBox* m_Link;
 		wxStaticBitmap* m_bmpUpload;
 		wxButton* m_Add;
+		wxStaticText* m_labUploadState;
 		wxStaticBoxSizer* m_ResultBox;
 		wxListCtrl* m_Stubs;
 		wxCheckBox* m_ShowPath;
@@ -76,6 +77,7 @@ class AboxDlgGen : public wxDialog
 		wxButton* m_Open;
 		wxButton* m_Modify;
 		wxButton* m_Delete;
+		wxStaticText* m_labDownloadState;
 		wxStdDialogButtonSizer* m_StdButtons;
 		wxButton* m_StdButtonsOK;
 		wxButton* m_StdButtonsHelp;

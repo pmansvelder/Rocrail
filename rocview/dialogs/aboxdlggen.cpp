@@ -137,7 +137,11 @@ AboxDlgGen::AboxDlgGen( wxWindow* parent, wxWindowID id, const wxString& title, 
 	m_Add = new wxButton( this, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer6->Add( m_Add, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_UploadBox->Add( bSizer6, 0, 0, 5 );
+	m_labUploadState = new wxStaticText( this, wxID_ANY, wxT("  "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_labUploadState->Wrap( -1 );
+	bSizer6->Add( m_labUploadState, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_UploadBox->Add( bSizer6, 0, wxEXPAND, 5 );
 	
 	bSizer3->Add( m_UploadBox, 0, wxEXPAND|wxALL, 5 );
 	
@@ -197,6 +201,10 @@ AboxDlgGen::AboxDlgGen( wxWindow* parent, wxWindowID id, const wxString& title, 
 	
 	m_Delete = new wxButton( this, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_Delete, 0, wxALL, 5 );
+	
+	m_labDownloadState = new wxStaticText( this, wxID_ANY, wxT("  "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_labDownloadState->Wrap( -1 );
+	bSizer2->Add( m_labDownloadState, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_ResultBox->Add( bSizer2, 0, wxEXPAND, 5 );
 	
