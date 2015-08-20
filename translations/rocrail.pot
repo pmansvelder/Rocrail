@@ -8069,3 +8069,15 @@ msgstr ""
 msgid "No default application found for [%s]."
 msgstr ""
 
+#. 
+# id="downloadingfile"
+#, c-format
+msgid "Downloading file [%s]."
+msgstr ""
+
+#. 
+# id="uploadingfile"
+#, c-format
+msgid "Uploading file [%s]."
+msgstr ""
+

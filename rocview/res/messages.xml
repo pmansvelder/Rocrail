@@ -31826,4 +31826,10 @@
   <Msg id="nodefaultapplicationfound">
     <en txt="No default application found for [%s]."/>
   </Msg>
+  <Msg id="downloadingfile">
+    <en txt="Downloading file [%s]."/>
+  </Msg>
+  <Msg id="uploadingfile">
+    <en txt="Uploading file [%s]."/>
+  </Msg>
 </Messages>

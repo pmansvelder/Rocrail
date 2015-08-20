@@ -42,6 +42,9 @@ ABoxDlg::ABoxDlg( wxWindow* parent, const char* text, const char* title ):AboxDl
   m_AddedFilename[0] = '\0';
   m_AddedUID[0] = '\0';
   m_AddedPart = -1;
+  m_DownloadFilename[0] = '\0';
+  m_DownloadUID[0] = '\0';
+  m_DownloadPart = -1;
 
   m_Ini = wGui.getabox( wxGetApp().getIni() );
   if( m_Ini == NULL ) {
@@ -578,6 +581,7 @@ void ABoxDlg::event(iONode node) {
         m_DownloadPart = -1;
         EnableDlg(true);
         int action = wxMessageDialog( this, wxT("Error getting file data!"), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+        return;
       }
 
       wxString tempdir = wxFileName::GetTempDir();
@@ -688,7 +692,24 @@ void ABoxDlg::onHelp( wxCommandEvent& event ) {
   wxGetApp().openLink( "abox:archivebox" );
 }
 
+void ABoxDlg::onClose( wxCloseEvent& event ) {
+  wxCommandEvent cmdEvent;
+  onOK(cmdEvent);
+}
+
 void ABoxDlg::onOK( wxCommandEvent& event ) {
+  if( StrOp.len(m_AddedFilename) > 0 ) {
+    char* tip = StrOp.fmt( wxGetApp().getCMsg("uploadingfile"), m_AddedFilename );
+    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    StrOp.free(tip);
+    return;
+  }
+  if( StrOp.len(m_DownloadFilename) > 0 ) {
+    char* tip = StrOp.fmt( wxGetApp().getCMsg("downloadingfile"), m_DownloadFilename );
+    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    StrOp.free(tip);
+    return;
+  }
   EndModal( wxID_OK );
 }
 
