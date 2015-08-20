@@ -434,10 +434,15 @@ static int __sortDate(obj* _a, obj* _b) {
 static int __sortSize(obj* _a, obj* _b) {
     iONode a = (iONode)*_a;
     iONode b = (iONode)*_b;
-    const char* idA = NodeOp.getStr(a, "size", "0");
-    const char* idB = NodeOp.getStr(b, "size", "0");
-    return ms_Sort ? strcmp( idA, idB ):strcmp( idB, idA );
+    long A = NodeOp.getLong(a, "size", 0);
+    long B = NodeOp.getLong(b, "size", 0);
+    if( A > B )
+      return ms_Sort?-1:1;
+    if( A < B )
+      return ms_Sort?1:-1;
+    return 0;
 }
+
 
 void ABoxDlg::initResult() {
   m_Stubs->DeleteAllItems();
