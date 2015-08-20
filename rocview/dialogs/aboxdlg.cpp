@@ -718,15 +718,17 @@ void ABoxDlg::onClose( wxCloseEvent& event ) {
 void ABoxDlg::onOK( wxCommandEvent& event ) {
   if( StrOp.len(m_AddedFilename) > 0 ) {
     char* tip = StrOp.fmt( wxGetApp().getCMsg("uploadingfile"), m_AddedFilename );
-    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxCANCEL | wxICON_EXCLAMATION ).ShowModal();
     StrOp.free(tip);
-    return;
+    if( action == wxID_OK )
+      return;
   }
   if( StrOp.len(m_DownloadFilename) > 0 ) {
     char* tip = StrOp.fmt( wxGetApp().getCMsg("downloadingfile"), m_DownloadFilename );
-    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxCANCEL | wxICON_EXCLAMATION ).ShowModal();
     StrOp.free(tip);
-    return;
+    if( action == wxID_OK )
+      return;
   }
   EndModal( wxID_OK );
 }
