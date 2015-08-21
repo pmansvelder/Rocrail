@@ -45,6 +45,7 @@ Copyright (c) 2002-2015 Robert Jan Versluis, Rocrail.net
 #include "rocrail/wrapper/public/Action.h"
 #include "rocrail/wrapper/public/ActionCtrl.h"
 #include "rocrail/wrapper/public/Item.h"
+#include "rocrail/wrapper/public/Operator.h"
 
 
 static int instCnt = 0;
@@ -2504,13 +2505,27 @@ static Boolean _unLockForGroup( iIBlockBase inst, const char* id ) {
 static void __CreateTrain(iIBlockBase inst) {
   iOBlockData data = Data(inst);
 
-  if( data->assembletrainid != NULL )
-    StrOp.free(data->assembletrainid);
-
   if( data->assembledtrain == NULL )
     return;
   TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "create train in block [%s]: %d", data->id, ListOp.size(data->assembledtrain) );
+  {
+    iONode op = NodeOp.inst(wOperator.name(), NULL, ELEMENT_NODE);
+    char* carids = NULL;
+    int i = 0;
+    wOperator.setid(op, data->assembletrainid);
+    for( i = 0; i < ListOp.size(data->assembledtrain); i++) {
+      iOCar car = (iOCar)ListOp.get(data->assembledtrain, i);
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "train [%s] has car [%s]", data->assembletrainid, CarOp.base.id(car) );
+      if( carids != NULL )
+        carids = StrOp.cat(carids, ",");
+      carids = StrOp.cat(carids, CarOp.base.id(car));
+    }
+    wOperator.setcarids(op, carids);
+    ModelOp.modifyItem(AppOp.getModel(), op);
+  }
 
+  if( data->assembletrainid != NULL )
+    StrOp.free(data->assembletrainid);
 }
 
 
@@ -2593,7 +2608,7 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
   }
 
   if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.startassembletrain) ) {
-    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start assembling train [%s] in block [%s]...", wLoc.gettrain(nodeA), data->id);
+    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 9999, "start assembling train [%s] in block [%s]...", wLoc.gettrain(nodeA), data->id);
     data->assemblingtrain = True;
     if( data->assembletrainid != NULL )
       StrOp.free(data->assembletrainid);
