@@ -2515,12 +2515,16 @@ static void __CreateTrain(iIBlockBase inst) {
     wOperator.setid(op, data->assembletrainid);
     for( i = 0; i < ListOp.size(data->assembledtrain); i++) {
       iOCar car = (iOCar)ListOp.get(data->assembledtrain, i);
-      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "train [%s] has car [%s]", data->assembletrainid, CarOp.base.id(car) );
-      if( carids != NULL )
-        carids = StrOp.cat(carids, ",");
-      carids = StrOp.cat(carids, CarOp.base.id(car));
+      if( car != NULL ) {
+        TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "train [%s] has car [%s]", data->assembletrainid, CarOp.base.id(car) );
+        if( carids != NULL )
+          carids = StrOp.cat(carids, ",");
+        carids = StrOp.cat(carids, CarOp.base.id(car));
+        CarOp.setLocality(car, data->id);
+      }
     }
     wOperator.setcarids(op, carids);
+    wOperator.setlocation(op, data->id);
     ModelOp.modifyItem(AppOp.getModel(), op);
   }
 
