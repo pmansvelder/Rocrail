@@ -268,6 +268,12 @@ void ABoxDlg::onAdd( wxCommandEvent& event ) {
 
 void ABoxDlg::executeStub(const char* filepath) {
   wxFileType *filetype=wxTheMimeTypesManager->GetFileTypeFromExtension(wxString(StrOp.getExtension(filepath),wxConvUTF8));
+  if( filetype == NULL ) {
+    char* tip = StrOp.fmt( wxGetApp().getCMsg("nodefaultapplicationfound"), filepath );
+    int action = wxMessageDialog( this, wxString(tip,wxConvUTF8), _T("Rocrail"), wxOK | wxICON_EXCLAMATION ).ShowModal();
+    StrOp.free(tip);
+    return;
+  }
   wxString command=filetype->GetOpenCommand(wxString(filepath,wxConvUTF8));
   TraceOp.trc( "aboxdlg", TRCLEVEL_INFO, __LINE__, 9999, "execute [%s]", (const char*)command.mb_str(wxConvUTF8) );
   if( command.IsEmpty() ) {
