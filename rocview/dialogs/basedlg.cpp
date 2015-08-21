@@ -139,6 +139,7 @@ void BaseDialog::initList( wxListCtrl* list, wxWindow* parent, bool showPos, boo
   m_colPos  = -1;
   m_colRTime = -1;
   m_colMTime = -1;
+  m_colMDate = -1;
 
   if( m_ShowAddr ) {
     m_colIID = col;
