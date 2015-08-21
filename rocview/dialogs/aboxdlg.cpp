@@ -495,8 +495,11 @@ void ABoxDlg::initResult() {
     iONode stub = (iONode)ListOp.get( list, idx);
     if( m_ShowPath->IsChecked() )
       m_Stubs->InsertItem( idx, wxString(NodeOp.getStr(stub, "path", "-"),wxConvUTF8) );
-    else
-      m_Stubs->InsertItem( idx, wxString(FileOp.ripPath(NodeOp.getStr(stub, "path", "-")),wxConvUTF8) );
+    else {
+      char* s = StrOp.dup(NodeOp.getStr(stub, "path", "-"));
+      m_Stubs->InsertItem( idx, wxString(FileOp.ripPath(s),wxConvUTF8) );
+      StrOp.free(s);
+    }
     m_Stubs->SetItem( idx, 1, wxString(NodeOp.getStr(stub, "category", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 2, wxString(NodeOp.getStr(stub, "text", "-"),wxConvUTF8) );
     m_Stubs->SetItem( idx, 3, wxString(NodeOp.getStr(stub, "uid", "-"),wxConvUTF8) );
