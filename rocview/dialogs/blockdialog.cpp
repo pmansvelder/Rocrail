@@ -82,6 +82,7 @@ BEGIN_EVENT_TABLE( BlockDialog, wxDialog )
     EVT_BUTTON( ID_BLOCK_DOC, BlockDialog::onDoc )
     EVT_BUTTON( ID_BUTTON_BK_LOCPROPS, BlockDialog::OnButtonBkLocpropsClick )
     EVT_CHECKBOX( wxID_BLOCK_WAIT, BlockDialog::OnBlockWaitClick )
+    EVT_CHECKBOX( ID_BLOCK_TERMINALSTATION, BlockDialog::OnBlockTerminalstation )
     EVT_BUTTON( ID_BUTTON_BLOCK_ACTIONS, BlockDialog::OnButtonBlockActionsClick )
     EVT_BUTTON( ID_BUTTON_BK_SIGNAL, BlockDialog::OnButtonBkSignalClick )
     EVT_BUTTON( ID_BUTTON_BK_WSIGNAL, BlockDialog::OnButtonBkWsignalClick )
@@ -1535,7 +1536,7 @@ void BlockDialog::CreateControls()
     m_AcceptGhost->SetValue(false);
     itemBoxSizer43->Add(m_AcceptGhost, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
-    m_Swapplacing = new wxCheckBox( m_General_Panel, wxID_ANY, _("Terminal station"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_Swapplacing = new wxCheckBox( m_General_Panel, ID_BLOCK_TERMINALSTATION, _("Terminal station"), wxDefaultPosition, wxDefaultSize, 0 );
     m_Swapplacing->SetValue(false);
     itemBoxSizer43->Add(m_Swapplacing, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
@@ -3017,5 +3018,15 @@ void BlockDialog::sgProps( const char* sgid ) {
       }
     }
   }
+}
+
+
+void BlockDialog::OnBlockTerminalstation( wxCommandEvent& event )
+{
+  if( m_Swapplacing->IsChecked() ) {
+    m_AllowChgDir->SetValue(false);
+  }
+  m_AllowChgDir->Enable(!m_Swapplacing->IsChecked());
+
 }
 
