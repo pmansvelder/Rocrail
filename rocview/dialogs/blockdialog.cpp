@@ -577,6 +577,9 @@ void BlockDialog::initValues() {
   m_Virtual->SetValue( wBlock.isvirtual( m_Props ) ? true:false);
   m_SlaveBlocks->SetValue( wxString(wBlock.getslaveblocks( m_Props ),wxConvUTF8) );
 
+  wxCommandEvent event;
+  OnBlockTerminalstation(event);
+
   // Location
   char* cval = StrOp.fmt( "%d", wBlock.getx( m_Props ) );
   m_x->SetValue( wxString(cval,wxConvUTF8) ); StrOp.free( cval );
