@@ -2732,7 +2732,7 @@ static void __listener( obj inst, iONode nodeC, int level ) {
       const char* ident = wFeedback.getidentifier(nodeC);
       msg[RN_PACKET_NETID] = data->location;
       msg[RN_PACKET_GROUP] = RN_GROUP_SENSOR;
-      msg[RN_PACKET_ACTION] = RN_SENSORID_REPORT;
+      msg[RN_PACKET_ACTION] = (data->ismobile ? RN_SENSORID_REPORT:RN_SENSOR_REPORT);
       msg[RN_PACKET_LEN] = 4;
       msg[RN_PACKET_DATA+2] = wFeedback.isstate(nodeC);
       msg[RN_PACKET_DATA+3] = wFeedback.getaddr(nodeC);
