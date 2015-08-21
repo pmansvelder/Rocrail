@@ -31832,4 +31832,13 @@
   <Msg id="uploadingfile">
     <en txt="Uploading file [%s]."/>
   </Msg>
+  <Msg id="assembletrain">
+    <en txt="Assemble train"/>
+  </Msg>
+  <Msg id="startassembletrain">
+    <en txt="Start assemble train"/>
+  </Msg>
+  <Msg id="stopassembletrain">
+    <en txt="Stop assemble train"/>
+  </Msg>
 </Messages>

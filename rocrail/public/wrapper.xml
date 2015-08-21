@@ -2318,6 +2318,9 @@
         <const name="classset" vt="string" val="classset"/>
         <const name="classadd" vt="string" val="classadd"/>
         <const name="classdel" vt="string" val="classdel"/>
+        <const name="startassembletrain" vt="string" val="startassembletrain"/>
+        <const name="stopassembletrain" vt="string" val="stopassembletrain"/>
+        <const name="assigntrain" vt="string" val="assigntrain"/>
         <var name="speed" vt="string" defval="cruise" range="*" remark="Block speed on arrive."/>
         <var name="speedpercent" vt="int" defval="80" unit="%" range="0-100" remark="Blockspeed in percent."/>
         <var name="exitspeedpercent" vt="int" defval="80" unit="%" range="0-100" remark="Block depart speed in percent."/>

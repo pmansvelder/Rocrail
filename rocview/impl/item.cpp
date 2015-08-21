@@ -154,6 +154,8 @@ enum {
     ME_IdentifierRev,
     ME_OutputColor,
     ME_Compress,
+    ME_StartAssembleTrain,
+    ME_StopAssembleTrain,
     ME_Info,
     ME_Timer,
     ME_TTLightOn,
@@ -272,6 +274,8 @@ BEGIN_EVENT_TABLE(Symbol, wxWindow)
   EVT_MENU     (ME_IdentifierRev, Symbol::OnIdentifierRev)
   EVT_MENU     (ME_SetSensorLoad, Symbol::OnSetSensorLoad)
   EVT_MENU     (ME_Compress, Symbol::OnCompress)
+  EVT_MENU     (ME_StartAssembleTrain, Symbol::OnStartAssembleTrain)
+  EVT_MENU     (ME_StopAssembleTrain, Symbol::OnStopAssembleTrain)
   EVT_MENU     (ME_OutputColor, Symbol::OnOutputColor)
 
   EVT_MENU     (ME_FYGo+0, Symbol::OnFYGo)
@@ -1022,6 +1026,28 @@ void Symbol::OnCompress(wxCommandEvent& event) {
   iONode cmd = NodeOp.inst( wStage.name(), NULL, ELEMENT_NODE );
   wStage.setid( cmd, wStage.getid( m_Props ) );
   wStage.setcmd( cmd, wStage.compress );
+  wxGetApp().sendToRocrail( cmd );
+  cmd->base.del(cmd);
+}
+
+void Symbol::OnStartAssembleTrain(wxCommandEvent& event) {
+  wxTextEntryDialog* dlg = new wxTextEntryDialog(m_Parent,
+      wxGetApp().getMenu("enterid") + wxT(" (") + wxGetApp().getMsg("train") + wxT(")") );
+  if( wxID_OK == dlg->ShowModal() ) {
+    iONode cmd = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
+    wLoc.settrain(cmd, dlg->GetValue().mb_str(wxConvUTF8) );
+    wBlock.setcmd( cmd, wBlock.startassembletrain );
+    wBlock.setid( cmd, wBlock.getid( m_Props ) );
+    wxGetApp().sendToRocrail( cmd );
+    cmd->base.del(cmd);
+  }
+  dlg->Destroy();
+}
+
+void Symbol::OnStopAssembleTrain(wxCommandEvent& event) {
+  iONode cmd = NodeOp.inst( wBlock.name(), NULL, ELEMENT_NODE );
+  wBlock.setcmd( cmd, wBlock.stopassembletrain );
+  wBlock.setid( cmd, wBlock.getid( m_Props ) );
   wxGetApp().sendToRocrail( cmd );
   cmd->base.del(cmd);
 }
@@ -1799,6 +1825,11 @@ void Symbol::OnPopup(wxMouseEvent& event)
       else if( StrOp.equals( wBlock.open, state ) ) {
         menu.Append( ME_Loc, wxGetApp().getMenu("setlocid") );
         menu.Append( ME_AcceptIdent, wxGetApp().getMenu("acceptident") );
+        wxMenu* menuAssembleTrain = new wxMenu();
+        menuAssembleTrain->Append( ME_StartAssembleTrain, wxGetApp().getMenu("startassembletrain") );
+        menuAssembleTrain->Append( ME_StopAssembleTrain, wxGetApp().getMenu("stopassembletrain") );
+        menu.Append( -1, wxGetApp().getMenu("assembletrain"), menuAssembleTrain );
+
         menu.AppendSeparator();
       }
       else if( StrOp.equals( wBlock.ghost, state ) ) {

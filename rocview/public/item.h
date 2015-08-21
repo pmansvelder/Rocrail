@@ -77,6 +77,8 @@ public:
   void OnIdentifierRev(wxCommandEvent& event);
   void OnOutputColor(wxCommandEvent& event);
   void OnCompress(wxCommandEvent& event);
+  void OnStartAssembleTrain(wxCommandEvent& event);
+  void OnStopAssembleTrain(wxCommandEvent& event);
   void OnLocMIC(wxCommandEvent& event);
   void OnLocActivate(wxCommandEvent& event);
   void OnLocDeActivate(wxCommandEvent& event);

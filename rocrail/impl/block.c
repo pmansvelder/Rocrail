@@ -438,6 +438,22 @@ static Boolean _event( iIBlockBase inst, Boolean puls, const char* id, const cha
     return 0;
   }
 
+  if( data->assemblingtrain ) {
+    iOCar car = ModelOp.getCarByIdent(AppOp.getModel(), ident);
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "assembling train [%s] in block [%s] car ident [%s]", data->assembletrainid, data->id, ident );
+    if( car != NULL ) {
+      int i = 0;
+      for( i = 0; i < ListOp.size(data->assembledtrain); i++) {
+        if( ListOp.get(data->assembledtrain, i) == (obj)car ) {
+          return True;
+        }
+      }
+      TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "train [%s]: new car added [%s]", data->assembletrainid, CarOp.base.id(car) );
+      ListOp.add( data->assembledtrain, (obj)car);
+    }
+    return True;
+  }
+
   if( fbevt == NULL && data->byRouteId != NULL && StrOp.len(data->byRouteId) > 0 ) {
     iORoute byRoute = ModelOp.getRoute( AppOp.getModel(), data->byRouteId );
     blockSide = RouteOp.getToBlockSide(byRoute);
@@ -2485,6 +2501,18 @@ static Boolean _unLockForGroup( iIBlockBase inst, const char* id ) {
   return ok;
 }
 
+static void __CreateTrain(iIBlockBase inst) {
+  iOBlockData data = Data(inst);
+
+  if( data->assembletrainid != NULL )
+    StrOp.free(data->assembletrainid);
+
+  if( data->assembledtrain == NULL )
+    return;
+  TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "create train in block [%s]: %d", data->id, ListOp.size(data->assembledtrain) );
+
+}
+
 
 static void _init( iIBlockBase inst ) {
   iOBlockData data = Data(inst);
@@ -2560,6 +2588,27 @@ static Boolean _cmd( iIBlockBase inst, iONode nodeA ) {
   if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.resetwc) ) {
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "reset wheel count in [%s] from %d to 0", data->id, data->wheelcount);
     data->wheelcount = 0;
+    NodeOp.base.del(nodeA);
+    return True;
+  }
+
+  if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.startassembletrain) ) {
+    TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "start assembling train [%s] in block [%s]...", wLoc.gettrain(nodeA), data->id);
+    data->assemblingtrain = True;
+    if( data->assembletrainid != NULL )
+      StrOp.free(data->assembletrainid);
+    data->assembletrainid = StrOp.dup( wLoc.gettrain(nodeA) );
+    if( data->assembledtrain == NULL )
+      data->assembledtrain = ListOp.inst();
+    else
+      ListOp.clear(data->assembledtrain);
+    NodeOp.base.del(nodeA);
+    return True;
+  }
+
+  if( !slaveBlock && cmd != NULL && StrOp.equals(cmd, wBlock.stopassembletrain) ) {
+    data->assemblingtrain = False;
+    __CreateTrain(inst);
     NodeOp.base.del(nodeA);
     return True;
   }

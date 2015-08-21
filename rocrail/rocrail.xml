@@ -169,6 +169,9 @@
       <var name="inPending" vt="Boolean"/>
       <var name="fifo0departing" vt="Boolean"/>
       <var name="forcelock" vt="Boolean"/>
+      <var name="assemblingtrain" vt="Boolean"/>
+      <var name="assembledtrain" vt="iOList"/>
+      <var name="assembletrainid" vt="char*"/>
     </data>
   </object>
 
