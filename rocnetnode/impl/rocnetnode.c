@@ -2752,7 +2752,7 @@ static void __listener( obj inst, iONode nodeC, int level ) {
         StrOp.fmtb(data->lastrfid, "%s", ident);
       }
 
-      if( wFeedback.isstate(nodeC) ) {
+      if( data->ismobile && wFeedback.isstate(nodeC) ) {
         MemOp.copy( data->rfidMsg, msg, 128);
         data->rfidAckTimer = SystemOp.getTick();
         data->rfidAck = False;
