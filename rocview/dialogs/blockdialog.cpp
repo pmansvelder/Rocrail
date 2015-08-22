@@ -83,6 +83,7 @@ BEGIN_EVENT_TABLE( BlockDialog, wxDialog )
     EVT_BUTTON( ID_BUTTON_BK_LOCPROPS, BlockDialog::OnButtonBkLocpropsClick )
     EVT_CHECKBOX( wxID_BLOCK_WAIT, BlockDialog::OnBlockWaitClick )
     EVT_CHECKBOX( ID_BLOCK_TERMINALSTATION, BlockDialog::OnBlockTerminalstation )
+    EVT_CHECKBOX( ID_BLOCK_ALLOWCHANGEDIR, BlockDialog::OnBlockAllowChangeDir )
     EVT_BUTTON( ID_BUTTON_BLOCK_ACTIONS, BlockDialog::OnButtonBlockActionsClick )
     EVT_BUTTON( ID_BUTTON_BK_SIGNAL, BlockDialog::OnButtonBkSignalClick )
     EVT_BUTTON( ID_BUTTON_BK_WSIGNAL, BlockDialog::OnButtonBkWsignalClick )
@@ -579,6 +580,7 @@ void BlockDialog::initValues() {
 
   wxCommandEvent event;
   OnBlockTerminalstation(event);
+  OnBlockAllowChangeDir(event);
 
   // Location
   char* cval = StrOp.fmt( "%d", wBlock.getx( m_Props ) );
@@ -1547,7 +1549,7 @@ void BlockDialog::CreateControls()
     m_Road->SetValue(false);
     itemBoxSizer43->Add(m_Road, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
-    m_AllowChgDir = new wxCheckBox( m_General_Panel, wxID_ANY, _("allowchgdir"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_AllowChgDir = new wxCheckBox( m_General_Panel, ID_BLOCK_ALLOWCHANGEDIR, _("allowchgdir"), wxDefaultPosition, wxDefaultSize, 0 );
     m_AllowChgDir->SetValue(false);
     itemBoxSizer43->Add(m_AllowChgDir, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
@@ -3030,6 +3032,14 @@ void BlockDialog::OnBlockTerminalstation( wxCommandEvent& event )
     m_AllowChgDir->SetValue(false);
   }
   m_AllowChgDir->Enable(!m_Swapplacing->IsChecked());
+}
 
+
+void BlockDialog::OnBlockAllowChangeDir( wxCommandEvent& event )
+{
+  if( m_AllowChgDir->IsChecked() ) {
+    m_Swapplacing->SetValue(false);
+  }
+  m_Swapplacing->Enable(!m_AllowChgDir->IsChecked());
 }
 

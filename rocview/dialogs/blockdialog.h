@@ -69,6 +69,7 @@ class wxSpinCtrl;
 #define ID_CHECKBOX_BK_GOMANUAL 10325
 #define ID_CHECKBOX_BK_ACCGHOST 10165
 #define ID_BLOCK_TERMINALSTATION 10499
+#define ID_BLOCK_ALLOWCHANGEDIR 10500
 #define ID_BUTTON_BLOCK_ACTIONS 10386
 #define ID_PANEL_BK_LOCATION 10002
 #define ID_TEXTCTRL 10036
@@ -229,6 +230,9 @@ public:
 
     /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_BLOCK_TERMINALSTATION
     void OnBlockTerminalstation( wxCommandEvent& event );
+
+    /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_BLOCK_ALLOWCHANGEDIR
+    void OnBlockAllowChangeDir( wxCommandEvent& event );
 
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_BLOCK_ACTIONS
     void OnButtonBlockActionsClick( wxCommandEvent& event );
