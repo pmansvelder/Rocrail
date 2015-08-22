@@ -679,7 +679,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
       const char* condition = NodeOp.getStr(cmd, "condition", NULL);
       char* conditionRes = NULL;
       if( condition != NULL ) {
-        conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+        conditionRes = VarOp.getText(condition, map, ' ');
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "continue condition [%s]", conditionRes );
       }
       if( conditionRes == NULL || __isCondition(conditionRes, NodeOp.getBool(cmd, "alltrue", True)) ) {
@@ -696,7 +696,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
       const char* condition = NodeOp.getStr(cmd, "condition", NULL);
       char* conditionRes = NULL;
       if( condition != NULL ) {
-        conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+        conditionRes = VarOp.getText(condition, map, ' ');
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "break condition [%s]", conditionRes );
       }
       if( conditionRes == NULL || __isCondition(conditionRes, NodeOp.getBool(cmd, "alltrue", True)) ) {
@@ -737,7 +737,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
     iOMap map = MapOp.inst();
     const char* id = wItem.getid(cmd);
     MapOp.put(map, "oid", (obj)oid);
-    char* varRes = TextOp.replaceAllSubstitutions(id, map);
+    char* varRes = VarOp.getText(id, map, ' ');
     MapOp.base.del(map);
 
     iONode var = ModelOp.getVariable(model, varRes);
@@ -795,7 +795,7 @@ static Boolean __executeCmd(iONode cmd, iOMap map, const char* oid, Boolean* bre
 
   /* text */
   else if( StrOp.equals( wText.name(), NodeOp.getName(cmd)) ) {
-    char* oid = TextOp.replaceAllSubstitutions(wItem.getid(cmd), map);
+    char* oid = VarOp.getText(wItem.getid(cmd), map, ' ');
     iOText text = ModelOp.getText( model, oid );
     if( text != NULL && wText.getformat(cmd) != NULL ) {
       iONode evt = NodeOp.inst( wText.name(), NULL, ELEMENT_NODE );
@@ -881,7 +881,7 @@ static Boolean __doCall(iONode nodeScript, iOMap map, iONode script) {
 static Boolean __doSwitch(iONode nodeScript, iOMap map, iONode script) {
   Boolean exit = False;
   const char* var = NodeOp.getStr(nodeScript, "var", NULL);
-  char*    varRes = TextOp.replaceAllSubstitutions(var, map);
+  char*    varRes = VarOp.getText(var, map, ' ');
   int    varValue = VarOp.getValue(varRes, NULL);
   char*  varText  = NULL;
   Boolean stringCompare = False;
@@ -958,17 +958,17 @@ static Boolean __doIf(iONode nodeScript, iOMap map, iONode script) {
   Boolean classOK = True;
 
   if( condition != NULL ) {
-    char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+    char* conditionRes = VarOp.getText(condition, map, ' ');
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if condition [%s]", conditionRes );
     conditionOK = __isCondition(conditionRes, NodeOp.getBool(nodeScript, "alltrue", True));
   }
   if( state != NULL ) {
-    stateRes = TextOp.replaceAllSubstitutions(state, map);
+    stateRes = VarOp.getText(state, map, ' ');
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if state [%s]", stateRes );
     stateOK = __isState(stateRes, NodeOp.getBool(nodeScript, "alltrue", True));
   }
   if( class != NULL ) {
-    classRes = TextOp.replaceAllSubstitutions(class, map);
+    classRes = VarOp.getText(class, map, ' ');
     TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "if class [%s]", classRes );
     classOK = __isClass(classRes);
   }
@@ -996,7 +996,7 @@ static Boolean __doIf(iONode nodeScript, iOMap map, iONode script) {
       int n = 0;
       for( n = 0; n < cmds && exit == False; n++ ) {
         iONode cmd = NodeOp.getChild(elseNode, n);
-        char* id = TextOp.replaceAllSubstitutions(wItem.getid(cmd), map);
+        char* id = VarOp.getText(wItem.getid(cmd), map, ' ');
         wItem.setid(cmd, id);
         exit = __executeCmd(cmd, map, NULL, NULL, NULL, script);
         StrOp.free(id);
@@ -1036,17 +1036,17 @@ static Boolean __doWhile(iONode nodeScript, iOMap map, iONode script) {
     classOK = True;
 
     if( condition != NULL ) {
-      char* conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+      char* conditionRes = VarOp.getText(condition, map, ' ');
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "while condition [%s]", conditionRes );
       conditionOK = __isCondition(conditionRes, NodeOp.getBool(nodeScript, "alltrue", True));
     }
     if( state != NULL ) {
-      stateRes = TextOp.replaceAllSubstitutions(state, map);
+      stateRes = VarOp.getText(state, map, ' ');
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "while state [%s]", stateRes );
       stateOK = __isState(stateRes, NodeOp.getBool(nodeScript, "alltrue", True));
     }
     if( class != NULL ) {
-      classRes = TextOp.replaceAllSubstitutions(class, map);
+      classRes = VarOp.getText(class, map, ' ');
       TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "while class [%s]", classRes );
       classOK = __isClass(classRes);
     }
@@ -1108,7 +1108,7 @@ static Boolean __doForEach(iONode nodeScript, iOMap map, iONode script) {
           else
             MapOp.put(map, "bkclass", (obj)wBlock.getclass(child));
         }
-        conditionRes = TextOp.replaceAllSubstitutions(condition, map);
+        conditionRes = VarOp.getText(condition, map, ' ');
         TraceOp.trc( name, TRCLEVEL_INFO, __LINE__, 9999, "for each in table [%s] condition [%s]", NodeOp.getName(table), conditionRes );
       }
 
