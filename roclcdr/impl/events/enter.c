@@ -105,7 +105,7 @@ void eventEnter( iOLcDriver inst, const char* blockId, iIBlockBase block, Boolea
   else {
     /* Exception! */
     /* ToDo: Could also happen when wagon wheels are dirty. */
-    TraceOp.trc( name, TRCLEVEL_WARNING, __LINE__, 4101,
+    TraceOp.trc( name, TRCLEVEL_USER1, __LINE__, 4101,
                    "Unexpected (state=%d) enter_block event for \"%s\" from \"%s\"...",
                    data->state, data->loc->getId( data->loc ), blockId );
 
