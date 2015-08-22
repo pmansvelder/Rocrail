@@ -75,7 +75,7 @@ cp -R ../rocview/svg/* debian/opt/rocrail/svg
 cp -R ../rocrail/impl/web/html/* debian/opt/rocrail/web
 cp -R ../COPYING debian/opt/rocrail
 
-fakeroot dpkg-deb --build debian
+fakeroot 'dpkg-deb --build debian'
 mv debian.deb rocrail-$BAZAARREV-$DIST-$ARCH.deb
 rm -Rf debian
 cd ../rocrail
