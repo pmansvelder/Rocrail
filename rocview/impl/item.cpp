@@ -1825,11 +1825,6 @@ void Symbol::OnPopup(wxMouseEvent& event)
       else if( StrOp.equals( wBlock.open, state ) ) {
         menu.Append( ME_Loc, wxGetApp().getMenu("setlocid") );
         menu.Append( ME_AcceptIdent, wxGetApp().getMenu("acceptident") );
-        wxMenu* menuAssembleTrain = new wxMenu();
-        menuAssembleTrain->Append( ME_StartAssembleTrain, wxGetApp().getMenu("startassembletrain") );
-        menuAssembleTrain->Append( ME_StopAssembleTrain, wxGetApp().getMenu("stopassembletrain") );
-        menu.Append( -1, wxGetApp().getMenu("assembletrain"), menuAssembleTrain );
-
         menu.AppendSeparator();
       }
       else if( StrOp.equals( wBlock.ghost, state ) ) {
@@ -1848,6 +1843,12 @@ void Symbol::OnPopup(wxMouseEvent& event)
       }
       menu.Append( ME_ResetWC, wxGetApp().getMenu("resetwc") );
       menu.Append( ME_ResetFiFo, wxGetApp().getMenu("resetfifo") );
+
+      wxMenu* menuAssembleTrain = new wxMenu();
+      menuAssembleTrain->Append( ME_StartAssembleTrain, wxGetApp().getMenu("startassembletrain") );
+      menuAssembleTrain->Append( ME_StopAssembleTrain, wxGetApp().getMenu("stopassembletrain") );
+      menu.Append( -1, wxGetApp().getMenu("assembletrain"), menuAssembleTrain );
+
     }
     else if( StrOp.equals( wSwitch.name(), NodeOp.getName( m_Props ) ) ) {
       //if( !wxGetApp().getFrame()->isAutoMode() )

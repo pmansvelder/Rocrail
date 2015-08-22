@@ -8081,3 +8081,21 @@ msgstr ""
 msgid "Uploading file [%s]."
 msgstr ""
 
+#. 
+# id="assembletrain"
+#, c-format
+msgid "Assemble train"
+msgstr ""
+
+#. 
+# id="startassembletrain"
+#, c-format
+msgid "Start assemble train"
+msgstr ""
+
+#. 
+# id="stopassembletrain"
+#, c-format
+msgid "Stop assemble train"
+msgstr ""
+
